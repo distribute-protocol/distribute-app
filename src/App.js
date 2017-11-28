@@ -19,9 +19,11 @@ class App extends Component {
     this.WR = eth.contract(JSON.parse(WorkerRegistryABI), WorkerRegistryBytecode)
     this.thr = this.THR.at(TokenHolderRegistryAddress)
     this.wr = this.WR.at(WorkerRegistryAddress)
+    this.uportWR = uport.contract(JSON.parse(WorkerRegistryABI)).at(WorkerRegistryAddress)
     this.buyShares = this.buyShares.bind(this)
     this.sellShares = this.sellShares.bind(this)
     this.getBalance = this.getBalance.bind(this)
+    this.login = this.login.bind(this)
   }
   login () {
     uport.requestCredentials({
@@ -30,6 +32,7 @@ class App extends Component {
     }).then((credentials) => {
       console.log(credentials)
       console.log(mnid.decode(credentials.address))
+      this.uportWR.register()
       // const txobject = {
       //   to: '0xeec918d74c746167564401103096d45bbd494b74',
       //   function: WR.register(),
@@ -52,7 +55,7 @@ class App extends Component {
   buyShares () {
     let thr = this.thr
     eth.accounts().then(accountsArr => {
-      thr.mint(700, {value: Eth.toWei(5, 'ether'), from: accountsArr[0]})
+      thr.mint(700, {value: Eth.toWei(20, 'ether'), from: accountsArr[0]})
       this.getBalance()
     })
   }
@@ -81,7 +84,7 @@ class App extends Component {
           <div style={{backgroundColor: 'red', color: 'white', width: 90, padding: 20, margin: 10}} onClick={this.sellShares}>
             Sell Shares
           </div>
-          <div style={{backgroundColor: 'teal', color: 'black', width: 90, padding: 20, margin: 10}}>
+          <div style={{backgroundColor: 'teal', color: 'black', width: 90, padding: 20, margin: 10}} onClick={this.getBalance}>
             {`Current shares: ${this.state.balance}`}
           </div>
         </div>
