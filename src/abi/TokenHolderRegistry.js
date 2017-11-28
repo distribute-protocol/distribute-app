@@ -1,4 +1,4 @@
-export const TokenHolderRegistryAddress = '0xf12b5dd4ead5f743c6baa640b0216200e89b60da'
+export const TokenHolderRegistryAddress = '0x8f0483125fcb9aaaefa9209d8e9d7b9c8b9fb90f'
 export const TokenHolderRegistryABI = `[
    {
       "constant":true,

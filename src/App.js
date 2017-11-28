@@ -3,45 +3,26 @@ import { TokenHolderRegistryABI, TokenHolderRegistryAddress, TokenHolderRegistry
 import { WorkerRegistryABI, WorkerRegistryAddress, WorkerRegistryBytecode } from './abi/WorkerRegistry'
 import logo from './logo.svg'
 import './App.css'
-import ETH from 'ethjs'
+import Eth from 'ethjs'
 import uport from './util/uport'
 var mnid = require('mnid')
-const eth = new ETH(window.web3.currentProvider)
-window.eth = eth
-// console.log(TokenHolderRegistryABI, WorkerRegistryABI)
-// .at(TokenHolderRegistryAddress)
-// const WR = eth.contract(JSON.parse(WorkerRegistryABI), WorkerRegistryBytecode)
-// .at(WorkerRegistryAddress)
-let THR
-let WR
-let thr
-let wr
-eth.accounts().then(accounts => {
-  THR = eth.contract(JSON.parse(TokenHolderRegistryABI), TokenHolderRegistryBytecode, {
-    from: accounts[0],
-    gas: 6385876
-  })
-  WR = eth.contract(JSON.parse(WorkerRegistryABI), WorkerRegistryBytecode, {
-    from: accounts[0],
-    gas: 6385876
-  })
-  thr = THR.at(TokenHolderRegistryAddress)
-  wr = WR.at(WorkerRegistryAddress)
-  window.THR = thr
-  window.WR = wr
-  // console.log(wr)
-  // wr.register(0, {from: accounts[0]})
-  thr.mint(700, {value: "15000000000000000000", from: accounts[0]})
-  thr.balanceOf(accounts[0]).then(balance => console.log(balance))
-  // thr.mint(700, {value: "15000000000000000000", from: accounts[0]})
-})
+const eth = new Eth(window.web3.currentProvider)
 
 let uportWR = uport.contract(JSON.parse(WorkerRegistryABI)).at(WorkerRegistryAddress)
-// window.THR = thr
-// window.WR = wr
 window.uportWR = uportWR
 
 class App extends Component {
+  constructor () {
+    super()
+    this.state = {}
+    this.THR = eth.contract(JSON.parse(TokenHolderRegistryABI), TokenHolderRegistryBytecode)
+    this.WR = eth.contract(JSON.parse(WorkerRegistryABI), WorkerRegistryBytecode)
+    this.thr = this.THR.at(TokenHolderRegistryAddress)
+    this.wr = this.WR.at(WorkerRegistryAddress)
+    this.buyShares = this.buyShares.bind(this)
+    this.sellShares = this.sellShares.bind(this)
+    this.getBalance = this.getBalance.bind(this)
+  }
   login () {
     uport.requestCredentials({
       requested: ['name', 'avatar'],
@@ -59,35 +40,50 @@ class App extends Component {
     })
   }
   componentWillMount () {
-    // let thr = THR.new((error, res) => {
-    //   console.log(res)
-    //   return res
-    // })
-    // let wr = WR.new((error, res) => {
-    //   console.log(res)
-    //   return res
-    // })
+    this.getBalance()
+  }
+  getBalance () {
+    eth.accounts().then(accountsArr => {
+      this.thr.balanceOf(accountsArr[0]).then((balance) => {
+        this.setState({balance: balance[0]['words'][0]})
+      })
+    })
+  }
+  buyShares () {
+    let thr = this.thr
+    eth.accounts().then(accountsArr => {
+      thr.mint(700, {value: Eth.toWei(5, 'ether'), from: accountsArr[0]})
+      this.getBalance()
+    })
+  }
+  sellShares () {
+    let thr = this.thr
+    eth.accounts().then(accountsArr => {
+      thr.burnAndRefund(7000, {from: accountsArr[0]})
+      this.getBalance()
+    })
   }
   render () {
-    // console.log(THR, WR)
-    // eth.accounts().then(accounts => console.log(accounts[0]))
-    // WR.register().then((thing) => console.log(thing))
-    console.log(window.web3.accounts)
-    eth.accounts().then(accounts => {
-      // console.log(WR.totalWorkerTokenSupply)
-    })
-    // WR.register({from: })
     return (
       <div className='App'>
         <header className='App-header'>
-          <img src={logo} className='App-logo' alt='logo' />
-          <h1 className='App-title'>Welcome to React</h1>
+          {/* <img src={logo} className='App-logo' alt='logo' /> */}
+          <h1 className='App-title'>distribute</h1>
         </header>
-        <p className='App-intro'>
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-        <div onClick={this.login}>
-          <h3>Connect with uPort</h3>
+        <div onClick={this.login} style={{width: 90, height: 30, padding: 20, margin: 10, backgroundColor: 'purple'}}>
+          Connect with uPort
+        </div>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+          <div style={{backgroundColor: 'blue', color: 'white', width: 90, padding: 20, margin: 10}} onClick={this.buyShares}>
+            Buy Shares
+          </div>
+
+          <div style={{backgroundColor: 'red', color: 'white', width: 90, padding: 20, margin: 10}} onClick={this.sellShares}>
+            Sell Shares
+          </div>
+          <div style={{backgroundColor: 'teal', color: 'black', width: 90, padding: 20, margin: 10}}>
+            {`Current shares: ${this.state.balance}`}
+          </div>
         </div>
       </div>
     )
