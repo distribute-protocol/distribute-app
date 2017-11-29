@@ -33,6 +33,7 @@ class App extends Component {
       console.log(credentials)
       console.log(mnid.decode(credentials.address))
       this.uportWR.register()
+      // https://rinkeby.infura.io/11XiCuI1EjsowYvplZ24
       // const txobject = {
       //   to: '0xeec918d74c746167564401103096d45bbd494b74',
       //   function: WR.register(),
@@ -62,7 +63,7 @@ class App extends Component {
   sellShares () {
     let thr = this.thr
     eth.accounts().then(accountsArr => {
-      thr.burnAndRefund(7000, {from: accountsArr[0]})
+      thr.burnAndRefund(700, {from: accountsArr[0]})
       this.getBalance()
     })
   }
