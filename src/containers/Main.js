@@ -17,7 +17,7 @@ const Main = () =>
     <div style={{height: '100vh', width: 200, backgroundColor: '#111111', position: 'fixed', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
       <div style={{width: 100, height: 100, borderRadius: 50, backgroundColor: '#fcfcfc', marginTop: 30}}>
       </div>
-      <h3 style={{color: '#FCFCFC'}}>Yelnif Akohsa</h3>
+      <h3 style={{color: '#FCFCFC', marginTop: 15}}>Yelnif Akohsa</h3>
       <div style={{alignItems: 'flex-start', marginTop: 30}}>
         <a href='/status'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Status</h3></a>
         <a href='/projects'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Current Projects</h3></a>

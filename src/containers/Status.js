@@ -1,19 +1,8 @@
-// import React from 'react'
-//
-// class Status extends React.Component {
-//   render () {
-//     return (
-//       <div style={{backgroundColor: 'blue', marginLeft: 200, width: 400, height: 600}} />
-//     )
-//   }
-// }
-//
-// export default Status
-
 import React, { Component } from 'react'
 import { TokenHolderRegistryABI, TokenHolderRegistryAddress, TokenHolderRegistryBytecode } from '../abi/TokenHolderRegistry'
 import { WorkerRegistryABI, WorkerRegistryAddress, WorkerRegistryBytecode } from '../abi/WorkerRegistry'
 import { getEthPriceNow } from 'get-eth-price'
+import { Button } from 'reactstrap'
 // import logo from './logo.svg'
 // import './App.css'
 import Eth from 'ethjs'
@@ -80,50 +69,77 @@ class Status extends Component {
   buyShares () {
     let thr = this.thr
     eth.accounts().then(accountsArr => {
-      thr.mint(7000, {value: Eth.toWei(20, 'ether'), from: accountsArr[0]})
+      thr.mint(this.tokensToBuy.value, {value: Eth.toWei(30, 'ether'), from: accountsArr[0]})
       this.getBalance()
     })
   }
   sellShares () {
     let thr = this.thr
     eth.accounts().then(accountsArr => {
-      thr.burnAndRefund(7000, {from: accountsArr[0]})
+      thr.burnAndRefund(this.tokensToBuy.value, {from: accountsArr[0]})
       this.getBalance()
     })
   }
+  async onChange (val) {
+    try {
+      let targetPrice = (await this.thr.targetPrice(val))[0].toNumber()
+      let weiRequired = Eth.fromWei((await this.thr.weiRequired(targetPrice, val))[0], 'ether')
+      // window.weiRequired = weiRequired
+      // console.log(weiRequired)
+      let refund = Eth.fromWei((parseInt((await this.thr.weiBal.call())[0].toString()) / (await this.thr.totalFreeCapitalTokenSupply.call())[0].toNumber() * val), 'ether')
+      this.setState({ethToSend: weiRequired, ethToRefund: refund})
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
   render () {
-    window.price = this.state.price
     return (
       <div style={{marginLeft: 200}}>
         <header className='App-header'>
           {/* <img src={logoclassName='App-logo' alt='logo' /> */}
           <h1 className='App-title'>distribute</h1>
         </header>
-        <div onClick={this.login} style={{width: 90, height: 30, padding: 20, margin: 10, backgroundColor: 'purple'}}>
+        <Button onClick={this.login} style={{marginLeft: 20, backgroundColor: 'purple'}}>
           Connect with uPort
-        </div>
-        <div style={{marginLeft: 20}}>
+        </Button>
+        <div style={{marginLeft: 20, marginTop: 40}}>
           <h3>Total Token Supply</h3>
-          <h4>{this.state.totalTokenSupply}</h4>
+          <h5>{this.state.totalTokenSupply}</h5>
           <h3>Token Balance</h3>
-          <h4>{this.state.balance}</h4>
+          <h5>{this.state.balance}</h5>
           <h3>Controlled Market Percentage</h3>
-          <h4>{Math.round(this.state.balance / this.state.totalTokenSupply * 10000) / 100}</h4>
+          <h5>{Math.round(this.state.balance / this.state.totalTokenSupply * 10000) / 100}</h5>
           <h3>Eth Pool</h3>
-          <h4>{this.state.weiBal}</h4>
+          <h5>{this.state.weiBal}</h5>
           <h3>Capital Equivalent</h3>
-          <h4>{`$${this.state.ethPrice ? Math.round(this.state.ethPrice * this.state.weiBal) * 100 / 100 : 0}`}</h4>
+          <h5>{`$${this.state.ethPrice ? Math.round(this.state.ethPrice * this.state.weiBal) * 100 / 100 : 0}`}</h5>
         </div>
 
         <div style={{display: 'flex', justifyContent: 'center'}}>
-          <div style={{backgroundColor: 'blue', color: 'white', width: 60, height: 40, margin: 10}} onClick={this.buyShares}>
-            <h3 style={{textAlign: 'center', justifyContent: 'center', alignItems: 'center'}}>Buy</h3>
-          </div>
-          <div style={{backgroundColor: 'red', color: 'white', width: 60, height: 40, margin: 10, justifyContent: 'center', alignItems: 'center'}} onClick={this.sellShares}>
-            <h3 style={{textAlign: 'center', justifyContent: 'center', alignItems: 'center'}}>Sell</h3>
-          </div>
-          <div style={{backgroundColor: 'teal', color: 'black'}} onClick={this.getBalance}>
-            <p>{`Refresh Balances`}</p>
+          <div>
+              {/* <Input getRef={(input) => (this.location = input)}  onChange={(e) => this.onChange('location', this.location.value)} value={location || ''} /> */}
+            <div>
+              <h3>Tokens:</h3>
+              <input ref={(input) => (this.tokensToBuy = input)} placeholder='Tokens to Buy' onChange={(e) => this.onChange(this.tokensToBuy.value)} value={this.state.tokensToBuy} />
+            </div>
+            <div style={{marginTop: 20}}>
+              <h4>{`Cost to Buy: ${typeof this.state.ethToSend === 'undefined' ? 'n/a' : Math.round(this.state.ethToSend * 100000) / 100000}`}</h4>
+
+            </div>
+            <div>
+              <h4>{`Refund Amount: ${typeof this.state.ethToRefund === 'undefined' ? 'n/a' : Math.round(this.state.ethToRefund * 100000) / 100000}`}</h4>
+            </div>
+            <div style={{marginTop: 20}}>
+              <Button color='primary' onClick={this.buyShares}>
+                Buy
+              </Button>
+              <Button color='warning' onClick={this.sellShares} style={{marginLeft: 10}}>
+                Sell
+              </Button>
+              <Button color='info' onClick={this.getBalance} style={{marginLeft: 10}}>
+                Refresh Balances
+              </Button>
+            </div>
           </div>
         </div>
       </div>
