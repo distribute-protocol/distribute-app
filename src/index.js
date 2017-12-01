@@ -1,21 +1,24 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import './index.css'
+// import 'bootstrap/dist/css/bootstrap.css'
+import App from './App'
+import registerServiceWorker from './registerServiceWorker'
+// import { BrowserRouter } from 'react-router-dom'
+import { Provider } from 'react-redux'
 
-ReactDOM.render(<App />, document.getElementById('root'));
-registerServiceWorker();
+import store, { history } from './store/store'
+import { ConnectedRouter } from 'react-router-redux'
 
-// window.addEventListener('load', function() {
-//
-// // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-//   if (typeof web3 !== 'undefined') {
-//
-//     // Use the browser's ethereum provider
-//     var provider = window.web3.currentProvider
-//
-//   } else {
-//     console.log('No web3? You should consider trying MetaMask!')
-//   }
-// })
+ReactDOM.render(
+  (<Provider store={store}>
+    { /* ConnectedRouter will use the store from Provider automatically */ }
+    <ConnectedRouter history={history}>
+      <App />
+    </ConnectedRouter>
+  </Provider>),
+  document.getElementById('root')
+)
+registerServiceWorker()
+// Now you can dispatch navigation actions from anywhere!
+// store.dispatch(push('/foo'))
