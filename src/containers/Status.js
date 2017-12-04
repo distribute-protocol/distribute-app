@@ -103,21 +103,23 @@ class Status extends Component {
   }
 
   async onChange (val) {
-    try {
-      let targetPrice = (await this.thr.targetPrice(val))[0].toNumber()
-      console.log(targetPrice)
-      let weiRequired = Eth.fromWei((await this.thr.weiRequired(targetPrice, val))[0], 'ether')
-      console.log(weiRequired)
-      // window.weiRequired = weiRequired
-      // console.log(weiRequired)
-      let totalFreeCapitalTokenSupply = (await this.thr.totalFreeCapitalTokenSupply.call())[0].toNumber()
-      let refund
-      totalFreeCapitalTokenSupply === 0
-        ? refund = 0
-        : refund = Eth.fromWei((parseInt((await this.thr.weiBal.call())[0].toString()) / totalFreeCapitalTokenSupply * val), 'ether')
-      this.setState({ethToSend: weiRequired, ethToRefund: refund})
-    } catch (error) {
-      throw new Error(error)
+    if (val >= 0) {
+      try {
+        let targetPrice = (await this.thr.targetPrice(val))[0].toNumber()
+        // console.log(targetPrice)
+        let weiRequired = Eth.fromWei((await this.thr.weiRequired(targetPrice, val))[0], 'ether')
+        // console.log(weiRequired)
+        // window.weiRequired = weiRequired
+        // console.log(weiRequired)
+        let totalCapitalTokenSupply = (await this.thr.totalCapitalTokenSupply.call())[0].toNumber()
+        let refund
+        totalCapitalTokenSupply === 0
+          ? refund = 0
+          : refund = Eth.fromWei((parseInt((await this.thr.weiBal.call())[0].toString()) / totalCapitalTokenSupply * val), 'ether')
+        this.setState({ethToSend: weiRequired, ethToRefund: refund})
+      } catch (error) {
+        throw new Error(error)
+      }
     }
   }
   render () {
