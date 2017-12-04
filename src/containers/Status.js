@@ -69,7 +69,7 @@ class Status extends Component {
   buyShares () {
     let thr = this.thr
     eth.accounts().then(accountsArr => {
-      thr.mint(this.tokensToBuy.value, {value: Eth.toWei(30, 'ether'), from: accountsArr[0]})
+      thr.mint(this.tokensToBuy.value, {value: Eth.toWei(1, 'ether'), from: accountsArr[0]})
       this.getBalance()
     })
   }
