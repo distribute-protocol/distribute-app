@@ -4,6 +4,7 @@
   "private": true,
   "proxy": "http://localhost:3001/",
   "dependencies": {
+    "bignumber.js": "^5.0.0",
     "bootstrap": "4.0.0-beta.2",
     "ethjs": "^0.3.0",
     "get-eth-price": "^1.0.0",
@@ -23,6 +24,7 @@
     "redux-persist": "^4.10.1",
     "redux-saga": "^0.15.6",
     "redux-thunk": "^2.2.0",
+    "truffle-hdwallet-provider": "0.0.3",
     "uport-connect": "^0.6.6"
   },
   "devDependencies": {

@@ -105,10 +105,17 @@ class Status extends Component {
   async onChange (val) {
     try {
       let targetPrice = (await this.thr.targetPrice(val))[0].toNumber()
+      console.log(targetPrice)
       let weiRequired = Eth.fromWei((await this.thr.weiRequired(targetPrice, val))[0], 'ether')
+      console.log(weiRequired)
       // window.weiRequired = weiRequired
       // console.log(weiRequired)
-      let refund = Eth.fromWei((parseInt((await this.thr.weiBal.call())[0].toString()) / (await this.thr.totalFreeCapitalTokenSupply.call())[0].toNumber() * val), 'ether')
+      let refund;
+      if ((await this.thr.totalFreeCapitalTokenSupply.call())[0].toNumber() == 0) {
+        refund = 0;
+      } else {
+        refund = Eth.fromWei((parseInt((await this.thr.weiBal.call())[0].toString()) / (await this.thr.totalFreeCapitalTokenSupply.call())[0].toNumber() * val), 'ether')
+      }
       this.setState({ethToSend: weiRequired, ethToRefund: refund})
     } catch (error) {
       throw new Error(error)

@@ -1,11 +1,104 @@
-import React from 'react'
+import React, { Component } from 'react'
+import { TokenHolderRegistryABI, TokenHolderRegistryAddress, TokenHolderRegistryBytecode } from '../abi/TokenHolderRegistry'
+import { WorkerRegistryABI, WorkerRegistryAddress, WorkerRegistryBytecode } from '../abi/WorkerRegistry'
+import { Button } from 'reactstrap'
 
-class Status extends React.Component {
+import Eth from 'ethjs'
+
+const eth = new Eth(window.web3.currentProvider)
+window.Eth = Eth
+
+class Propose extends Component {
+  constructor () {
+    super()
+    this.state = {
+      value: 0,
+      projectCost: '',
+      projectDescription: '',
+      projectNonce: 1
+    }
+    this.THR = eth.contract(JSON.parse(TokenHolderRegistryABI), TokenHolderRegistryBytecode)
+    this.WR = eth.contract(JSON.parse(WorkerRegistryABI), WorkerRegistryBytecode)
+    this.thr = this.THR.at(TokenHolderRegistryAddress)
+    this.wr = this.WR.at(WorkerRegistryAddress)
+    this.getProposals = this.getProposals.bind(this)
+    this.proposeProject = this.proposeProject.bind(this)
+    window.thr = this.thr
+  }
+
+  componentWillMount () {
+    //this.getProposals()
+  }
+
+  async getProposals () {
+    try {
+      //this.setState({})
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  proposeProject () {
+    let thr = this.thr
+    console.log('proposeProject is working')
+    console.log(this.projectCost.value)
+    eth.accounts().then(accountsArr => {
+      console.log(accountsArr)
+      thr.proposeProject(Eth.toWei(this.projectCost.value, 'ether'), 1000000000000, {from: accountsArr[0]})
+    })
+  }
+
+  async onProjectDescriptionChange (val) {
+    try {
+      this.setState({projectDescription: val})
+      console.log('set state for projectDescription')
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  async onProjectCostChange (val) {
+    try {
+      this.setState({projectCost: val})
+      console.log('set state for projectCost')
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
   render () {
     return (
-      <div style={{backgroundColor: 'teal', marginLeft: 200, width: 400, height: 600}} />
+      <div style={{marginLeft: 200}}>
+        <header className='App-header'>
+          {/* <img src={logoclassName='App-logo' alt='logo' /> */}
+          <h1 className='App-title'>distribute</h1>
+        </header>
+        <div style={{marginLeft: 20, marginTop: 40}}>
+          <h3>Current Proposals</h3>
+          <ul>{this.state.projectCost}</ul>
+        </div>
+
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+          <div>
+              {/* <Input getRef={(input) => (this.location = input)}  onChange={(e) => this.onChange('location', this.location.value)} value={location || ''} /> */}
+            <div>
+              <h3>Propose:</h3>
+              <input ref={(input) => (this.projectDescription = input)} placeholder='Project Description' onChange={(e) => this.onProjectDescriptionChange(this.projectDescription.value)}  value={this.state.projectDescription} />
+              <input ref={(input) => (this.projectCost = input)} placeholder='Price in ETH' onChange={(e) => this.onProjectCostChange(this.projectCost.value)} style={{marginLeft: 10}} value={this.state.projectCost} />
+            </div>
+            <div style={{marginTop: 20}}>
+              <h4>{`You have to put down ${typeof this.state.projectCost === 'undefined' ? '__' : this.state.projectCost/20}`} ETH worth of tokens</h4>
+            </div>
+            <div style={{marginTop: 20}}>
+              <Button color='info' onClick={this.proposeProject} style={{marginLeft: 10}}>
+                Propose Project
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
     )
   }
 }
 
-export default Status
+export default Propose
