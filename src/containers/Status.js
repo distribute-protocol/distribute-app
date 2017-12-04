@@ -110,12 +110,11 @@ class Status extends Component {
       console.log(weiRequired)
       // window.weiRequired = weiRequired
       // console.log(weiRequired)
-      let refund;
-      if ((await this.thr.totalFreeCapitalTokenSupply.call())[0].toNumber() == 0) {
-        refund = 0;
-      } else {
-        refund = Eth.fromWei((parseInt((await this.thr.weiBal.call())[0].toString()) / (await this.thr.totalFreeCapitalTokenSupply.call())[0].toNumber() * val), 'ether')
-      }
+      let totalFreeCapitalTokenSupply = (await this.thr.totalFreeCapitalTokenSupply.call())[0].toNumber()
+      let refund
+      totalFreeCapitalTokenSupply === 0
+        ? refund = 0
+        : refund = Eth.fromWei((parseInt((await this.thr.weiBal.call())[0].toString()) / totalFreeCapitalTokenSupply * val), 'ether')
       this.setState({ethToSend: weiRequired, ethToRefund: refund})
     } catch (error) {
       throw new Error(error)
@@ -160,7 +159,7 @@ class Status extends Component {
               {/* <Input getRef={(input) => (this.location = input)}  onChange={(e) => this.onChange('location', this.location.value)} value={location || ''} /> */}
             <div>
               <h3>Tokens:</h3>
-              <input ref={(input) => (this.tokensToBuy = input)} placeholder='Number of Tokens' onChange={(e) => this.onChange(this.tokensToBuy.value)} value={this.state.tokensToBuy} />
+              <input ref={(input) => (this.tokensToBuy = input)} placeholder='Number of Tokens' onChange={(e) => this.onChange(this.tokensToBuy.value)} value={this.state.tokensToBuy} type='number' />
             </div>
             <div style={{marginTop: 20}}>
               <h4>{`Cost to Buy: ${typeof this.state.ethToSend === 'undefined' ? 'n/a' : Math.round(this.state.ethToSend * 100000) / 100000}`}</h4>
