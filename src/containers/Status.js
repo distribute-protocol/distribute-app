@@ -60,8 +60,9 @@ class Status extends Component {
       let ethPrice = await getEthPriceNow()
       ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
       let totalTokenSupply = (await this.thr.totalCapitalTokenSupply())[0].toNumber()
+      let totalFreeTokenSupply = (await this.thr.totalFreeCapitalTokenSupply())[0].toNumber()
       let weiBal = Eth.fromWei((await this.thr.weiBal())[0], 'ether')
-      this.setState({totalTokenSupply, balance, ethPrice, weiBal})
+      this.setState({totalTokenSupply, totalFreeTokenSupply, balance, ethPrice, weiBal})
     } catch (error) {
       throw new Error(error)
     }
@@ -83,10 +84,17 @@ class Status extends Component {
   async onChange (val) {
     try {
       let targetPrice = (await this.thr.targetPrice(val))[0].toNumber()
+      console.log(targetPrice)
       let weiRequired = Eth.fromWei((await this.thr.weiRequired(targetPrice, val))[0], 'ether')
+      console.log(weiRequired)
       // window.weiRequired = weiRequired
       // console.log(weiRequired)
-      let refund = Eth.fromWei((parseInt((await this.thr.weiBal.call())[0].toString()) / (await this.thr.totalFreeCapitalTokenSupply.call())[0].toNumber() * val), 'ether')
+      let refund;
+      if ((await this.thr.totalFreeCapitalTokenSupply.call())[0].toNumber() == 0) {
+        refund = 0;
+      } else {
+        refund = Eth.fromWei((parseInt((await this.thr.weiBal.call())[0].toString()) / (await this.thr.totalFreeCapitalTokenSupply.call())[0].toNumber() * val), 'ether')
+      }
       this.setState({ethToSend: weiRequired, ethToRefund: refund})
     } catch (error) {
       throw new Error(error)
@@ -105,12 +113,14 @@ class Status extends Component {
         <div style={{marginLeft: 20, marginTop: 40}}>
           <h3>Total Token Supply</h3>
           <h5>{this.state.totalTokenSupply}</h5>
-          <h3>Token Balance</h3>
+          <h3>Total Free Token Supply</h3>
+          <h5>{this.state.totalFreeTokenSupply}</h5>
+          <h3>Your Token Balance</h3>
           <h5>{this.state.balance}</h5>
           <h3>Controlled Market Percentage</h3>
-          <h5>{Math.round(this.state.balance / this.state.totalTokenSupply * 10000) / 100}</h5>
-          <h3>Eth Pool</h3>
-          <h5>{this.state.weiBal}</h5>
+          <h5>{Math.round(this.state.balance / this.state.totalTokenSupply * 10000) / 100}%</h5>
+          <h3>ETH Pool</h3>
+          <h5>{this.state.weiBal} ETH</h5>
           <h3>Capital Equivalent</h3>
           <h5>{`$${this.state.ethPrice ? Math.round(this.state.ethPrice * this.state.weiBal) * 100 / 100 : 0}`}</h5>
         </div>
