@@ -25,6 +25,7 @@ class Propose extends Component {
     this.wr = this.WR.at(WorkerRegistryAddress)
     this.getProposals = this.getProposals.bind(this)
     this.proposeProject = this.proposeProject.bind(this)
+    this.checkTransactionMined = this.checkTransactionMined.bind(this)
     window.thr = this.thr
   }
 
@@ -42,16 +43,34 @@ class Propose extends Component {
 
   proposeProject () {
     let thr = this.thr
-    // console.log('proposeProject is working')
-    // console.log(this.projectCost.value)
-
     eth.accounts().then(accountsArr => {
-      console.log(accountsArr)
-      thr.proposeProject(Eth.toWei(this.state.tempProject.projectCost, 'ether'), 1000000000000, {from: accountsArr[0]})
-      let temp = this.state.projects
-      temp.push(this.state.tempProject)
-      this.setState({projects: temp, tempProject: {}})
+      return thr.proposeProject(Eth.toWei(this.state.tempProject.projectCost, 'ether'), 1000000000000, {from: accountsArr[0]})
+    }).then(txhash => {
+      let mined = this.checkTransactionMined(txhash)
+      console.log(mined)
+      return mined
+    }).then((mined) => {
+      if (mined === true) {
+        let temp = this.state.projects
+        temp.push(this.state.tempProject)
+        this.setState({projects: temp, tempProject: {}})
+      }
     })
+  }
+
+  async checkTransactionMined(txhash) {
+    try {
+      let txreceipt = (await eth.getTransactionReceipt(txhash))
+      let mined
+      txreceipt.status === 1
+      ? mined = true
+      : mined = false
+      console.log(txreceipt.status)
+      console.log(mined)
+      return mined
+    } catch (error) {
+      throw new Error(error)
+    }
   }
 
   async onProjectDescriptionChange (val) {
@@ -66,7 +85,7 @@ class Propose extends Component {
 
   async onProjectCostChange (val) {
     try {
-      let temp = Object.assign({}, this.state.tempProject, {projectCost: val})
+      let temp = Object.assign({}, this. state.tempProject, {projectCost: val})
       this.setState({tempProject: temp})
       console.log('set state for projectCost')
     } catch (error) {
@@ -91,7 +110,7 @@ class Propose extends Component {
         </header>
         <div style={{marginLeft: 20, marginTop: 40}}>
           <h3>Current Proposals</h3>
-          <div style={{display: 'flex', flexDirection: 'row'}}>
+          <div style={{display: 'flex', flexDirection: 'column'}}>
             {projects}
           </div>
         </div>
@@ -105,7 +124,7 @@ class Propose extends Component {
               <input ref={(input) => (this.projectCost = input)} placeholder='Price in ETH' onChange={(e) => this.onProjectCostChange(this.projectCost.value)} style={{marginLeft: 10}} value={this.state.tempProject.projectCost} />
             </div>
             <div style={{marginTop: 20}}>
-              <h4>{`You have to put down ${typeof this.state.projectCost === 'undefined' ? '__' : this.state.tempProject.projectCost/20}`} ETH worth of tokens</h4>
+              <h4>{`You have to put down ${typeof this.state.projectCost === 'undefined' ? '__' : this.state.tempProject.projectCost/20} ETH worth of tokens`}</h4>
             </div>
             <div style={{marginTop: 20}}>
               <Button color='info' onClick={this.proposeProject} style={{marginLeft: 10}}>

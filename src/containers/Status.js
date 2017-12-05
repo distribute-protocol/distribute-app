@@ -31,6 +31,7 @@ class Status extends Component {
     this.login = this.login.bind(this)
     this.register = this.register.bind(this)
     window.thr = this.thr
+    window.wr = this.wr
   }
   login () {
     uport.requestCredentials({
@@ -103,20 +104,20 @@ class Status extends Component {
   }
 
   async onChange (val) {
-    if (val >= 0) {
+    if (val > 0) {
       try {
         let targetPrice = (await this.thr.targetPrice(val))[0].toNumber()
-        // console.log(targetPrice)
-        let weiRequired = Eth.fromWei((await this.thr.weiRequired(targetPrice, val))[0], 'ether')
-        // console.log(weiRequired)
-        // window.weiRequired = weiRequired
-        // console.log(weiRequired)
+        console.log('target price' + targetPrice)
+        let ethRequired = Eth.fromWei((await this.thr.weiRequired(targetPrice, val))[0], 'ether')
+        console.log('wei required' + ethRequired)
+        window.weiRequired = ethRequired
+        console.log(ethRequired)
         let totalCapitalTokenSupply = (await this.thr.totalCapitalTokenSupply.call())[0].toNumber()
         let refund
         totalCapitalTokenSupply === 0
-          ? refund = 0
+          ? refund = ethRequired
           : refund = Eth.fromWei((parseInt((await this.thr.weiBal.call())[0].toString()) / totalCapitalTokenSupply * val), 'ether')
-        this.setState({ethToSend: weiRequired, ethToRefund: refund})
+        this.setState({ethToSend: ethRequired, ethToRefund: refund})
       } catch (error) {
         throw new Error(error)
       }
@@ -138,12 +139,12 @@ class Status extends Component {
             <h5>{this.state.totalTokenSupply}</h5>
             <h3>Total Free Token Supply</h3>
             <h5>{this.state.totalFreeTokenSupply}</h5>
-            <h3>Token Balance</h3>
+            <h3>Your Token Balance</h3>
             <h5>{this.state.balance}</h5>
             <h3>Controlled Market Percentage</h3>
-            <h5>{Math.round(this.state.balance / this.state.totalTokenSupply * 10000) / 100}</h5>
+            <h5>{Math.round(this.state.balance / this.state.totalTokenSupply * 10000) / 100}%</h5>
             <h3>Eth Pool</h3>
-            <h5>{this.state.weiBal}</h5>
+            <h5>{this.state.weiBal} ETH</h5>
             <h3>Capital Equivalent</h3>
             <h5>{`$${this.state.ethPrice ? Math.round(this.state.ethPrice * this.state.weiBal) * 100 / 100 : 0}`}</h5>
           </div>
@@ -164,11 +165,11 @@ class Status extends Component {
               <input ref={(input) => (this.tokensToBuy = input)} placeholder='Number of Tokens' onChange={(e) => this.onChange(this.tokensToBuy.value)} value={this.state.tokensToBuy} type='number' />
             </div>
             <div style={{marginTop: 20}}>
-              <h4>{`Cost to Buy: ${typeof this.state.ethToSend === 'undefined' ? 'n/a' : Math.round(this.state.ethToSend * 100000) / 100000}`}</h4>
+              <h4>{`Cost to Buy: ${typeof this.state.ethToSend === 'undefined' ? 'n/a' : Math.round(this.state.ethToSend * 100000) / 100000} ETH`}</h4>
 
             </div>
             <div>
-              <h4>{`Refund Amount: ${typeof this.state.ethToRefund === 'undefined' ? 'n/a' : Math.round(this.state.ethToRefund * 100000) / 100000}`}</h4>
+              <h4>{`Refund Amount: ${typeof this.state.ethToRefund === 'undefined' ? 'n/a' : Math.round(this.state.ethToRefund * 100000) / 100000} ETH`}</h4>
             </div>
             <div style={{marginTop: 20}}>
               <Button color='primary' onClick={this.buyShares}>
