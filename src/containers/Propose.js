@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { TokenHolderRegistryABI, TokenHolderRegistryAddress, TokenHolderRegistryBytecode } from '../abi/TokenHolderRegistry'
 import { WorkerRegistryABI, WorkerRegistryAddress, WorkerRegistryBytecode } from '../abi/WorkerRegistry'
 import { Button } from 'reactstrap'
@@ -8,14 +9,21 @@ import Eth from 'ethjs'
 const eth = new Eth(window.web3.currentProvider)
 window.Eth = Eth
 
+const Project = ({cost, description, index}) => {
+  return (
+    <div key={index}>
+      <h4>{`Project Cost: ${cost}`}</h4>
+      <h4>{`Project Description: ${description}`}</h4>
+    </div>
+  )
+}
 class Propose extends Component {
   constructor () {
     super()
     this.state = {
       value: 0,
-      projectCost: '',
-      projectDescription: '',
-      projectNonce: 1,
+      cost: '',
+      description: '',
       projects: [],
       tempProject: {}
     }
@@ -23,36 +31,48 @@ class Propose extends Component {
     this.WR = eth.contract(JSON.parse(WorkerRegistryABI), WorkerRegistryBytecode)
     this.thr = this.THR.at(TokenHolderRegistryAddress)
     this.wr = this.WR.at(WorkerRegistryAddress)
-    this.getProposals = this.getProposals.bind(this)
     this.proposeProject = this.proposeProject.bind(this)
     this.checkTransactionMined = this.checkTransactionMined.bind(this)
+    this.getProjects = this.getProjects.bind(this)
     window.thr = this.thr
+    window.projects = this.state.projects
   }
 
   componentWillMount () {
-    //this.getProposals()
+    this.getProjects()
+    //console.log(localStorage.projectDescription)
+    //console.log(localStorage.projectCost)
   }
 
-  async getProposals () {
-    try {
-      //this.setState({})
-    } catch (error) {
-      throw new Error(error)
+  getProjects () {
+    if (localStorage.projects !== undefined) {
+      let projectList = []
+      for (let i=0; i < JSON.parse(localStorage.projects).length; i++) {
+        let temp = JSON.parse(localStorage.projects)[i]
+        projectList.push(temp)
+        console.log(temp)
+        console.log(JSON.parse(localStorage.projects)[0])
+      }
+      if (projectList !== undefined) {
+        this.setState({projects: projectList})
+      }
     }
   }
 
   proposeProject () {
     let thr = this.thr
     eth.accounts().then(accountsArr => {
-      return thr.proposeProject(Eth.toWei(this.state.tempProject.projectCost, 'ether'), 1000000000000, {from: accountsArr[0]})
+      return thr.proposeProject(Eth.toWei(this.state.tempProject.cost, 'ether'), 1000000000000, {from: accountsArr[0]})
     }).then(txhash => {
       let mined = this.checkTransactionMined(txhash)
-      console.log(mined)
+      //console.log(mined)
       return mined
     }).then((mined) => {
       if (mined === true) {
         let temp = this.state.projects
+        console.log(temp)
         temp.push(this.state.tempProject)
+        localStorage.setItem('projects', JSON.stringify(temp))
         this.setState({projects: temp, tempProject: {}})
       }
     })
@@ -65,29 +85,29 @@ class Propose extends Component {
       txreceipt.status === 1
       ? mined = true
       : mined = false
-      console.log(txreceipt.status)
-      console.log(mined)
+      //console.log(txreceipt.status)
+      //console.log(mined)
       return mined
     } catch (error) {
       throw new Error(error)
     }
   }
 
-  async onProjectDescriptionChange (val) {
+  async onDescriptionChange (val) {
     try {
-      let temp = Object.assign({}, this.state.tempProject, {projectDescription: val})
+      let temp = Object.assign({}, this.state.tempProject, {description: val})
       this.setState({tempProject: temp})
-      console.log('set state for projectDescription')
+      //console.log('set state for description')
     } catch (error) {
       throw new Error(error)
     }
   }
 
-  async onProjectCostChange (val) {
+  async onCostChange (val) {
     try {
-      let temp = Object.assign({}, this. state.tempProject, {projectCost: val})
+      let temp = Object.assign({}, this. state.tempProject, {cost: val})
       this.setState({tempProject: temp})
-      console.log('set state for projectCost')
+      //console.log('set state for cost')
     } catch (error) {
       throw new Error(error)
     }
@@ -95,12 +115,7 @@ class Propose extends Component {
 
   render () {
     const projects = this.state.projects.map((proj, i) => {
-      return (
-        <div>
-          <h4>{`Project Cost: ${proj.projectCost}`}</h4>
-          <h4>{`Project Description: ${proj.projectDescription}`}</h4>
-        </div>
-      )
+      return <Project cost={proj.cost} description={proj.description} index={i} />
     })
     return (
       <div style={{marginLeft: 200}}>
@@ -120,11 +135,11 @@ class Propose extends Component {
               {/* <Input getRef={(input) => (this.location = input)}  onChange={(e) => this.onChange('location', this.location.value)} value={location || ''} /> */}
             <div>
               <h3>Propose:</h3>
-              <input ref={(input) => (this.projectDescription = input)} placeholder='Project Description' onChange={(e) => this.onProjectDescriptionChange(this.projectDescription.value)}  value={this.state.tempProject.projectDescription} />
-              <input ref={(input) => (this.projectCost = input)} placeholder='Price in ETH' onChange={(e) => this.onProjectCostChange(this.projectCost.value)} style={{marginLeft: 10}} value={this.state.tempProject.projectCost} />
+              <input ref={(input) => (this.description = input)} placeholder='Project Description' onChange={(e) => this.onDescriptionChange(this.description.value)}  value={this.state.tempProject.description} />
+              <input ref={(input) => (this.cost = input)} placeholder='Price in ETH' onChange={(e) => this.onCostChange(this.cost.value)} style={{marginLeft: 10}} value={this.state.tempProject.cost} />
             </div>
             <div style={{marginTop: 20}}>
-              <h4>{`You have to put down ${typeof this.state.projectCost === 'undefined' ? '__' : this.state.tempProject.projectCost/20} ETH worth of tokens`}</h4>
+              <h4>{`You have to put down ${typeof this.state.cost === 'undefined' ? '__' : this.state.tempProject.cost/20} ETH worth of tokens`}</h4>
             </div>
             <div style={{marginTop: 20}}>
               <Button color='info' onClick={this.proposeProject} style={{marginLeft: 10}}>
@@ -137,5 +152,19 @@ class Propose extends Component {
     )
   }
 }
+
+// const mapStateToProps = (state) => {
+//   return {
+//     user: state.user
+//   }
+// }
+
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     loginUser: (credentials) => dispatch(loginUser(credentials))
+//   }
+// }
+
+// export default connect(mapStateToProps, mapDispatchToProps)(Propose)
 
 export default Propose
