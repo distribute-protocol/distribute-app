@@ -20,7 +20,7 @@ function configureStore () {
     reducers,
     compose(
       applyMiddleware(routeMiddleware, sagaMiddleware),
-      //autoRehydrate()
+      autoRehydrate()
     )
   )
   sagaMiddleware.run(rootSaga)
@@ -28,5 +28,5 @@ function configureStore () {
 }
 
 const store = configureStore()
-//persistStore(store)
+persistStore(store)
 export default store

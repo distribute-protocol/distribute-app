@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { TokenHolderRegistryABI, TokenHolderRegistryAddress, TokenHolderRegistryBytecode } from '../abi/TokenHolderRegistry'
 import { WorkerRegistryABI, WorkerRegistryAddress, WorkerRegistryBytecode } from '../abi/WorkerRegistry'
 import { Button } from 'reactstrap'
+import { proposeProject } from '../actions/projectActions'
 
 import Eth from 'ethjs'
 
@@ -11,10 +12,10 @@ window.Eth = Eth
 
 const Project = ({cost, description, index}) => {
   return (
-    <div key={index}>
-      <h4>{`Project Cost: ${cost}`}</h4>
-      <h4>{`Project Description: ${description}`}</h4>
-    </div>
+    <tr>
+      <td>{`${description}`}</td>
+      <td>{`${cost}`}</td>
+    </tr>
   )
 }
 class Propose extends Component {
@@ -45,23 +46,25 @@ class Propose extends Component {
   }
 
   getProjects () {
-    if (localStorage.projects !== undefined) {
-      let projectList = []
-      for (let i=0; i < JSON.parse(localStorage.projects).length; i++) {
-        let temp = JSON.parse(localStorage.projects)[i]
-        projectList.push(temp)
-        console.log(temp)
-        console.log(JSON.parse(localStorage.projects)[0])
-      }
-      if (projectList !== undefined) {
-        this.setState({projects: projectList})
-      }
-    }
+  //   if (localStorage.projects !== undefined) {
+  //     let projectList = []
+  //     for (let i=0; i < JSON.parse(localStorage.projects).length; i++) {
+  //       let temp = JSON.parse(localStorage.projects)[i]
+  //       projectList.push(temp)
+  //       //console.log(temp)
+  //       //console.log(JSON.parse(localStorage.projects)[0])
+  //     }
+  //     if (projectList !== undefined) {
+  //       this.setState({projects: projectList})
+  //     }
+  //   }
   }
 
   proposeProject () {
+
     let thr = this.thr
     eth.accounts().then(accountsArr => {
+      //console.log('test')
       return thr.proposeProject(Eth.toWei(this.state.tempProject.cost, 'ether'), 1000000000000, {from: accountsArr[0]})
     }).then(txhash => {
       let mined = this.checkTransactionMined(txhash)
@@ -69,11 +72,7 @@ class Propose extends Component {
       return mined
     }).then((mined) => {
       if (mined === true) {
-        let temp = this.state.projects
-        console.log(temp)
-        temp.push(this.state.tempProject)
-        localStorage.setItem('projects', JSON.stringify(temp))
-        this.setState({projects: temp, tempProject: {}})
+        this.props.proposeProject(this.state.tempProject)
       }
     })
   }
@@ -105,7 +104,7 @@ class Propose extends Component {
 
   async onCostChange (val) {
     try {
-      let temp = Object.assign({}, this. state.tempProject, {cost: val})
+      let temp = Object.assign({}, this.state.tempProject, {cost: val})
       this.setState({tempProject: temp})
       //console.log('set state for cost')
     } catch (error) {
@@ -114,7 +113,7 @@ class Propose extends Component {
   }
 
   render () {
-    const projects = this.state.projects.map((proj, i) => {
+    const projects = this.props.projects.projects.map((proj, i) => {
       return <Project cost={proj.cost} description={proj.description} index={i} />
     })
     return (
@@ -126,7 +125,17 @@ class Propose extends Component {
         <div style={{marginLeft: 20, marginTop: 40}}>
           <h3>Current Proposals</h3>
           <div style={{display: 'flex', flexDirection: 'column'}}>
-            {projects}
+            <table style={{width: 500, border: "1px solid black"}}>
+              <thead>
+              <tr>
+                <th>Project Description</th>
+                <th>Project Cost</th>
+              </tr>
+              </thead>
+              <tbody>
+              {projects}
+              </tbody>
+            </table>
           </div>
         </div>
 
@@ -153,18 +162,16 @@ class Propose extends Component {
   }
 }
 
-// const mapStateToProps = (state) => {
-//   return {
-//     user: state.user
-//   }
-// }
+const mapStateToProps = (state) => {
+  return {
+    projects: state.projects,
+  }
+}
 
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     loginUser: (credentials) => dispatch(loginUser(credentials))
-//   }
-// }
+const mapDispatchToProps = (dispatch) => {
+  return {
+    proposeProject: (projectDetails) => dispatch(proposeProject(projectDetails))
+  }
+}
 
-// export default connect(mapStateToProps, mapDispatchToProps)(Propose)
-
-export default Propose
+export default connect(mapStateToProps, mapDispatchToProps)(Propose)
