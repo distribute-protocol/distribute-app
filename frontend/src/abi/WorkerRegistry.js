@@ -1,4 +1,4 @@
-export const WorkerRegistryAddress = '0x9fbda871d559710256a2502a2517b794b482db40'
+export const WorkerRegistryAddress = '0x30753e4a8aad7f8597332e813735def5dd395028'
 // rinkeby
 // export const WorkerRegistryAddress = '0xb529f14aa8096f943177c09ca294ad66d2e08b1f'
 

@@ -1,4 +1,4 @@
-export const TokenHolderRegistryAddress = '0x8f0483125fcb9aaaefa9209d8e9d7b9c8b9fb90f'
+export const TokenHolderRegistryAddress = '0x2c2b9c9a4a25e24b174f26114e8926a9f2128fe4'
 // rinkeby
 // export const TokenHolderRegistryAddress = '0xb9b7e0cb2edf5ea031c8b297a5a1fa20379b6a0a'
 

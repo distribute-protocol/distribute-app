@@ -4,7 +4,12 @@ const path = require('path')
 const ObjectId = require('mongodb').ObjectID
 const MongoClient = require('mongodb').MongoClient
 const assert = require('assert')
+const Eth = require('ethjs')
+const eth = new Eth(new Eth.HttpProvider('HTTP://127.0.0.1:7545'))
 
+eth.accounts().then(accountsArr => {
+  console.log(accountsArr)
+})
 const app = express()
 
 app.use(bodyParser.urlencoded({
