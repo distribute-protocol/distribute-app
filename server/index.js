@@ -25,10 +25,9 @@ const filter = web3.eth.filter({
 })
 
 filter.watch((error, result) => {
+  if (error) console.error(error)
    console.log(result)
 })
-//
-
 
 const app = express()
 
@@ -39,7 +38,64 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 app.use(express.static(path.resolve(__dirname, '../frontend/build')))
 
-const url = process.env.MONGODB_URI || 'mongodb://localhost:27017/distribute'
+const url = process.env.MONGODB_URI || 'mongodb://localhost:27017/'
+
+MongoClient.connect(url, (err, client) => {
+  assert.equal(null, err)
+  // console.log('Connected correctly to server.')
+  // console.log('initial db', db)
+  client.close()
+})
+
+app.post('/api/databasetest', (req, res) => {
+  // console.log('value', req.query.value)
+  const setValue = (db, callback) => {
+    db.collection('test').insert(req.query.value, (err, doc) => {
+      assert.equal(null, err)
+      res.send(doc.value)
+      callback()
+    })
+  }
+  MongoClient.connect(url, (err, client) => {
+    if (err) {
+      console.log('err')
+    }
+    var db = client.db('distribute')
+    // console.log('db', Object.keys(db))
+    // console.log('err', err)
+    assert.equal(null, err)
+    setValue(db, () => {
+      client.close()
+    })
+  })
+})
+
+app.get('/api/databasetest', function (req, res) {
+  console.log('databaseTest!')
+  const fetchResponse = (db, callback) => {
+    db.collection('test').findOne((err, doc) => {
+      assert.equal(null, err)
+      if (doc !== null) {
+        res.send(doc)
+      } else {
+        res.send({})
+        callback()
+      }
+    })
+  }
+  MongoClient.connect(url, (err, client) => {
+    assert.equal(null, err)
+    var db = client.db('distribute')
+    // console.log('db', db.collection)
+    fetchResponse(db, () => {
+      client.close()
+    })
+  })
+})
+
+app.get('/api', (req, res) => {
+  console.log('hello world')
+})
 
 app.get('*', function (request, response) {
   response.sendFile(path.resolve(__dirname, '../frontend/build', 'index.html'))

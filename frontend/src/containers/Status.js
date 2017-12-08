@@ -52,9 +52,42 @@ class Status extends Component {
     })
   }
   componentWillMount () {
+    let config = {
+      method: 'GET',
+      headers: new Headers(),
+      mode: 'cors',
+      cache: 'default'
+    }
+    fetch('/api', config).then((res, req) => {})
     this.getBalance()
   }
+  queryDatabaseTest () {
+    let config = {
+      method: 'GET',
+      headers: new Headers(),
+      mode: 'cors',
+      cache: 'default'
+    }
+    fetch(`/api/databasetest`, config)
+    .then(response => {
+      // this.setState({databaseTest: response})
+      console.log('query', response)
+    })
+  }
 
+  postDatabaseTest (value) {
+    let config = {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }
+    fetch(`/api/databasetest?value=${value}`, config)
+    .then((val) => {
+      console.log('post response', val)
+    })
+  }
   async getBalance () {
     try {
       let accounts = await eth.accounts()
@@ -156,6 +189,18 @@ class Status extends Component {
             <h3>Reputation Balance</h3>
             <h5>{this.state.reputationBalance}</h5>
           </div>
+
+          <div style={{marginLeft: 25}}>
+            <h3>Database Test</h3>
+            <h5>{JSON.stringify(this.state.databaseTest)}</h5>
+            <div style={{marginTop: 20}}>
+              <Button color='primary' onClick={() => this.postDatabaseTest(5)}>
+                DatabaseTest
+              </Button>
+            </div>
+          </div>
+
+
         </div>
         <div style={{display: 'flex', justifyContent: 'center'}}>
           <div>
