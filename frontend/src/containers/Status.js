@@ -58,7 +58,8 @@ class Status extends Component {
       mode: 'cors',
       cache: 'default'
     }
-    fetch('/api', config).then((res, req) => {})
+    // fetch('/api', config).then((res, req) => {})
+    this.queryDatabaseTest()
     this.getBalance()
   }
   queryDatabaseTest () {
@@ -69,10 +70,12 @@ class Status extends Component {
       cache: 'default'
     }
     fetch(`/api/databasetest`, config)
-    .then(response => {
-      // this.setState({databaseTest: response})
-      console.log('query', response)
-    })
+    .then(response => response.json())
+    .then(text => console.log(text))
+    // .then((resArr) => {
+    //   // this.setState({databaseTest: response})
+    //   console.log('query', resArr)
+    // })
   }
 
   postDatabaseTest (value) {

@@ -50,7 +50,7 @@ MongoClient.connect(url, (err, client) => {
 app.post('/api/databasetest', (req, res) => {
   // console.log('value', req.query.value)
   const setValue = (db, callback) => {
-    db.collection('test').insert(req.query.value, (err, doc) => {
+    db.collection('test').insert({value: req.query.value}, (err, doc) => {
       assert.equal(null, err)
       res.send(doc.value)
       callback()
@@ -71,12 +71,14 @@ app.post('/api/databasetest', (req, res) => {
 })
 
 app.get('/api/databasetest', function (req, res) {
-  console.log('databaseTest!')
+  // console.log('databaseTest!')
   const fetchResponse = (db, callback) => {
-    db.collection('test').findOne((err, doc) => {
+    db.collection('test').find().toArray((err, docs) => {
       assert.equal(null, err)
-      if (doc !== null) {
-        res.send(doc)
+      // res.send()
+      if (docs !== null) {
+        res.send(docs)
+        callback()
       } else {
         res.send({})
         callback()
