@@ -28,6 +28,7 @@ class Status extends Component {
     this.buyShares = this.buyShares.bind(this)
     this.sellShares = this.sellShares.bind(this)
     this.getBalance = this.getBalance.bind(this)
+    this.queryUserBalance = this.queryUserBalance.bind(this)
     this.login = this.login.bind(this)
     this.register = this.register.bind(this)
     window.thr = this.thr
@@ -52,49 +53,54 @@ class Status extends Component {
     })
   }
   componentWillMount () {
-    let config = {
-      method: 'GET',
-      headers: new Headers(),
-      mode: 'cors',
-      cache: 'default'
-    }
-    // fetch('/api', config).then((res, req) => {})
-    this.queryDatabaseTest()
+    // let config = {
+    //   method: 'GET',
+    //   headers: new Headers(),
+    //   mode: 'cors',
+    //   cache: 'default'
+    // }
+    //this.queryDatabaseTest()
     this.getBalance()
   }
-  queryDatabaseTest () {
-    let config = {
-      method: 'GET',
-      headers: new Headers(),
-      mode: 'cors',
-      cache: 'default'
-    }
-    fetch(`/api/databasetest`, config)
-    .then(response => response.json())
-    .then(text => console.log(text))
-    // .then((resArr) => {
-    //   // this.setState({databaseTest: response})
-    //   console.log('query', resArr)
-    // })
-  }
 
-  postDatabaseTest (value) {
-    let config = {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }
-    fetch(`/api/databasetest?value=${value}`, config)
-    .then((val) => {
-      console.log('post response', val)
-    })
-  }
+//////////  DATABASE TESTING  ///////////
+
+  // queryDatabaseTest () {
+  //   let config = {
+  //     method: 'GET',
+  //     headers: new Headers(),
+  //     mode: 'cors',
+  //     cache: 'default'
+  //   }
+  //   fetch(`/api/databasetest`, config)
+  //   .then(response => response.json())
+  //   .then(text => {
+  //     if (text.length != 0) {
+  //       console.log(text)
+  //       this.setState({databaseTest: text[text.length - 1].value})
+  //     }
+  //   })
+  // }
+  // postDatabaseTest (value) {
+  //   console.log('post')
+  //   let config = {
+  //     method: 'POST',
+  //     headers: {
+  //       'Accept': 'application/json',
+  //       'Content-Type': 'application/json'
+  //     }
+  //   }
+  //   fetch(`/api/databasetest?value=${value}`, config)
+  //   .then((val) => {
+  //     console.log('post response', val)
+  //   })
+  // }
+
   async getBalance () {
     try {
       let accounts = await eth.accounts()
-      let balance = (await this.thr.balanceOf(accounts[0]))[0].toNumber()
+      let balance = await this.queryUserBalance()
+      console.log('balance', balance)
       let ethPrice = await getEthPriceNow()
       ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
       let totalTokenSupply = (await this.thr.totalCapitalTokenSupply())[0].toNumber()
@@ -125,6 +131,28 @@ class Status extends Component {
       this.getBalance()
     })
   }
+  //model db calls after this function
+  async queryUserBalance () {
+    try {
+      let config = {
+        method: 'GET',
+        headers: new Headers(),
+        mode: 'cors',
+        cache: 'default'
+      }
+      let response = await fetch(`/api/userbalance`, config)
+      response = await response.json()
+      if (response.length == 0) {
+        return 0
+      }
+      response = response[response.length - 1].value      //to be changed based on db things
+      console.log(response)
+      return response
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
   sellShares () {
     let thr = this.thr
     eth.accounts().then(accountsArr => {
@@ -192,16 +220,17 @@ class Status extends Component {
             <h3>Reputation Balance</h3>
             <h5>{this.state.reputationBalance}</h5>
           </div>
-
+          {/*
           <div style={{marginLeft: 25}}>
             <h3>Database Test</h3>
-            <h5>{JSON.stringify(this.state.databaseTest)}</h5>
+            <h5>{this.state.databaseTest}</h5>
             <div style={{marginTop: 20}}>
-              <Button color='primary' onClick={() => this.postDatabaseTest(5)}>
+              <Button color='primary' onClick={() => this.postDatabaseTest(Date.now())}>
                 DatabaseTest
               </Button>
             </div>
           </div>
+          */}
 
 
         </div>
