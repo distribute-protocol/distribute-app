@@ -128,7 +128,9 @@ class Status extends Component {
     let thr = this.thr
     eth.accounts().then(accountsArr => {
       thr.mint(this.tokensToBuy.value || 700, {value: Eth.toWei(30, 'ether'), from: accountsArr[0]})
-      this.getBalance()
+    }).then((response) => {
+      console.log(response)
+      //this.getBalance()
     })
   }
   //model db calls after this function

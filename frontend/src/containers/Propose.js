@@ -4,6 +4,7 @@ import { TokenHolderRegistryABI, TokenHolderRegistryAddress, TokenHolderRegistry
 import { WorkerRegistryABI, WorkerRegistryAddress, WorkerRegistryBytecode } from '../abi/WorkerRegistry'
 import { Button } from 'reactstrap'
 import { proposeProject } from '../actions/projectActions'
+import utils from '../utilities/utils'
 
 import Eth from 'ethjs'
 
@@ -33,7 +34,7 @@ class Propose extends Component {
     this.thr = this.THR.at(TokenHolderRegistryAddress)
     this.wr = this.WR.at(WorkerRegistryAddress)
     this.proposeProject = this.proposeProject.bind(this)
-    this.checkTransactionMined = this.checkTransactionMined.bind(this)
+    //this.checkTransactionMined = this.checkTransactionMined.bind(this)
     this.getProjects = this.getProjects.bind(this)
     window.thr = this.thr
     window.projects = this.state.projects
@@ -67,8 +68,8 @@ class Propose extends Component {
       //console.log('test')
       return thr.proposeProject(Eth.toWei(this.state.tempProject.cost, 'ether'), 1000000000000, {from: accountsArr[0]})
     }).then(txhash => {
-      let mined = this.checkTransactionMined(txhash)
-      //console.log(mined)
+      let mined = utils.checkTransactionMined(txhash)
+      console.log(mined)
       return mined
     }).then((mined) => {
       if (mined === true) {
@@ -77,20 +78,20 @@ class Propose extends Component {
     })
   }
 
-  async checkTransactionMined(txhash) {
-    try {
-      let txreceipt = (await eth.getTransactionReceipt(txhash))
-      let mined
-      txreceipt.status === 1
-      ? mined = true
-      : mined = false
-      //console.log(txreceipt.status)
-      //console.log(mined)
-      return mined
-    } catch (error) {
-      throw new Error(error)
-    }
-  }
+  // async checkTransactionMined(txhash) {
+  //   try {
+  //     let txreceipt = (await eth.getTransactionReceipt(txhash))
+  //     let mined
+  //     txreceipt.status === 1
+  //     ? mined = true
+  //     : mined = false
+  //     //console.log(txreceipt.status)
+  //     //console.log(mined)
+  //     return mined
+  //   } catch (error) {
+  //     throw new Error(error)
+  //   }
+  // }
 
   async onDescriptionChange (val) {
     try {
