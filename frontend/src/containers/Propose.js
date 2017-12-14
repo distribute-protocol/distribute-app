@@ -61,7 +61,7 @@ class Propose extends Component {
   proposeProject () {
     eth.accounts().then(accountsArr => {
       // console.log('test')
-      return tr.proposeProject(Eth.toWei(this.state.tempProject.cost, 'ether'), 1000000000000, {from: accountsArr[0]})
+      return tr.proposeProject(Eth.toWei(this.state.tempProject.cost, 'ether'), 10000000000000, {from: accountsArr[0]})
     }).then(txhash => {
       let mined = utils.checkTransactionMined(txhash)
       console.log(mined)

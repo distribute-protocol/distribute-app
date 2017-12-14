@@ -93,27 +93,36 @@ class Status extends Component {
   async getBalance () {
     try {
       let accounts = await eth.accounts()
-      let balance = await this.queryUserBalance()
-      console.log('balance', balance)
+      // let balance = (await this.queryUserBalance())
+      let balance = (await dt.balanceOf(accounts[0]))[0].toNumber()
+      // console.log('balance', balance)
       let ethPrice = await getEthPriceNow()
       ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
       let totalTokenSupply = (await dt.totalSupply())[0].toNumber()
       let totalFreeTokenSupply = (await dt.totalFreeSupply())[0].toNumber()
       let weiBal = Eth.fromWei((await dt.weiBal())[0], 'ether')
+      // let weiBal = (await dt.weiBal())[0].toString()
 
       let reputationBalance = (await rr.balances(accounts[0]))[0].toNumber()
       let totalReputationSupply = (await rr.totalSupply())[0].toNumber()
       let totalFreeReputationSupply = (await rr.totalFreeSupply())[0].toNumber()
-      this.setState({
-        totalTokenSupply,
-        balance,
-        ethPrice,
-        weiBal,
-        totalFreeTokenSupply,
-        totalReputationSupply,
-        totalFreeReputationSupply,
-        reputationBalance
-      })
+      let currentPrice
+      dt.currentPrice().then(
+        val => {
+          currentPrice = val[0].toNumber()
+          this.setState({
+            totalTokenSupply,
+            balance,
+            ethPrice,
+            weiBal,
+            totalFreeTokenSupply,
+            totalReputationSupply,
+            totalFreeReputationSupply,
+            reputationBalance,
+            currentPrice: Eth.fromWei(currentPrice, 'ether')
+          })
+        })
+      // console.log(currentPrice)
     } catch (error) {
       throw new Error(error)
     }
@@ -135,7 +144,7 @@ class Status extends Component {
       }
       let response = await fetch(`/api/userbalance`, config)
       response = await response.json()
-      if (response.length == 0) {
+      if (response.length === 0) {
         return 0
       }
       response = response[response.length - 1].value      //to be changed based on db things
@@ -162,11 +171,11 @@ class Status extends Component {
     if (val > 0) {
       try {
         let targetPrice = (await dt.targetPrice(val))[0].toNumber()
-        console.log('target price' + targetPrice)
+        // console.log('target price' + targetPrice)
         let ethRequired = Eth.fromWei((await dt.weiRequired(targetPrice, val))[0], 'ether')
-        console.log('wei required' + ethRequired)
-        window.weiRequired = ethRequired
-        console.log(ethRequired)
+        // console.log('wei required' + ethRequired)
+        // window.weiRequired = ethRequired
+        // console.log(ethRequired)
         let totalSupply = (await dt.totalSupply.call())[0].toNumber()
         let refund
         totalSupply === 0
@@ -202,6 +211,8 @@ class Status extends Component {
             <h5>{this.state.weiBal} ETH</h5>
             <h3>Capital Equivalent</h3>
             <h5>{`$${this.state.ethPrice ? Math.round(this.state.ethPrice * this.state.weiBal) * 100 / 100 : 0}`}</h5>
+            <h3>Current Price in Eth</h3>
+            <h5>{this.state.currentPrice}</h5>
           </div>
           <div style={{marginLeft: 25}}>
             <h3>Total Reputation Supply</h3>
