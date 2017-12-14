@@ -1,18 +1,16 @@
 import React, { Component } from 'react'
-import { TokenHolderRegistryABI, TokenHolderRegistryAddress, TokenHolderRegistryBytecode } from '../abi/TokenHolderRegistry'
-import { WorkerRegistryABI, WorkerRegistryAddress, WorkerRegistryBytecode } from '../abi/WorkerRegistry'
 import { getEthPriceNow } from 'get-eth-price'
 import { Button } from 'reactstrap'
 // import logo from './logo.svg'
 // import './App.css'
 import Eth from 'ethjs'
+import {eth, tr, rr, dt} from '../utilities/blockchain'
 
 import uport from '../utilities/uport'
 var mnid = require('mnid')
-const eth = new Eth(window.web3.currentProvider)
 
-let uportWR = uport.contract(JSON.parse(WorkerRegistryABI)).at(WorkerRegistryAddress)
-window.uportWR = uportWR
+// let uportWR = uport.contract(JSON.parse(ReputationRegistryABI)).at(ReputationRegistryAddress)
+// window.uportWR = uportWR
 window.Eth = Eth
 class Status extends Component {
   constructor () {
@@ -20,18 +18,13 @@ class Status extends Component {
     this.state = {
       value: 0
     }
-    this.THR = eth.contract(JSON.parse(TokenHolderRegistryABI), TokenHolderRegistryBytecode)
-    this.WR = eth.contract(JSON.parse(WorkerRegistryABI), WorkerRegistryBytecode)
-    this.thr = this.THR.at(TokenHolderRegistryAddress)
-    this.wr = this.WR.at(WorkerRegistryAddress)
-    this.uportWR = uport.contract(JSON.parse(WorkerRegistryABI)).at(WorkerRegistryAddress)
     this.buyShares = this.buyShares.bind(this)
     this.sellShares = this.sellShares.bind(this)
     this.getBalance = this.getBalance.bind(this)
     this.login = this.login.bind(this)
     this.register = this.register.bind(this)
-    window.thr = this.thr
-    window.wr = this.wr
+    window.tr = tr
+    window.rr = rr
   }
   login () {
     uport.requestCredentials({
@@ -52,12 +45,12 @@ class Status extends Component {
     })
   }
   componentWillMount () {
-    let config = {
-      method: 'GET',
-      headers: new Headers(),
-      mode: 'cors',
-      cache: 'default'
-    }
+    // let config = {
+    //   method: 'GET',
+    //   headers: new Headers(),
+    //   mode: 'cors',
+    //   cache: 'default'
+    // }
     // fetch('/api', config).then((res, req) => {})
     this.queryDatabaseTest()
     this.getBalance()
@@ -94,16 +87,16 @@ class Status extends Component {
   async getBalance () {
     try {
       let accounts = await eth.accounts()
-      let balance = (await this.thr.balanceOf(accounts[0]))[0].toNumber()
+      let balance = (await dt.balanceOf(accounts[0]))[0].toNumber()
       let ethPrice = await getEthPriceNow()
       ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
-      let totalTokenSupply = (await this.thr.totalCapitalTokenSupply())[0].toNumber()
-      let totalFreeTokenSupply = (await this.thr.totalFreeCapitalTokenSupply())[0].toNumber()
-      let weiBal = Eth.fromWei((await this.thr.weiBal())[0], 'ether')
+      let totalTokenSupply = (await dt.totalSupply())[0].toNumber()
+      let totalFreeTokenSupply = (await dt.totalFreeSupply())[0].toNumber()
+      let weiBal = Eth.fromWei((await dt.weiBal())[0], 'ether')
 
-      let reputationBalance = (await this.wr.balances(accounts[0]))[0].toNumber()
-      let totalReputationSupply = (await this.wr.totalWorkerTokenSupply())[0].toNumber()
-      let totalFreeReputationSupply = (await this.wr.totalFreeWorkerTokenSupply())[0].toNumber()
+      let reputationBalance = (await rr.balances(accounts[0]))[0].toNumber()
+      let totalReputationSupply = (await rr.totalSupply())[0].toNumber()
+      let totalFreeReputationSupply = (await rr.totalFreeSupply())[0].toNumber()
       this.setState({
         totalTokenSupply,
         balance,
@@ -119,40 +112,37 @@ class Status extends Component {
     }
   }
   buyShares () {
-    let thr = this.thr
     eth.accounts().then(accountsArr => {
-      thr.mint(this.tokensToBuy.value || 700, {value: Eth.toWei(30, 'ether'), from: accountsArr[0]})
+      dt.mint(this.tokensToBuy.value || 700, {value: Eth.toWei(30, 'ether'), from: accountsArr[0]})
       this.getBalance()
     })
   }
   sellShares () {
-    let thr = this.thr
     eth.accounts().then(accountsArr => {
-      thr.burnAndRefund(this.tokensToBuy.value, {from: accountsArr[0]})
+      dt.burnAndRefund(this.tokensToBuy.value, {from: accountsArr[0]})
       this.getBalance()
     })
   }
 
   async register () {
-    let wr = this.wr
     let accounts = await eth.accounts()
-    wr.register({from: accounts[0]})
+    rr.register({from: accounts[0]})
   }
 
   async onChange (val) {
     if (val > 0) {
       try {
-        let targetPrice = (await this.thr.targetPrice(val))[0].toNumber()
+        let targetPrice = (await dt.targetPrice(val))[0].toNumber()
         console.log('target price' + targetPrice)
-        let ethRequired = Eth.fromWei((await this.thr.weiRequired(targetPrice, val))[0], 'ether')
+        let ethRequired = Eth.fromWei((await dt.weiRequired(targetPrice, val))[0], 'ether')
         console.log('wei required' + ethRequired)
         window.weiRequired = ethRequired
         console.log(ethRequired)
-        let totalCapitalTokenSupply = (await this.thr.totalCapitalTokenSupply.call())[0].toNumber()
+        let totalSupply = (await dt.totalSupply.call())[0].toNumber()
         let refund
-        totalCapitalTokenSupply === 0
+        totalSupply === 0
           ? refund = ethRequired
-          : refund = Eth.fromWei((parseInt((await this.thr.weiBal.call())[0].toString()) / totalCapitalTokenSupply * val), 'ether')
+          : refund = Eth.fromWei((parseInt((await dt.weiBal.call())[0].toString()) / totalSupply * val), 'ether')
         this.setState({ethToSend: ethRequired, ethToRefund: refund})
       } catch (error) {
         throw new Error(error)
@@ -202,12 +192,10 @@ class Status extends Component {
               </Button>
             </div>
           </div>
-
-
         </div>
         <div style={{display: 'flex', justifyContent: 'center'}}>
           <div>
-              {/* <Input getRef={(input) => (this.location = input)}  onChange={(e) => this.onChange('location', this.location.value)} value={location || ''} /> */}
+            {/* <Input getRef={(input) => (this.location = input)}  onChange={(e) => this.onChange('location', this.location.value)} value={location || ''} /> */}
             <div>
               <h3>Tokens:</h3>
               <input ref={(input) => (this.tokensToBuy = input)} placeholder='Number of Tokens' onChange={(e) => this.onChange(this.tokensToBuy.value)} value={this.state.tokensToBuy} type='number' />
