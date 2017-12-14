@@ -9,9 +9,8 @@ const Eth = require('ethjs')
 const eth = new Eth(new Eth.HttpProvider('http://localhost:7545'))
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'))
-const THR =  require('../frontend/src/abi/TokenHolderRegistry')
-const WR = require('../frontend/src/abi/WorkerRegistry')
-
+const TR = require('../frontend/src/abi/TokenRegistry')
+const RR = require('../frontend/src/abi/ReputationRegistry')
 
 eth.accounts().then(accountsArr => {
   console.log('accountsArr:', accountsArr)
@@ -21,7 +20,7 @@ eth.accounts().then(accountsArr => {
 const filter = web3.eth.filter({
   fromBlock: 0,
   toBlock: 'latest',
-  address: THR.TokenHolderRegistryAddress,
+  address: TR.TokenHolderRegistryAddress,
   topics: [web3.sha3('LogMint(uint256,uint256,uint256)')]
 })
 
@@ -35,7 +34,6 @@ filter.watch((error, result) => {
   let userBalance = eventParamArrDec[2]
   //console.log(eventParamArrDec)
   postToDatabase(userBalance)
-
 })
 
 const app = express()
@@ -51,7 +49,7 @@ const url = process.env.MONGODB_URI || 'mongodb://localhost:27017/'
 
 MongoClient.connect(url, (err, client) => {
   assert.equal(null, err)
-  //console.log('Connected correctly to server.')
+  // console.log('Connected correctly to server.')
   client.close()
 })
 

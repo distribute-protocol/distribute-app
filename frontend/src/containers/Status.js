@@ -53,7 +53,7 @@ class Status extends Component {
     //   cache: 'default'
     // }
     // fetch('/api', config).then((res, req) => {})
-    this.queryDatabaseTest()
+    // this.queryDatabaseTest()
     this.getBalance()
   }
 
