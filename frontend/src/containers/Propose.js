@@ -5,17 +5,18 @@ import { Button } from 'reactstrap'
 import { proposeProject } from '../actions/projectActions'
 import utils from '../utilities/utils'
 
-import {eth, tr, rr, pr} from '../utilities/blockchain'
+import {eth, tr, dt, rr, pr} from '../utilities/blockchain'
 import Eth from 'ethjs'
 //
 // const eth = new Eth(window.web3.currentProvider)
 // window.Eth = Eth
 
-const Project = ({cost, description, index}) => {
+const Project = ({cost, description, stakingPeriod, index}) => {
   return (
     <tr>
       <td>{`${description}`}</td>
       <td>{`${cost}`}</td>
+      <td>{`${stakingPeriod}`}</td>
     </tr>
   )
 }
@@ -24,10 +25,10 @@ class Propose extends Component {
     super()
     this.state = {
       value: 0,
-      cost: '',
       description: '',
       projects: [],
-      tempProject: {}
+      tempProject: {},
+      currPrice: 0
     }
 
     this.proposeProject = this.proposeProject.bind(this)
@@ -39,6 +40,10 @@ class Propose extends Component {
 
   componentWillMount () {
     this.getProjects()
+    dt.currentPrice().then(val => {
+      // console.log('hey', val[0].toNumber())
+      this.setState({currPrice: val[0].toNumber()})
+    })
     // console.log(localStorage.projectDescription)
     // console.log(localStorage.projectCost)
   }
@@ -57,18 +62,21 @@ class Propose extends Component {
   //     }
   //   }
   }
-
+// (Date.now() + (this.state.tempProject.stakingPeriod * 86400))
   proposeProject () {
-    eth.accounts().then(accountsArr => {
-      // console.log('test')
-      return tr.proposeProject(Eth.toWei(this.state.tempProject.cost, 'ether'), 10000000000000, {from: accountsArr[0]})
-    }).then(txhash => {
+    // stakingPeriod in Days changed to milliseconds
+    let stakeEndDate = (Date.now() + 86400000 * this.state.tempProject.stakingPeriod)
+    eth.accounts().then(accounts => {
+      let cost = parseInt(Eth.toWei(this.state.tempProject.cost, 'ether').toString())
+      return tr.proposeProject(cost, stakeEndDate, {from: accounts[0]})
+    })
+    .then(txhash => {
       let mined = utils.checkTransactionMined(txhash)
-      console.log(mined)
+      // console.log(mined)
       return mined
     }).then((mined) => {
       if (mined === true) {
-        this.props.proposeProject(this.state.tempProject)
+        this.props.proposeProject(Object.assign({}, this.state.tempProject, {stakingPeriod: stakeEndDate}))
       }
     })
   }
@@ -88,9 +96,9 @@ class Propose extends Component {
   //   }
   // }
 
-  async onDescriptionChange (val) {
+  onChange (type, val) {
     try {
-      let temp = Object.assign({}, this.state.tempProject, {description: val})
+      let temp = Object.assign({}, this.state.tempProject, {[type]: val})
       this.setState({tempProject: temp})
       // console.log('set state for description')
     } catch (error) {
@@ -98,53 +106,61 @@ class Propose extends Component {
     }
   }
 
-  async onCostChange (val) {
-    try {
-      let temp = Object.assign({}, this.state.tempProject, {cost: val})
-      this.setState({tempProject: temp})
-      // console.log('set state for cost')
-    } catch (error) {
-      throw new Error(error)
-    }
-  }
-
   render () {
     const projects = this.props.projects.projects.map((proj, i) => {
-      return <Project cost={proj.cost} description={proj.description} index={i} />
+      return <Project key={i} cost={proj.cost} description={proj.description} index={i} stakingPeriod={proj.stakingPeriod} />
     })
+    // console.log(this.state.currPrice)
     return (
       <div style={{marginLeft: 200}}>
         <header className='App-header'>
           {/* <img src={logoclassName='App-logo' alt='logo' /> */}
           <h1 className='App-title'>distribute</h1>
         </header>
-        <div style={{marginLeft: 20, marginTop: 40}}>
-          <h3>Current Proposals</h3>
-          <div style={{display: 'flex', flexDirection: 'column'}}>
-            <table style={{width: 500, border: '1px solid black'}}>
-              <thead>
-                <tr>
-                  <th>Project Description</th>
-                  <th>Project Cost</th>
-                </tr>
-              </thead>
-              <tbody>
-                {projects}
-              </tbody>
-            </table>
+        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
+          <div style={{marginLeft: 20, marginTop: 40}}>
+            <h3>Current Proposals</h3>
+            <div style={{display: 'flex', flexDirection: 'column'}}>
+              <table style={{width: 500, border: '1px solid black'}}>
+                <thead>
+                  <tr>
+                    <th>Project Description</th>
+                    <th>Project Cost (ether)</th>
+                    <th>Staking End Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {projects}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-
-        <div style={{display: 'flex', justifyContent: 'center'}}>
-          <div>
+          <div style={{marginLeft: 20, marginTop: 40}}>
             {/* <Input getRef={(input) => (this.location = input)}  onChange={(e) => this.onChange('location', this.location.value)} value={location || ''} /> */}
             <div>
               <h3>Propose:</h3>
-              <input ref={(input) => (this.description = input)} placeholder='Project Description' onChange={(e) => this.onDescriptionChange(this.description.value)} value={this.state.tempProject.description} />
-              <input ref={(input) => (this.cost = input)} placeholder='Price in ETH' onChange={(e) => this.onCostChange(this.cost.value)} style={{marginLeft: 10}} value={this.state.tempProject.cost} />
+              <input
+                ref={(input) => (this.description = input)}
+                placeholder='Project Description'
+                onChange={(e) => this.onChange('description', this.description.value)}
+                value={this.state.tempProject.description || ''}
+              />
+              <input
+                ref={(input) => (this.cost = input)}
+                placeholder='Price in ETH'
+                onChange={(e) => this.onChange('cost', this.cost.value)}
+                style={{marginLeft: 10}}
+                value={this.state.tempProject.cost || ''}
+              />
+              <input
+                ref={(input) => (this.stakingPeriod = input)}
+                placeholder='Staking Period Length'
+                onChange={(e) => this.onChange('stakingPeriod', this.stakingPeriod.value)}
+                value={this.state.tempProject.stakingPeriod || ''}
+              />
             </div>
             <div style={{marginTop: 20}}>
-              <h4>{`You have to put down ${typeof this.state.cost === 'undefined' ? '__' : this.state.tempProject.cost / 20} ETH worth of tokens`}</h4>
+              <h4>{`You have to deposit ${typeof this.state.tempProject.cost === 'undefined' ? 0 : ((Eth.toWei(this.state.tempProject.cost, 'ether') / 20) / this.state.currPrice)} tokens`}</h4>
             </div>
             <div style={{marginTop: 20}}>
               <Button color='info' onClick={this.proposeProject} style={{marginLeft: 10}}>

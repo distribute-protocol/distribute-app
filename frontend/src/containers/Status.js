@@ -96,8 +96,8 @@ class Status extends Component {
       // let balance = (await this.queryUserBalance())
       let balance = (await dt.balanceOf(accounts[0]))[0].toNumber()
       // console.log('balance', balance)
-      let ethPrice = await getEthPriceNow()
-      ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
+      // let ethPrice = await getEthPriceNow()
+      // ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
       let totalTokenSupply = (await dt.totalSupply())[0].toNumber()
       let totalFreeTokenSupply = (await dt.totalFreeSupply())[0].toNumber()
       let weiBal = Eth.fromWei((await dt.weiBal())[0], 'ether')
@@ -113,7 +113,7 @@ class Status extends Component {
           this.setState({
             totalTokenSupply,
             balance,
-            ethPrice,
+            // ethPrice,
             weiBal,
             totalFreeTokenSupply,
             totalReputationSupply,
@@ -124,7 +124,8 @@ class Status extends Component {
         })
       // console.log(currentPrice)
     } catch (error) {
-      throw new Error(error)
+      console.error(error)
+      // throw new Error(error)
     }
   }
   buyShares () {
@@ -170,12 +171,7 @@ class Status extends Component {
   async onChange (val) {
     if (val > 0) {
       try {
-        let targetPrice = (await dt.targetPrice(val))[0].toNumber()
-        // console.log('target price' + targetPrice)
-        let ethRequired = Eth.fromWei((await dt.weiRequired(targetPrice, val))[0], 'ether')
-        // console.log('wei required' + ethRequired)
-        // window.weiRequired = ethRequired
-        // console.log(ethRequired)
+        let ethRequired = Eth.fromWei((await dt.weiRequired(val))[0], 'ether')
         let totalSupply = (await dt.totalSupply.call())[0].toNumber()
         let refund
         totalSupply === 0
