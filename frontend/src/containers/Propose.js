@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { Button } from 'reactstrap'
+import Project from '../components/shared/Project'
 import { proposeProject } from '../actions/projectActions'
 import utils from '../utilities/utils'
 
@@ -11,15 +12,6 @@ import Eth from 'ethjs'
 // const eth = new Eth(window.web3.currentProvider)
 // window.Eth = Eth
 
-const Project = ({cost, description, stakingPeriod, index}) => {
-  return (
-    <tr>
-      <td>{`${description}`}</td>
-      <td>{`${cost}`}</td>
-      <td>{`${stakingPeriod}`}</td>
-    </tr>
-  )
-}
 class Propose extends Component {
   constructor () {
     super()
@@ -41,7 +33,6 @@ class Propose extends Component {
   componentWillMount () {
     this.getProjects()
     dt.currentPrice().then(val => {
-      // console.log('hey', val[0].toNumber())
       this.setState({currPrice: val[0].toNumber()})
     })
     // console.log(localStorage.projectDescription)
@@ -67,6 +58,22 @@ class Propose extends Component {
     // stakingPeriod in Days changed to milliseconds
     let stakeEndDate = (Date.now() + 86400000 * this.state.tempProject.stakingPeriod)
     eth.accounts().then(accounts => {
+      tr.ProjectCreated((error, result) => {
+        if (!error) {
+          console.log('result', result)
+          this.props.proposeProject(Object.assign({}, this.state.tempProject, {stakingPeriod: stakeEndDate, address: result.args.projectAddress}))
+        } else {
+          console.log('error', error)
+        }
+      })
+      pr.LogProjectCreated((error, result) => {
+        if (!error) {
+          console.log('result', result)
+          this.props.proposeProject(Object.assign({}, this.state.tempProject, {stakingPeriod: stakeEndDate, address: result.args.projectAddress}))
+        } else {
+          console.log('error', error)
+        }
+      })
       let cost = parseInt(Eth.toWei(this.state.tempProject.cost, 'ether').toString())
       return tr.proposeProject(cost, stakeEndDate, {from: accounts[0]})
     })
@@ -76,8 +83,9 @@ class Propose extends Component {
       return mined
     }).then((mined) => {
       if (mined === true) {
-        this.props.proposeProject(Object.assign({}, this.state.tempProject, {stakingPeriod: stakeEndDate}))
+
       }
+      return true
     })
   }
 
@@ -117,7 +125,7 @@ class Propose extends Component {
           {/* <img src={logoclassName='App-logo' alt='logo' /> */}
           <h1 className='App-title'>distribute</h1>
         </header>
-        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
+        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
           <div style={{marginLeft: 20, marginTop: 40}}>
             <h3>Current Proposals</h3>
             <div style={{display: 'flex', flexDirection: 'column'}}>
@@ -125,6 +133,7 @@ class Propose extends Component {
                 <thead>
                   <tr>
                     <th>Project Description</th>
+                    <th>Project Address</th>
                     <th>Project Cost (ether)</th>
                     <th>Staking End Date</th>
                   </tr>
@@ -154,8 +163,9 @@ class Propose extends Component {
               />
               <input
                 ref={(input) => (this.stakingPeriod = input)}
-                placeholder='Staking Period Length'
+                placeholder='Expiration Date'
                 onChange={(e) => this.onChange('stakingPeriod', this.stakingPeriod.value)}
+                style={{marginLeft: 10}}
                 value={this.state.tempProject.stakingPeriod || ''}
               />
             </div>
