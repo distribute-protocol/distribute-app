@@ -20,6 +20,7 @@
     "babel-preset-node6": "^11.0.0",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
+    "delay": "^2.0.0",
     "eth-signer": "^0.3.4",
     "ethereumjs-abi": "^0.6.5",
     "ethjs": "^0.3.1",
@@ -27,6 +28,7 @@
     "get-eth-price": "^1.0.0",
     "lodash": "^4.17.4",
     "mongodb": "^3.0.0-rc0",
+    "solc": "^0.4.19",
     "truffle-hdwallet-provider": "0.0.3"
   },
   "devDependencies": {
