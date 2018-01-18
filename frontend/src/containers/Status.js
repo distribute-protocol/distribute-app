@@ -116,7 +116,7 @@ class Status extends Component {
           totalFreeTokenSupply = val.toNumber()
         }
       })
-      await dt.totalFreeSupply((err, val) => {
+      await dt.weiBal((err, val) => {
         if (!err) {
           weiBal = web3.fromWei(val.toNumber(), 'ether')
         }
@@ -144,7 +144,6 @@ class Status extends Component {
       // let  = (await rr.balances(accounts[0]))[0].toNumber()
       // let  = (await rr.totalSupply())[0].toNumber()
       // let  = (await rr.totalFreeSupply())[0].toNumber()
-
       await dt.currentPrice((err, val) => {
         if (!err) {
           currentPrice = val.toNumber()
@@ -248,7 +247,7 @@ class Status extends Component {
             <h5>{this.state.weiBal} ETH</h5>
             <h3>Capital Equivalent</h3>
             <h5>{`$${this.state.ethPrice ? Math.round(this.state.ethPrice * this.state.weiBal) * 100 / 100 : 0}`}</h5>
-            <h3>Current Price in Eth</h3>
+            <h3>Current Token Price in Eth</h3>
             <h5>{this.state.currentPrice}</h5>
           </div>
           <div style={{marginLeft: 25}}>
