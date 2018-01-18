@@ -9,9 +9,13 @@ export default function projectReducer (state = initialState, action) {
   // and just return the state given to us.
   switch (action.type) {
     case PROPOSE_PROJECT:
-      // console.log('projectReducer.js')
       let temp = state.projects
-      temp.push({cost: action.projectDetails.cost, description: action.projectDetails.description, stakingPeriod: action.projectDetails.stakingPeriod, address: action.projectDetails.address})
+      temp.push({
+        cost: action.projectDetails.cost,
+        description: action.projectDetails.description,
+        stakingEndDate: action.projectDetails.stakingEndDate,
+        address: action.projectDetails.address
+      })
       return Object.assign({}, state, {projects: temp})
     default:
   }

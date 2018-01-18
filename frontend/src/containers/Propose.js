@@ -1,16 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { Button } from 'reactstrap'
+import { Button, Table } from 'reactstrap'
 import Project from '../components/shared/Project'
 import { proposeProject } from '../actions/projectActions'
-import utils from '../utilities/utils'
-
-import {eth, tr, dt, rr, pr} from '../utilities/blockchain'
-import Eth from 'ethjs'
-//
-// const eth = new Eth(window.web3.currentProvider)
-// window.Eth = Eth
+// import utils from '../utilities/utils'
+import {eth, web3, tr, dt} from '../utilities/blockchain'
+import * as _ from 'lodash'
 
 class Propose extends Component {
   constructor () {
@@ -24,7 +20,7 @@ class Propose extends Component {
     }
 
     this.proposeProject = this.proposeProject.bind(this)
-    //this.checkTransactionMined = this.checkTransactionMined.bind(this)
+    // this.checkTransactionMined = this.checkTransactionMined.bind(this)
     this.getProjects = this.getProjects.bind(this)
     window.tr = this.tr
     window.projects = this.state.projects
@@ -32,8 +28,22 @@ class Propose extends Component {
 
   componentWillMount () {
     this.getProjects()
-    dt.currentPrice().then(val => {
-      this.setState({currPrice: val[0].toNumber()})
+    dt.currentPrice((err, val) => {
+      if (!err) {
+        this.setState({currPrice: val.toNumber()})
+      }
+    })
+
+    let event = tr.ProjectCreated()
+    event.watch((err, res) => {
+      if (!err) {
+        if (!_.isEmpty(this.state.tempProject)) {
+          this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: res.args.projectAddress}))
+          this.setState({tempProject: {}})
+        }
+      } else {
+        console.log('errorWeb3', err)
+      }
     })
     // console.log(localStorage.projectDescription)
     // console.log(localStorage.projectCost)
@@ -53,56 +63,26 @@ class Propose extends Component {
   //     }
   //   }
   }
-// (Date.now() + (this.state.tempProject.stakingPeriod * 86400))
   proposeProject () {
     // stakingPeriod in Days changed to milliseconds
     let stakeEndDate = (Date.now() + 86400000 * this.state.tempProject.stakingPeriod)
-    eth.accounts().then(accounts => {
-      tr.ProjectCreated((error, result) => {
-        if (!error) {
-          console.log('result', result)
-          this.props.proposeProject(Object.assign({}, this.state.tempProject, {stakingPeriod: stakeEndDate, address: result.args.projectAddress}))
-        } else {
-          console.log('error', error)
-        }
-      })
-      pr.LogProjectCreated((error, result) => {
-        if (!error) {
-          console.log('result', result)
-          this.props.proposeProject(Object.assign({}, this.state.tempProject, {stakingPeriod: stakeEndDate, address: result.args.projectAddress}))
-        } else {
-          console.log('error', error)
-        }
-      })
-      let cost = parseInt(Eth.toWei(this.state.tempProject.cost, 'ether').toString())
-      return tr.proposeProject(cost, stakeEndDate, {from: accounts[0]})
-    })
-    .then(txhash => {
-      let mined = utils.checkTransactionMined(txhash)
-      // console.log(mined)
-      return mined
-    }).then((mined) => {
-      if (mined === true) {
-
+    this.setState({tempProject: Object.assign({}, this.state.tempProject, {stakingEndDate: stakeEndDate})})
+    eth.getAccounts((err, accounts) => {
+      if (!err) {
+        let cost = parseInt(web3.toWei(this.state.tempProject.cost, 'ether').toString())
+        tr.proposeProject(cost, stakeEndDate, {from: accounts[0]}, (err, txHash) => {
+          if (!err) {
+            eth.getTransactionReceipt(txHash, (err, txReceipt) => {
+              if (!err) {
+                if (txReceipt.status === 1) {
+                }
+              }
+            })
+          }
+        })
       }
-      return true
     })
   }
-
-  // async checkTransactionMined(txhash) {
-  //   try {
-  //     let txreceipt = (await eth.getTransactionReceipt(txhash))
-  //     let mined
-  //     txreceipt.status === 1
-  //     ? mined = true
-  //     : mined = false
-  //     //console.log(txreceipt.status)
-  //     //console.log(mined)
-  //     return mined
-  //   } catch (error) {
-  //     throw new Error(error)
-  //   }
-  // }
 
   onChange (type, val) {
     try {
@@ -116,9 +96,8 @@ class Propose extends Component {
 
   render () {
     const projects = this.props.projects.projects.map((proj, i) => {
-      return <Project key={i} cost={proj.cost} description={proj.description} index={i} stakingPeriod={proj.stakingPeriod} />
+      return <Project key={i} index={i} address={proj.address} cost={proj.cost} description={proj.description} stakingEndDate={proj.stakingEndDate} />
     })
-    // console.log(this.state.currPrice)
     return (
       <div style={{marginLeft: 200}}>
         <header className='App-header'>
@@ -129,9 +108,10 @@ class Propose extends Component {
           <div style={{marginLeft: 20, marginTop: 40}}>
             <h3>Current Proposals</h3>
             <div style={{display: 'flex', flexDirection: 'column'}}>
-              <table style={{width: 500, border: '1px solid black'}}>
+              <Table>
                 <thead>
                   <tr>
+                    <th>#</th>
                     <th>Project Description</th>
                     <th>Project Address</th>
                     <th>Project Cost (ether)</th>
@@ -141,7 +121,7 @@ class Propose extends Component {
                 <tbody>
                   {projects}
                 </tbody>
-              </table>
+              </Table>
             </div>
           </div>
           <div style={{marginLeft: 20, marginTop: 40}}>
@@ -170,7 +150,7 @@ class Propose extends Component {
               />
             </div>
             <div style={{marginTop: 20}}>
-              <h4>{`You have to deposit ${typeof this.state.tempProject.cost === 'undefined' ? 0 : ((Eth.toWei(this.state.tempProject.cost, 'ether') / 20) / this.state.currPrice)} tokens`}</h4>
+              <h4>{`You have to deposit ${typeof this.state.tempProject.cost === 'undefined' ? 0 : ((web3.toWei(this.state.tempProject.cost, 'ether') / 20) / this.state.currPrice)} tokens`}</h4>
             </div>
             <div style={{marginTop: 20}}>
               <Button color='info' onClick={this.proposeProject} style={{marginLeft: 10}}>

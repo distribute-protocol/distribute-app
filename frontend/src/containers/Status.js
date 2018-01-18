@@ -1,17 +1,13 @@
 import React, { Component } from 'react'
 import { getEthPriceNow } from 'get-eth-price'
 import { Button } from 'reactstrap'
-// import logo from './logo.svg'
-// import './App.css'
-import Eth from 'ethjs'
-import {eth, tr, rr, dt} from '../utilities/blockchain'
+import {eth, web3, tr, rr, dt} from '../utilities/blockchain'
 
 import uport from '../utilities/uport'
 var mnid = require('mnid')
 
 // let uportWR = uport.contract(JSON.parse(ReputationRegistryABI)).at(ReputationRegistryAddress)
 // window.uportWR = uportWR
-window.Eth = Eth
 class Status extends Component {
   constructor () {
     super()
@@ -57,7 +53,7 @@ class Status extends Component {
     this.getBalance()
   }
 
-//////////  DATABASE TESTING  ///////////
+/// ///////  DATABASE TESTING  ///////////
 
   // queryDatabaseTest () {
   //   let config = {
@@ -92,15 +88,14 @@ class Status extends Component {
 
   async getBalance () {
     try {
-      let accounts = await eth.accounts()
+      let accounts = eth.accounts
       // let balance = (await this.queryUserBalance())
       let balance = (await dt.balanceOf(accounts[0]))[0].toNumber()
-      // console.log('balance', balance)
-      // let ethPrice = await getEthPriceNow()
-      // ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
+      let ethPrice = await getEthPriceNow()
+      ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
       let totalTokenSupply = (await dt.totalSupply())[0].toNumber()
       let totalFreeTokenSupply = (await dt.totalFreeSupply())[0].toNumber()
-      let weiBal = Eth.fromWei((await dt.weiBal())[0], 'ether')
+      let weiBal = web3.fromWei((await dt.weiBal())[0], 'ether')
       // let weiBal = (await dt.weiBal())[0].toString()
 
       let reputationBalance = (await rr.balances(accounts[0]))[0].toNumber()
@@ -113,25 +108,25 @@ class Status extends Component {
           this.setState({
             totalTokenSupply,
             balance,
-            // ethPrice,
+            ethPrice,
             weiBal,
             totalFreeTokenSupply,
             totalReputationSupply,
             totalFreeReputationSupply,
             reputationBalance,
-            currentPrice: Eth.fromWei(currentPrice, 'ether')
+            currentPrice: web3.fromWei(currentPrice, 'ether')
           })
         })
-      // console.log(currentPrice)
     } catch (error) {
       console.error(error)
-      // throw new Error(error)
     }
   }
   buyShares () {
-    eth.accounts().then(accountsArr => {
-      dt.mint(this.tokensToBuy.value || 700, {value: Eth.toWei(30, 'ether'), from: accountsArr[0]})
-      this.getBalance()
+    eth.getAccounts().then((err, accountsArr) => {
+      if (!err) {
+        dt.mint(this.tokensToBuy.value || 700, {value: web3.toWei(30, 'ether'), from: accountsArr[0]})
+        this.getBalance()
+      }
     })
   }
   // model db calls after this function
@@ -148,7 +143,7 @@ class Status extends Component {
       if (response.length === 0) {
         return 0
       }
-      response = response[response.length - 1].value      //to be changed based on db things
+      response = response[response.length - 1].value      // to be changed based on db things
       console.log(response)
       return response
     } catch (error) {
@@ -157,9 +152,11 @@ class Status extends Component {
   }
 
   sellShares () {
-    eth.accounts().then(accountsArr => {
-      dt.burnAndRefund(this.tokensToBuy.value, {from: accountsArr[0]})
-      this.getBalance()
+    eth.getAccounts().then((err, accountsArr) => {
+      if (!err) {
+        dt.burnAndRefund(this.tokensToBuy.value, {from: accountsArr[0]})
+        this.getBalance()
+      }
     })
   }
 
@@ -171,12 +168,12 @@ class Status extends Component {
   async onChange (val) {
     if (val > 0) {
       try {
-        let ethRequired = Eth.fromWei((await dt.weiRequired(val))[0], 'ether')
+        let ethRequired = web3.fromWei((await dt.weiRequired(val))[0], 'ether')
         let totalSupply = (await dt.totalSupply.call())[0].toNumber()
         let refund
         totalSupply === 0
           ? refund = ethRequired
-          : refund = Eth.fromWei((parseInt((await dt.weiBal.call())[0].toString()) / totalSupply * val), 'ether')
+          : refund = web3.fromWei((parseInt((await dt.weiBal.call())[0].toString()) / totalSupply * val), 'ether')
         this.setState({ethToSend: ethRequired, ethToRefund: refund})
       } catch (error) {
         throw new Error(error)
