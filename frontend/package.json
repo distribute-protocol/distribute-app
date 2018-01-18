@@ -4,6 +4,7 @@
   "private": true,
   "proxy": "http://localhost:3001/",
   "dependencies": {
+    "babel-loader": "^7.1.2",
     "bignumber.js": "^5.0.0",
     "bootstrap": "4.0.0-beta.2",
     "get-eth-price": "^1.0.0",

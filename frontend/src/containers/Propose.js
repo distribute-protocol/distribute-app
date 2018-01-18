@@ -34,13 +34,29 @@ class Propose extends Component {
       }
     })
 
+    let filter = eth.filter({address: tr.address})
+    filter.watch((err, res) => {
+      if (!err) {
+        console.log('log filter', res)
+        // console.log('0x' + res.topics[1].slice(res.topics[1].length - 40, (res.topics[1].length)))
+        let projectAddress = '0x' + res.topics[1].slice(res.topics[1].length - 40, (res.topics[1].length))
+        if (!_.isEmpty(this.state.tempProject)) {
+          this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress}))
+          this.setState({tempProject: {}})
+        }
+      } else {
+        console.log('errorWeb3', err)
+      }
+    })
+
     let event = tr.ProjectCreated()
     event.watch((err, res) => {
       if (!err) {
-        if (!_.isEmpty(this.state.tempProject)) {
-          this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: res.args.projectAddress}))
-          this.setState({tempProject: {}})
-        }
+        console.log('event', res)
+        // if (!_.isEmpty(this.state.tempProject)) {
+        //   this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: res.args.projectAddress}))
+        //   this.setState({tempProject: {}})
+        // }
       } else {
         console.log('errorWeb3', err)
       }
@@ -74,6 +90,7 @@ class Propose extends Component {
           if (!err) {
             eth.getTransactionReceipt(txHash, (err, txReceipt) => {
               if (!err) {
+                console.log(txReceipt)
                 if (txReceipt.status === 1) {
                 }
               }
