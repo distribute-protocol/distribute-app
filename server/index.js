@@ -10,13 +10,13 @@ const eth = new Eth(new Eth.HttpProvider('http://localhost:7545'))
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'))
 const TR = require('../frontend/src/abi/TokenRegistry')
-const RR = require('../frontend/src/abi/ReputationRegistry')
+// const RR = require('../frontend/src/abi/ReputationRegistry')
 
 eth.accounts().then(accountsArr => {
   console.log('accountsArr:', accountsArr)
 })
 
-//filter for minting events
+// filter for minting events
 const filter = web3.eth.filter({
   fromBlock: 0,
   toBlock: 'latest',
@@ -27,12 +27,12 @@ const filter = web3.eth.filter({
 filter.watch((error, result) => {
   if (error) console.error(error)
   console.log(result)
-  //let blockNumber = web3.eth.getTransaction(result.transactionHash).blockNumber
+  // let blockNumber = web3.eth.getTransaction(result.transactionHash).blockNumber
   let eventParams = result.data
   let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
   let eventParamArrDec = eventParamArr.map(x => web3.toDecimal('0x' + x))
   let userBalance = eventParamArrDec[2]
-  //console.log(eventParamArrDec)
+  // console.log(eventParamArrDec)
   postToDatabase(userBalance)
 })
 
@@ -53,7 +53,7 @@ MongoClient.connect(url, (err, client) => {
   client.close()
 })
 
-function postToDatabase(val) {
+function postToDatabase (val) {
   const setValue = (db, callback) => {
     db.collection('user').insert({value: val}, (err, doc) => {
       assert.equal(null, err)
@@ -74,7 +74,7 @@ function postToDatabase(val) {
   })
 }
 
-//query db for most recent user token balance
+// query db for most recent user token balance
 app.get('/api/userbalance', function (req, res) {
   // console.log('databaseTest!')
   const fetchResponse = (db, callback) => {
@@ -100,7 +100,6 @@ app.get('/api/userbalance', function (req, res) {
     })
   })
 })
-
 
 app.post('/api/userbalance', (req, res) => {
   // console.log('value', req.query.value)
