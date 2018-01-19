@@ -5314,10 +5314,6 @@ pluralize@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/pluralize/-/pluralize-4.0.0.tgz#59b708c1c0190a2f692f1c7618c446b052fd1762"
 
-popper.js@^1.12.5:
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.13.0.tgz#e1e7ff65cc43f7cf9cf16f1510a75e81f84f4565"
-
 popsicle@^9.1.0:
   version "9.2.0"
   resolved "https://registry.yarnpkg.com/popsicle/-/popsicle-9.2.0.tgz#adc9fc808644739b360ff063426545cdfe58e0b4"
@@ -5851,13 +5847,6 @@ react-error-overlay@^1.0.10:
     settle-promise "1.0.0"
     source-map "0.5.6"
 
-react-popper@^0.7.2:
-  version "0.7.4"
-  resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-0.7.4.tgz#8649d539837e7c6f47bc9b24c9cf57a404e199a1"
-  dependencies:
-    popper.js "^1.12.5"
-    prop-types "^15.5.10"
-
 react-redux@^5.0.6:
   version "5.0.6"
   resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-5.0.6.tgz#23ed3a4f986359d68b5212eaaa681e60d6574946"
@@ -5943,7 +5932,7 @@ react-scripts@1.0.11:
   optionalDependencies:
     fsevents "1.1.2"
 
-react-transition-group@^2.2.0, react-transition-group@^2.2.1:
+react-transition-group@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-2.2.1.tgz#e9fb677b79e6455fd391b03823afe84849df4a10"
   dependencies:
@@ -5964,17 +5953,20 @@ react@^15.6.1:
     object-assign "^4.1.0"
     prop-types "^15.5.10"
 
-reactstrap@^5.0.0-alpha.4:
-  version "5.0.0-alpha.4"
-  resolved "https://registry.yarnpkg.com/reactstrap/-/reactstrap-5.0.0-alpha.4.tgz#1de9cf3b16344ca99120c2a20e0efd4aaaebc1d8"
+reactstrap-tether@1.3.4:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/reactstrap-tether/-/reactstrap-tether-1.3.4.tgz#86d94d30216ffa34ceb2c626f4b9912c0d193894"
+
+reactstrap@^4.8.0:
+  version "4.8.0"
+  resolved "https://registry.yarnpkg.com/reactstrap/-/reactstrap-4.8.0.tgz#eb350642a6282c79c7e1bd8d6f75c627131a42f6"
   dependencies:
     classnames "^2.2.3"
     lodash.isfunction "^3.0.8"
     lodash.isobject "^3.0.2"
     lodash.tonumber "^4.0.3"
     prop-types "^15.5.8"
-    react-popper "^0.7.2"
-    react-transition-group "^2.2.0"
+    reactstrap-tether "1.3.4"
 
 read-all-stream@^3.0.0:
   version "3.1.0"

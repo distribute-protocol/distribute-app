@@ -176,24 +176,24 @@ class Status extends Component {
   }
   // model db calls after this function
   async queryUserBalance () {
-    try {
-      let config = {
-        method: 'GET',
-        headers: new Headers(),
-        mode: 'cors',
-        cache: 'default'
-      }
-      let response = await fetch(`/api/userbalance`, config)
-      response = await response.json()
-      if (response.length === 0) {
-        return 0
-      }
-      response = response[response.length - 1].value      // to be changed based on db things
-      console.log(response)
-      return response
-    } catch (error) {
-      throw new Error(error)
-    }
+    // try {
+    //   let config = {
+    //     method: 'GET',
+    //     headers: new Headers(),
+    //     mode: 'cors',
+    //     cache: 'default'
+    //   }
+    //   let response = await fetch(`/api/userbalance`, config)
+    //   response = await response.json()
+    //   if (response.length === 0) {
+    //     return 0
+    //   }
+    //   response = response[response.length - 1].value      // to be changed based on db things
+    //   console.log(response)
+    //   return response
+    // } catch (error) {
+    //   throw new Error(error)
+    // }
   }
 
   sellShares () {

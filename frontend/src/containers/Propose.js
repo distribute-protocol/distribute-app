@@ -27,40 +27,40 @@ class Propose extends Component {
   }
 
   componentWillMount () {
-    this.getProjects()
+    // this.getProjects()
     dt.currentPrice((err, val) => {
       if (!err) {
-        this.setState({currPrice: val.toNumber()})
+        // this.setState({currPrice: val.toNumber()})
       }
     })
 
-    let filter = eth.filter({address: tr.address})
-    filter.watch((err, res) => {
-      if (!err) {
-        console.log('log filter', res)
-        // console.log('0x' + res.topics[1].slice(res.topics[1].length - 40, (res.topics[1].length)))
-        // let projectAddress = '0x' + res.topics[1].slice(res.topics[1].length - 40, (res.topics[1].length))
-        // if (!_.isEmpty(this.state.tempProject)) {
-        //   this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress}))
-        //   this.setState({tempProject: {}})
-        // }
-      } else {
-        console.log('errorWeb3', err)
-      }
-    })
-
-    let event = tr.ProjectCreated()
-    event.watch((err, res) => {
-      if (!err) {
-        console.log('event', res)
-        // if (!_.isEmpty(this.state.tempProject)) {
-        //   this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: res.args.projectAddress}))
-        //   this.setState({tempProject: {}})
-        // }
-      } else {
-        console.log('errorWeb3', err)
-      }
-    })
+    // let filter = eth.filter({address: tr.address})
+    // filter.watch((err, res) => {
+    //   if (!err) {
+    //     console.log('log filter', res)
+    //     // console.log('0x' + res.topics[1].slice(res.topics[1].length - 40, (res.topics[1].length)))
+    //     // let projectAddress = '0x' + res.topics[1].slice(res.topics[1].length - 40, (res.topics[1].length))
+    //     // if (!_.isEmpty(this.state.tempProject)) {
+    //     //   this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress}))
+    //     //   this.setState({tempProject: {}})
+    //     // }
+    //   } else {
+    //     console.log('errorWeb3', err)
+    //   }
+    // })
+    //
+    // let event = tr.ProjectCreated()
+    // event.watch((err, res) => {
+    //   if (!err) {
+    //     console.log('event', res)
+    //     // if (!_.isEmpty(this.state.tempProject)) {
+    //     //   this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: res.args.projectAddress}))
+    //     //   this.setState({tempProject: {}})
+    //     // }
+    //   } else {
+    //     console.log('errorWeb3', err)
+    //   }
+    // })
     // console.log(localStorage.projectDescription)
     // console.log(localStorage.projectCost)
   }
@@ -79,6 +79,7 @@ class Propose extends Component {
   //     }
   //   }
   }
+
   proposeProject () {
     // stakingPeriod in Days changed to milliseconds
     let stakeEndDate = (Date.now() + 86400000 * this.state.tempProject.stakingPeriod)

@@ -1,30 +1,49 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Project from '../components/shared/Project'
 
-class Status extends React.Component {
+import { Button, CardColumns } from 'reactstrap';
+import StakeProject from '../components/shared/StakeProject'
+
+class Stake extends React.Component {
+  constructor () {
+    super()
+    this.state = {
+      value: 0,
+      description: '',
+      projects: [],
+      tempProject: {},
+      currPrice: 0
+    }
+
+    window.projects = this.state.projects
+  }
+
+  componentWillMount () {
+    // this.getProjects()
+    // dt.currentPrice((err, val) => {
+    //   if (!err) {
+    //     this.setState({currPrice: val.toNumber()})
+    //   }
+    // })
+  }
+
   render () {
     const projects = this.props.projects.projects.map((proj, i) => {
-      return <Project key={i} cost={proj.cost} description={proj.description} index={i} stakingPeriod={proj.stakingPeriod} />
+      return <StakeProject key={i} cost={proj.cost} description={proj.description} index={i} stakingEndDate={proj.stakingEndDate} address={proj.address} />
     })
     return (
       <div style={{marginLeft: 200}}>
+        <header className='App-header'>
+          {/* <img src={logoclassName='App-logo' alt='logo' /> */}
+          <h1 className='App-title'>distribute</h1>
+        </header>
         <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
           <div style={{marginLeft: 20, marginTop: 40}}>
             <h3>Stakeable Proposals</h3>
             <div style={{display: 'flex', flexDirection: 'column'}}>
-              <table style={{width: 500, border: '1px solid black'}}>
-                <thead>
-                  <tr>
-                    <th>Project Description</th>
-                    <th>Project Cost (ether)</th>
-                    <th>Staking End Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {projects}
-                </tbody>
-              </table>
+              <CardColumns>
+                {projects}
+              </CardColumns>
             </div>
           </div>
         </div>
@@ -45,4 +64,4 @@ const mapStateToProps = (state) => {
 //   }
 // }
 
-export default connect(mapStateToProps)(Status)
+export default connect(mapStateToProps)(Stake)
