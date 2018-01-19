@@ -39,11 +39,11 @@ class Propose extends Component {
       if (!err) {
         console.log('log filter', res)
         // console.log('0x' + res.topics[1].slice(res.topics[1].length - 40, (res.topics[1].length)))
-        let projectAddress = '0x' + res.topics[1].slice(res.topics[1].length - 40, (res.topics[1].length))
-        if (!_.isEmpty(this.state.tempProject)) {
-          this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress}))
-          this.setState({tempProject: {}})
-        }
+        // let projectAddress = '0x' + res.topics[1].slice(res.topics[1].length - 40, (res.topics[1].length))
+        // if (!_.isEmpty(this.state.tempProject)) {
+        //   this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress}))
+        //   this.setState({tempProject: {}})
+        // }
       } else {
         console.log('errorWeb3', err)
       }
@@ -92,6 +92,11 @@ class Propose extends Component {
               if (!err) {
                 console.log(txReceipt)
                 if (txReceipt.status === 1) {
+                  let projectAddress = '0x' + txReceipt.logs[0].topics[1].slice(txReceipt.logs[0].topics[1].length - 40, (txReceipt.logs[0].topics[1].length))
+                  if (!_.isEmpty(this.state.tempProject)) {
+                    this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress}))
+                    this.setState({tempProject: {}})
+                  }
                 }
               }
             })
