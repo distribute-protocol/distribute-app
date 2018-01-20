@@ -26,7 +26,7 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
 
 var propTypes = {
   tag: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.string]),
-  getRef: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.string]),
+  innerRef: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.string]),
   className: _propTypes2.default.string,
   cssModule: _propTypes2.default.object
 };
@@ -39,12 +39,12 @@ var CardLink = function CardLink(props) {
   var className = props.className,
       cssModule = props.cssModule,
       Tag = props.tag,
-      getRef = props.getRef,
-      attributes = _objectWithoutProperties(props, ['className', 'cssModule', 'tag', 'getRef']);
+      innerRef = props.innerRef,
+      attributes = _objectWithoutProperties(props, ['className', 'cssModule', 'tag', 'innerRef']);
 
   var classes = (0, _utils.mapToCssModules)((0, _classnames2.default)(className, 'card-link'), cssModule);
 
-  return _react2.default.createElement(Tag, _extends({}, attributes, { ref: getRef, className: classes }));
+  return _react2.default.createElement(Tag, _extends({}, attributes, { ref: innerRef, className: classes }));
 };
 
 CardLink.propTypes = propTypes;

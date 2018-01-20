@@ -34,7 +34,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var propTypes = {
   tag: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.string]),
-  getRef: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.string]),
+  innerRef: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.string]),
   disabled: _propTypes2.default.bool,
   active: _propTypes2.default.bool,
   className: _propTypes2.default.string,
@@ -83,15 +83,15 @@ var NavLink = function (_React$Component) {
           cssModule = _props.cssModule,
           active = _props.active,
           Tag = _props.tag,
-          getRef = _props.getRef,
-          attributes = _objectWithoutProperties(_props, ['className', 'cssModule', 'active', 'tag', 'getRef']);
+          innerRef = _props.innerRef,
+          attributes = _objectWithoutProperties(_props, ['className', 'cssModule', 'active', 'tag', 'innerRef']);
 
       var classes = (0, _utils.mapToCssModules)((0, _classnames2.default)(className, 'nav-link', {
         disabled: attributes.disabled,
         active: active
       }), cssModule);
 
-      return _react2.default.createElement(Tag, _extends({}, attributes, { ref: getRef, onClick: this.onClick, className: classes }));
+      return _react2.default.createElement(Tag, _extends({}, attributes, { ref: innerRef, onClick: this.onClick, className: classes }));
     }
   }]);
 

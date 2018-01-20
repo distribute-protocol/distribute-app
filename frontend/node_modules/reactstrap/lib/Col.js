@@ -85,7 +85,7 @@ var Col = function Col(props) {
 
     delete attributes[colWidth];
 
-    if (!columnProp) {
+    if (!columnProp && columnProp !== '') {
       return;
     }
 

@@ -34,7 +34,7 @@ var propTypes = {
 };
 
 var defaultProps = {
-  color: 'default',
+  color: 'secondary',
   pill: false,
   tag: 'span'
 };
@@ -48,6 +48,10 @@ var Badge = function Badge(props) {
       attributes = _objectWithoutProperties(props, ['className', 'cssModule', 'color', 'pill', 'tag']);
 
   var classes = (0, _utils.mapToCssModules)((0, _classnames2.default)(className, 'badge', 'badge-' + color, pill ? 'badge-pill' : false), cssModule);
+
+  if (attributes.href && Tag === 'span') {
+    Tag = 'a';
+  }
 
   return _react2.default.createElement(Tag, _extends({}, attributes, { className: classes }));
 };

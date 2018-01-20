@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import { Button, CardColumns } from 'reactstrap';
 import StakeProject from '../components/shared/StakeProject'
+import {eth, web3, tr, dt} from '../utilities/blockchain'
 
 class Stake extends React.Component {
   constructor () {
@@ -26,10 +27,31 @@ class Stake extends React.Component {
     //   }
     // })
   }
+  stakeProject (address, val) {
+    console.log(address, val)
+    tr.stakeTokens(address, val, (err, res) => {
+      if (!err) { console.log(res) }
+    })
+  }
+
+  unstakeProject (val, address) {
+    tr.unstakeTokens(address, val, (err, res) => {
+      if (!err) { console.log(res) }
+    })
+  }
 
   render () {
     const projects = this.props.projects.projects.map((proj, i) => {
-      return <StakeProject key={i} cost={proj.cost} description={proj.description} index={i} stakingEndDate={proj.stakingEndDate} address={proj.address} />
+      return <StakeProject
+        key={i}
+        cost={proj.cost}
+        description={proj.description}
+        index={i}
+        stakingEndDate={proj.stakingEndDate}
+        address={proj.address}
+        stakeProject={(val) => this.stakeProject(proj.address, 100)}
+        unstakeProject={(val) => this.unstakeProject(proj.address, 100)}
+      />
     })
     return (
       <div style={{marginLeft: 200}}>
@@ -41,9 +63,9 @@ class Stake extends React.Component {
           <div style={{marginLeft: 20, marginTop: 40}}>
             <h3>Stakeable Proposals</h3>
             <div style={{display: 'flex', flexDirection: 'column'}}>
-              <CardColumns>
-                {projects}
-              </CardColumns>
+              {/* <CardColumns> */}
+              {projects}
+              {/* </CardColumns> */}
             </div>
           </div>
         </div>

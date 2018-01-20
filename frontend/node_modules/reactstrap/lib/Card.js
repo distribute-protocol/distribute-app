@@ -28,7 +28,8 @@ var propTypes = {
   tag: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.string]),
   inverse: _propTypes2.default.bool,
   color: _propTypes2.default.string,
-  block: _propTypes2.default.bool,
+  block: (0, _utils.deprecated)(_propTypes2.default.bool, 'Please use the props "body"'),
+  body: _propTypes2.default.bool,
   outline: _propTypes2.default.bool,
   className: _propTypes2.default.string,
   cssModule: _propTypes2.default.object
@@ -43,12 +44,13 @@ var Card = function Card(props) {
       cssModule = props.cssModule,
       color = props.color,
       block = props.block,
+      body = props.body,
       inverse = props.inverse,
       outline = props.outline,
       Tag = props.tag,
-      attributes = _objectWithoutProperties(props, ['className', 'cssModule', 'color', 'block', 'inverse', 'outline', 'tag']);
+      attributes = _objectWithoutProperties(props, ['className', 'cssModule', 'color', 'block', 'body', 'inverse', 'outline', 'tag']);
 
-  var classes = (0, _utils.mapToCssModules)((0, _classnames2.default)(className, 'card', inverse ? 'card-inverse' : false, block ? 'card-block' : false, color ? 'card' + (outline ? '-outline' : '') + '-' + color : false), cssModule);
+  var classes = (0, _utils.mapToCssModules)((0, _classnames2.default)(className, 'card', inverse ? 'text-white' : false, block || body ? 'card-body' : false, color ? (outline ? 'border' : 'bg') + '-' + color : false), cssModule);
 
   return _react2.default.createElement(Tag, _extends({}, attributes, { className: classes }));
 };

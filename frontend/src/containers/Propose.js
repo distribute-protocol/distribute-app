@@ -22,15 +22,15 @@ class Propose extends Component {
     this.proposeProject = this.proposeProject.bind(this)
     // this.checkTransactionMined = this.checkTransactionMined.bind(this)
     this.getProjects = this.getProjects.bind(this)
-    window.tr = this.tr
-    window.projects = this.state.projects
+    // window.tr = this.tr
+    // window.projects = this.state.projects
   }
 
   componentWillMount () {
     // this.getProjects()
     dt.currentPrice((err, val) => {
       if (!err) {
-        // this.setState({currPrice: val.toNumber()})
+        this.setState({currPrice: val.toNumber()})
       }
     })
 
@@ -93,6 +93,12 @@ class Propose extends Component {
               if (!err) {
                 console.log(txReceipt)
                 if (txReceipt.status === 1) {
+                  // console.log('sup', tr.ProjectCreated({},
+                  // {fromBlock: tr.blockNumber, toBlock: txReceipt.blockNumber})
+                  // .get()
+                  // .filter(function (e) {
+                  //   return e.transactionHash === txReceipt.transactionHash
+                  // }))
                   let projectAddress = '0x' + txReceipt.logs[0].topics[1].slice(txReceipt.logs[0].topics[1].length - 40, (txReceipt.logs[0].topics[1].length))
                   if (!_.isEmpty(this.state.tempProject)) {
                     this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress}))

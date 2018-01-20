@@ -28,7 +28,7 @@ var propTypes = {
   children: _propTypes2.default.node,
   inline: _propTypes2.default.bool,
   tag: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.string]),
-  getRef: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.string]),
+  innerRef: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.string]),
   className: _propTypes2.default.string,
   cssModule: _propTypes2.default.object
 };
@@ -42,12 +42,12 @@ var Form = function Form(props) {
       cssModule = props.cssModule,
       inline = props.inline,
       Tag = props.tag,
-      getRef = props.getRef,
-      attributes = _objectWithoutProperties(props, ['className', 'cssModule', 'inline', 'tag', 'getRef']);
+      innerRef = props.innerRef,
+      attributes = _objectWithoutProperties(props, ['className', 'cssModule', 'inline', 'tag', 'innerRef']);
 
   var classes = (0, _utils.mapToCssModules)((0, _classnames2.default)(className, inline ? 'form-inline' : false), cssModule);
 
-  return _react2.default.createElement(Tag, _extends({}, attributes, { ref: getRef, className: classes }));
+  return _react2.default.createElement(Tag, _extends({}, attributes, { ref: innerRef, className: classes }));
 };
 
 Form.propTypes = propTypes;

@@ -41,7 +41,7 @@ var FormFeedback = function FormFeedback(props) {
       Tag = props.tag,
       attributes = _objectWithoutProperties(props, ['className', 'cssModule', 'tag']);
 
-  var classes = (0, _utils.mapToCssModules)((0, _classnames2.default)(className, 'form-control-feedback'), cssModule);
+  var classes = (0, _utils.mapToCssModules)((0, _classnames2.default)(className, 'invalid-feedback'), cssModule);
 
   return _react2.default.createElement(Tag, _extends({}, attributes, { className: classes }));
 };

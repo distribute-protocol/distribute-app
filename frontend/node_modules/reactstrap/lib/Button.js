@@ -39,7 +39,7 @@ var propTypes = {
   disabled: _propTypes2.default.bool,
   outline: _propTypes2.default.bool,
   tag: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.string]),
-  getRef: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.string]),
+  innerRef: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.string]),
   onClick: _propTypes2.default.func,
   size: _propTypes2.default.string,
   children: _propTypes2.default.node,
@@ -88,8 +88,8 @@ var Button = function (_React$Component) {
           outline = _props.outline,
           size = _props.size,
           Tag = _props.tag,
-          getRef = _props.getRef,
-          attributes = _objectWithoutProperties(_props, ['active', 'block', 'className', 'cssModule', 'color', 'outline', 'size', 'tag', 'getRef']);
+          innerRef = _props.innerRef,
+          attributes = _objectWithoutProperties(_props, ['active', 'block', 'className', 'cssModule', 'color', 'outline', 'size', 'tag', 'innerRef']);
 
       var classes = (0, _utils.mapToCssModules)((0, _classnames2.default)(className, 'btn', 'btn' + (outline ? '-outline' : '') + '-' + color, size ? 'btn-' + size : false, block ? 'btn-block' : false, { active: active, disabled: this.props.disabled }), cssModule);
 
@@ -101,7 +101,7 @@ var Button = function (_React$Component) {
         type: Tag === 'button' && attributes.onClick ? 'button' : undefined
       }, attributes, {
         className: classes,
-        ref: getRef,
+        ref: innerRef,
         onClick: this.onClick
       }));
     }
