@@ -2,6 +2,7 @@ import { TokenRegistryABI, TokenRegistryAddress } from '../abi/TokenRegistry'
 import { ReputationRegistryABI, ReputationRegistryAddress } from '../abi/ReputationRegistry'
 import { ProjectRegistryABI, ProjectRegistryAddress } from '../abi/ProjectRegistry'
 import { DistributeTokenABI, DistributeTokenAddress } from '../abi/DistributeToken'
+import { ProjectABI } from '../abi/Project'
 import Web3 from 'web3'
 
 let web3init
@@ -16,6 +17,7 @@ if (typeof web3init !== 'undefined') {
 export const web3 = web3init
 export const eth = web3init.eth
 
+export const P = web3.eth.contract(JSON.parse(ProjectABI))
 const TR = web3.eth.contract(JSON.parse(TokenRegistryABI))
 export const tr = TR.at(TokenRegistryAddress)
 const RR = web3.eth.contract(JSON.parse(ReputationRegistryABI))

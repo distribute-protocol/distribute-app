@@ -70,8 +70,8 @@ class Stake extends React.Component {
         index={i}
         stakingEndDate={proj.stakingEndDate}
         address={proj.address}
-        stakeProject={(val) => this.stakeProject(proj.address, 100)}
-        unstakeProject={(val) => this.unstakeProject(proj.address, 100)}
+        stakeProject={(val) => this.stakeProject(proj.address, val)}
+        unstakeProject={(val) => this.unstakeProject(proj.address, val)}
       />
     })
     return (
