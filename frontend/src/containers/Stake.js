@@ -29,14 +29,35 @@ class Stake extends React.Component {
   }
   stakeProject (address, val) {
     console.log(address, val)
-    tr.stakeTokens(address, val, (err, res) => {
-      if (!err) { console.log(res) }
+    eth.getAccounts((err, accounts) => {
+      if (!err) {
+        tr.stakeTokens(address, val, {from: accounts[0]}, (err, txHash) => {
+          if (!err) {
+            eth.getTransactionReceipt(txHash, (err, txReceipt) => {
+              if (!err) {
+                console.log(txReceipt)
+              }
+            })
+          }
+        })
+      }
     })
   }
 
-  unstakeProject (val, address) {
-    tr.unstakeTokens(address, val, (err, res) => {
-      if (!err) { console.log(res) }
+  unstakeProject (address, val) {
+    console.log(address, val)
+    eth.getAccounts((err, accounts) => {
+      if (!err) {
+        tr.unstakeTokens(address, val, {from: accounts[0]}, (err, txHash) => {
+          if (!err) {
+            eth.getTransactionReceipt(txHash, (err, txReceipt) => {
+              if (!err) {
+                console.log(txReceipt)
+              }
+            })
+          }
+        })
+      }
     })
   }
 

@@ -1,4 +1,4 @@
-const ReputationRegistryAddress = '0x0d8cc4b8d15d4c3ef1d70af0071376fb26b5669b'
+const ReputationRegistryAddress = '0xaa588d3737b611bafd7bd713445b314bd453a5c8'
 // rinkeby
 // export const ReputationRegistryAddress = '0xb529f14aa8096f943177c09ca294ad66d2e08b1f'
 

@@ -7,7 +7,7 @@ const StakeProject = ({cost, description, stakingEndDate, address, index, stakeP
   // if (typeof stakingEndDate !== 'undefined') { d = new Date(stakingEndDate) }
   if (typeof stakingEndDate !== 'undefined') { d = moment(stakingEndDate) }
   return (
-    <Col sm="10">
+    <Col sm='10'>
       <Card body style={{marginLeft: 10}}>
         <CardBody>
           <CardTitle>{`${description}`}</CardTitle>

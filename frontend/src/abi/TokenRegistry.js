@@ -1,4 +1,4 @@
-const TokenRegistryAddress = '0xeec918d74c746167564401103096d45bbd494b74'
+const TokenRegistryAddress = '0xfb88de099e13c3ed21f80a7a1e49f8caecf10df6'
 // rinkeby
 // export const TokenRegistryAddress = '0xb9b7e0cb2edf5ea031c8b297a5a1fa20379b6a0a'
 
