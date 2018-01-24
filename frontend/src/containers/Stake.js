@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { Button, CardColumns } from 'reactstrap';
+import { Button, CardColumns } from 'reactstrap'
 import StakeProject from '../components/shared/StakeProject'
 import {eth, web3, tr, dt} from '../utilities/blockchain'
 

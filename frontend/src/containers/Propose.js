@@ -83,10 +83,12 @@ class Propose extends Component {
   proposeProject () {
     // stakingPeriod in Days changed to milliseconds
     let stakeEndDate = (Date.now() + 86400000 * this.state.tempProject.stakingPeriod)
+    console.log(stakeEndDate)
     this.setState({tempProject: Object.assign({}, this.state.tempProject, {stakingEndDate: stakeEndDate})})
     eth.getAccounts((err, accounts) => {
       if (!err) {
         let cost = parseInt(web3.toWei(this.state.tempProject.cost, 'ether').toString())
+        console.log(accounts[0])
         tr.proposeProject(cost, stakeEndDate, {from: accounts[0]}, (err, txHash) => {
           if (!err) {
             eth.getTransactionReceipt(txHash, (err, txReceipt) => {

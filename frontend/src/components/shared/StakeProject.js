@@ -11,58 +11,74 @@ class StakeProject extends Component {
     }
   }
 
-  async getProjectStatus (p) {
+  getProjectStatus (p) {
     try {
-      let accounts = await eth.accounts
-      if (accounts.length) {
-        let weiBal,
-            weiCost,
-            reputationCost,
-            totalTokensStaked,
-            totalReputationStaked
-        let currentPrice
-        await p.weiBal((err, val) => {
-          if (!err) {
-            weiBal = val.toNumber()
+      let accounts
+      eth.getAccounts((err, result) => {
+        if (!err) {
+          accounts = result
+          console.log(accounts)
+          if (accounts.length) {
+            let weiBal,
+              weiCost,
+              reputationCost,
+              totalTokensStaked,
+              totalReputationStaked
+            let currentPrice
+            p.weiBal((err, result) => {
+              if (!err) {
+                weiBal = result.toNumber()
+                console.log('weiBal', weiBal)
+                console.log('p', p)
+              }
+            })
+            p.weiCost((err, result) => {
+              if (!err) {
+                weiCost = result.toNumber()
+                console.log('weiCost', weiCost)
+              }
+            })
           }
-        })
-        // await p.weiCost((err, val) => {
+        }
+      })
+
+        // await p.weiCost({from: accounts[0]}, (err, val) => {
         //   if (!err) {
         //     weiCost = val.toNumber()
+        //     console.log('weiCost', weiCost)
         //   }
         // })
         // await p.reputationCost((err, val) => {
         //   if (!err) {
         //     reputationCost = val.toNumber()
-        //     console.log('repcost', reputationCost)
+        //     console.log('repCost', reputationCost)
         //   }
         // })
-        await p.totalTokensStaked((err, val) => {
-          if (!err) {
-            totalTokensStaked = val.toNumber()
-          }
-        })
+        // await p.totalTokensStaked((err, val) => {
+        //   if (!err) {
+        //     totalTokensStaked = val.toNumber()
+        //     console.log('totalTokens', totalTokensStaked)
+        //   }
+        // })
         // await p.totalReputationStaked((err, val) => {
         //   if (!err) {
         //     totalReputationStaked = val.toNumber()
+        //     console.log('totalRep', totalReputationStaked)
         //   }
         // })
-        await dt.currentPrice((err, val) => {
-          if (!err) {
-            currentPrice = val.toNumber()
-            this.setState({
-              weiBal,
-              // weiCost,
-              // reputationCost,
-              totalTokensStaked,
-              // totalReputationStaked,
-              currentPrice: web3.fromWei(currentPrice, 'ether')
-            })
-          }
-        })
-      } else {
-        console.error('Please Unlock MetaMask')
-      }
+        // dt.currentPrice((err, val) => {
+        //   if (!err) {
+        //     currentPrice = val.toNumber()
+        //     this.setState({
+        //       weiBal,
+        //       // weiCost,
+        //       // reputationCost,
+        //       // totalTokensStaked,
+        //       // totalReputationStaked,
+        //       currentPrice: web3.fromWei(currentPrice, 'ether')
+        //     })
+        //   }
+        // })
     } catch (error) {
       console.error(error)
     }
@@ -70,6 +86,7 @@ class StakeProject extends Component {
 
   componentWillMount () {
     let p = P.at(this.props.address)
+    // console.log(p)
     this.getProjectStatus(p)
     this.setState({project: p})
   }
@@ -87,7 +104,7 @@ class StakeProject extends Component {
     let d
     // if (typeof stakingEndDate !== 'undefined') { d = new Date(stakingEndDate) }
     if (typeof this.props.stakingEndDate !== 'undefined') { d = moment(this.props.stakingEndDate) }
-    console.log(this.state)
+    // console.log(this.state)
     return (
       <Col sm='10'>
         <Card body style={{marginLeft: 10}}>
@@ -95,7 +112,7 @@ class StakeProject extends Component {
             <CardTitle>{`${this.props.description}`}</CardTitle>
             <CardText>{`${this.props.address}`}</CardText>
             <CardText>{`${this.props.cost}`} ETH</CardText>
-            <CardText>needs {`${this.props.cost}`} tokens</CardText>
+            <CardText>needs {`${this.state.tokensLeft}`} tokens</CardText>
             {/* <td>{typeof d !== 'undefined' ? `${d.toLocaleDateString()} ${d.toLocaleTimeString()}` : 'N/A'}</td> */}
             <CardText>staking expires in {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}</CardText>
             <input
