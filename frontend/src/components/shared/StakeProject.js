@@ -1,7 +1,12 @@
 import React, { Component } from 'react'
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux'
 import moment from 'moment'
 import { Card, CardBody, CardTitle, CardText, Button, Col } from 'reactstrap'
 import {eth, web3, tr, dt, P} from '../../utilities/blockchain'
+
+
+const getProjectState = () => ({ type: 'GET_PROJECT_STATE' });
 
 class StakeProject extends Component {
   constructor () {
@@ -121,8 +126,11 @@ class StakeProject extends Component {
               onChange={() => this.onChange(this.stakedValue.value)}
               value={this.state.value}
             />
-            <Button color='primary' onClick={() => this.props.stakeProject(this.state.value)} style={{marginLeft: 10}}>
+            {/* <Button color='primary' onClick={() => this.props.stakeProject(this.state.value)} style={{marginLeft: 10}}>
               Stake
+            </Button> */}
+            <Button color='primary' onClick={() => this.props.getProjectState()} style={{marginLeft: 10}}>
+              {this.props.projectState}
             </Button>
             <Button color='primary' onClick={() => this.props.unstakeProject(this.state.value)} style={{marginLeft: 10}}>
               Unstake
@@ -134,6 +142,20 @@ class StakeProject extends Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    projectState: state.projects.fetching,
+    project: state.projects.project
+  }
+}
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    getProjectState: getProjectState
+  }, dispatch)
+  // return {
+  //   getProjectState: () => console.log('heyhey')
+  // }
+}
  // = ({cost, description, stakingEndDate, address, index, stakeProject, unstakeProject, stakingAmount}) => {
 
-export default StakeProject
+export default connect(mapStateToProps, mapDispatchToProps)(StakeProject)

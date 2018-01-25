@@ -88,8 +88,11 @@ class Status extends Component {
 
   async getBalance () {
     try {
-      let accounts = await eth.accounts
-      console.log(accounts)
+      eth.getAccounts((err, accounts) => {
+        // console.log(err, accounts)
+      })
+      let accounts = eth.accounts
+      // console.log(accounts)
       if (accounts.length) {
         // console.log(accounts[0])
         // let balance = (await this.queryUserBalance())

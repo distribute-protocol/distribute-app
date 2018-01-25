@@ -1,7 +1,8 @@
 import { PROPOSE_PROJECT } from '../constants/ProjectActionTypes'
-
+const GET_PROJECT_STATE = 'GET_PROJECT_STATE'
 const initialState = {
-  projects: []
+  projects: [],
+  fetching: 'FALSE'
 }
 
 export default function projectReducer (state = initialState, action) {
@@ -17,6 +18,10 @@ export default function projectReducer (state = initialState, action) {
         address: action.projectDetails.address
       })
       return Object.assign({}, state, {projects: temp})
+    case GET_PROJECT_STATE:
+      return Object.assign({}, state, {fetching: 'TRUE'})
+    case 'PROJECT_STATE_RECEIVED':
+      return Object.assign({}, state, {project: action.payload})
     default:
   }
   return state
