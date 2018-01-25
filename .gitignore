@@ -3,8 +3,8 @@
 /src/private.js
 
 # dependencies
-/node_modules
-/frontend/node_modules
+node_modules
+frontend/node_modules
 
 # testing
 /coverage
