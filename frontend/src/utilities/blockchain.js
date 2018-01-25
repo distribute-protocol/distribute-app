@@ -4,6 +4,7 @@ import { ProjectRegistryABI, ProjectRegistryAddress } from '../abi/ProjectRegist
 import { DistributeTokenABI, DistributeTokenAddress } from '../abi/DistributeToken'
 import { ProjectABI } from '../abi/Project'
 import Web3 from 'web3'
+import contract from 'truffle-contract'
 
 let web3init
 if (typeof web3init !== 'undefined') {
@@ -26,5 +27,8 @@ const PR = web3.eth.contract(JSON.parse(ProjectRegistryABI))
 export const pr = PR.at(ProjectRegistryAddress)
 const DT = web3.eth.contract(JSON.parse(DistributeTokenABI))
 export const dt = DT.at(DistributeTokenAddress)
+
+export const gorbeon = contract({abi: JSON.parse(ProjectABI)})
+gorbeon.setProvider(window.web3.currentProvider)
 
 export default {TR, tr, RR, rr, PR, pr, DT, dt}

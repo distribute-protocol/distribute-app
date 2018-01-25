@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import moment from 'moment'
 import { Card, CardBody, CardTitle, CardText, Button, Col } from 'reactstrap'
-import {eth, web3, tr, dt, P} from '../../utilities/blockchain'
+import { eth, web3, tr, dt, P, gorbeon } from '../../utilities/blockchain'
 
 class StakeProject extends Component {
   constructor () {
@@ -9,11 +9,18 @@ class StakeProject extends Component {
     this.state = {
       value: 0
     }
+    this.stakeProject = this.stakeProject.bind(this)
+    this.getProjectStatus = this.getProjectStatus.bind(this)
+    window.gorbeon = gorbeon
   }
 
-  getProjectStatus (p) {
+  async getProjectStatus (p) {
     try {
       let accounts
+      if (this.state.p2) {
+        let totalTokensStaked2 = await this.state.p2.totalTokensStaked()
+        console.log(totalTokensStaked2)
+      }
       eth.getAccounts((err, result) => {
         if (!err) {
           accounts = result
@@ -25,60 +32,54 @@ class StakeProject extends Component {
               totalTokensStaked,
               totalReputationStaked
             let currentPrice
-            p.weiBal((err, result) => {
+            p.weiBal((err, weiBalResult) => {
               if (!err) {
-                weiBal = result.toNumber()
-                console.log('weiBal', weiBal)
-                console.log('p', p)
-              }
-            })
-            p.weiCost((err, result) => {
-              if (!err) {
-                weiCost = result.toNumber()
-                console.log('weiCost', weiCost)
+                p.weiCost((err, weiCostResult) => {
+                  if (!err) {
+                    p.reputationCost((err, reputationCostResult) => {
+                      if (!err) {
+                        p.totalTokensStaked((err, totalTokensStakedResult) => {
+                          if (!err) {
+                            p.totalReputationStaked((err, totalReputationStakedResult) => {
+                              if (!err) {
+                                dt.currentPrice((err, val) => {
+                                  if (!err) {
+                                    weiBal = weiBalResult.toNumber()
+                                    console.log('weiBal', weiBal)
+                                    weiCost = weiCostResult.toNumber()
+                                    console.log('weiCost', weiCost)
+                                    reputationCost = reputationCostResult.toNumber()
+                                    console.log('reputationCost', reputationCost)
+                                    totalTokensStaked = totalTokensStakedResult.toNumber()
+                                    console.log('totalTokensStaked', totalTokensStaked)
+                                    totalReputationStaked = totalReputationStakedResult.toNumber()
+                                    console.log('totalReputationStaked', totalReputationStaked)
+                                    currentPrice = val.toNumber()
+                                    console.log('currentPrice', currentPrice)
+                                    this.setState({
+                                      weiBal,
+                                      weiCost,
+                                      reputationCost,
+                                      totalTokensStaked,
+                                      totalReputationStaked,
+                                      currentPrice: web3.fromWei(currentPrice, 'ether')
+                                    })
+                                    console.log(this.state)
+                                  }
+                                })
+                              }
+                            })
+                          }
+                        })
+                      }
+                    })
+                  }
+                })
               }
             })
           }
         }
       })
-
-        // await p.weiCost({from: accounts[0]}, (err, val) => {
-        //   if (!err) {
-        //     weiCost = val.toNumber()
-        //     console.log('weiCost', weiCost)
-        //   }
-        // })
-        // await p.reputationCost((err, val) => {
-        //   if (!err) {
-        //     reputationCost = val.toNumber()
-        //     console.log('repCost', reputationCost)
-        //   }
-        // })
-        // await p.totalTokensStaked((err, val) => {
-        //   if (!err) {
-        //     totalTokensStaked = val.toNumber()
-        //     console.log('totalTokens', totalTokensStaked)
-        //   }
-        // })
-        // await p.totalReputationStaked((err, val) => {
-        //   if (!err) {
-        //     totalReputationStaked = val.toNumber()
-        //     console.log('totalRep', totalReputationStaked)
-        //   }
-        // })
-        // dt.currentPrice((err, val) => {
-        //   if (!err) {
-        //     currentPrice = val.toNumber()
-        //     this.setState({
-        //       weiBal,
-        //       // weiCost,
-        //       // reputationCost,
-        //       // totalTokensStaked,
-        //       // totalReputationStaked,
-        //       currentPrice: web3.fromWei(currentPrice, 'ether')
-        //     })
-        //   }
-        // })
     } catch (error) {
       console.error(error)
     }
@@ -86,9 +87,11 @@ class StakeProject extends Component {
 
   componentWillMount () {
     let p = P.at(this.props.address)
+    let p2 = gorbeon.at(this.props.address)
+    window.p2 = p2
     // console.log(p)
     this.getProjectStatus(p)
-    this.setState({project: p})
+    this.setState({project: p, p2})
   }
 
   onChange (val) {
@@ -98,6 +101,11 @@ class StakeProject extends Component {
     } catch (error) {
       throw new Error(error)
     }
+  }
+
+  stakeProject () {
+    this.props.stakeProject(this.state.value, () => { console.log('entering the void'); this.getProjectStatus(this.state.project) })
+    this.setState({value: 0})
   }
 
   render () {
@@ -121,11 +129,14 @@ class StakeProject extends Component {
               onChange={() => this.onChange(this.stakedValue.value)}
               value={this.state.value}
             />
-            <Button color='primary' onClick={() => this.props.stakeProject(this.state.value)} style={{marginLeft: 10}}>
+            <Button color='primary' onClick={this.stakeProject} style={{marginLeft: 10}}>
               Stake
             </Button>
             <Button color='primary' onClick={() => this.props.unstakeProject(this.state.value)} style={{marginLeft: 10}}>
               Unstake
+            </Button>
+            <Button color='secondary' onClick={() => this.getProjectStatus(this.state.project)} style={{marginLeft: 10}}>
+              PROJECT STATE
             </Button>
           </CardBody>
         </Card>
