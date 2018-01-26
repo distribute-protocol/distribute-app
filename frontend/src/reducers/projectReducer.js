@@ -21,7 +21,8 @@ export default function projectReducer (state = initialState, action) {
     case GET_PROJECT_STATE:
       return Object.assign({}, state, {fetching: 'TRUE'})
     case 'PROJECT_STATE_RECEIVED':
-      return Object.assign({}, state, {project: action.payload})
+      // return Object.assign({}, state, {project: action.payload})
+      return Object.assign({}, state, {fetching: 'FALSE'})
     default:
   }
   return state
