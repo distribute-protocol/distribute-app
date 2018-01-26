@@ -6,7 +6,6 @@
   "dependencies": {
     "babel-loader": "^7.1.2",
     "bignumber.js": "^5.0.0",
-    "bootstrap": "4.0.0-beta.2",
     "get-eth-price": "^1.0.0",
     "history": "^4.7.2",
     "isomorphic-fetch": "^2.2.1",
@@ -19,7 +18,6 @@
     "react-router-dom": "^4.2.2",
     "react-router-redux": "next",
     "react-transition-group": "^2.2.1",
-    "reactstrap": "5.0.0-alpha.4",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
     "redux-persist": "^4.10.1",
