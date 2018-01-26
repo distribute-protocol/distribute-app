@@ -88,87 +88,88 @@ class Status extends Component {
 
   async getBalance () {
     try {
-      eth.getAccounts((err, accounts) => {
+      eth.getAccounts(async (err, accounts) => {
         // console.log(err, accounts)
-      })
-      let accounts = eth.accounts
+
+      // let accounts = eth.accounts
       // console.log(accounts)
-      if (accounts.length) {
-        // console.log(accounts[0])
-        // let balance = (await this.queryUserBalance())
-        // let ethPrice = await getEthPriceNow()
-        // ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
-        let balance,
-          totalTokenSupply,
-          totalFreeTokenSupply,
-          weiBal,
-          reputationBalance,
-          totalReputationSupply,
-          totalFreeReputationSupply,
-          currentPrice
-        // let balance = (await dt.balanceOf(accounts[0]))[0].toNumber()
-        await dt.balanceOf(accounts[0], (err, val) => {
-          if (!err) {
-            balance = val.toNumber()
-          }
-        })
-        await dt.totalSupply((err, val) => {
-          if (!err) {
-            totalTokenSupply = val.toNumber()
-          }
-        })
-        await dt.totalFreeSupply((err, val) => {
-          if (!err) {
-            totalFreeTokenSupply = val.toNumber()
-          }
-        })
-        await dt.weiBal((err, val) => {
-          if (!err) {
-            weiBal = web3.fromWei(val.toNumber(), 'ether')
-          }
-        })
-        await rr.balances(accounts[0], (err, val) => {
-          if (!err) {
-            reputationBalance = val.toNumber()
-          }
-        })
-        await rr.totalSupply((err, val) => {
-          if (!err) {
-            totalReputationSupply = val.toNumber()
-          }
-        })
-        await rr.totalFreeSupply((err, val) => {
-          if (!err) {
-            totalFreeReputationSupply = val.toNumber()
-          }
-        })
+        if (accounts.length) {
+          // console.log(accounts[0])
+          // let balance = (await this.queryUserBalance())
+          // let ethPrice = await getEthPriceNow()
+          // ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
+          let balance,
+            totalTokenSupply,
+            totalFreeTokenSupply,
+            weiBal,
+            reputationBalance,
+            totalReputationSupply,
+            totalFreeReputationSupply,
+            currentPrice
+          // let balance = (await dt.balanceOf(accounts[0]))[0].toNumber()
+          await dt.balanceOf(accounts[0], (err, val) => {
+            if (!err) {
+              balance = val.toNumber()
+            }
+          })
+          await dt.totalSupply((err, val) => {
+            if (!err) {
+              totalTokenSupply = val.toNumber()
+            }
+          })
+          await dt.totalFreeSupply((err, val) => {
+            if (!err) {
+              totalFreeTokenSupply = val.toNumber()
+            }
+          })
+          await dt.weiBal((err, val) => {
+            if (!err) {
+              weiBal = web3.fromWei(val.toNumber(), 'ether')
+            }
+          })
+          await rr.balances(accounts[0], (err, val) => {
+            if (!err) {
+              reputationBalance = val.toNumber()
+            }
+          })
+          await rr.totalSupply((err, val) => {
+            if (!err) {
+              totalReputationSupply = val.toNumber()
+            }
+          })
+          await rr.totalFreeSupply((err, val) => {
+            if (!err) {
+              totalFreeReputationSupply = val.toNumber()
+            }
+          })
 
-        // let  = (await dt.totalFreeSupply())[0].toNumber()
-        // let = web3.fromWei((await dt.weiBal())[0], 'ether')
-        // let weiBal = (await dt.weiBal())[0].toString()
+          // let  = (await dt.totalFreeSupply())[0].toNumber()
+          // let = web3.fromWei((await dt.weiBal())[0], 'ether')
+          // let weiBal = (await dt.weiBal())[0].toString()
 
-        // let  = (await rr.balances(accounts[0]))[0].toNumber()
-        // let  = (await rr.totalSupply())[0].toNumber()
-        // let  = (await rr.totalFreeSupply())[0].toNumber()
-        await dt.currentPrice((err, val) => {
-          if (!err) {
-            currentPrice = val.toNumber()
-            this.setState({
-              totalTokenSupply,
-              balance,
-              // ethPrice,
-              weiBal,
-              totalFreeTokenSupply,
-              totalReputationSupply,
-              totalFreeReputationSupply,
-              reputationBalance,
-              currentPrice: web3.fromWei(currentPrice, 'ether')
-            })
-          }
-        })
-      } else {
-        console.error('Please Unlock MetaMask')
-      }
+          // let  = (await rr.balances(accounts[0]))[0].toNumber()
+          // let  = (await rr.totalSupply())[0].toNumber()
+          // let  = (await rr.totalFreeSupply())[0].toNumber()
+          await dt.currentPrice((err, val) => {
+            if (!err) {
+              currentPrice = val.toNumber()
+              this.setState({
+                totalTokenSupply,
+                balance,
+                // ethPrice,
+                weiBal,
+                totalFreeTokenSupply,
+                totalReputationSupply,
+                totalFreeReputationSupply,
+                reputationBalance,
+                currentPrice: web3.fromWei(currentPrice, 'ether')
+              })
+            }
+          })
+        } else {
+          console.error('Please Unlock MetaMask')
+        }
+      })
     } catch (error) {
       console.error(error)
     }
