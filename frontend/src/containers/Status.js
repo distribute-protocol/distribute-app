@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-// import { getEthPriceNow } from 'get-eth-price'
-import { Button } from 'reactstrap'
+import { getEthPriceNow } from 'get-eth-price'
+import Button from 'antd/lib/button'
 import {eth, web3, tr, rr, dt} from '../utilities/blockchain'
 
 // import uport from '../utilities/uport'
@@ -96,8 +96,8 @@ class Status extends Component {
         if (accounts.length) {
           // console.log(accounts[0])
           // let balance = (await this.queryUserBalance())
-          // let ethPrice = await getEthPriceNow()
-          // ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
+          let ethPrice = await getEthPriceNow()
+          ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
           let balance,
             totalTokenSupply,
             totalFreeTokenSupply,
@@ -156,7 +156,7 @@ class Status extends Component {
               this.setState({
                 totalTokenSupply,
                 balance,
-                // ethPrice,
+                ethPrice,
                 weiBal,
                 totalFreeTokenSupply,
                 totalReputationSupply,
@@ -274,10 +274,9 @@ class Status extends Component {
             <h5>{Math.round(this.state.balance / this.state.totalTokenSupply * 10000) / 100}%</h5>
             <h3>Eth Pool</h3>
             <h5>{this.state.weiBal} ETH</h5>
-            {
-            // <h3>Capital Equivalent</h3>
-            // <h5>{`$${this.state.ethPrice ? Math.round(this.state.ethPrice * this.state.weiBal) * 100 / 100 : 0}`}</h5>
-            }
+            <h3>Capital Equivalent</h3>
+            <h5>{`$${this.state.ethPrice ? Math.round(this.state.ethPrice * this.state.weiBal) * 100 / 100 : 0}`}</h5>
+
             <h3>Current Token Price in Eth</h3>
             <h5>{this.state.currentPrice}</h5>
           </div>

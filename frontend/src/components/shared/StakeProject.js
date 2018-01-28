@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux'
 import moment from 'moment'
-import { Card, CardBody, CardTitle, CardText, Button, Col } from 'reactstrap'
+// import { Card, CardBody, CardTitle, CardText, Button, Col } from 'reactstrap'
+import { Card, Button } from 'antd'
 import {eth, web3, tr, dt, P} from '../../utilities/blockchain'
 
 
@@ -111,33 +112,29 @@ class StakeProject extends Component {
     if (typeof this.props.stakingEndDate !== 'undefined') { d = moment(this.props.stakingEndDate) }
     // console.log(this.state)
     return (
-      <Col sm='10'>
-        <Card body style={{marginLeft: 10}}>
-          <CardBody>
-            <CardTitle>{`${this.props.description}`}</CardTitle>
-            <CardText>{`${this.props.address}`}</CardText>
-            <CardText>{`${this.props.cost}`} ETH</CardText>
-            <CardText>needs {`${this.state.tokensLeft}`} tokens</CardText>
-            {/* <td>{typeof d !== 'undefined' ? `${d.toLocaleDateString()} ${d.toLocaleTimeString()}` : 'N/A'}</td> */}
-            <CardText>staking expires in {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}</CardText>
-            <input
-              ref={(input) => (this.stakedValue = input)}
-              placeholder='token amount'
-              onChange={() => this.onChange(this.stakedValue.value)}
-              value={this.state.value}
-            />
-            {/* <Button color='primary' onClick={() => this.props.stakeProject(this.state.value)} style={{marginLeft: 10}}>
-              Stake
-            </Button> */}
-            <Button color='primary' onClick={() => this.props.getProjectState()} style={{marginLeft: 10}}>
-              {this.props.projectState}
-            </Button>
-            <Button color='primary' onClick={() => this.props.unstakeProject(this.state.value)} style={{marginLeft: 10}}>
-              Unstake
-            </Button>
-          </CardBody>
-        </Card>
-      </Col>
+      // <Col sm='10'>
+      <Card style={{marginLeft: 10}} title={`${this.props.description}`}>
+        <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
+        <div>{`${this.props.cost}`} ETH</div>
+        <div>needs {`${this.state.tokensLeft}`} tokens</div>
+        {/* <td>{typeof d !== 'undefined' ? `${d.toLocaleDateString()} ${d.toLocaleTimeString()}` : 'N/A'}</td> */}
+        <div>staking expires in {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}</div>
+        <input
+          ref={(input) => (this.stakedValue = input)}
+          placeholder='token amount'
+          onChange={() => this.onChange(this.stakedValue.value)}
+          value={this.state.value}
+        />
+        {/* <Button color='primary' onClick={() => this.props.stakeProject(this.state.value)} style={{marginLeft: 10}}>
+          Stake
+        </Button> */}
+        <Button color='primary' onClick={() => this.props.getProjectState()} style={{marginLeft: 10}}>
+          {this.props.projectState}
+        </Button>
+        <Button color='primary' onClick={() => this.props.unstakeProject(this.state.value)} style={{marginLeft: 10}}>
+          Unstake
+        </Button>
+      </Card>
     )
   }
 }

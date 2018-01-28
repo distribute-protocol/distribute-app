@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { Button, Table } from 'reactstrap'
-import Project from '../components/shared/Project'
+// import { Button, Table } from 'reactstrap'
+import { Button, Table } from 'antd'
+// import Table from 'antd/lib/table'
+// import Project from '../components/shared/Project'
 import { proposeProject } from '../actions/projectActions'
 // import utils from '../utilities/utils'
 import {eth, web3, tr, dt} from '../utilities/blockchain'
 import * as _ from 'lodash'
+import moment from 'moment'
 
 class Propose extends Component {
   constructor () {
@@ -127,8 +130,44 @@ class Propose extends Component {
 
   render () {
     const projects = this.props.projects.projects.map((proj, i) => {
-      return <Project key={i} index={i} address={proj.address} cost={proj.cost} description={proj.description} stakingEndDate={proj.stakingEndDate} />
+ //      key: '1',
+ // name: 'Mike',
+ // age: 32,
+ // address: '10 Downing Street'
+      let d
+      if (typeof proj.stakingEndDate !== 'undefined') { d = moment(proj.stakingEndDate) }
+      return {
+        key: i,
+        index: i,
+        address: proj.address,
+        cost: proj.cost,
+        description: proj.description,
+        stakingEndDate: (typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A')
+      }
+      // return <Project key={i} index={i} address={proj.address} cost={proj.cost} description={proj.description} stakingEndDate={proj.stakingEndDate} />
     })
+    const columns = [{
+      title: '#',
+      dataIndex: 'index',
+      key: 'index'
+    }, {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description'
+    }, {
+      title: 'Address',
+      dataIndex: 'address',
+      key: 'address'
+    }, {
+      title: 'Cost (ether)',
+      dataIndex: 'cost',
+      key: 'cost'
+    }, {
+      title: 'Staking End Date',
+      dataIndex: 'stakingEndDate',
+      key: 'stakingEndDate'
+    }]
+    console.log(projects)
     return (
       <div style={{marginLeft: 200}}>
         <header className='App-header'>
@@ -139,7 +178,8 @@ class Propose extends Component {
           <div style={{marginLeft: 20, marginTop: 40}}>
             <h3>Current Proposals</h3>
             <div style={{display: 'flex', flexDirection: 'column'}}>
-              <Table>
+              <Table dataSource={projects} columns={columns} />
+              {/* <table>
                 <thead>
                   <tr>
                     <th>#</th>
@@ -152,7 +192,7 @@ class Propose extends Component {
                 <tbody>
                   {projects}
                 </tbody>
-              </Table>
+              </table> */}
             </div>
           </div>
           <div style={{marginLeft: 20, marginTop: 40}}>

@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-
-import { Button, CardColumns } from 'reactstrap'
+import { Col, Row } from 'antd'
 import StakeProject from '../components/shared/StakeProject'
 import {eth, web3, tr, dt} from '../utilities/blockchain'
 
@@ -63,16 +62,18 @@ class Stake extends React.Component {
 
   render () {
     const projects = this.props.projects.projects.map((proj, i) => {
-      return <StakeProject
-        key={i}
-        cost={proj.cost}
-        description={proj.description}
-        index={i}
-        stakingEndDate={proj.stakingEndDate}
-        address={proj.address}
-        stakeProject={(val) => this.stakeProject(proj.address, val)}
-        unstakeProject={(val) => this.unstakeProject(proj.address, val)}
-      />
+      return <Col span={8}>
+        <StakeProject
+          key={i}
+          cost={proj.cost}
+          description={proj.description}
+          index={i}
+          stakingEndDate={proj.stakingEndDate}
+          address={proj.address}
+          stakeProject={(val) => this.stakeProject(proj.address, val)}
+          unstakeProject={(val) => this.unstakeProject(proj.address, val)}
+        />
+      </Col>
     })
     return (
       <div style={{marginLeft: 200}}>
@@ -84,8 +85,11 @@ class Stake extends React.Component {
           <div style={{marginLeft: 20, marginTop: 40}}>
             <h3>Stakeable Proposals</h3>
             <div style={{display: 'flex', flexDirection: 'column'}}>
+              <Row type='flex' justify='space-around'>
+                {projects}
+              </Row>
               {/* <CardColumns> */}
-              {projects}
+              {/* {projects} */}
               {/* </CardColumns> */}
             </div>
           </div>
