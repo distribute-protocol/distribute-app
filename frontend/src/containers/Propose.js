@@ -92,32 +92,18 @@ class Propose extends Component {
     let stakeEndDate = (Date.now() + 86400000 * this.state.tempProject.stakingPeriod)
     console.log(stakeEndDate)
     this.setState({tempProject: Object.assign({}, this.state.tempProject, {stakingEndDate: stakeEndDate})})
-    eth.getAccounts((err, accounts) => {
+    eth.getAccounts(async (err, accounts) => {
       if (!err) {
         let cost = parseInt(web3.toWei(this.state.tempProject.cost, 'ether').toString())
         console.log(accounts[0])
-        tr.proposeProject(cost, stakeEndDate, {from: accounts[0]}, (err, txHash) => {
-          if (!err) {
-            eth.getTransactionReceipt(txHash, (err, txReceipt) => {
-              if (!err) {
-                console.log(txReceipt)
-                if (txReceipt.status === 1) {
-                  // console.log('sup', tr.ProjectCreated({},
-                  // {fromBlock: tr.blockNumber, toBlock: txReceipt.blockNumber})
-                  // .get()
-                  // .filter(function (e) {
-                  //   return e.transactionHash === txReceipt.transactionHash
-                  // }))
-                  let projectAddress = '0x' + txReceipt.logs[0].topics[1].slice(txReceipt.logs[0].topics[1].length - 40, (txReceipt.logs[0].topics[1].length))
-                  if (!_.isEmpty(this.state.tempProject)) {
-                    this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress}))
-                    this.setState({tempProject: {}})
-                  }
-                }
-              }
-            })
-          }
-        })
+        let tx = await tr.proposeProject(cost, stakeEndDate, {from: accounts[0]})
+        let txReceipt = tx.receipt
+        console.log(txReceipt)
+        let projectAddress = '0x' + txReceipt.logs[0].topics[1].slice(txReceipt.logs[0].topics[1].length - 40, (txReceipt.logs[0].topics[1].length))
+        if (!_.isEmpty(this.state.tempProject)) {
+          this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress}))
+          this.setState({tempProject: {}})
+        }
       }
     })
   }
