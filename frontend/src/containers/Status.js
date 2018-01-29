@@ -86,13 +86,9 @@ class Status extends Component {
   //   })
   // }
 
-  async getBalance () {
-    try {
-      eth.getAccounts(async (err, accounts) => {
-        // console.log(err, accounts)
-
-      // let accounts = eth.accounts
-      // console.log(accounts)
+  getBalance () {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
         if (accounts.length) {
           // console.log(accounts[0])
           // let balance = (await this.queryUserBalance())
@@ -107,82 +103,53 @@ class Status extends Component {
             totalFreeReputationSupply,
             currentPrice
           // let balance = (await dt.balanceOf(accounts[0]))[0].toNumber()
-          await dt.balanceOf(accounts[0], (err, val) => {
-            if (!err) {
-              balance = val.toNumber()
-            }
-          })
-          await dt.totalSupply((err, val) => {
-            if (!err) {
-              totalTokenSupply = val.toNumber()
-            }
-          })
-          await dt.totalFreeSupply((err, val) => {
-            if (!err) {
-              totalFreeTokenSupply = val.toNumber()
-            }
-          })
-          await dt.weiBal((err, val) => {
-            if (!err) {
-              weiBal = web3.fromWei(val.toNumber(), 'ether')
-            }
-          })
-          await rr.balances(accounts[0], (err, val) => {
-            if (!err) {
-              reputationBalance = val.toNumber()
-            }
-          })
-          await rr.totalSupply((err, val) => {
-            if (!err) {
-              totalReputationSupply = val.toNumber()
-            }
-          })
-          await rr.totalFreeSupply((err, val) => {
-            if (!err) {
-              totalFreeReputationSupply = val.toNumber()
-            }
-          })
+          balance = (await dt.balanceOf(accounts[0])).toNumber()
+          console.log('balance', balance)
+          totalTokenSupply = (await dt.totalSupply()).toNumber()
+          console.log('totalTokenSupply', totalTokenSupply)
+          totalFreeTokenSupply = (await dt.totalFreeSupply()).toNumber()
+          console.log('totalFreeTokenSupply', totalFreeTokenSupply)
+          weiBal = (await dt.weiBal()).toNumber()
+          console.log('weiBal', weiBal)
+          reputationBalance = (await rr.balances(accounts[0])).toNumber()
+          console.log('reputationBalance', reputationBalance)
+          totalReputationSupply = (await rr.totalSupply()).toNumber()
+          console.log('totalReputationSupply', totalReputationSupply)
+          totalFreeReputationSupply = (await rr.totalFreeSupply()).toNumber()
+          console.log('totalFreeReputationSupply', totalFreeReputationSupply)
 
-          // let  = (await dt.totalFreeSupply())[0].toNumber()
-          // let = web3.fromWei((await dt.weiBal())[0], 'ether')
-          // let weiBal = (await dt.weiBal())[0].toString()
-
-          // let  = (await rr.balances(accounts[0]))[0].toNumber()
-          // let  = (await rr.totalSupply())[0].toNumber()
-          // let  = (await rr.totalFreeSupply())[0].toNumber()
-          await dt.currentPrice((err, val) => {
-            if (!err) {
-              currentPrice = val.toNumber()
-              this.setState({
-                totalTokenSupply,
-                balance,
-                ethPrice,
-                weiBal,
-                totalFreeTokenSupply,
-                totalReputationSupply,
-                totalFreeReputationSupply,
-                reputationBalance,
-                currentPrice: web3.fromWei(currentPrice, 'ether')
-              })
-            }
+          currentPrice = (await dt.currentPrice()).toNumber()
+          this.setState({
+            totalTokenSupply,
+            balance,
+            ethPrice,
+            weiBal,
+            totalFreeTokenSupply,
+            totalReputationSupply,
+            totalFreeReputationSupply,
+            reputationBalance,
+            currentPrice: web3.fromWei(currentPrice, 'ether')
           })
         } else {
           console.error('Please Unlock MetaMask')
         }
-      })
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  buyShares () {
-    let accounts = eth.accounts
-    dt.mint(this.tokensToBuy.value, {value: web3.toWei(30, 'ether'), from: accounts[0]}, (err, result) => {
-      if (!err) {
-        this.getBalance()
       }
     })
   }
+
+  async buyShares () {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        if (accounts.length) {
+          await dt.mint(this.tokensToBuy.value, {value: web3.toWei(Math.ceil(this.state.ethToSend * 100000) / 100000, 'ether'), from: accounts[0]})
+          .then(() => {
+            this.getBalance()
+          })
+        }
+      }
+    })
+  }
+
   // model db calls after this function
   async queryUserBalance () {
     // try {
@@ -206,10 +173,14 @@ class Status extends Component {
   }
 
   sellShares () {
-    eth.getAccounts().then((err, accountsArr) => {
+    eth.getAccounts(async (err, accounts) => {
       if (!err) {
-        dt.burnAndRefund(this.tokensToBuy.value, {from: accountsArr[0]})
-        this.getBalance()
+        if (accounts.length) {
+          await dt.sell(this.tokensToBuy.value, {from: accounts[0]})
+          .then(() => {
+            this.getBalance()
+          })
+        }
       }
     })
   }
@@ -227,23 +198,15 @@ class Status extends Component {
     if (val > 0) {
       try {
         let ethRequired, totalSupply, refund
-        await dt.weiRequired(val, (err, result) => {
-          if (!err) {
-            ethRequired = web3.fromWei(result.toNumber(), 'ether')
-          }
+        await dt.weiRequired(val).then(result => {
+          ethRequired = web3.fromWei(result.toNumber(), 'ether')
         })
-        await dt.totalSupply((err, result) => {
-          if (!err) {
-            totalSupply = result.toNumber()
-          }
-        })
+        totalSupply = (await dt.totalSupply()).toNumber()
         if (totalSupply === 0) {
           refund = ethRequired
         } else {
-          await dt.weiBal((err, result) => {
-            if (!err) {
-              refund = web3.fromWei((result.toNumber() / totalSupply * val), 'ether')
-            }
+          await dt.weiBal().then(result => {
+            refund = web3.fromWei((result.toNumber() / totalSupply * val), 'ether')
           })
         }
         this.setState({ethToSend: ethRequired, ethToRefund: refund})

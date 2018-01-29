@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {eth, web3, tr, rr, dt, P} from '../utilities/blockchain'
 import * as _ from 'lodash'
 
-class Claim extends React.Component {
+class Claim extends Component {
   constructor () {
     super()
     this.state = {

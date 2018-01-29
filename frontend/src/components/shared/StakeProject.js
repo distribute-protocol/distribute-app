@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
-import { bindActionCreators } from 'redux';
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
 // import { Card, CardBody, CardTitle, CardText, Button, Col } from 'reactstrap'
 import { Card, Button } from 'antd'
-import {eth, web3, tr, dt, P} from '../../utilities/blockchain'
+import {eth, web3, dt, P} from '../../utilities/blockchain'
 
-
-const getProjectState = () => ({ type: 'GET_PROJECT_STATE' });
+const getProjectState = () => ({ type: 'GET_PROJECT_STATE' })
 
 class StakeProject extends Component {
   constructor () {
@@ -15,82 +14,76 @@ class StakeProject extends Component {
     this.state = {
       value: 0
     }
+    this.getTokensLeft = this.getTokensLeft.bind(this)
   }
 
   getProjectStatus (p) {
-    try {
-      let accounts
-      eth.getAccounts((err, result) => {
-        if (!err) {
-          accounts = result
-          console.log(accounts)
-          if (accounts.length) {
-            let weiBal,
-              weiCost,
-              reputationCost,
-              totalTokensStaked,
-              totalReputationStaked
-            let currentPrice
-            p.weiBal((err, result) => {
-              if (!err) {
-                weiBal = result.toNumber()
-                console.log('weiBal', weiBal)
-                console.log('p', p)
-              }
+    let accounts
+    eth.getAccounts(async (err, result) => {
+      if (!err) {
+        accounts = result
+        console.log(accounts)
+        if (accounts.length) {
+          let weiBal,
+            weiCost,
+            reputationCost,
+            totalTokensStaked,
+            totalReputationStaked
+          let currentPrice
+          p.weiBal().then(result => {
+            weiBal = result.toNumber()
+            console.log('weiBal', weiBal)
+            // console.log('p', p)
+          }).then(() => {
+            p.weiCost().then(result => {
+              weiCost = result.toNumber()
+              console.log('weiCost', weiCost)
             })
-            p.weiCost((err, result) => {
-              if (!err) {
-                weiCost = result.toNumber()
-                console.log('weiCost', weiCost)
-              }
+          }).then(() => {
+            p.reputationCost().then(result => {
+              reputationCost = result.toNumber()
+              console.log('reputationCost', reputationCost)
             })
-          }
+          }).then(() => {
+            p.totalTokensStaked().then(result => {
+              totalTokensStaked = result.toNumber()
+              console.log('totalTokensStaked', totalTokensStaked)
+            })
+          }).then(() => {
+            p.totalReputationStaked().then(result => {
+              totalReputationStaked = result.toNumber()
+              console.log('totalReputationStaked', totalReputationStaked)
+            })
+          }).then(() => {
+            dt.currentPrice().then(result => {
+              currentPrice = result.toNumber()
+              console.log('currentPrice', currentPrice)
+              this.setState({
+                weiBal,
+                weiCost,
+                reputationCost,
+                totalTokensStaked,
+                totalReputationStaked,
+                currentPrice: web3.fromWei(currentPrice, 'ether')
+              })
+              console.log('state', this.state)
+              this.getTokensLeft()
+            })
+          })
         }
-      })
+      }
+    })
+  }
 
-        // await p.weiCost({from: accounts[0]}, (err, val) => {
-        //   if (!err) {
-        //     weiCost = val.toNumber()
-        //     console.log('weiCost', weiCost)
-        //   }
-        // })
-        // await p.reputationCost((err, val) => {
-        //   if (!err) {
-        //     reputationCost = val.toNumber()
-        //     console.log('repCost', reputationCost)
-        //   }
-        // })
-        // await p.totalTokensStaked((err, val) => {
-        //   if (!err) {
-        //     totalTokensStaked = val.toNumber()
-        //     console.log('totalTokens', totalTokensStaked)
-        //   }
-        // })
-        // await p.totalReputationStaked((err, val) => {
-        //   if (!err) {
-        //     totalReputationStaked = val.toNumber()
-        //     console.log('totalRep', totalReputationStaked)
-        //   }
-        // })
-        // dt.currentPrice((err, val) => {
-        //   if (!err) {
-        //     currentPrice = val.toNumber()
-        //     this.setState({
-        //       weiBal,
-        //       // weiCost,
-        //       // reputationCost,
-        //       // totalTokensStaked,
-        //       // totalReputationStaked,
-        //       currentPrice: web3.fromWei(currentPrice, 'ether')
-        //     })
-        //   }
-        // })
-    } catch (error) {
-      console.error(error)
-    }
+  getTokensLeft () {
+    let weiNeeded = this.state.weiCost - this.state.weiBal
+    let tokensLeft = Math.ceil(weiNeeded / web3.toWei(this.state.currentPrice, 'ether'))
+    this.setState({tokensLeft})
+    console.log('tokensLeft', tokensLeft)
   }
 
   componentWillMount () {
+    // let p = P.at(this.props.address)
     let p = P.at(this.props.address)
     // console.log(p)
     this.getProjectStatus(p)

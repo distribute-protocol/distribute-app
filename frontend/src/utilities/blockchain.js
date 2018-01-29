@@ -4,6 +4,7 @@ import { ProjectRegistryABI, ProjectRegistryAddress } from '../abi/ProjectRegist
 import { DistributeTokenABI, DistributeTokenAddress } from '../abi/DistributeToken'
 import { ProjectABI } from '../abi/Project'
 import Web3 from 'web3'
+import contract from 'truffle-contract'
 
 let web3init
 if (typeof web3init !== 'undefined') {
@@ -17,14 +18,33 @@ if (typeof web3init !== 'undefined') {
 export const web3 = web3init
 export const eth = web3init.eth
 
-export const P = web3.eth.contract(JSON.parse(ProjectABI))
-const TR = web3.eth.contract(JSON.parse(TokenRegistryABI))
+// export const P = web3.eth.contract(JSON.parse(ProjectABI))
+// const TR = web3.eth.contract(JSON.parse(TokenRegistryABI))
+// export const tr = TR.at(TokenRegistryAddress)
+// const RR = web3.eth.contract(JSON.parse(ReputationRegistryABI))
+// export const rr = RR.at(ReputationRegistryAddress)
+// const PR = web3.eth.contract(JSON.parse(ProjectRegistryABI))
+// export const pr = PR.at(ProjectRegistryAddress)
+// const DT = web3.eth.contract(JSON.parse(DistributeTokenABI))
+// export const dt = DT.at(DistributeTokenAddress)
+
+const TR = contract({abi: JSON.parse(TokenRegistryABI)})
+TR.setProvider(window.web3.currentProvider)
 export const tr = TR.at(TokenRegistryAddress)
-const RR = web3.eth.contract(JSON.parse(ReputationRegistryABI))
+
+const RR = contract({abi: ReputationRegistryABI})
+RR.setProvider(window.web3.currentProvider)
 export const rr = RR.at(ReputationRegistryAddress)
-const PR = web3.eth.contract(JSON.parse(ProjectRegistryABI))
+
+const PR = contract({abi: ProjectRegistryABI})
+PR.setProvider(window.web3.currentProvider)
 export const pr = PR.at(ProjectRegistryAddress)
-const DT = web3.eth.contract(JSON.parse(DistributeTokenABI))
+
+const DT = contract({abi: DistributeTokenABI})
+DT.setProvider(window.web3.currentProvider)
 export const dt = DT.at(DistributeTokenAddress)
 
-export default {TR, tr, RR, rr, PR, pr, DT, dt}
+export const P = contract({abi: JSON.parse(ProjectABI)})
+P.setProvider(window.web3.currentProvider)
+
+export default {TR, tr, RR, rr, PR, pr, dt, P}
