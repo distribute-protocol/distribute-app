@@ -23,6 +23,7 @@ class Propose extends Component {
     }
 
     this.proposeProject = this.proposeProject.bind(this)
+    this.getCurrentPrice = this.getCurrentPrice.bind(this)
     // this.checkTransactionMined = this.checkTransactionMined.bind(this)
     this.getProjects = this.getProjects.bind(this)
     // window.tr = this.tr
@@ -31,11 +32,7 @@ class Propose extends Component {
 
   componentWillMount () {
     // this.getProjects()
-    dt.currentPrice((err, val) => {
-      if (!err) {
-        this.setState({currPrice: val.toNumber()})
-      }
-    })
+    this.getCurrentPrice()
 
     // let filter = eth.filter({address: tr.address})
     // filter.watch((err, res) => {
@@ -83,6 +80,13 @@ class Propose extends Component {
   //   }
   }
 
+  async getCurrentPrice () {
+    await dt.currentPrice()
+    .then(val => {
+      this.setState({currPrice: val.toNumber()})
+    })
+  }
+
   proposeProject () {
     // stakingPeriod in Days changed to milliseconds
     let stakeEndDate = (Date.now() + 86400000 * this.state.tempProject.stakingPeriod)
@@ -122,6 +126,7 @@ class Propose extends Component {
     try {
       let temp = Object.assign({}, this.state.tempProject, {[type]: val})
       this.setState({tempProject: temp})
+      console.log('tempProject', this.state.tempProject)
       // console.log('set state for description')
     } catch (error) {
       throw new Error(error)

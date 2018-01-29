@@ -9,31 +9,39 @@ class Claim extends Component {
     this.state = {
       projects: []
     }
+    window.state = this.state
   }
+
   componentWillReceiveProps (np) {
     console.log('hey')
     let projectsArr
+
     function projectState (address) {
-      return new Promise((resolve, reject) => {
+      return new Promise(async (resolve, reject) => {
         let proj = P.at(address)
-        proj.isStaked((error, response) => {
-          if (!error) {
-            resolve(response)
-          } else {
-            reject(response)
-          }
-        })
+        let isStaked = await proj.isStaked()
+        // console.log(proj)
+        resolve(isStaked)
+        // proj.isStaked((error, response) => {
+        //   if (!error) {
+        //     resolve(response)
+        //   } else {
+        //     reject(response)
+        //   }
+        // })
       })
     }
-    // console.log(this.props.projects)
+    // console.log(np.projects)
     let projects = np.projects.map((project, i) => {
+      console.log(project)
       return projectState(project.address)
         .then(state => {
+          console.log(state)
           if (state) {
             // return JSON.stringify(project)
             return <div key={i}>
               <div>Address: {project.address}</div>
-              <div>Cost: {project.cost}</div>
+              <div>Cost: {project.cost} ETH</div>
               <div>Description: {project.description}</div>
               <div>Staking End Period: {project.stakingEndDate}</div>
             </div>
@@ -51,6 +59,7 @@ class Claim extends Component {
         console.error(e)
       })
   }
+
   render () {
     return (
       <div style={{marginLeft: 200, width: 400, height: 600}}>
