@@ -125,11 +125,8 @@ class StakeProject extends Component {
           onChange={() => this.onChange(this.stakedValue.value)}
           value={this.state.value}
         />
-        {/* <Button color='primary' onClick={() => this.props.stakeProject(this.state.value)} style={{marginLeft: 10}}>
+        <Button color='primary' onClick={() => this.props.stakeProject(this.state.value)} style={{marginLeft: 10}}>
           Stake
-        </Button> */}
-        <Button color='primary' onClick={() => this.props.getProjectState()} style={{marginLeft: 10}}>
-          {this.props.projectState}
         </Button>
         <Button color='primary' onClick={() => this.props.unstakeProject(this.state.value)} style={{marginLeft: 10}}>
           Unstake
