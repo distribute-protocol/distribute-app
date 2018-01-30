@@ -21,7 +21,6 @@ class Status extends Component {
     this.register = this.register.bind(this)
     window.tr = tr
     window.rr = rr
-    window.accounts = eth.accounts
   }
   login () {
     // uport.requestCredentials({
@@ -194,7 +193,7 @@ class Status extends Component {
     })
   }
 
-  async onChange (val) {
+  onChange (val) {
     if (val > 0) {
       try {
         let ethRequired, totalSupply, refund
@@ -239,7 +238,6 @@ class Status extends Component {
             <h5>{this.state.weiBal} ETH</h5>
             <h3>Capital Equivalent</h3>
             <h5>{`$${this.state.ethPrice ? Math.round(this.state.ethPrice * this.state.weiBal) * 100 / 100 : 0}`}</h5>
-
             <h3>Current Token Price in Eth</h3>
             <h5>{this.state.currentPrice}</h5>
           </div>

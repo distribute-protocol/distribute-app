@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
-// import { Card, CardBody, CardTitle, CardText, Button, Col } from 'reactstrap'
 import { Card, Button } from 'antd'
 import {eth, web3, dt, P} from '../../utilities/blockchain'
 
@@ -85,9 +84,11 @@ class StakeProject extends Component {
   componentWillMount () {
     // let p = P.at(this.props.address)
     let p = P.at(this.props.address)
+    let p2 = gorbeon.at(this.props.address)
+    window.p2 = p2
     // console.log(p)
     this.getProjectStatus(p)
-    this.setState({project: p})
+    this.setState({project: p, p2})
   }
 
   onChange (val) {
@@ -97,6 +98,11 @@ class StakeProject extends Component {
     } catch (error) {
       throw new Error(error)
     }
+  }
+
+  stakeProject () {
+    this.props.stakeProject(this.state.value, () => { console.log('entering the void'); this.getProjectStatus(this.state.project) })
+    this.setState({value: 0})
   }
 
   render () {

@@ -30,6 +30,7 @@
     "mongodb": "^3.0.0-rc0",
     "redux-observable": "^0.17.0",
     "solc": "^0.4.19",
+    "truffle-contract": "^3.0.2",
     "truffle-hdwallet-provider": "0.0.3"
   },
   "devDependencies": {

@@ -8,6 +8,7 @@ import { Button, Table } from 'antd'
 import { proposeProject } from '../actions/projectActions'
 // import utils from '../utilities/utils'
 import {eth, web3, tr, dt} from '../utilities/blockchain'
+import utils from '../utilities/utils'
 import * as _ from 'lodash'
 import moment from 'moment'
 

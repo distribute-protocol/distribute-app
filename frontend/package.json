@@ -24,7 +24,11 @@
     "redux-persist": "^4.10.1",
     "redux-saga": "^0.15.6",
     "redux-thunk": "^2.2.0",
+<<<<<<< HEAD
     "rxjs": "^5.5.6",
+=======
+    "rxjs": "5",
+>>>>>>> 1b3fcf882c00c39ad6b6e12b0d330dae286e5a7f
     "truffle-contract": "^3.0.2",
     "truffle-hdwallet-provider": "0.0.3",
     "uport-connect": "^0.7.0",
