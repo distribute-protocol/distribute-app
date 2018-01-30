@@ -1,8 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Col, Row } from 'antd'
-import {eth, web3, tr, rr, dt, P} from '../utilities/blockchain'
+import {eth, web3, tr, rr, pr, dt, P} from '../utilities/blockchain'
 import ClaimProject from '../components/shared/ClaimProject'
+import hashing from '../utilities/hashing'
 import * as _ from 'lodash'
 
 class Claim extends React.Component {
@@ -12,10 +13,12 @@ class Claim extends React.Component {
       projects: []
     }
     window.state = this.state
+    this.hashListForSubmission = this.hashListForSubmission.bind(this)
+    this.hashTasksForAddition = this.hashTasksForAddition.bind(this)
+
   }
 
   componentWillReceiveProps (np) {
-    console.log('hey')
     let projectsArr
 
     function projectState (address) {
@@ -44,7 +47,7 @@ class Claim extends React.Component {
         // Handle results
         projectsArr = _.compact(results)
         this.setState({projects: projectsArr})
-        console.log(projectsArr)
+        console.log('projectsArr', projectsArr)
         // console.log(this.state.projects)
       })
       .catch(e => {
@@ -54,7 +57,41 @@ class Claim extends React.Component {
 
   addTaskHash (projectAddress, val) {
     console.log('taskHash', projectAddress, val)
+    let hashedVal = this.hashTasksForAddition(val)
+    console.log('hashedVal', hashedVal)
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        console.log(accounts)
+        await pr.addTaskHash(projectAddress, hashedVal, {from: accounts[0]})
+      }
+    })
   }
+
+  hashTasksForAddition (data) {
+    let hashList = this.hashListForSubmission(data)
+    hashList.map(arr => arr.slice(2))
+    let numArgs = hashList.length
+    let args = 'bytes32'.concat(' bytes32'.repeat(numArgs - 1)).split(' ')
+    let taskHash = hashing.keccakHashes(args, hashList)
+    // console.log('0x' + taskHash)
+    return '0x' + taskHash
+  }
+
+  hashListForSubmission (data) {
+    let tasks = data.split(',')     // split tasks up
+    console.log(tasks)
+    let taskHashArray = []
+    let args = ['string']     // CHANGE THIS WHEN ACTUALLY FORMATTING DATA CORRECTLY
+    // let args = ['bytes32', 'bytes32', 'bytes32']
+    for (var i = 0; i < tasks.length; i++) {
+      let thisTask = tasks[i].split(';')  // split each task into elements
+      console.log(thisTask)
+      taskHashArray.push('0x' + hashing.keccakHashes(args, thisTask))
+    }
+    console.log(taskHashArray)
+    return taskHashArray
+  }
+
 
   render () {
     const projects = this.state.projects.map((proj, i) => {
@@ -66,7 +103,7 @@ class Claim extends React.Component {
           index={i}
           taskHashEndDate={proj.taskHashEndDate}
           address={proj.address}
-          addTask={(val) => this.addTaskHash(proj.address, val)}
+          addTaskHash={(val) => this.addTaskHash(proj.address, val)}
         />
       </Col>
     })

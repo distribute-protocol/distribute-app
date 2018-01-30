@@ -1,19 +1,20 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
 // import { Card, CardBody, CardTitle, CardText, Button, Col } from 'reactstrap'
 import { Card, Button } from 'antd'
-import {eth, web3, dt, P} from '../../utilities/blockchain'
+import {eth, web3, dt, pr, P} from '../../utilities/blockchain'
 
 const getProjectState = () => ({ type: 'GET_PROJECT_STATE' })
 
-class ClaimProject extends Component {
+class ClaimProject extends React.Component {
   constructor () {
     super()
     this.state = {
       value: ''
     }
+    window.pr = pr
   }
 
   onChange (val) {
@@ -25,15 +26,54 @@ class ClaimProject extends Component {
     }
   }
 
+  getProjectStatus (p) {
+    let accounts
+    eth.getAccounts(async (err, result) => {
+      if (!err) {
+        accounts = result
+        console.log('accounts', accounts)
+        if (accounts.length) {
+          let nextDeadline,
+            taskHashes
+          p.nextDeadline().then(result => {
+            nextDeadline = result.toNumber()
+            console.log('nextDeadline', nextDeadline)
+            // console.log('p', p)
+          })
+          // .then(() => {
+          //   pr.projectTaskList(this.props.address).then(result => {
+          //     console.log(result)
+          //     taskHashes = result.toNumber()
+          //     console.log('taskHashes', taskHashes)
+          //     this.setState({
+          //       nextDeadline,
+          //       taskHashes
+          //     })
+          //     console.log('state', this.state)
+          //   })
+          // })
+        }
+      }
+    })
+  }
+
+  componentWillMount () {
+    // let p = P.at(this.props.address)
+    let p = P.at(this.props.address)
+    console.log(p, this.props.address)
+    this.getProjectStatus(p)
+    this.setState({project: p})
+  }
+
   render () {
     let d
     // if (typeof stakingEndDate !== 'undefined') { d = new Date(stakingEndDate) }
-    if (typeof this.props.taskHashEndDate !== 'undefined') { d = moment(this.props.taskHashEndDate) }
+    if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
     // console.log(this.state)
     return (
       // <Col sm='10'>
       <Card style={{marginLeft: 10}} title={`${this.props.description}`}>
-        {/* <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div> */}
+        <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
         {/* <div>{`${this.props.cost}`} ETH</div> */}
         {/* <td>{typeof d !== 'undefined' ? `${d.toLocaleDateString()} ${d.toLocaleTimeString()}` : 'N/A'}</td> */}
         <div>task submission expires in {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}</div>
@@ -43,7 +83,7 @@ class ClaimProject extends Component {
           onChange={() => this.onChange(this.stakedValue.value)}
           value={this.state.value}
         />
-        <Button color='primary' onClick={() => this.props.addTask(this.state.value)} style={{marginLeft: 10}}>
+        <Button color='primary' onClick={() => this.props.addTaskHash(this.state.value)} style={{marginLeft: 10}}>
           Add Task
         </Button>
       </Card>

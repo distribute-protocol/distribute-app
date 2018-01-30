@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Col, Row } from 'antd'
 import StakeProject from '../components/shared/StakeProject'
-import {eth, web3, tr, dt} from '../utilities/blockchain'
+import { eth, web3, tr, dt } from '../utilities/blockchain'
 
 class Stake extends React.Component {
   constructor () {

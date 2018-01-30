@@ -14,7 +14,6 @@ class StakeProject extends Component {
     this.state = {
       value: 0
     }
-    this.getTokensLeft = this.getTokensLeft.bind(this)
   }
 
   getProjectStatus (p) {
@@ -98,6 +97,16 @@ class StakeProject extends Component {
       throw new Error(error)
     }
   }
+
+  // stakeProject (val) {
+  //   this.setState({value: 0})
+  //   console.log('stake')
+  // }
+  //
+  // unstakeProject (val) {
+  //   this.setState({value: 0})
+  //   console.log('unstake')
+  // }
 
   render () {
     let d
