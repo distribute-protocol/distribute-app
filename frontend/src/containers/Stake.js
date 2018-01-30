@@ -26,7 +26,7 @@ class Stake extends React.Component {
     //   }
     // })
   }
-  stakeProject (address, val) {
+  stakeProject (address, val, cb) {
     console.log(address, val)
     eth.getAccounts((err, accounts) => {
       if (!err) {
@@ -35,6 +35,8 @@ class Stake extends React.Component {
             eth.getTransactionReceipt(txHash, (err, txReceipt) => {
               if (!err) {
                 console.log(txReceipt)
+                console.log('ether is a ponzi schemeeeee')
+                setTimeout(cb, 4000)
               }
             })
           }
@@ -43,7 +45,7 @@ class Stake extends React.Component {
     })
   }
 
-  unstakeProject (address, val) {
+  unstakeProject (address, val, cb) {
     console.log(address, val)
     eth.getAccounts((err, accounts) => {
       if (!err) {
@@ -52,6 +54,7 @@ class Stake extends React.Component {
             eth.getTransactionReceipt(txHash, (err, txReceipt) => {
               if (!err) {
                 console.log(txReceipt)
+                cb()
               }
             })
           }

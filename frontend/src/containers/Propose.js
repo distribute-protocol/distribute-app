@@ -8,6 +8,7 @@ import { Button, Table } from 'antd'
 import { proposeProject } from '../actions/projectActions'
 // import utils from '../utilities/utils'
 import {eth, web3, tr, dt} from '../utilities/blockchain'
+import utils from '../utilities/utils'
 import * as _ from 'lodash'
 import moment from 'moment'
 
@@ -83,7 +84,7 @@ class Propose extends Component {
   //   }
   }
 
-  proposeProject () {
+  async proposeProject () {
     // stakingPeriod in Days changed to milliseconds
     let stakeEndDate = (Date.now() + 86400000 * this.state.tempProject.stakingPeriod)
     console.log(stakeEndDate)
@@ -92,26 +93,28 @@ class Propose extends Component {
       if (!err) {
         let cost = parseInt(web3.toWei(this.state.tempProject.cost, 'ether').toString())
         console.log(accounts[0])
-        tr.proposeProject(cost, stakeEndDate, {from: accounts[0]}, (err, txHash) => {
+        tr.proposeProject(cost, stakeEndDate, {from: accounts[0]}, async (err, txHash) => {
           if (!err) {
-            eth.getTransactionReceipt(txHash, (err, txReceipt) => {
-              if (!err) {
-                console.log(txReceipt)
-                if (txReceipt.status === 1) {
-                  // console.log('sup', tr.ProjectCreated({},
-                  // {fromBlock: tr.blockNumber, toBlock: txReceipt.blockNumber})
-                  // .get()
-                  // .filter(function (e) {
-                  //   return e.transactionHash === txReceipt.transactionHash
-                  // }))
-                  let projectAddress = '0x' + txReceipt.logs[0].topics[1].slice(txReceipt.logs[0].topics[1].length - 40, (txReceipt.logs[0].topics[1].length))
-                  if (!_.isEmpty(this.state.tempProject)) {
-                    this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress}))
-                    this.setState({tempProject: {}})
-                  }
-                }
-              }
-            })
+            let x = await utils.checkTransactionMined(txHash)
+            console.log(x)
+            // eth.getTransactionReceipt(txHash, (err, txReceipt) => {
+            //   if (!err) {
+            //     console.log('txReceipt', txReceipt)
+            //     if (txReceipt.status === 1) {
+            //       // console.log('sup', tr.ProjectCreated({},
+            //       // {fromBlock: tr.blockNumber, toBlock: txReceipt.blockNumber})
+            //       // .get()
+            //       // .filter(function (e) {
+            //       //   return e.transactionHash === txReceipt.transactionHash
+            //       // }))
+            //       let projectAddress = '0x' + txReceipt.logs[0].topics[1].slice(txReceipt.logs[0].topics[1].length - 40, (txReceipt.logs[0].topics[1].length))
+            //       if (!_.isEmpty(this.state.tempProject)) {
+            //         this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress}))
+            //         this.setState({tempProject: {}})
+            //       }
+            //     }
+            //   }
+            // })
           }
         })
       }

@@ -21,7 +21,6 @@ class Status extends Component {
     this.register = this.register.bind(this)
     window.tr = tr
     window.rr = rr
-    window.accounts = eth.accounts
   }
   login () {
     // uport.requestCredentials({
@@ -177,7 +176,7 @@ class Status extends Component {
 
   buyShares () {
     let accounts = eth.accounts
-    dt.mint(this.tokensToBuy.value, {value: web3.toWei(30, 'ether'), from: accounts[0]}, (err, result) => {
+    dt.mint(this.tokensToBuy.value, {value: web3.toWei(this.state.ethToSend, 'ether'), from: accounts[0]}, (err, result) => {
       if (!err) {
         this.getBalance()
       }
@@ -223,30 +222,31 @@ class Status extends Component {
     })
   }
 
-  async onChange (val) {
+  onChange (val) {
     if (val > 0) {
       try {
         let ethRequired, totalSupply, refund
-        await dt.weiRequired(val, (err, result) => {
+        dt.weiRequired(val, (err, result) => {
           if (!err) {
             ethRequired = web3.fromWei(result.toNumber(), 'ether')
+            dt.totalSupply((err, result) => {
+              if (!err) {
+                totalSupply = result.toNumber()
+                if (totalSupply === 0) {
+                  refund = ethRequired
+                  this.setState({ethToSend: ethRequired, ethToRefund: refund})
+                } else {
+                  dt.weiBal((err, result) => {
+                    if (!err) {
+                      refund = web3.fromWei((result.toNumber() / totalSupply * val), 'ether')
+                      this.setState({ethToSend: ethRequired, ethToRefund: refund})
+                    }
+                  })
+                }
+              }
+            })
           }
         })
-        await dt.totalSupply((err, result) => {
-          if (!err) {
-            totalSupply = result.toNumber()
-          }
-        })
-        if (totalSupply === 0) {
-          refund = ethRequired
-        } else {
-          await dt.weiBal((err, result) => {
-            if (!err) {
-              refund = web3.fromWei((result.toNumber() / totalSupply * val), 'ether')
-            }
-          })
-        }
-        this.setState({ethToSend: ethRequired, ethToRefund: refund})
       } catch (error) {
         throw new Error(error)
       }
@@ -276,7 +276,6 @@ class Status extends Component {
             <h5>{this.state.weiBal} ETH</h5>
             <h3>Capital Equivalent</h3>
             <h5>{`$${this.state.ethPrice ? Math.round(this.state.ethPrice * this.state.weiBal) * 100 / 100 : 0}`}</h5>
-
             <h3>Current Token Price in Eth</h3>
             <h5>{this.state.currentPrice}</h5>
           </div>
