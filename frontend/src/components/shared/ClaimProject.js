@@ -31,27 +31,28 @@ class ClaimProject extends React.Component {
     eth.getAccounts(async (err, result) => {
       if (!err) {
         accounts = result
-        console.log('accounts', accounts)
+        // console.log('accounts', accounts)
         if (accounts.length) {
           let nextDeadline,
             taskHashes
           p.nextDeadline().then(result => {
             nextDeadline = result.toNumber()
-            console.log('nextDeadline', nextDeadline)
+            // this.setState
+            // console.log('nextDeadline', nextDeadline)
             // console.log('p', p)
           })
-          // .then(() => {
-          //   pr.projectTaskList(this.props.address).then(result => {
-          //     console.log(result)
-          //     taskHashes = result.toNumber()
-          //     console.log('taskHashes', taskHashes)
-          //     this.setState({
-          //       nextDeadline,
-          //       taskHashes
-          //     })
-          //     console.log('state', this.state)
-          //   })
-          // })
+          .then(() => {
+            pr.projectTaskList.call(this.props.address).then(result => {
+              // console.log(result)
+              // taskHashes = result.toNumber()
+              // console.log('taskHashes', taskHashes)
+              // this.setState({
+              //   nextDeadline,
+              //   taskHashes
+              })
+              console.log('state', this.state)
+            // })
+          })
         }
       }
     })
@@ -60,7 +61,7 @@ class ClaimProject extends React.Component {
   componentWillMount () {
     // let p = P.at(this.props.address)
     let p = P.at(this.props.address)
-    console.log(p, this.props.address)
+    // console.log(p, this.props.address)
     this.getProjectStatus(p)
     this.setState({project: p})
   }
@@ -70,9 +71,10 @@ class ClaimProject extends React.Component {
     // if (typeof stakingEndDate !== 'undefined') { d = new Date(stakingEndDate) }
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
     // console.log(this.state)
+    console.log(this.state.nextDeadline)
     return (
       // <Col sm='10'>
-      <Card style={{marginLeft: 10}} title={`${this.props.description}`}>
+      <Card title={`${this.props.description}`}>
         <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
         {/* <div>{`${this.props.cost}`} ETH</div> */}
         {/* <td>{typeof d !== 'undefined' ? `${d.toLocaleDateString()} ${d.toLocaleTimeString()}` : 'N/A'}</td> */}

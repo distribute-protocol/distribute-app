@@ -15,12 +15,12 @@ import Vote from './Vote'
 const Main = () =>
   <main>
     <div style={{height: '100vh', width: 200, backgroundColor: '#111111', position: 'fixed', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-      <div style={{width: 100, height: 100, borderRadius: 50, backgroundColor: '#fcfcfc', marginTop: 30}}>
-      </div>
+      <h1 className='App-title' style={{color: 'white', marginTop: 20}}>distribute</h1>
+      <div style={{width: 100, height: 100, borderRadius: 50, backgroundColor: '#fcfcfc', marginTop: 20}} />
       <h3 style={{color: '#FCFCFC', marginTop: 15}}>Yelnif Akohsa</h3>
-      <div style={{alignItems: 'flex-start', marginTop: 30}}>
+      <div style={{alignItems: 'flex-start', marginTop: 20}}>
         <a href='/status'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Status</h3></a>
-        <a href='/projects'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Current Projects</h3></a>
+        {/* <a href='/projects'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Current Projects</h3></a> */}
         <a href='/propose'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Propose</h3></a>
         <a href='/stake'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Stake</h3></a>
         <a href='/claim'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Claim</h3></a>
@@ -29,7 +29,7 @@ const Main = () =>
       </div>
     </div>
     <Switch>
-    <Route exact path='/' component={Status} />
+      <Route exact path='/' component={Status} />
       <Route path='/status' component={Status} />
       <Route path='/projects' component={CurrentProjects} />
       <Route path='/propose' component={Propose} />

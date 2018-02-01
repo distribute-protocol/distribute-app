@@ -90,15 +90,15 @@ class Propose extends Component {
   proposeProject () {
     // stakingPeriod in Days changed to milliseconds
     let stakeEndDate = (Date.now() + 86400000 * this.state.tempProject.stakingPeriod)
-    console.log(stakeEndDate)
+    // console.log(stakeEndDate)
     this.setState({tempProject: Object.assign({}, this.state.tempProject, {stakingEndDate: stakeEndDate})})
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         let cost = parseInt(web3.toWei(this.state.tempProject.cost, 'ether').toString())
-        console.log(accounts[0])
+        // console.log(accounts[0])
         let tx = await tr.proposeProject(cost, stakeEndDate, {from: accounts[0]})
         let txReceipt = tx.receipt
-        console.log(txReceipt)
+        // console.log(txReceipt)
         let projectAddress = '0x' + txReceipt.logs[0].topics[1].slice(txReceipt.logs[0].topics[1].length - 40, (txReceipt.logs[0].topics[1].length))
         if (!_.isEmpty(this.state.tempProject)) {
           this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress}))
@@ -112,7 +112,7 @@ class Propose extends Component {
     try {
       let temp = Object.assign({}, this.state.tempProject, {[type]: val})
       this.setState({tempProject: temp})
-      console.log('tempProject', this.state.tempProject)
+      // console.log('tempProject', this.state.tempProject)
       // console.log('set state for description')
     } catch (error) {
       throw new Error(error)
@@ -158,32 +158,16 @@ class Propose extends Component {
       dataIndex: 'stakingEndDate',
       key: 'stakingEndDate'
     }]
-    console.log(projects)
     return (
       <div style={{marginLeft: 200}}>
         <header className='App-header'>
           {/* <img src={logoclassName='App-logo' alt='logo' /> */}
-          <h1 className='App-title'>distribute</h1>
+          <h3 className='App-title'>Current Proposals</h3>
         </header>
         <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
           <div style={{marginLeft: 20, marginTop: 40}}>
-            <h3>Current Proposals</h3>
             <div style={{display: 'flex', flexDirection: 'column'}}>
               <Table dataSource={projects} columns={columns} />
-              {/* <table>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Project Description</th>
-                    <th>Project Address</th>
-                    <th>Project Cost (ether)</th>
-                    <th>Staking End Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {projects}
-                </tbody>
-              </table> */}
             </div>
           </div>
           <div style={{marginLeft: 20, marginTop: 40}}>

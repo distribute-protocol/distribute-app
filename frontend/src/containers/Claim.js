@@ -47,7 +47,7 @@ class Claim extends React.Component {
         // Handle results
         projectsArr = _.compact(results)
         this.setState({projects: projectsArr})
-        console.log('projectsArr', projectsArr)
+        // console.log('projectsArr', projectsArr)
         // console.log(this.state.projects)
       })
       .catch(e => {
@@ -92,10 +92,9 @@ class Claim extends React.Component {
     return taskHashArray
   }
 
-
   render () {
     const projects = this.state.projects.map((proj, i) => {
-      return <Col span={8}>
+      return <Col span={8} key={i}>
         <ClaimProject
           key={i}
           cost={proj.cost}
@@ -111,20 +110,13 @@ class Claim extends React.Component {
       <div style={{marginLeft: 200}}>
         <header className='App-header'>
           {/* <img src={logoclassName='App-logo' alt='logo' /> */}
-          <h1 className='App-title'>distribute</h1>
+          {/* <h1 className='App-title'>distribute</h1> */}
+          <h3>Open Proposals</h3>
         </header>
-        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-          <div style={{marginLeft: 20, marginTop: 40}}>
-            <h3>Open Proposals</h3>
-            <div style={{display: 'flex', flexDirection: 'column'}}>
-              <Row type='flex' justify='space-around'>
-                {projects}
-              </Row>
-              {/* <CardColumns> */}
-              {/* {projects} */}
-              {/* </CardColumns> */}
-            </div>
-          </div>
+        <div style={{ padding: '30px' }}>
+          <Row gutter={16}>
+            {projects}
+          </Row>
         </div>
       </div>
     )

@@ -31,32 +31,32 @@ class StakeProject extends Component {
           let currentPrice
           p.weiBal().then(result => {
             weiBal = result.toNumber()
-            console.log('weiBal', weiBal)
+            // console.log('weiBal', weiBal)
             // console.log('p', p)
           }).then(() => {
             p.weiCost().then(result => {
               weiCost = result.toNumber()
-              console.log('weiCost', weiCost)
+              // console.log('weiCost', weiCost)
             })
           }).then(() => {
             p.reputationCost().then(result => {
               reputationCost = result.toNumber()
-              console.log('reputationCost', reputationCost)
+              // console.log('reputationCost', reputationCost)
             })
           }).then(() => {
             p.totalTokensStaked().then(result => {
               totalTokensStaked = result.toNumber()
-              console.log('totalTokensStaked', totalTokensStaked)
+              // console.log('totalTokensStaked', totalTokensStaked)
             })
           }).then(() => {
             p.totalReputationStaked().then(result => {
               totalReputationStaked = result.toNumber()
-              console.log('totalReputationStaked', totalReputationStaked)
+              // console.log('totalReputationStaked', totalReputationStaked)
             })
           }).then(() => {
             dt.currentPrice().then(result => {
               currentPrice = result.toNumber()
-              console.log('currentPrice', currentPrice)
+              // console.log('currentPrice', currentPrice)
               this.setState({
                 weiBal,
                 weiCost,
@@ -115,24 +115,27 @@ class StakeProject extends Component {
     // console.log(this.state)
     return (
       // <Col sm='10'>
-      <Card style={{marginLeft: 10}} title={`${this.props.description}`}>
+      <Card title={`${this.props.description}`}>
         <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
         <div>{`${this.props.cost}`} ETH</div>
         <div>needs {`${this.state.tokensLeft}`} tokens</div>
         {/* <td>{typeof d !== 'undefined' ? `${d.toLocaleDateString()} ${d.toLocaleTimeString()}` : 'N/A'}</td> */}
         <div>staking expires in {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}</div>
-        <input
-          ref={(input) => (this.stakedValue = input)}
-          placeholder='token amount'
-          onChange={() => this.onChange(this.stakedValue.value)}
-          value={this.state.value}
-        />
-        <Button color='primary' onClick={() => this.props.stakeProject(this.state.value)} style={{marginLeft: 10}}>
-          Stake
-        </Button>
-        <Button color='primary' onClick={() => this.props.unstakeProject(this.state.value)} style={{marginLeft: 10}}>
-          Unstake
-        </Button>
+        <div style={{display: 'flex', flexDirection: 'horizontal'}}>
+          <input
+            style={{width: 120}}
+            ref={(input) => (this.stakedValue = input)}
+            placeholder='token amount'
+            onChange={() => this.onChange(this.stakedValue.value)}
+            value={this.state.value}
+          />
+          <Button color='primary' onClick={() => this.props.stakeProject(this.state.value)} style={{marginLeft: 10}}>
+            Stake
+          </Button>
+          <Button color='primary' onClick={() => this.props.unstakeProject(this.state.value)} style={{marginLeft: 10}}>
+            Unstake
+          </Button>
+        </div>
       </Card>
     )
   }
