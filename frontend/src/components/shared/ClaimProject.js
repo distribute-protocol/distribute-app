@@ -49,8 +49,8 @@ class ClaimProject extends React.Component {
               // this.setState({
               //   nextDeadline,
               //   taskHashes
-              })
-              console.log('state', this.state)
+            })
+            console.log('state', this.state)
             // })
           })
         }
@@ -74,7 +74,7 @@ class ClaimProject extends React.Component {
     console.log(this.state.nextDeadline)
     return (
       // <Col sm='10'>
-      <Card title={`${this.props.description}`}>
+      <Card title={`${this.props.description}`} min-width='400'>
         <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
         {/* <div>{`${this.props.cost}`} ETH</div> */}
         {/* <td>{typeof d !== 'undefined' ? `${d.toLocaleDateString()} ${d.toLocaleTimeString()}` : 'N/A'}</td> */}

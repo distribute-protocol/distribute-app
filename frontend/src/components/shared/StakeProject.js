@@ -116,7 +116,7 @@ class StakeProject extends Component {
     // console.log(this.state)
     return (
       // <Col sm='10'>
-      <Card title={`${this.props.description}`}>
+      <Card title={`${this.props.description}`} min-width='400'>
         <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
         <div>{`${this.props.cost}`} ETH</div>
         <div>needs {`${this.state.tokensLeft}`} tokens</div>
