@@ -196,7 +196,7 @@ class Propose extends Component {
               />
             </div>
             <div style={{marginTop: 20}}>
-              <h4>{`You have to deposit ${typeof this.state.tempProject.cost === 'undefined' ? 0 : ((web3.toWei(this.state.tempProject.cost, 'ether') / 20) / this.state.currPrice)} tokens`}</h4>
+              <h4>{`You have to deposit ${typeof this.state.tempProject.cost === 'undefined' ? 0 : Math.ceil((web3.toWei(this.state.tempProject.cost, 'ether') / 20) / this.state.currPrice)} tokens`}</h4>
             </div>
             <div style={{marginTop: 20}}>
               <Button color='info' onClick={this.proposeProject} style={{marginLeft: 10}}>

@@ -15,7 +15,6 @@ class Claim extends React.Component {
     window.state = this.state
     this.hashListForSubmission = this.hashListForSubmission.bind(this)
     this.hashTasksForAddition = this.hashTasksForAddition.bind(this)
-
   }
 
   componentWillReceiveProps (np) {
