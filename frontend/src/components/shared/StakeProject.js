@@ -12,7 +12,8 @@ class StakeProject extends Component {
   constructor () {
     super()
     this.state = {
-      value: 0
+      value: 0,
+      tokensToStake: ''
     }
   }
 
@@ -91,22 +92,22 @@ class StakeProject extends Component {
 
   onChange (val) {
     try {
-      this.setState({value: val})
+      this.setState({tokensToStake: val})
       // console.log('set state for description')
     } catch (error) {
       throw new Error(error)
     }
   }
 
-  // stakeProject (val) {
-  //   this.setState({value: 0})
-  //   console.log('stake')
-  // }
-  //
-  // unstakeProject (val) {
-  //   this.setState({value: 0})
-  //   console.log('unstake')
-  // }
+  stakeProject () {
+    this.props.stakeProject(this.state.tokensToStake)
+    this.setState({tokensToStake: ''})
+  }
+
+  unstakeProject () {
+    this.props.unstakeProject(this.state.tokensToStake)
+    this.setState({tokensToStake: ''})
+  }
 
   render () {
     let d
@@ -127,12 +128,12 @@ class StakeProject extends Component {
             ref={(input) => (this.stakedValue = input)}
             placeholder='token amount'
             onChange={() => this.onChange(this.stakedValue.value)}
-            value={this.state.value}
+            value={this.state.tokensToStake}
           />
-          <Button color='primary' onClick={() => this.props.stakeProject(this.state.value)} style={{marginLeft: 10}}>
+          <Button color='primary' onClick={() => this.stakeProject()} style={{marginLeft: 10}}>
             Stake
           </Button>
-          <Button color='primary' onClick={() => this.props.unstakeProject(this.state.value)} style={{marginLeft: 10}}>
+          <Button color='primary' onClick={() => this.unstakeProject()} style={{marginLeft: 10}}>
             Unstake
           </Button>
         </div>

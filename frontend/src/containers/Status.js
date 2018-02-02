@@ -11,7 +11,8 @@ class Status extends Component {
   constructor () {
     super()
     this.state = {
-      value: 0
+      value: 0,
+      tokensToBuy: ''
     }
     this.buyShares = this.buyShares.bind(this)
     this.sellShares = this.sellShares.bind(this)
@@ -201,6 +202,7 @@ class Status extends Component {
   }
 
   async onChange (val) {
+    this.setState({tokensToBuy: val})
     if (val > 0) {
       try {
         let ethRequired, totalSupply, refund

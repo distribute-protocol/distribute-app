@@ -33,6 +33,7 @@ class Stake extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         await tr.stakeTokens(address, val, {from: accounts[0]})
+        console.log('staked', val, 'tokens on', address)
       }
     })
   }
@@ -78,6 +79,7 @@ class Stake extends React.Component {
         console.error(e)
       })
   }
+
   render () {
     const projects = this.state.projects.map((proj, i) => {
       return <Col span={8} key={i}>
