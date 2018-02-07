@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
 // import { Card, CardBody, CardTitle, CardText, Button, Col } from 'reactstrap'
-import { Card, Button } from 'antd'
+import { Card, Button, Table } from 'antd'
 import {eth, web3, dt, pr, P} from '../../utilities/blockchain'
 
 const getProjectState = () => ({ type: 'GET_PROJECT_STATE' })
@@ -17,10 +17,10 @@ class ClaimProject extends React.Component {
     window.pr = pr
   }
 
-  onChange (val) {
+  onChange (value, val) {
     try {
       this.setState({value: val})
-      // console.log('set state for description')
+      console.log('set state for description')
     } catch (error) {
       throw new Error(error)
     }
@@ -72,22 +72,44 @@ class ClaimProject extends React.Component {
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
     // console.log(this.state)
     console.log(this.state.nextDeadline)
+
+    const columns = [{
+      title: '#',
+      dataIndex: 'index',
+      key: 'index'
+    }, {
+      title: 'Task Description',
+      dataIndex: 'description',
+      key: 'description'
+    }, {
+      title: 'Wei Value',
+      dataIndex: 'capital cost',
+      key: 'capital cost'
+    }, {
+      title: 'Reputation Value',
+      dataIndex: 'reputation cost',
+      key: 'reputation cost'
+    }]
+
     return (
       // <Col sm='10'>
-      <Card title={`${this.props.description}`} min-width='400'>
+      <Card title={`${this.props.description}`} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
         <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
         {/* <div>{`${this.props.cost}`} ETH</div> */}
         {/* <td>{typeof d !== 'undefined' ? `${d.toLocaleDateString()} ${d.toLocaleTimeString()}` : 'N/A'}</td> */}
         <div>task submission expires in {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}</div>
         <input
-          ref={(input) => (this.stakedValue = input)}
-          placeholder='proposed task'
-          onChange={() => this.onChange(this.stakedValue.value)}
+          ref={(input) => (this.description = input)}
+          placeholder='task description;wei required;reputation required'
+          onChange={() => this.onChange(this.description.value)}
           value={this.state.value}
         />
-        <Button color='primary' onClick={() => this.props.addTaskHash(this.state.value)} style={{marginLeft: 10}}>
+        <Button color='primary' onClick={() => this.props.addTaskHash(this.state.description)} style={{marginLeft: 10}}>
           Add Task
         </Button>
+        <div style={{display: 'flex', marginLeft: 20, marginTop: 40}}>
+          <Table columns={columns} />
+        </div>
       </Card>
     )
   }

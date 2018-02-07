@@ -55,7 +55,8 @@ class Claim extends React.Component {
   }
 
   addTaskHash (projectAddress, val) {
-    console.log('taskHash', projectAddress, val)
+    console.log(val)
+    // console.log('taskHash', projectAddress, val)
     let hashedVal = this.hashTasksForAddition(val)
     console.log('hashedVal', hashedVal)
     eth.getAccounts(async (err, accounts) => {
@@ -80,8 +81,8 @@ class Claim extends React.Component {
     let tasks = data.split(',')     // split tasks up
     console.log(tasks)
     let taskHashArray = []
-    let args = ['string']     // CHANGE THIS WHEN ACTUALLY FORMATTING DATA CORRECTLY
-    // let args = ['bytes32', 'bytes32', 'bytes32']
+    // let args = ['string']     // CHANGE THIS WHEN ACTUALLY FORMATTING DATA CORRECTLY
+    let args = ['bytes32', 'bytes32', 'bytes32']
     for (var i = 0; i < tasks.length; i++) {
       let thisTask = tasks[i].split(';')  // split each task into elements
       console.log(thisTask)

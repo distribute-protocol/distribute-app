@@ -223,6 +223,7 @@ class Status extends Component {
       }
     }
   }
+
   render () {
     return (
       <div style={{marginLeft: 200}}>
@@ -241,7 +242,7 @@ class Status extends Component {
             <h3>Your Token Balance</h3>
             <h5>{this.state.balance}</h5>
             <h3>Controlled Market Percentage</h3>
-            <h5>{Math.round(this.state.balance / this.state.totalTokenSupply * 10000) / 100}%</h5>
+            <h5>{`${this.state.totalTokenSupply ? Math.round(this.state.balance / this.state.totalTokenSupply * 10000) / 100 : 0}`}%</h5>
             <h3>Eth Pool</h3>
             <h5>{web3.fromWei(this.state.weiBal, 'ether')} ETH</h5>
             <h3>Capital Equivalent</h3>
