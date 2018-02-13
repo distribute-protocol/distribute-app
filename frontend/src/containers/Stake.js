@@ -53,7 +53,7 @@ class Stake extends React.Component {
       return new Promise(async (resolve, reject) => {
         let proj = P.at(address)
         let isStaked = await proj.isStaked()
-        // console.log('proj in projectState', proj)
+        console.log('proj in projectState', proj)
         resolve(isStaked)
       })
     }

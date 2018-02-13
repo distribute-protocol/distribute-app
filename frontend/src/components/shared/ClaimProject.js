@@ -5,6 +5,8 @@ import moment from 'moment'
 // import { Card, CardBody, CardTitle, CardText, Button, Col } from 'reactstrap'
 import { Card, Button, Table } from 'antd'
 import {eth, web3, dt, pr, P} from '../../utilities/blockchain'
+import hashing from '../../utilities/hashing'
+import * as _ from 'lodash'
 
 const getProjectState = () => ({ type: 'GET_PROJECT_STATE' })
 
@@ -12,15 +14,20 @@ class ClaimProject extends React.Component {
   constructor () {
     super()
     this.state = {
-      value: ''
+      value: '',
+      percentages: '',
+      tasks: '',
+      tempTaskList: {}
     }
     window.pr = pr
+    this.handleTaskInput = this.handleTaskInput.bind(this)
   }
 
-  onChange (value, val) {
+  onChange (type, val) {
     try {
-      this.setState({value: val})
-      console.log('set state for description')
+      let temp = Object.assign({}, this.state.tempTaskList, {[type]: val})
+      this.setState({tempTaskList: temp})
+      // console.log('tempTaskList', this.state.tempTaskList)
     } catch (error) {
       throw new Error(error)
     }
@@ -33,24 +40,23 @@ class ClaimProject extends React.Component {
         accounts = result
         // console.log('accounts', accounts)
         if (accounts.length) {
-          let nextDeadline,
-            taskHashes
+          let nextDeadline
           p.nextDeadline().then(result => {
-            nextDeadline = result.toNumber()
-            // this.setState
+            // blockchain reports time in seconds, javascript in milliseconds
+            nextDeadline = result.toNumber() * 1000
+            this.setState({nextDeadline: nextDeadline})
             // console.log('nextDeadline', nextDeadline)
-            // console.log('p', p)
           })
           .then(() => {
-            pr.projectTaskList.call(this.props.address).then(result => {
-              // console.log(result)
-              // taskHashes = result.toNumber()
-              // console.log('taskHashes', taskHashes)
-              // this.setState({
-              //   nextDeadline,
-              //   taskHashes
-            })
-            console.log('state', this.state)
+            // pr.projectTaskList.call(this.props.address).then(result => {
+            //   console.log(result)
+            //   // taskHashes = result.toNumber()
+            //   // console.log('taskHashes', taskHashes)
+            //   // this.setState({
+            //   //   nextDeadline,
+            //   //   taskHashes
+            // })
+            // console.log('state', this.state)
             // })
           })
         }
@@ -66,50 +72,97 @@ class ClaimProject extends React.Component {
     this.setState({project: p})
   }
 
+  handleTaskInput () {
+    // console.log(this.state)
+    // get tasks and percentages
+    let tasks = this.state.tempTaskList.tasks.split(', ')
+    // console.log(tasks, typeof tasks)
+    let percentages = this.state.tempTaskList.percentages.split(', ').map(Number)
+    // console.log(percentages, typeof percentages)
+    let totalProjectCost = web3.toWei(this.props.cost, 'ether')
+    let taskweiReward = percentages.map(x => x * totalProjectCost / 100)
+    let taskHash = this.hashTasksForAddition(tasks, taskweiReward)
+    this.props.addTaskHash(this.props.address, taskHash)
+    if (!_.isEmpty(this.state.tempTaskList)) {
+      this.setState({tempTaskList: {}})
+    }
+  }
+
+  hashTasksForAddition (tasks, weiReward) {
+    let hashList = this.hashListForSubmission(tasks, weiReward)
+    hashList.map(arr => arr.slice(2))
+    let numArgs = hashList.length
+    let args = 'bytes32'.concat(' bytes32'.repeat(numArgs - 1)).split(' ')
+    let taskHash = hashing.keccakHashes(args, hashList)
+    console.log('0x' + taskHash)
+    return '0x' + taskHash
+  }
+
+  hashListForSubmission (tasks, weiReward) {
+    let taskHashArray = []
+    // define reputation reward from wei reward right now
+    let repReward = weiReward
+    // task, weiReward, repReward
+    let args = ['bytes32', 'bytes32', 'bytes32']
+    for (var i = 0; i < tasks.length; i++) {
+      let thisTask = []
+      thisTask.push(tasks[i])
+      thisTask.push(weiReward[i])
+      thisTask.push(repReward[i])  // build task description, weiReward, repReward
+      console.log(thisTask)
+      taskHashArray.push('0x' + hashing.keccakHashes(args, thisTask))
+    }
+    console.log(taskHashArray)
+    return taskHashArray
+  }
+
   render () {
     let d
     // if (typeof stakingEndDate !== 'undefined') { d = new Date(stakingEndDate) }
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
     // console.log(this.state)
-    console.log(this.state.nextDeadline)
+    // console.log(this.state.nextDeadline)
 
-    const columns = [{
-      title: '#',
-      dataIndex: 'index',
-      key: 'index'
-    }, {
-      title: 'Task Description',
-      dataIndex: 'description',
-      key: 'description'
-    }, {
-      title: 'Wei Value',
-      dataIndex: 'capital cost',
-      key: 'capital cost'
-    }, {
-      title: 'Reputation Value',
-      dataIndex: 'reputation cost',
-      key: 'reputation cost'
-    }]
+    // const columns = [{
+    //   title: '#',
+    //   dataIndex: 'index',
+    //   key: 'index'
+    // }, {
+    //   title: 'Task Description',
+    //   dataIndex: 'description',
+    //   key: 'description'
+    // }, {
+    //   title: 'Wei Value',
+    //   dataIndex: 'capital cost',
+    //   key: 'capital cost'
+    // }, {
+    //   title: 'Reputation Value',
+    //   dataIndex: 'reputation cost',
+    //   key: 'reputation cost'
+    // }]
 
     return (
       // <Col sm='10'>
-      <Card title={`${this.props.description}`} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+      <Card title={`${this.props.description}`} >
         <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
-        {/* <div>{`${this.props.cost}`} ETH</div> */}
+        <div>project funds: {`${this.props.cost}`} ETH</div>
         {/* <td>{typeof d !== 'undefined' ? `${d.toLocaleDateString()} ${d.toLocaleTimeString()}` : 'N/A'}</td> */}
-        <div>task submission expires in {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}</div>
+        <div>task submission expires {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}</div>
         <input
-          ref={(input) => (this.description = input)}
-          placeholder='task description;wei required;reputation required'
-          onChange={() => this.onChange(this.description.value)}
-          value={this.state.value}
+          ref={(input) => (this.tasks = input)}
+          placeholder='task description'
+          onChange={(e) => this.onChange('tasks', this.tasks.value)}
+          value={this.state.tempTaskList.tasks || ''}
         />
-        <Button color='primary' onClick={() => this.props.addTaskHash(this.state.description)} style={{marginLeft: 10}}>
-          Add Task
+        <input
+          ref={(input) => (this.percentages = input)}
+          placeholder='% of project cost'
+          onChange={(e) => this.onChange('percentages', this.percentages.value)}
+          value={this.state.tempTaskList.percentages || ''}
+        />
+        <Button color='primary' onClick={() => this.handleTaskInput(this.state.tempTaskList)}>
+          Add Tasks
         </Button>
-        <div style={{display: 'flex', marginLeft: 20, marginTop: 40}}>
-          <Table columns={columns} />
-        </div>
       </Card>
     )
   }

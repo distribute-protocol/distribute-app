@@ -13,8 +13,6 @@ class Claim extends React.Component {
       projects: []
     }
     window.state = this.state
-    this.hashListForSubmission = this.hashListForSubmission.bind(this)
-    this.hashTasksForAddition = this.hashTasksForAddition.bind(this)
   }
 
   componentWillReceiveProps (np) {
@@ -54,42 +52,14 @@ class Claim extends React.Component {
       })
   }
 
-  addTaskHash (projectAddress, val) {
-    console.log(val)
-    // console.log('taskHash', projectAddress, val)
-    let hashedVal = this.hashTasksForAddition(val)
-    console.log('hashedVal', hashedVal)
+  async addTaskHash (projectAddress, val) {
+    console.log('hashedVal', val)
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         console.log(accounts)
-        await pr.addTaskHash(projectAddress, hashedVal, {from: accounts[0]})
+        await pr.addTaskHash(projectAddress, val, {from: accounts[0]})
       }
     })
-  }
-
-  hashTasksForAddition (data) {
-    let hashList = this.hashListForSubmission(data)
-    hashList.map(arr => arr.slice(2))
-    let numArgs = hashList.length
-    let args = 'bytes32'.concat(' bytes32'.repeat(numArgs - 1)).split(' ')
-    let taskHash = hashing.keccakHashes(args, hashList)
-    // console.log('0x' + taskHash)
-    return '0x' + taskHash
-  }
-
-  hashListForSubmission (data) {
-    let tasks = data.split(',')     // split tasks up
-    console.log(tasks)
-    let taskHashArray = []
-    // let args = ['string']     // CHANGE THIS WHEN ACTUALLY FORMATTING DATA CORRECTLY
-    let args = ['bytes32', 'bytes32', 'bytes32']
-    for (var i = 0; i < tasks.length; i++) {
-      let thisTask = tasks[i].split(';')  // split each task into elements
-      console.log(thisTask)
-      taskHashArray.push('0x' + hashing.keccakHashes(args, thisTask))
-    }
-    console.log(taskHashArray)
-    return taskHashArray
   }
 
   render () {
@@ -112,9 +82,13 @@ class Claim extends React.Component {
           {/* <img src={logoclassName='App-logo' alt='logo' /> */}
           {/* <h1 className='App-title'>distribute</h1> */}
           <h3>Open Proposals</h3>
+          <h4>separate tasks and percentages with commas</h4>
+          <h4>ensure percentages correspond to tasks and add up to 100%</h4>
+          <h5>e.g. install a node, install a supernode</h5>
+          <h5>e.g. 20, 80</h5>
         </header>
         <div style={{ padding: '30px' }}>
-          <Row gutter={16}>
+          <Row gutter={12}>
             {projects}
           </Row>
         </div>

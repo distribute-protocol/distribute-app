@@ -26,7 +26,7 @@ class Propose extends Component {
     this.getCurrentPrice = this.getCurrentPrice.bind(this)
     // this.checkTransactionMined = this.checkTransactionMined.bind(this)
     this.getProjects = this.getProjects.bind(this)
-    // window.tr = this.tr
+    window.tr = tr
     // window.projects = this.state.projects
   }
 
@@ -95,15 +95,17 @@ class Propose extends Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         let cost = parseInt(web3.toWei(this.state.tempProject.cost, 'ether').toString())
-        // console.log(accounts[0])
-        let tx = await tr.proposeProject(cost, stakeEndDate, {from: accounts[0]})
-        let txReceipt = tx.receipt
-        // console.log(txReceipt)
-        let projectAddress = '0x' + txReceipt.logs[0].topics[1].slice(txReceipt.logs[0].topics[1].length - 40, (txReceipt.logs[0].topics[1].length))
-        if (!_.isEmpty(this.state.tempProject)) {
-          this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress}))
-          this.setState({tempProject: {}})
-        }
+        console.log(accounts)
+        await tr.proposeProject(cost, stakeEndDate, {from: accounts[0]}).then(tx => {
+          let txReceipt = tx.receipt
+          console.log(tx)
+          let projectAddress = '0x' + txReceipt.logs[0].topics[1].slice(txReceipt.logs[0].topics[1].length - 40, (txReceipt.logs[0].topics[1].length))
+          if (!_.isEmpty(this.state.tempProject)) {
+            // dispatch proposeProject action to projectReducer, updating the store with newly proposed project
+            this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress}))
+            this.setState({tempProject: {}})
+          }
+        })
       }
     })
   }
@@ -112,7 +114,7 @@ class Propose extends Component {
     try {
       let temp = Object.assign({}, this.state.tempProject, {[type]: val})
       this.setState({tempProject: temp})
-      // console.log('tempProject', this.state.tempProject)
+      console.log('tempProject', this.state.tempProject)
       // console.log('set state for description')
     } catch (error) {
       throw new Error(error)

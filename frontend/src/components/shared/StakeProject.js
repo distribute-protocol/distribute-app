@@ -116,27 +116,24 @@ class StakeProject extends Component {
     // console.log(this.state)
     return (
       // <Col sm='10'>
-      <Card title={`${this.props.description}`} min-width='400'>
+      <Card title={`${this.props.description}`}>
         <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
-        <div>{`${this.props.cost}`} ETH</div>
+        <div>project funds: {`${this.props.cost}`} ETH</div>
         <div>needs {`${this.state.tokensLeft}`} tokens</div>
         {/* <td>{typeof d !== 'undefined' ? `${d.toLocaleDateString()} ${d.toLocaleTimeString()}` : 'N/A'}</td> */}
         <div>staking expires in {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}</div>
-        <div style={{display: 'flex', flexDirection: 'horizontal'}}>
-          <input
-            style={{width: 120}}
-            ref={(input) => (this.stakedValue = input)}
-            placeholder='token amount'
-            onChange={() => this.onChange(this.stakedValue.value)}
-            value={this.state.tokensToStake}
-          />
-          <Button color='primary' onClick={() => this.stakeProject()} style={{marginLeft: 10}}>
-            Stake
-          </Button>
-          <Button color='primary' onClick={() => this.unstakeProject()} style={{marginLeft: 10}}>
-            Unstake
-          </Button>
-        </div>
+        <input
+          ref={(input) => (this.stakedValue = input)}
+          placeholder='token amount'
+          onChange={() => this.onChange(this.stakedValue.value)}
+          value={this.state.tokensToStake}
+        />
+        <Button color='primary' onClick={() => this.stakeProject()}>
+          Stake
+        </Button>
+        <Button color='primary' onClick={() => this.unstakeProject()}>
+          Unstake
+        </Button>
       </Card>
     )
   }
