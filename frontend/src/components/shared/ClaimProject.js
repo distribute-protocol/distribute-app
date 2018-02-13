@@ -7,6 +7,7 @@ import { Card, Button, Table } from 'antd'
 import {eth, web3, dt, pr, P} from '../../utilities/blockchain'
 import hashing from '../../utilities/hashing'
 import * as _ from 'lodash'
+import { setProjectTaskList } from '../../actions/projectActions'
 
 const getProjectState = () => ({ type: 'GET_PROJECT_STATE' })
 
@@ -17,7 +18,6 @@ class ClaimProject extends React.Component {
       value: '',
       percentages: '',
       tasks: '',
-      taskList: [],
       tempTaskList: {}
     }
     window.pr = pr
@@ -45,7 +45,8 @@ class ClaimProject extends React.Component {
           p.nextDeadline().then(result => {
             // blockchain reports time in seconds, javascript in milliseconds
             nextDeadline = result.toNumber() * 1000
-            this.setState({nextDeadline: nextDeadline})
+            // console.log(this.setState)
+            // this.setState({nextDeadline: nextDeadline})
             // console.log('nextDeadline', nextDeadline)
           })
           .then(() => {
@@ -86,7 +87,8 @@ class ClaimProject extends React.Component {
     this.props.addTaskHash(taskHash)
     if (!_.isEmpty(this.state.tempTaskList)) {
       // make table object for task list
-      let temp = this.state.taskList
+      let temp = this.props.taskList.taskList // array
+      console.log('temp', temp)
       let thisIndex = temp.length > 0 ? temp[temp.length - 1].index + 1 : 0
       // console.log(temp)
       for (var i = 0; i < tasks.length; i++) {
@@ -96,8 +98,8 @@ class ClaimProject extends React.Component {
           taskweiReward: taskweiReward[i]
         })
       }
-      console.log(temp)
-      this.setState({tempTaskList: {}, taskList: temp})
+      this.setState({tempTaskList: {}})
+      this.props.setProjectTaskList({ address: this.props.address, taskList: temp })
       // console.log(this.state)
     }
   }
@@ -134,11 +136,11 @@ class ClaimProject extends React.Component {
     let d
     // if (typeof stakingEndDate !== 'undefined') { d = new Date(stakingEndDate) }
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
-    // console.log(this.state)
+    // console.log(this.props.taskList)
     // console.log(this.state.nextDeadline)
 
-    const tasks = this.state.taskList.map((task, i) => {
-      // console.log(task, i)
+    const tasks = this.props.taskList.taskList.map((task, i) => {
+      // console.log(task)
       return {
         key: i,
         index: task.index,
@@ -160,6 +162,9 @@ class ClaimProject extends React.Component {
       dataIndex: 'weiReward',
       key: 'weiReward'
     }]
+
+    // take JSON this.props.taskList --> generate the rows of table
+    // use {} and put that in
 
     return (
       // <Col sm='10'>
@@ -195,12 +200,13 @@ class ClaimProject extends React.Component {
 const mapStateToProps = (state) => {
   return {
     projectState: state.projects.fetching,
-    project: state.projects.project
+    project: state.projects.project,
+    taskList: state.projects.taskList
   }
 }
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    getProjectState: getProjectState
+    getProjectState, setProjectTaskList
   }, dispatch)
   // return {
   //   getProjectState: () => console.log('heyhey')

@@ -1,7 +1,8 @@
-import { PROPOSE_PROJECT, GET_PROJECT_STATE, PROJECT_STATE_RECEIVED } from '../constants/ProjectActionTypes'
+import { PROPOSE_PROJECT, GET_PROJECT_STATE, PROJECT_STATE_RECEIVED, SET_PROJECT_TASK_LIST } from '../constants/ProjectActionTypes'
 const initialState = {
   projects: [],
-  fetching: 'FALSE'
+  fetching: 'FALSE',
+  taskList: []
 }
 
 export default function projectReducer (state = initialState, action) {
@@ -22,6 +23,8 @@ export default function projectReducer (state = initialState, action) {
     case PROJECT_STATE_RECEIVED:
       // return Object.assign({}, state, {project: action.payload})
       return Object.assign({}, state, {fetching: 'FALSE'})
+    case SET_PROJECT_TASK_LIST:
+      return Object.assign({}, state, {taskList: action.taskDetails})
     default:
   }
   return state
