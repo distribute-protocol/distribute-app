@@ -82,7 +82,7 @@ class Stake extends React.Component {
 
   render () {
     const projects = this.state.projects.map((proj, i) => {
-      return <Col span={8} key={i}>
+      return <Col span={10} key={i}>
         <StakeProject
           key={i}
           cost={proj.cost}
@@ -101,7 +101,7 @@ class Stake extends React.Component {
           <h3>Stakeable Proposals</h3>
         </header>
         <div style={{ padding: '30px' }}>
-          <Row gutter={16}>
+          <Row gutter={8}>
             {projects}
           </Row>
         </div>

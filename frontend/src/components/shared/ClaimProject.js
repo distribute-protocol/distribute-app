@@ -82,7 +82,7 @@ class ClaimProject extends React.Component {
     let totalProjectCost = web3.toWei(this.props.cost, 'ether')
     let taskweiReward = percentages.map(x => x * totalProjectCost / 100)
     let taskHash = this.hashTasksForAddition(tasks, taskweiReward)
-    this.props.addTaskHash(this.props.address, taskHash)
+    this.props.addTaskHash(taskHash)
     if (!_.isEmpty(this.state.tempTaskList)) {
       this.setState({tempTaskList: {}})
     }
@@ -94,7 +94,7 @@ class ClaimProject extends React.Component {
     let numArgs = hashList.length
     let args = 'bytes32'.concat(' bytes32'.repeat(numArgs - 1)).split(' ')
     let taskHash = hashing.keccakHashes(args, hashList)
-    console.log('0x' + taskHash)
+    console.log('final taskHash', '0x' + taskHash)
     return '0x' + taskHash
   }
 
@@ -109,10 +109,10 @@ class ClaimProject extends React.Component {
       thisTask.push(tasks[i])
       thisTask.push(weiReward[i])
       thisTask.push(repReward[i])  // build task description, weiReward, repReward
-      console.log(thisTask)
+      // console.log(thisTask)
       taskHashArray.push('0x' + hashing.keccakHashes(args, thisTask))
     }
-    console.log(taskHashArray)
+    console.log('taskHashArray', taskHashArray)
     return taskHashArray
   }
 
@@ -123,23 +123,21 @@ class ClaimProject extends React.Component {
     // console.log(this.state)
     // console.log(this.state.nextDeadline)
 
-    // const columns = [{
-    //   title: '#',
-    //   dataIndex: 'index',
-    //   key: 'index'
-    // }, {
-    //   title: 'Task Description',
-    //   dataIndex: 'description',
-    //   key: 'description'
-    // }, {
-    //   title: 'Wei Value',
-    //   dataIndex: 'capital cost',
-    //   key: 'capital cost'
-    // }, {
-    //   title: 'Reputation Value',
-    //   dataIndex: 'reputation cost',
-    //   key: 'reputation cost'
-    // }]
+    const projects = this.props.projects
+
+    const columns = [{
+      title: 'Address',
+      dataIndex: 'address',
+      key: 'address'
+    }, {
+      title: 'Task Description',
+      dataIndex: 'description',
+      key: 'description'
+    }, {
+      title: 'Wei/Reputation Value',
+      dataIndex: 'capital cost',
+      key: 'capital cost'
+    }]
 
     return (
       // <Col sm='10'>
@@ -156,13 +154,17 @@ class ClaimProject extends React.Component {
         />
         <input
           ref={(input) => (this.percentages = input)}
+          style={{marginLeft: 10}}
           placeholder='% of project cost'
           onChange={(e) => this.onChange('percentages', this.percentages.value)}
           value={this.state.tempTaskList.percentages || ''}
         />
-        <Button color='primary' onClick={() => this.handleTaskInput(this.state.tempTaskList)}>
+        <Button color='primary' onClick={() => this.handleTaskInput(this.state.tempTaskList)} style={{marginLeft: 10}}>
           Add Tasks
         </Button>
+        <div style={{display: 'flex', flexDirection: 'column'}}>
+          <Table dataSource={projects} columns={columns} />
+        </div>
       </Card>
     )
   }
