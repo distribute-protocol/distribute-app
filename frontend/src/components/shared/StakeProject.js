@@ -128,10 +128,10 @@ class StakeProject extends Component {
           onChange={() => this.onChange(this.stakedValue.value)}
           value={this.state.tokensToStake}
         />
-        <Button color='primary' onClick={() => this.stakeProject()}>
+        <Button color='primary' onClick={() => this.stakeProject()} style={{marginLeft: 10}}>
           Stake
         </Button>
-        <Button color='primary' onClick={() => this.unstakeProject()}>
+        <Button color='primary' onClick={() => this.unstakeProject()} style={{marginLeft: 10}}>
           Unstake
         </Button>
       </Card>
