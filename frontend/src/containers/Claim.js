@@ -53,10 +53,10 @@ class Claim extends React.Component {
   }
 
   async addTaskHash (projectAddress, val) {
-    console.log('hashedVal', val)
+    // console.log('hashedVal', val)
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
-        console.log(accounts)
+        // console.log(accounts)
         await pr.addTaskHash(projectAddress, val, {from: accounts[0]})
       }
     })

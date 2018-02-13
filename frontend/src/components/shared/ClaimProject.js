@@ -17,6 +17,7 @@ class ClaimProject extends React.Component {
       value: '',
       percentages: '',
       tasks: '',
+      taskList: [],
       tempTaskList: {}
     }
     window.pr = pr
@@ -84,7 +85,20 @@ class ClaimProject extends React.Component {
     let taskHash = this.hashTasksForAddition(tasks, taskweiReward)
     this.props.addTaskHash(taskHash)
     if (!_.isEmpty(this.state.tempTaskList)) {
-      this.setState({tempTaskList: {}})
+      // make table object for task list
+      let temp = this.state.taskList
+      let thisIndex = temp.length > 0 ? temp[temp.length - 1].index + 1 : 0
+      // console.log(temp)
+      for (var i = 0; i < tasks.length; i++) {
+        temp.push({
+          index: thisIndex,
+          tasks: tasks[i],
+          taskweiReward: taskweiReward[i]
+        })
+      }
+      console.log(temp)
+      this.setState({tempTaskList: {}, taskList: temp})
+      // console.log(this.state)
     }
   }
 
@@ -94,7 +108,7 @@ class ClaimProject extends React.Component {
     let numArgs = hashList.length
     let args = 'bytes32'.concat(' bytes32'.repeat(numArgs - 1)).split(' ')
     let taskHash = hashing.keccakHashes(args, hashList)
-    console.log('final taskHash', '0x' + taskHash)
+    // console.log('final taskHash', '0x' + taskHash)
     return '0x' + taskHash
   }
 
@@ -112,7 +126,7 @@ class ClaimProject extends React.Component {
       // console.log(thisTask)
       taskHashArray.push('0x' + hashing.keccakHashes(args, thisTask))
     }
-    console.log('taskHashArray', taskHashArray)
+    // console.log('taskHashArray', taskHashArray)
     return taskHashArray
   }
 
@@ -123,20 +137,28 @@ class ClaimProject extends React.Component {
     // console.log(this.state)
     // console.log(this.state.nextDeadline)
 
-    const projects = this.props.projects
+    const tasks = this.state.taskList.map((task, i) => {
+      // console.log(task, i)
+      return {
+        key: i,
+        index: task.index,
+        description: task.tasks,
+        weiReward: task.taskweiReward
+      }
+    })
 
     const columns = [{
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address'
+      title: 'Submission',
+      dataIndex: 'index',
+      key: 'index'
     }, {
       title: 'Task Description',
       dataIndex: 'description',
       key: 'description'
     }, {
-      title: 'Wei/Reputation Value',
-      dataIndex: 'capital cost',
-      key: 'capital cost'
+      title: 'Reward / Reputation',
+      dataIndex: 'weiReward',
+      key: 'weiReward'
     }]
 
     return (
@@ -163,7 +185,7 @@ class ClaimProject extends React.Component {
           Add Tasks
         </Button>
         <div style={{display: 'flex', flexDirection: 'column'}}>
-          <Table dataSource={projects} columns={columns} />
+          <Table dataSource={tasks} columns={columns} />
         </div>
       </Card>
     )
