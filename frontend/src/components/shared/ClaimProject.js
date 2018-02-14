@@ -162,7 +162,7 @@ class ClaimProject extends React.Component {
     })
 
     const columns = [{
-      title: 'Submission',
+      title: 'Submission Set',
       dataIndex: 'index',
       key: 'index'
     }, {
