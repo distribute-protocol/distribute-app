@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Col, Row } from 'antd'
+import { Col, Row, Button } from 'antd'
 import {eth, web3, tr, rr, pr, dt, P} from '../utilities/blockchain'
 import ClaimProject from '../components/shared/ClaimProject'
-import hashing from '../utilities/hashing'
+import fastforward from '../utilities/fastforward'
 import * as _ from 'lodash'
 
 class Claim extends React.Component {
@@ -13,6 +13,7 @@ class Claim extends React.Component {
       projects: []
     }
     window.state = this.state
+    this.fastForward = this.fastForward.bind(this)
   }
 
   componentWillReceiveProps (np) {
@@ -62,6 +63,12 @@ class Claim extends React.Component {
     })
   }
 
+// fast forward Ganache 1 week
+  async fastForward () {
+    await fastforward(7 * 24 * 60 * 60)
+    console.log('fastForward')
+  }
+
   render () {
     const projects = this.props.projects.projects.map((proj, i) => {
       return <Col span={25} key={i}>
@@ -86,6 +93,7 @@ class Claim extends React.Component {
           <h4>ensure percentages correspond to tasks and add up to 100%</h4>
           <h5>e.g. install a node, install a supernode</h5>
           <h5>e.g. 20, 80</h5>
+          <Button type='danger' onClick={this.fastForward}>fast forward 1 week</Button>
         </header>
         <div style={{ padding: '30px' }}>
           <Row gutter={12}>

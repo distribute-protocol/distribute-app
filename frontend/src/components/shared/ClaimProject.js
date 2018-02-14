@@ -107,6 +107,7 @@ class ClaimProject extends React.Component {
           tasks: tasks[i],
           taskweiReward: taskweiReward[i]
         })
+        console.log(temp)
       }
       // console.log(temp)
       this.setState({tempTaskList: {}})
@@ -151,15 +152,22 @@ class ClaimProject extends React.Component {
     // console.log(this.state.nextDeadline)
     // console.log(this.props)
     let projIndex = this.getProjIndex()
-    const tasks = this.props.projects.projects[projIndex].taskList.map((task, i) => {
-      // console.log(task)
-      return {
-        key: i,
-        index: task.index,
-        description: task.tasks,
-        weiReward: task.taskweiReward
-      }
-    })
+    let taskList = this.props.projects.projects[projIndex].taskList
+    let tasks
+    if (typeof taskList !== 'undefined') {
+      // console.log(taskList)
+      tasks = taskList.map((task, i) => {
+        // console.log(task)
+        return {
+          key: i,
+          index: task.index,
+          description: task.tasks,
+          weiReward: task.taskweiReward
+        }
+      })
+    } else {
+      tasks = []
+    }
 
     const columns = [{
       title: 'Submission Set',

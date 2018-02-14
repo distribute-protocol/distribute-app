@@ -16,7 +16,7 @@ export default function projectReducer (state = initialState, action) {
         stakingEndDate: action.projectDetails.stakingEndDate,
         address: action.projectDetails.address
       })
-      console.log(state.projects)
+      // console.log(state.projects)
       return Object.assign({}, state, {projects: temp})
     case GET_PROJECT_STATE:
       return Object.assign({}, state, {fetching: 'TRUE'})
@@ -25,14 +25,16 @@ export default function projectReducer (state = initialState, action) {
       return Object.assign({}, state, {fetching: 'FALSE'})
     case SET_PROJECT_TASK_LIST:
       let state2 = state
-      let i
+      let i, j
       for (i = 0; i < state2.projects.length; i++) {
         if (state2.projects[i].address === action.taskDetails.address) {
           let temp = state2.projects[i].taskList
           if (typeof (temp) === 'undefined') {
             temp = action.taskDetails.taskList
           } else {
-            temp = temp.concat(action.taskDetails.taskList)
+            for (j = 0; j < state2.projects[i].taskList; j++) {
+              temp.push(action.taskDetails.taskList[j])
+            }
           }
           state2.projects[i].taskList = temp
         }
