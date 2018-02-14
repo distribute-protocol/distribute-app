@@ -184,7 +184,21 @@ class ClaimProject extends React.Component {
         <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
         <div>project funds: {`${this.props.cost}`} ETH</div>
         {/* <td>{typeof d !== 'undefined' ? `${d.toLocaleDateString()} ${d.toLocaleTimeString()}` : 'N/A'}</td> */}
-        <div>task submission expires {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}</div>
+        <div>
+          <div>
+            task submission expires {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}
+          </div>
+          <div>
+            <input
+              ref={(input) => (this.submitList = input)}
+              placeholder='submission set'
+              disabled
+            />
+            <Button disabled style={{marginLeft: 10}}>
+              Submit Task Set
+            </Button>
+          </div>
+        </div>
         <input
           ref={(input) => (this.tasks = input)}
           placeholder='task description'
@@ -198,7 +212,7 @@ class ClaimProject extends React.Component {
           onChange={(e) => this.onChange('percentages', this.percentages.value)}
           value={this.state.tempTaskList.percentages || ''}
         />
-        <Button color='primary' onClick={() => this.handleTaskInput(this.state.tempTaskList)} style={{marginLeft: 10}}>
+        <Button type='primary' onClick={() => this.handleTaskInput(this.state.tempTaskList)} style={{marginLeft: 10}}>
           Add Tasks
         </Button>
         <div style={{display: 'flex', flexDirection: 'column'}}>
