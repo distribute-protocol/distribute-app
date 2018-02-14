@@ -29,17 +29,17 @@ class Stake extends React.Component {
   }
 
   async stakeProject (address, val) {
-    console.log(address, val)
+    // console.log(address, val)
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         await tr.stakeTokens(address, val, {from: accounts[0]})
-        console.log('staked', val, 'tokens on', address)
+        // console.log('staked', val, 'tokens on', address)
       }
     })
   }
 
   async unstakeProject (address, val) {
-    console.log(address, val)
+    // console.log(address, val)
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         await tr.unstakeTokens(address, val, {from: accounts[0]})
@@ -53,7 +53,7 @@ class Stake extends React.Component {
       return new Promise(async (resolve, reject) => {
         let proj = P.at(address)
         let isStaked = await proj.isStaked()
-        console.log('proj in projectState', proj)
+        // console.log('proj in projectState', proj)
         resolve(isStaked)
       })
     }

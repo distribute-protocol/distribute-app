@@ -63,7 +63,7 @@ class Claim extends React.Component {
   }
 
   render () {
-    const projects = this.state.projects.map((proj, i) => {
+    const projects = this.props.projects.projects.map((proj, i) => {
       return <Col span={25} key={i}>
         <ClaimProject
           key={i}

@@ -95,10 +95,10 @@ class Propose extends Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         let cost = parseInt(web3.toWei(this.state.tempProject.cost, 'ether').toString())
-        console.log(accounts)
+        // console.log(accounts)
         await tr.proposeProject(cost, stakeEndDate, {from: accounts[0]}).then(tx => {
           let txReceipt = tx.receipt
-          console.log(tx)
+          // console.log(tx)
           let projectAddress = '0x' + txReceipt.logs[0].topics[1].slice(txReceipt.logs[0].topics[1].length - 40, (txReceipt.logs[0].topics[1].length))
           if (!_.isEmpty(this.state.tempProject)) {
             // dispatch proposeProject action to projectReducer, updating the store with newly proposed project
@@ -114,7 +114,7 @@ class Propose extends Component {
     try {
       let temp = Object.assign({}, this.state.tempProject, {[type]: val})
       this.setState({tempProject: temp})
-      console.log('tempProject', this.state.tempProject)
+      // console.log('tempProject', this.state.tempProject)
       // console.log('set state for description')
     } catch (error) {
       throw new Error(error)

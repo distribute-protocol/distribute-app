@@ -74,6 +74,10 @@ class ClaimProject extends React.Component {
     this.setState({project: p})
   }
 
+  getProjIndex () {
+    return this.props.projects.projects.map((e) => { return e.address }).indexOf(this.props.address)
+  }
+
   handleTaskInput () {
     // console.log(this.state)
     // get tasks and percentages
@@ -87,9 +91,15 @@ class ClaimProject extends React.Component {
     this.props.addTaskHash(taskHash)
     if (!_.isEmpty(this.state.tempTaskList)) {
       // make table object for task list
-      let temp = this.props.taskList.taskList // array
-      console.log('temp', temp)
-      let thisIndex = temp.length > 0 ? temp[temp.length - 1].index + 1 : 0
+      let temp, thisIndex
+      let projIndex = this.getProjIndex()
+      if (typeof this.props.projects.projects[projIndex].taskList === 'undefined') {
+        thisIndex = 0
+        temp = []
+      } else {
+        temp = this.props.projects.projects[projIndex].taskList
+        thisIndex = temp[temp.length - 1].index + 1
+      }
       // console.log(temp)
       for (var i = 0; i < tasks.length; i++) {
         temp.push({
@@ -98,6 +108,7 @@ class ClaimProject extends React.Component {
           taskweiReward: taskweiReward[i]
         })
       }
+      // console.log(temp)
       this.setState({tempTaskList: {}})
       this.props.setProjectTaskList({ address: this.props.address, taskList: temp })
       // console.log(this.state)
@@ -138,8 +149,9 @@ class ClaimProject extends React.Component {
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
     // console.log(this.props.taskList)
     // console.log(this.state.nextDeadline)
-
-    const tasks = this.props.taskList.taskList.map((task, i) => {
+    // console.log(this.props)
+    let projIndex = this.getProjIndex()
+    const tasks = this.props.projects.projects[projIndex].taskList.map((task, i) => {
       // console.log(task)
       return {
         key: i,
@@ -199,9 +211,7 @@ class ClaimProject extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    projectState: state.projects.fetching,
-    project: state.projects.project,
-    taskList: state.projects.taskList
+    projects: state.projects
   }
 }
 const mapDispatchToProps = (dispatch) => {

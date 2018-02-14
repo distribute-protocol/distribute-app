@@ -22,7 +22,7 @@ class StakeProject extends Component {
     eth.getAccounts(async (err, result) => {
       if (!err) {
         accounts = result
-        console.log(accounts)
+        // console.log(accounts)
         if (accounts.length) {
           let weiBal,
             weiCost,
@@ -66,7 +66,7 @@ class StakeProject extends Component {
                 totalReputationStaked,
                 currentPrice: web3.fromWei(currentPrice, 'ether')
               })
-              console.log('state', this.state)
+              //console.log('state', this.state)
               this.getTokensLeft()
             })
           })
@@ -79,7 +79,7 @@ class StakeProject extends Component {
     let weiNeeded = this.state.weiCost - this.state.weiBal
     let tokensLeft = Math.ceil(weiNeeded / web3.toWei(this.state.currentPrice, 'ether'))
     this.setState({tokensLeft})
-    console.log('tokensLeft', tokensLeft)
+    // console.log('tokensLeft', tokensLeft)
   }
 
   componentWillMount () {
