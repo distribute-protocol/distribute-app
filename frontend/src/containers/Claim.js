@@ -53,16 +53,6 @@ class Claim extends React.Component {
       })
   }
 
-  async addTaskHash (projectAddress, val) {
-    // console.log('hashedVal', val)
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        // console.log(accounts)
-        await pr.addTaskHash(projectAddress, val, {from: accounts[0]})
-      }
-    })
-  }
-
 // fast forward Ganache 1 week
   async fastForward () {
     await fastforward(7 * 24 * 60 * 60)
@@ -79,7 +69,6 @@ class Claim extends React.Component {
           index={i}
           taskHashEndDate={proj.taskHashEndDate}
           address={proj.address}
-          addTaskHash={(val) => this.addTaskHash(proj.address, val)}
         />
       </Col>
     })

@@ -88,32 +88,36 @@ class ClaimProject extends React.Component {
     let totalProjectCost = web3.toWei(this.props.cost, 'ether')
     let taskweiReward = percentages.map(x => x * totalProjectCost / 100)
     let taskHash = this.hashTasksForAddition(tasks, taskweiReward)
-    this.props.addTaskHash(taskHash)
-    if (!_.isEmpty(this.state.tempTaskList)) {
-      // make table object for task list
-      let temp, thisIndex
-      let projIndex = this.getProjIndex()
-      if (typeof this.props.projects.projects[projIndex].taskList === 'undefined') {
-        thisIndex = 0
-        temp = []
-      } else {
-        temp = this.props.projects.projects[projIndex].taskList
-        thisIndex = temp[temp.length - 1].index + 1
-      }
-      // console.log(temp)
-      for (var i = 0; i < tasks.length; i++) {
-        temp.push({
-          index: thisIndex,
-          tasks: tasks[i],
-          taskweiReward: taskweiReward[i]
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => {
+          if (!_.isEmpty(this.state.tempTaskList)) {
+            // make table object for task list
+            let temp, thisIndex
+            let projIndex = this.getProjIndex()
+            if (typeof this.props.projects.projects[projIndex].taskList === 'undefined') {
+              thisIndex = 0
+              temp = []
+            } else {
+              temp = this.props.projects.projects[projIndex].taskList
+              thisIndex = temp[temp.length - 1].index + 1
+            }
+            // console.log(temp)
+            for (var i = 0; i < tasks.length; i++) {
+              temp.push({
+                index: thisIndex,
+                tasks: tasks[i],
+                taskweiReward: taskweiReward[i]
+              })
+              console.log(temp)
+            }
+            // console.log(temp)
+            this.setState({tempTaskList: {}})
+            this.props.setProjectTaskList({ address: this.props.address, taskList: temp })
+          }
         })
-        console.log(temp)
       }
-      // console.log(temp)
-      this.setState({tempTaskList: {}})
-      this.props.setProjectTaskList({ address: this.props.address, taskList: temp })
-      // console.log(this.state)
-    }
+    })
   }
 
   hashTasksForAddition (tasks, weiReward) {
