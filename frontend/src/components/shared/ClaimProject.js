@@ -84,40 +84,44 @@ class ClaimProject extends React.Component {
     let tasks = this.state.tempTaskList.tasks.split(', ')
     // console.log(tasks, typeof tasks)
     let percentages = this.state.tempTaskList.percentages.split(', ').map(Number)
-    // console.log(percentages, typeof percentages)
-    let totalProjectCost = web3.toWei(this.props.cost, 'ether')
-    let taskweiReward = percentages.map(x => x * totalProjectCost / 100)
-    let taskHash = this.hashTasksForAddition(tasks, taskweiReward)
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => {
-          if (!_.isEmpty(this.state.tempTaskList)) {
-            // make table object for task list
-            let temp, thisIndex
-            let projIndex = this.getProjIndex()
-            if (typeof this.props.projects.projects[projIndex].taskList === 'undefined') {
-              thisIndex = 0
-              temp = []
-            } else {
-              temp = this.props.projects.projects[projIndex].taskList
-              thisIndex = temp[temp.length - 1].index + 1
+    let sum = percentages.reduce((x, y) => x + y)
+    if (sum !== 100 || tasks.length !== percentages.length) {
+      alert('PERCENTAGES MUST ADD UP TO 100, AND EACH TASK MUST HAVE AN ASSOCIATED PERCENTAGE')
+    } else {
+      let totalProjectCost = web3.toWei(this.props.cost, 'ether')
+      let taskweiReward = percentages.map(x => x * totalProjectCost / 100)
+      let taskHash = this.hashTasksForAddition(tasks, taskweiReward)
+      eth.getAccounts(async (err, accounts) => {
+        if (!err) {
+          await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => {
+            if (!_.isEmpty(this.state.tempTaskList)) {
+              // make table object for task list
+              let temp, thisIndex
+              let projIndex = this.getProjIndex()
+              if (typeof this.props.projects.projects[projIndex].taskList === 'undefined') {
+                thisIndex = 0
+                temp = []
+              } else {
+                temp = this.props.projects.projects[projIndex].taskList
+                thisIndex = temp[temp.length - 1].index + 1
+              }
+              // console.log(temp)
+              for (var i = 0; i < tasks.length; i++) {
+                temp.push({
+                  index: thisIndex,
+                  tasks: tasks[i],
+                  taskweiReward: taskweiReward[i]
+                })
+                console.log(temp)
+              }
+              // console.log(temp)
+              this.setState({tempTaskList: {}})
+              this.props.setProjectTaskList({ address: this.props.address, taskList: temp })
             }
-            // console.log(temp)
-            for (var i = 0; i < tasks.length; i++) {
-              temp.push({
-                index: thisIndex,
-                tasks: tasks[i],
-                taskweiReward: taskweiReward[i]
-              })
-              console.log(temp)
-            }
-            // console.log(temp)
-            this.setState({tempTaskList: {}})
-            this.props.setProjectTaskList({ address: this.props.address, taskList: temp })
-          }
-        })
-      }
-    })
+          })
+        }
+      })
+    }
   }
 
   hashTasksForAddition (tasks, weiReward) {
