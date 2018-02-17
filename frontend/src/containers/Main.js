@@ -5,6 +5,7 @@ import CurrentProjects from './CurrentProjects'
 import Propose from './Propose'
 import Stake from './Stake'
 import Claim from './Claim'
+import Add from './Add'
 import Validate from './Validate'
 import Vote from './Vote'
 // import Landing from './Landing'
@@ -22,8 +23,9 @@ const Main = () =>
         <a href='/status'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Status</h3></a>
         {/* <a href='/projects'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Current Projects</h3></a> */}
         <a href='/propose'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Propose Projects</h3></a>
-        <a href='/stake'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Stake Tokens</h3></a>
-        <a href='/claim'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Add & Claim Tasks</h3></a>
+        <a href='/stake'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Stake Tokens on Proposed Projects</h3></a>
+        <a href='/add'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Add Tasks to Open Projects</h3></a>
+        <a href='/claim'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Claim Tasks from Active Projects</h3></a>
         <a href='/validate'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Validate</h3></a>
         <a href='/vote'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Vote</h3></a>
       </div>
@@ -34,6 +36,7 @@ const Main = () =>
       <Route path='/projects' component={CurrentProjects} />
       <Route path='/propose' component={Propose} />
       <Route path='/stake' component={Stake} />
+      <Route path='/add' component={Add} />
       <Route path='/claim' component={Claim} />
       <Route path='/validate' component={Validate} />
       <Route path='/vote' component={Vote} />

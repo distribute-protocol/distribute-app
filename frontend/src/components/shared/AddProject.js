@@ -11,7 +11,7 @@ import { setProjectTaskList } from '../../actions/projectActions'
 
 const getProjectState = () => ({ type: 'GET_PROJECT_STATE' })
 
-class ClaimProject extends React.Component {
+class AddProject extends React.Component {
   constructor () {
     super()
     this.state = {
@@ -41,15 +41,17 @@ class ClaimProject extends React.Component {
         accounts = result
         // console.log('accounts', accounts)
         if (accounts.length) {
-          let nextDeadline
+          let nextDeadline, projectState
           p.nextDeadline().then(result => {
             // blockchain reports time in seconds, javascript in milliseconds
             nextDeadline = result.toNumber() * 1000
-            // console.log(this.setState)
-            // this.setState({nextDeadline: nextDeadline})
-            // console.log('nextDeadline', nextDeadline)
-          })
-          .then(() => {
+            this.setState({nextDeadline: nextDeadline})
+          }).then(() => {
+            p.state().then(result => {
+              let states = ['none', 'proposed', 'none', 'dispute', 'active', 'validation', 'voting']
+              projectState = states[result]
+              this.setState({projectState: projectState})
+            })
             // pr.projectTaskList.call(this.props.address).then(result => {
             //   console.log(result)
             //   // taskHashes = result.toNumber()
@@ -112,7 +114,7 @@ class ClaimProject extends React.Component {
                   tasks: tasks[i],
                   taskweiReward: taskweiReward[i]
                 })
-                console.log(temp)
+                // console.log(temp)
               }
               // console.log(temp)
               this.setState({tempTaskList: {}})
@@ -156,9 +158,7 @@ class ClaimProject extends React.Component {
     let d
     // if (typeof stakingEndDate !== 'undefined') { d = new Date(stakingEndDate) }
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
-    // console.log(this.props.taskList)
     // console.log(this.state.nextDeadline)
-    // console.log(this.props)
     let projIndex = this.getProjIndex()
     let taskList = this.props.projects.projects[projIndex].taskList
     let tasks
@@ -191,30 +191,8 @@ class ClaimProject extends React.Component {
       key: 'weiReward'
     }]
 
-    // take JSON this.props.taskList --> generate the rows of table
-    // use {} and put that in
-
-    return (
-      // <Col sm='10'>
-      <Card title={`${this.props.description}`} >
-        <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
-        <div>project funds: {`${this.props.cost}`} ETH</div>
-        {/* <td>{typeof d !== 'undefined' ? `${d.toLocaleDateString()} ${d.toLocaleTimeString()}` : 'N/A'}</td> */}
-        <div>
-          <div>
-            task submission expires {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}
-          </div>
-          <div>
-            <input
-              ref={(input) => (this.submitList = input)}
-              placeholder='submission set'
-              disabled
-            />
-            <Button disabled style={{marginLeft: 10}}>
-              Submit Task Set
-            </Button>
-          </div>
-        </div>
+    let submission =
+      <div>
         <input
           ref={(input) => (this.tasks = input)}
           placeholder='task description'
@@ -231,6 +209,58 @@ class ClaimProject extends React.Component {
         <Button type='primary' onClick={() => this.handleTaskInput(this.state.tempTaskList)} style={{marginLeft: 10}}>
           Add Tasks
         </Button>
+      </div>
+
+    // let submission
+    // if (this.state.projectState === 'open' || this.state.projectState === 'dispute') {
+    //   submission =
+    //     <div>
+    //       <input
+    //         ref={(input) => (this.tasks = input)}
+    //         placeholder='task description'
+    //         onChange={(e) => this.onChange('tasks', this.tasks.value)}
+    //         value={this.state.tempTaskList.tasks || ''}
+    //       />
+    //       <input
+    //         ref={(input) => (this.percentages = input)}
+    //         style={{marginLeft: 10}}
+    //         placeholder='% of project cost'
+    //         onChange={(e) => this.onChange('percentages', this.percentages.value)}
+    //         value={this.state.tempTaskList.percentages || ''}
+    //       />
+    //       <Button type='primary' onClick={() => this.handleTaskInput(this.state.tempTaskList)} style={{marginLeft: 10}}>
+    //         Add Tasks
+    //       </Button>
+    //     </div>
+    // } else {
+    //   submission =
+    //     <div>
+    //       <input
+    //         ref={(input) => (this.submitList = input)}
+    //         placeholder='submission set'
+    //       />
+    //       <Button style={{marginLeft: 10}}>
+    //         Submit Task Set
+    //       </Button>
+    //     </div>
+    // }
+
+    // take JSON this.props.taskList --> generate the rows of table
+    // use {} and put that in
+
+    return (
+      // <Col sm='10'>
+      <Card title={`${this.props.description}`} >
+        <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
+        <div>project funds: {`${this.props.cost}`} ETH</div>
+        <div>project state: <strong>{`${this.state.projectState}`}</strong></div>
+        {/* <td>{typeof d !== 'undefined' ? `${d.toLocaleDateString()} ${d.toLocaleTimeString()}` : 'N/A'}</td> */}
+        <div>
+          <div>
+            task submission expires {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}
+          </div>
+          {submission}
+        </div>
         <div style={{display: 'flex', flexDirection: 'column'}}>
           <Table dataSource={tasks} columns={columns} />
         </div>
@@ -254,4 +284,4 @@ const mapDispatchToProps = (dispatch) => {
 }
  // = ({cost, description, stakingEndDate, address, index, stakeProject, unstakeProject, stakingAmount}) => {
 
-export default connect(mapStateToProps, mapDispatchToProps)(ClaimProject)
+export default connect(mapStateToProps, mapDispatchToProps)(AddProject)
