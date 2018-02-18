@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 // import { Card, CardBody, CardTitle, CardText, Button, Col } from 'reactstrap'
 import { Card, Button, Table } from 'antd'
-import {eth, web3, dt, pr, P} from '../../utilities/blockchain'
+import {eth, web3, dt, tr, pr, P} from '../../utilities/blockchain'
 import hashing from '../../utilities/hashing'
 import * as _ from 'lodash'
 import { setProjectTaskList } from '../../actions/projectActions'
@@ -206,7 +206,7 @@ class AddProject extends React.Component {
           onChange={(e) => this.onChange('percentages', this.percentages.value)}
           value={this.state.tempTaskList.percentages || ''}
         />
-        <Button type='primary' onClick={() => this.handleTaskInput(this.state.tempTaskList)} style={{marginLeft: 10}}>
+        <Button type='primary' onClick={() => this.handleTaskInput()} style={{marginLeft: 10}}>
           Add Tasks
         </Button>
       </div>
