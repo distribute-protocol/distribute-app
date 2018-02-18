@@ -23,7 +23,7 @@ class Add extends React.Component {
       return new Promise(async (resolve, reject) => {
         let proj = P.at(address)
         let isStaked = await proj.isStaked()
-        console.log('proj is staked', isStaked)
+        // console.log('proj is staked', isStaked)
         resolve(isStaked)
       })
     }
@@ -42,15 +42,15 @@ class Add extends React.Component {
 
     Promise.all(projects)
       .then(results => {
-        console.log(results)
+        // console.log(results)
         // Handle results
-        console.log('results', results)
+        // console.log('results', results)
         projectsArr = _.compact(results)
-        console.log(projectsArr)
+        // console.log(projectsArr)
         this.setState({projects: projectsArr})
-        console.log(this.state.projects)
+        // console.log(this.state.projects)
         // console.log('projectsArr', projectsArr)
-        console.log('state', this.state.projects)
+        // console.log('state', this.state.projects)
       })
       .catch(e => {
         console.error(e)

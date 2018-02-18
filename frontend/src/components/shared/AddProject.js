@@ -95,6 +95,8 @@ class AddProject extends React.Component {
       let taskHash = this.hashTasksForAddition(tasks, taskweiReward)
       eth.getAccounts(async (err, accounts) => {
         if (!err) {
+          console.log(this.props.address)
+          console.log(taskHash)
           await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => {
             if (!_.isEmpty(this.state.tempTaskList)) {
               // make table object for task list
