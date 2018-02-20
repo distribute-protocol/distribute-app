@@ -213,7 +213,7 @@ class AddProject extends React.Component {
       dataIndex: 'ethReward',
       key: 'ethReward'
     }, {
-      title: 'Add Task to Submission',
+      title: '',
       dataIndex: 'addTask',
       key: 'addTask'
     }]
