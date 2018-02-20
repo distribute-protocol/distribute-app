@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 // import { Card, CardBody, CardTitle, CardText, Button, Col } from 'reactstrap'
 import { Card, Button, Table } from 'antd'
+import DraggableTable from '../shared/DraggableTable'
 import {eth, web3, dt, tr, pr, P} from '../../utilities/blockchain'
 import hashing from '../../utilities/hashing'
 import * as _ from 'lodash'
@@ -272,9 +273,6 @@ class AddProject extends React.Component {
     //     </div>
     // }
 
-    // take JSON this.props.taskList --> generate the rows of table
-    // use {} and put that in
-
     return (
       // <Col sm='10'>
       <Card title={`${this.props.description}`} >
@@ -289,7 +287,7 @@ class AddProject extends React.Component {
           {submission}
         </div>
         <div style={{display: 'flex', flexDirection: 'column'}}>
-          <Table dataSource={tasks} columns={columns} />
+          <DraggableTable dataSource={tasks} columns={columns} />
         </div>
         <div>
           <Button>Submit Remaining Tasks</Button>
