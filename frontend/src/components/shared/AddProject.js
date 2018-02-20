@@ -36,6 +36,16 @@ class AddProject extends React.Component {
     }
   }
 
+  deleteElement (i) {
+    try {
+      let newTaskList = this.state.taskList
+      newTaskList.splice(i, 1)
+      this.setState({taskList: newTaskList})
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
   getProjectStatus (p) {
     let accounts
     eth.getAccounts(async (err, result) => {
@@ -75,7 +85,7 @@ class AddProject extends React.Component {
     let p = P.at(this.props.address)
     // console.log(p, this.props.address)
     this.getProjectStatus(p)
-    this.setState({project: p})
+    this.setState({project: p, taskList: this.props.taskList})
   }
 
   // getProjIndex () {
@@ -93,10 +103,10 @@ class AddProject extends React.Component {
     //   alert('PERCENTAGES MUST ADD UP TO 100, AND EACH TASK MUST HAVE AN ASSOCIATED PERCENTAGE')
     // } else {
     let totalProjectCost = web3.toWei(this.props.cost, 'ether')
-    let taskweiReward = percentage * totalProjectCost / 100
+    // let taskweiReward = percentage * totalProjectCost / 100
     // console.log(this.props.taskList)
     // console.log(this.state.tempTask)
-    let tempTask = this.props.taskList
+    let tempTask = this.state.taskList
     tempTask.push({description: task, percentage: percentage})
     this.props.setProjectTaskList({taskList: tempTask, address: this.props.address})
     // let taskHash = this.hashTasksForAddition(tasks, taskweiReward)
@@ -182,8 +192,8 @@ class AddProject extends React.Component {
           key: i,
           description: task.description,
           percentage: task.percentage + '%',
-          weiReward: this.props.cost * (task.percentage / 100) + ' wei',
-          addTask: <Button type='default' onClick={() => console.log('click!')} > Add to my List</Button>
+          ethReward: this.props.cost * (task.percentage / 100) + ' ETH',
+          addTask: <Button type='danger' onClick={() => this.deleteElement(i)} > Delete</Button>
         }
       })
     } else {
@@ -199,9 +209,9 @@ class AddProject extends React.Component {
       dataIndex: 'percentage',
       key: 'percentage'
     }, {
-      title: 'Wei Reward',
-      dataIndex: 'weiReward',
-      key: 'weiReward'
+      title: 'ETH Reward',
+      dataIndex: 'ethReward',
+      key: 'ethReward'
     }, {
       title: 'Add Task to Submission',
       dataIndex: 'addTask',
@@ -280,6 +290,9 @@ class AddProject extends React.Component {
         </div>
         <div style={{display: 'flex', flexDirection: 'column'}}>
           <Table dataSource={tasks} columns={columns} />
+        </div>
+        <div>
+          <Button>Submit Remaining Tasks</Button>
         </div>
       </Card>
     )
