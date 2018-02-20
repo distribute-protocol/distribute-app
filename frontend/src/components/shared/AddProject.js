@@ -236,6 +236,9 @@ class AddProject extends React.Component {
         <Button type='primary' onClick={() => this.handleTaskInput()} style={{marginLeft: 10}}>
           Add Tasks
         </Button>
+        <Button type='dashed' onClick={() => window.location.reload()} style={{marginLeft: 10}}>
+          Refresh Tasks
+        </Button>
       </div>
 
     // let submission
