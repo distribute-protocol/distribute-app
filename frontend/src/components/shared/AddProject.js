@@ -29,7 +29,7 @@ class AddProject extends React.Component {
     try {
       let temp = Object.assign({}, this.state.tempTask, {[type]: val})
       this.setState({tempTask: temp})
-      console.log(type, val)
+      // console.log(type, val)
       // console.log('tempTask', this.state.tempTask)
     } catch (error) {
       throw new Error(error)
@@ -94,9 +94,9 @@ class AddProject extends React.Component {
     // } else {
     let totalProjectCost = web3.toWei(this.props.cost, 'ether')
     let taskweiReward = percentage * totalProjectCost / 100
-    console.log(this.state.taskList)
-    console.log(this.state.tempTask)
-    let tempTask = this.state.taskList
+    // console.log(this.props.taskList)
+    // console.log(this.state.tempTask)
+    let tempTask = this.props.taskList
     tempTask.push({description: task, percentage: percentage})
     this.props.setProjectTaskList({taskList: tempTask, address: this.props.address})
     // let taskHash = this.hashTasksForAddition(tasks, taskweiReward)
@@ -164,8 +164,8 @@ class AddProject extends React.Component {
   }
 
   render () {
-    console.log(this.state.taskList)
-    console.log(this.state.tempTask)
+    // console.log(this.state.taskList)
+    // console.log(this.state.tempTask)
     let d
     // if (typeof stakingEndDate !== 'undefined') { d = new Date(stakingEndDate) }
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
@@ -174,14 +174,16 @@ class AddProject extends React.Component {
     // let taskList = this.props.projects.projects[projIndex].taskList
     let tasks
     // if (typeof taskList !== 'undefined') {
-    // console.log(this.props)
+    // console.log(this.props.taskList)
     if (typeof this.props.taskList !== 'undefined') {
       tasks = this.props.taskList.map((task, i) => {
         // console.log(task)
         return {
           key: i,
           description: task.description,
-          percentage: task.percentage
+          percentage: task.percentage + '%',
+          weiReward: this.props.cost * (task.percentage / 100) + ' wei',
+          addTask: <Button type='default' onClick={() => console.log('click!')} > Add to my List</Button>
         }
       })
     } else {
@@ -189,17 +191,21 @@ class AddProject extends React.Component {
     }
 
     const columns = [{
-      title: 'Submission Address',
-      dataIndex: 'index',
-      key: 'index'
-    }, {
       title: 'Task Description',
       dataIndex: 'description',
       key: 'description'
     }, {
-      title: 'Reward / Reputation',
+      title: 'Percentage',
+      dataIndex: 'percentage',
+      key: 'percentage'
+    }, {
+      title: 'Wei Reward',
       dataIndex: 'weiReward',
       key: 'weiReward'
+    }, {
+      title: 'Add Task to Submission',
+      dataIndex: 'addTask',
+      key: 'addTask'
     }]
 
     let submission =

@@ -95,7 +95,8 @@ class Propose extends Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         let cost = parseInt(web3.toWei(this.state.tempProject.cost, 'ether').toString())
-        // console.log(accounts)
+        console.log(accounts[0])
+        console.log(cost, stakeEndDate)
         await tr.proposeProject(cost, stakeEndDate, {from: accounts[0]}).then(tx => {
           let txReceipt = tx.receipt
           // console.log(tx)
@@ -122,7 +123,7 @@ class Propose extends Component {
   }
 
   render () {
-    console.log(this.props.projects)
+    // console.log(this.props.projects)
     const projects = Object.keys(this.props.projects).map((projAddr, i) => {
  //      key: '1',
  // name: 'Mike',
