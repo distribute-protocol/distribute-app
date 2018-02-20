@@ -122,11 +122,13 @@ class Propose extends Component {
   }
 
   render () {
-    const projects = this.props.projects.projects.map((proj, i) => {
+    console.log(this.props.projects)
+    const projects = Object.keys(this.props.projects).map((projAddr, i) => {
  //      key: '1',
  // name: 'Mike',
  // age: 32,
  // address: '10 Downing Street'
+      let proj = this.props.projects[projAddr]
       let d
       if (typeof proj.stakingEndDate !== 'undefined') { d = moment(proj.stakingEndDate) }
       return {
@@ -213,8 +215,9 @@ class Propose extends Component {
 }
 
 const mapStateToProps = (state) => {
+  console.log(state.projects.allProjects)
   return {
-    projects: state.projects
+    projects: state.projects.allProjects
   }
 }
 

@@ -18,7 +18,8 @@ class AddProject extends React.Component {
       value: '',
       percentages: '',
       tasks: '',
-      tempTaskList: {}
+      tempTask: {},
+      taskList: []
     }
     window.pr = pr
     this.handleTaskInput = this.handleTaskInput.bind(this)
@@ -26,9 +27,10 @@ class AddProject extends React.Component {
 
   onChange (type, val) {
     try {
-      let temp = Object.assign({}, this.state.tempTaskList, {[type]: val})
-      this.setState({tempTaskList: temp})
-      // console.log('tempTaskList', this.state.tempTaskList)
+      let temp = Object.assign({}, this.state.tempTask, {[type]: val})
+      this.setState({tempTask: temp})
+      console.log(type, val)
+      // console.log('tempTask', this.state.tempTask)
     } catch (error) {
       throw new Error(error)
     }
@@ -76,56 +78,61 @@ class AddProject extends React.Component {
     this.setState({project: p})
   }
 
-  getProjIndex () {
-    return this.props.projects.projects.map((e) => { return e.address }).indexOf(this.props.address)
-  }
+  // getProjIndex () {
+  //   return this.props.projects.projects.map((e) => { return e.address }).indexOf(this.props.address)
+  // }
 
   handleTaskInput () {
     // console.log(this.state)
     // get tasks and percentages
-    let tasks = this.state.tempTaskList.tasks.split(', ')
+    let task = this.state.tempTask.description
     // console.log(tasks, typeof tasks)
-    let percentages = this.state.tempTaskList.percentages.split(', ').map(Number)
-    let sum = percentages.reduce((x, y) => x + y)
-    if (sum !== 100 || tasks.length !== percentages.length) {
-      alert('PERCENTAGES MUST ADD UP TO 100, AND EACH TASK MUST HAVE AN ASSOCIATED PERCENTAGE')
-    } else {
-      let totalProjectCost = web3.toWei(this.props.cost, 'ether')
-      let taskweiReward = percentages.map(x => x * totalProjectCost / 100)
-      let taskHash = this.hashTasksForAddition(tasks, taskweiReward)
-      eth.getAccounts(async (err, accounts) => {
-        if (!err) {
-          console.log(this.props.address)
-          console.log(taskHash)
-          await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => {
-            if (!_.isEmpty(this.state.tempTaskList)) {
-              // make table object for task list
-              let temp, thisIndex
-              let projIndex = this.getProjIndex()
-              if (typeof this.props.projects.projects[projIndex].taskList === 'undefined') {
-                thisIndex = 0
-                temp = []
-              } else {
-                temp = this.props.projects.projects[projIndex].taskList
-                thisIndex = temp[temp.length - 1].index + 1
-              }
-              // console.log(temp)
-              for (var i = 0; i < tasks.length; i++) {
-                temp.push({
-                  index: thisIndex,
-                  tasks: tasks[i],
-                  taskweiReward: taskweiReward[i]
-                })
-                // console.log(temp)
-              }
-              // console.log(temp)
-              this.setState({tempTaskList: {}})
-              this.props.setProjectTaskList({ address: this.props.address, taskList: temp })
-            }
-          })
-        }
-      })
-    }
+    let percentage = parseInt(this.state.tempTask.percentage)
+    // let sum = percentages.reduce((x, y) => x + y)
+    // if (sum !== 100 || tasks.length !== percentages.length) {
+    //   alert('PERCENTAGES MUST ADD UP TO 100, AND EACH TASK MUST HAVE AN ASSOCIATED PERCENTAGE')
+    // } else {
+    let totalProjectCost = web3.toWei(this.props.cost, 'ether')
+    let taskweiReward = percentage * totalProjectCost / 100
+    console.log(this.state.taskList)
+    console.log(this.state.tempTask)
+    let tempTask = this.state.taskList
+    tempTask.push({description: task, percentage: percentage})
+    this.props.setProjectTaskList({taskList: tempTask, address: this.props.address})
+    // let taskHash = this.hashTasksForAddition(tasks, taskweiReward)
+      // eth.getAccounts(async (err, accounts) => {
+      //   if (!err) {
+          // console.log(this.props.address)
+          // console.log(taskHash)
+          // await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => {
+      // if (!_.isEmpty(this.state.tempTask)) {
+      // // make table object for task list
+      //         // let temp, thisIndex
+      //         // console.log(this.props.projects.projects)
+      //         // if (typeof this.props.projects.projects[projIndex].taskList === 'undefined') {
+      //         //   thisIndex = 0
+      //         //   temp = []
+      //         // } else {
+      //         //   temp = this.props.projects.projects[projIndex].taskList
+      //         //   thisIndex = temp[temp.length - 1].index + 1
+      //         // }
+      //         // // console.log(temp)
+      //         // for (var i = 0; i < tasks.length; i++) {
+      //         //   temp.push({
+      //         //     index: thisIndex,
+      //         //     tasks: tasks[i],
+      //         //     taskweiReward: taskweiReward[i]
+      //         //   })
+      //         //   // console.log(temp)
+      //         // }
+      //         // // console.log(temp)
+      //         this.setState({tempTask: {}})
+      //         this.props.setProjectTaskList({ address: this.props.address, taskList: temp })
+      //       }
+      //   //   })
+      //   }
+      // })
+    // }
   }
 
   hashTasksForAddition (tasks, weiReward) {
@@ -157,22 +164,24 @@ class AddProject extends React.Component {
   }
 
   render () {
+    console.log(this.state.taskList)
+    console.log(this.state.tempTask)
     let d
     // if (typeof stakingEndDate !== 'undefined') { d = new Date(stakingEndDate) }
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
     // console.log(this.state.nextDeadline)
-    let projIndex = this.getProjIndex()
-    let taskList = this.props.projects.projects[projIndex].taskList
+    // let projIndex = this.getProjIndex()
+    // let taskList = this.props.projects.projects[projIndex].taskList
     let tasks
-    if (typeof taskList !== 'undefined') {
-      // console.log(taskList)
-      tasks = taskList.map((task, i) => {
+    // if (typeof taskList !== 'undefined') {
+    // console.log(this.props)
+    if (typeof this.props.taskList !== 'undefined') {
+      tasks = this.props.taskList.map((task, i) => {
         // console.log(task)
         return {
           key: i,
-          index: task.index,
-          description: task.tasks,
-          weiReward: task.taskweiReward
+          description: task.description,
+          percentage: task.percentage
         }
       })
     } else {
@@ -180,7 +189,7 @@ class AddProject extends React.Component {
     }
 
     const columns = [{
-      title: 'Submission Set',
+      title: 'Submission Address',
       dataIndex: 'index',
       key: 'index'
     }, {
@@ -198,15 +207,15 @@ class AddProject extends React.Component {
         <input
           ref={(input) => (this.tasks = input)}
           placeholder='task description'
-          onChange={(e) => this.onChange('tasks', this.tasks.value)}
-          value={this.state.tempTaskList.tasks || ''}
+          onChange={(e) => this.onChange('description', this.tasks.value)}
+          value={this.state.tempTask.description || ''}
         />
         <input
           ref={(input) => (this.percentages = input)}
           style={{marginLeft: 10}}
           placeholder='% of project cost'
-          onChange={(e) => this.onChange('percentages', this.percentages.value)}
-          value={this.state.tempTaskList.percentages || ''}
+          onChange={(e) => this.onChange('percentage', this.percentages.value)}
+          value={this.state.tempTask.percentage || ''}
         />
         <Button type='primary' onClick={() => this.handleTaskInput()} style={{marginLeft: 10}}>
           Add Tasks
@@ -221,16 +230,16 @@ class AddProject extends React.Component {
     //         ref={(input) => (this.tasks = input)}
     //         placeholder='task description'
     //         onChange={(e) => this.onChange('tasks', this.tasks.value)}
-    //         value={this.state.tempTaskList.tasks || ''}
+    //         value={this.state.tempTask.tasks || ''}
     //       />
     //       <input
     //         ref={(input) => (this.percentages = input)}
     //         style={{marginLeft: 10}}
     //         placeholder='% of project cost'
     //         onChange={(e) => this.onChange('percentages', this.percentages.value)}
-    //         value={this.state.tempTaskList.percentages || ''}
+    //         value={this.state.tempTask.percentages || ''}
     //       />
-    //       <Button type='primary' onClick={() => this.handleTaskInput(this.state.tempTaskList)} style={{marginLeft: 10}}>
+    //       <Button type='primary' onClick={() => this.handleTaskInput(this.state.tempTask)} style={{marginLeft: 10}}>
     //         Add Tasks
     //       </Button>
     //     </div>
@@ -271,15 +280,19 @@ class AddProject extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  // console.log(state.projects.allProjects[ownProps.address])
   return {
-    projects: state.projects
+    projects: state.projects.allProjects,
+    taskList: state.projects.allProjects[ownProps.address].taskList
   }
 }
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({
-    getProjectState, setProjectTaskList
-  }, dispatch)
+  return {
+    setProjectTaskList: (taskDetails) => dispatch(setProjectTaskList(taskDetails)),
+    getProjectState: () => dispatch(getProjectState())
+  }
+
   // return {
   //   getProjectState: () => console.log('heyhey')
   // }

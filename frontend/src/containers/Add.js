@@ -28,14 +28,14 @@ class Add extends React.Component {
       })
     }
 
-    let projects = np.projects.projects.map((project, i) => {
-      // console.log(project)
-      return projectState(project.address)
+    let projects = Object.keys(np.projects).map((projAddr, i) => {
+      // console.log('projAddr', projAddr)
+      return projectState(projAddr)
         .then(state => {
           // console.log('state', state)
           if (state) {
             // return JSON.stringify(project)
-            return project
+            return np.projects[projAddr]
           }
         })
     })
@@ -60,7 +60,7 @@ class Add extends React.Component {
 // fast forward Ganache 1 week
   async fastForward () {
     await fastforward(7 * 24 * 60 * 60)
-    console.log('fastForward')
+    // console.log('fastForward')
   }
 
   render () {
@@ -114,7 +114,7 @@ class Add extends React.Component {
 // return returnProj
 const mapStateToProps = (state) => {
   return {
-    projects: state.projects
+    projects: state.projects.allProjects
   }
 }
 

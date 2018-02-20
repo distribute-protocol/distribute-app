@@ -58,12 +58,11 @@ class Stake extends React.Component {
       })
     }
 
-    let projects = np.projects.projects.map((project, i) => {
-      // console.log(project)
-      return projectState(project.address)
+    let projects = Object.keys(np.projects).map((projAddr, i) => {
+      return projectState(projAddr)
         .then(state => {
           if (!state) {
-            return project
+            return np.projects[projAddr]
           }
         })
     })
@@ -112,7 +111,7 @@ class Stake extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    projects: state.projects
+    projects: state.projects.allProjects
   }
 }
 
