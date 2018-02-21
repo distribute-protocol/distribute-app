@@ -120,8 +120,11 @@ BodyRow = DropTarget('row', rowTarget, (connect, monitor) => ({
 // }];
 
 class DraggableTable extends React.Component {
-  state = {
-    data: this.props.dataSource
+  constructor (props) {
+    super(props)
+    this.state = {
+      data: props.dataSource
+    }
   }
 
   components = {
@@ -130,10 +133,20 @@ class DraggableTable extends React.Component {
     },
   }
 
+  componentWillReceiveProps(np) {
+    this.setState({data: np.dataSource})
+  }
+
   moveRow = (dragIndex, hoverIndex) => {
     const { data } = this.state;
     const dragRow = data[dragIndex];
 
+    let splice = update(this.state, {
+      data: {
+        $splice: [[dragIndex, 1], [hoverIndex, 0, dragRow]],
+      },
+    })
+    console.log(splice)
     this.setState(
       update(this.state, {
         data: {
@@ -141,6 +154,9 @@ class DraggableTable extends React.Component {
         },
       }),
     );
+
+    let newProps = this.state.data
+    this.props.setProjectTaskList({taskList: newProps, address: this.props.address})
   }
 
   render() {

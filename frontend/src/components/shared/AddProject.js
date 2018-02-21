@@ -107,7 +107,7 @@ class AddProject extends React.Component {
     // let taskweiReward = percentage * totalProjectCost / 100
     // console.log(this.props.taskList)
     // console.log(this.state.tempTask)
-    let tempTask = this.state.taskList
+    let tempTask = this.props.taskList
     tempTask.push({description: task, percentage: percentage})
     this.props.setProjectTaskList({taskList: tempTask, address: this.props.address})
     // let taskHash = this.hashTasksForAddition(tasks, taskweiReward)
@@ -192,8 +192,8 @@ class AddProject extends React.Component {
         return {
           key: i,
           description: task.description,
-          percentage: task.percentage + '%',
-          ethReward: this.props.cost * (task.percentage / 100) + ' ETH',
+          percentage: task.percentage,
+          ethReward: this.props.cost * (task.percentage / 100),
           addTask: <Button type='danger' onClick={() => this.deleteElement(i)} > Delete</Button>
         }
       })
@@ -239,6 +239,8 @@ class AddProject extends React.Component {
         </Button>
       </div>
 
+      // console.log(this.props.taskList)
+
     // let submission
     // if (this.state.projectState === 'open' || this.state.projectState === 'dispute') {
     //   submission =
@@ -272,7 +274,6 @@ class AddProject extends React.Component {
     //       </Button>
     //     </div>
     // }
-
     return (
       // <Col sm='10'>
       <Card title={`${this.props.description}`} >
@@ -287,7 +288,7 @@ class AddProject extends React.Component {
           {submission}
         </div>
         <div style={{display: 'flex', flexDirection: 'column'}}>
-          <DraggableTable dataSource={tasks} columns={columns} />
+          <DraggableTable address={this.props.address} dataSource={tasks} columns={columns} setProjectTaskList={this.props.setProjectTaskList} />
         </div>
         <div>
           <Button>Submit Remaining Tasks</Button>

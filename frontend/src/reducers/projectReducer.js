@@ -27,10 +27,10 @@ export default function projectReducer (state = initialState, action) {
       return Object.assign({}, state, {fetching: 'FALSE'})
     case SET_PROJECT_TASK_LIST:
       let temp = state.allProjects[action.taskDetails.address]
-      console.log('all projects', state.allProjects)
+      console.log(action.taskDetails.taskList)
       temp.taskList = action.taskDetails.taskList
       newAllProjects = Object.assign({}, state.allProjects, {[action.taskDetails.address]: temp})
-      console.log('new object', Object.assign({}, state, {allProjects: newAllProjects}))
+      // console.log('new object', Object.assign({}, state, {allProjects: newAllProjects}))
       return Object.assign({}, state, {allProjects: newAllProjects})
     default:
   }
