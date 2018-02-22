@@ -249,6 +249,32 @@ class AddProject extends React.Component {
       key: 'addTask'
     }]
 
+    console.log(this.props.submissions)
+
+    const submissionColumns = [{
+      title: 'Submitter',
+      dataIndex: 'submitter',
+      key: 'submitter'
+    }, {
+      title: 'Submission',
+      dataIndex: 'submission',
+      key: 'submission'
+    }, {
+      title: 'Weighting',
+      dataIndex: 'weighting',
+      key: 'weighting'
+    }]
+
+    let submissionTasks = Object.keys(this.props.submissions).map((address, i) => {
+      console.log(this.props.submissions[address])
+      return {
+        key: i,
+        submitter: address,
+        submission: JSON.stringify(this.props.submissions[address]),
+        weighting: 'tbd'
+      }
+    })
+
     let submission =
       <div>
         <input
@@ -319,11 +345,16 @@ class AddProject extends React.Component {
           </div>
           {submission}
         </div>
-        <div style={{display: 'flex', flexDirection: 'column'}}>
-          <Table dataSource={tasks} columns={columns} />
-        </div>
+          <div style={{display: 'flex', flexDirection: 'column'}}>
+            <Table dataSource={tasks} columns={columns} />
+          </div>
         <div>
           <Button onClick={() => this.submitTaskList()}>Submit Remaining Tasks</Button>
+        </div>
+        <div>
+          <div style={{display: 'flex', flexDirection: 'column'}}>
+            <Table dataSource={submissionTasks} columns={submissionColumns} />
+          </div>
         </div>
       </Card>
     )
@@ -334,7 +365,8 @@ const mapStateToProps = (state, ownProps) => {
   // console.log(state.projects.allProjects[ownProps.address])
   return {
     projects: state.projects.allProjects,
-    taskList: state.projects.allProjects[ownProps.address].taskList
+    taskList: state.projects.allProjects[ownProps.address].taskList,
+    submissions: state.projects.allProjects[ownProps.address].submittedTasks
   }
 }
 const mapDispatchToProps = (dispatch) => {
