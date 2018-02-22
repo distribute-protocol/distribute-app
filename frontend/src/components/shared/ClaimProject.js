@@ -10,7 +10,7 @@ import { setProjectTaskList, setTaskSubmission } from '../../actions/projectActi
 
 const getProjectState = () => ({ type: 'GET_PROJECT_STATE' })
 
-class AddProject extends React.Component {
+class ClaimProject extends React.Component {
   constructor () {
     super()
     this.state = {
@@ -22,8 +22,6 @@ class AddProject extends React.Component {
     }
     window.pr = pr
     window.state = this.state
-    this.handleTaskInput = this.handleTaskInput.bind(this)
-    this.submitTaskList = this.submitTaskList.bind(this)
   }
 
   onChange (type, val) {
@@ -35,14 +33,8 @@ class AddProject extends React.Component {
     }
   }
 
-  deleteElement (i) {
-    try {
-      let newTaskList = this.state.taskList
-      newTaskList.splice(i, 1)
-      this.props.setProjectTaskList({taskList: newTaskList, address: this.props.address})
-    } catch (error) {
-      throw new Error(error)
-    }
+  claimElement (i) {
+    console.log('you will be able to claim this when I stop being lazy')
   }
 
   getProjectStatus (p) {
@@ -84,32 +76,24 @@ class AddProject extends React.Component {
     this.setState({tempTask: {}})
   }
 
-  submitTaskListToStore (submitterAddress, submission) {
-    this.props.setTaskSubmission({address: this.props.address, submitter: submitterAddress, taskSubmission: submission})
-  }
-
-  submitTaskList () {
-    let tasks = this.props.taskList
-    let sumTotal = tasks.map(el => el.percentage).reduce((prev, curr) => {
-      return prev + curr
-    }, 0)
-    if (sumTotal !== 100) {
-       alert('percentages must add up to 100!')
-    } else {
-      let totalProjectCost = web3.toWei(this.props.cost, 'ether')
-      let taskFormatting = tasks.map(task => ({
-        description: task.description,
-        weiReward: task.percentage * totalProjectCost / 100
-      }))
-      let taskHash = this.hashTasksForAddition(taskFormatting)
-      eth.getAccounts(async (err, accounts) => {
-        if (!err) {
-          await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => {
-            this.submitTaskListToStore(accounts[0], taskFormatting)
+  async submitWinningHashList () {
+    await pr.disputedProjects(this.props.address).then(winner => {
+      return winner
+    }).then((topTaskHash) => {
+      Object.keys(this.props.submissions).map(async (address, i) => {
+        let hash = this.hashTasksForAddition(this.props.submissions[address])
+        if (hash === topTaskHash) {
+          let list = this.hashListForSubmission(this.props.submissions[address])
+          eth.getAccounts(async (err, accounts) => {
+            if (!err) {
+              await pr.submitHashList(this.props.address, list, {from: accounts[0]}).then(() => {
+                this.props.setProjectTaskList({taskList: this.props.submissions[address], address: this.props.address})
+              })
+            }
           })
         }
       })
-    }
+    })
   }
 
   hashTasksForAddition (taskArray) {
@@ -131,6 +115,7 @@ class AddProject extends React.Component {
       thisTask.push(taskArray[i].description)
       thisTask.push(taskArray[i].weiReward)
       thisTask.push(taskArray[i].weiReward)
+      // console.log(thisTask)
       taskHashArray.push('0x' + hashing.keccakHashes(args, thisTask))
     }
     return taskHashArray
@@ -147,7 +132,7 @@ class AddProject extends React.Component {
           description: task.description,
           percentage: task.percentage + '%',
           ethReward: this.props.cost * (task.percentage / 100) + ' ETH',
-          addTask: <Button type='danger' onClick={() => this.deleteElement(i)} > Delete</Button>
+          addTask: <Button type='danger' onClick={() => this.claimElement(i)} > Claim</Button>
         }
       })
     } else {
@@ -172,50 +157,8 @@ class AddProject extends React.Component {
       key: 'addTask'
     }]
 
-    const submissionColumns = [{
-      title: 'Submitter',
-      dataIndex: 'submitter',
-      key: 'submitter'
-    }, {
-      title: 'Submission',
-      dataIndex: 'submission',
-      key: 'submission'
-    }, {
-      title: 'Weighting',
-      dataIndex: 'weighting',
-      key: 'weighting'
-    }]
-
-    let submissionTasks = Object.keys(this.props.submissions).map((address, i) => {
-      return {
-        key: i,
-        submitter: address,
-        submission: JSON.stringify(this.props.submissions[address]),
-        weighting: 'tbd'
-      }
-    })
-
-    let submission =
-      <div>
-        <input
-          ref={(input) => (this.tasks = input)}
-          placeholder='task description'
-          onChange={(e) => this.onChange('description', this.tasks.value)}
-          value={this.state.tempTask.description || ''}
-        />
-        <input
-          ref={(input) => (this.percentages = input)}
-          style={{marginLeft: 10}}
-          placeholder='% of project cost'
-          onChange={(e) => this.onChange('percentage', this.percentages.value)}
-          value={this.state.tempTask.percentage || ''}
-        />
-        <Button type='primary' onClick={() => this.handleTaskInput()} style={{marginLeft: 10}}>
-          Add Tasks
-        </Button>
-      </div>
-
     return (
+      // <Col sm='10'>
       <Card title={`${this.props.description}`} >
         <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
         <div>project funds: {`${this.props.cost}`} ETH</div>
@@ -225,20 +168,11 @@ class AddProject extends React.Component {
           <div>
             task submission expires {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}
           </div>
-          {submission}
         </div>
-          <div style={{display: 'flex', flexDirection: 'column'}}>
-            <Table dataSource={tasks} columns={columns} />
-          </div>
-        <div>
-          <Button onClick={() => this.submitTaskList()}>Submit Remaining Tasks</Button>
+        <div style={{display: 'flex', flexDirection: 'column'}}>
+          <Table dataSource={tasks} columns={columns} />
         </div>
-        <div>
-          <div style={{display: 'flex', flexDirection: 'column'}}>
-            <Table dataSource={submissionTasks} columns={submissionColumns} />
-          </div>
-          { /* }{submitHashListButton} */}
-        </div>
+        <Button onClick={() => this.submitWinningHashList()}>Submit Winning Hash List</Button>
       </Card>
     )
   }
@@ -262,4 +196,4 @@ const mapDispatchToProps = (dispatch) => {
   // }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddProject)
+export default connect(mapStateToProps, mapDispatchToProps)(ClaimProject)

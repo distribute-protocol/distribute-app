@@ -22,18 +22,18 @@ class Add extends React.Component {
     function projectState (address) {
       return new Promise(async (resolve, reject) => {
         let proj = P.at(address)
-        let isStaked = await proj.isStaked()
+        let state = await proj.state()
         // console.log('proj is staked', isStaked)
-        resolve(isStaked)
+        resolve(state)
       })
     }
 
     let projects = Object.keys(np.projects).map((projAddr, i) => {
-      // console.log('projAddr', projAddr)
+      console.log('projAddr', projAddr)
       return projectState(projAddr)
         .then(state => {
-          // console.log('state', state)
-          if (state) {
+          console.log(state)
+          if (state == 3) {
             // return JSON.stringify(project)
             return np.projects[projAddr]
           }
