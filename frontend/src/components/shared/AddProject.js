@@ -22,7 +22,9 @@ class AddProject extends React.Component {
       taskList: []
     }
     window.pr = pr
+    window.state = this.state
     this.handleTaskInput = this.handleTaskInput.bind(this)
+    this.submitTaskList = this.submitTaskList.bind(this)
   }
 
   onChange (type, val) {
@@ -102,51 +104,75 @@ class AddProject extends React.Component {
     // if (sum !== 100 || tasks.length !== percentages.length) {
     //   alert('PERCENTAGES MUST ADD UP TO 100, AND EACH TASK MUST HAVE AN ASSOCIATED PERCENTAGE')
     // } else {
-    let totalProjectCost = web3.toWei(this.props.cost, 'ether')
-    // let taskweiReward = percentage * totalProjectCost / 100
     // console.log(this.props.taskList)
     // console.log(this.state.tempTask)
     let tempTask = this.state.taskList
     tempTask.push({description: task, percentage: percentage})
     this.props.setProjectTaskList({taskList: tempTask, address: this.props.address})
     // let taskHash = this.hashTasksForAddition(tasks, taskweiReward)
-      // eth.getAccounts(async (err, accounts) => {
-      //   if (!err) {
-          // console.log(this.props.address)
-          // console.log(taskHash)
-          // await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => {
-      // if (!_.isEmpty(this.state.tempTask)) {
-      // // make table object for task list
-      //         // let temp, thisIndex
-      //         // console.log(this.props.projects.projects)
-      //         // if (typeof this.props.projects.projects[projIndex].taskList === 'undefined') {
-      //         //   thisIndex = 0
-      //         //   temp = []
-      //         // } else {
-      //         //   temp = this.props.projects.projects[projIndex].taskList
-      //         //   thisIndex = temp[temp.length - 1].index + 1
-      //         // }
-      //         // // console.log(temp)
-      //         // for (var i = 0; i < tasks.length; i++) {
-      //         //   temp.push({
-      //         //     index: thisIndex,
-      //         //     tasks: tasks[i],
-      //         //     taskweiReward: taskweiReward[i]
-      //         //   })
-      //         //   // console.log(temp)
-      //         // }
-      //         // // console.log(temp)
-      //         this.setState({tempTask: {}})
-      //         this.props.setProjectTaskList({ address: this.props.address, taskList: temp })
-      //       }
-      //   //   })
-      //   }
-      // })
+    //   eth.getAccounts(async (err, accounts) => {
+    //     if (!err) {
+    //       console.log(this.props.address)
+    //       console.log(taskHash)
+    //       await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => {
+    //   if (!_.isEmpty(this.state.tempTask)) {
+    //   // make table object for task list
+    //           // let temp, thisIndex
+    //           // console.log(this.props.projects.projects)
+    //           // if (typeof this.props.projects.projects[projIndex].taskList === 'undefined') {
+    //           //   thisIndex = 0
+    //           //   temp = []
+    //           // } else {
+    //           //   temp = this.props.projects.projects[projIndex].taskList
+    //           //   thisIndex = temp[temp.length - 1].index + 1
+    //           // }
+    //           // // console.log(temp)
+    //           // for (var i = 0; i < tasks.length; i++) {
+    //           //   temp.push({
+    //           //     index: thisIndex,
+    //           //     tasks: tasks[i],
+    //           //     taskweiReward: taskweiReward[i]
+    //           //   })
+    //           //   // console.log(temp)
+    //           // }
+    //           // // console.log(temp)
+    //           this.setState({tempTask: {}})
+    //           this.props.setProjectTaskList({ address: this.props.address, taskList: temp })
+    //         }
+    //     //   })
+    //     }
+    //   })
     // }
   }
 
-  hashTasksForAddition (tasks, weiReward) {
-    let hashList = this.hashListForSubmission(tasks, weiReward)
+  submitTaskList () {
+    // this.state.taskList returns an array of objects [{description: , percentage: }, {}...]
+    // need tasks & weiReward for task hash submission
+    let tasks = this.props.taskList
+    // check to make sure percentages add up
+    let sumTotal = tasks.map(el => el.percentage).reduce((prev, curr) => {
+      return prev + curr
+    }, 0)
+    if (sumTotal !== 100) {
+       alert('percentages must add up to 100!')
+    } else {
+      let totalProjectCost = web3.toWei(this.props.cost, 'ether')
+      let taskFormatting = tasks.map(task => ({
+        description: task.description,
+        weiReward: task.percentage * totalProjectCost / 100
+      }))
+      let taskHash = this.hashTasksForAddition(taskFormatting)
+      eth.getAccounts(async (err, accounts) => {
+        if (!err) {
+          await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => {
+          })
+        }
+      })
+    }
+  }
+
+  hashTasksForAddition (taskArray) {
+    let hashList = this.hashListForSubmission(taskArray)
     hashList.map(arr => arr.slice(2))
     let numArgs = hashList.length
     let args = 'bytes32'.concat(' bytes32'.repeat(numArgs - 1)).split(' ')
@@ -155,17 +181,17 @@ class AddProject extends React.Component {
     return '0x' + taskHash
   }
 
-  hashListForSubmission (tasks, weiReward) {
+  hashListForSubmission (taskArray) {
     let taskHashArray = []
     // define reputation reward from wei reward right now
-    let repReward = weiReward
     // task, weiReward, repReward
     let args = ['bytes32', 'bytes32', 'bytes32']
-    for (var i = 0; i < tasks.length; i++) {
+    for (var i = 0; i < taskArray.length; i++) {
       let thisTask = []
-      thisTask.push(tasks[i])
-      thisTask.push(weiReward[i])
-      thisTask.push(repReward[i])  // build task description, weiReward, repReward
+      // console.log(taskArray)
+      thisTask.push(taskArray[i].description)
+      thisTask.push(taskArray[i].weiReward)
+      thisTask.push(taskArray[i].weiReward)
       // console.log(thisTask)
       taskHashArray.push('0x' + hashing.keccakHashes(args, thisTask))
     }
@@ -292,7 +318,7 @@ class AddProject extends React.Component {
           <Table dataSource={tasks} columns={columns} />
         </div>
         <div>
-          <Button>Submit Remaining Tasks</Button>
+          <Button onClick={() => this.submitTaskList()}>Submit Remaining Tasks</Button>
         </div>
       </Card>
     )
