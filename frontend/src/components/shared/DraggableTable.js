@@ -164,11 +164,11 @@ class DraggableTable extends React.Component {
       <Table
         columns={this.props.columns}
         dataSource={this.state.data}
-        components={this.components}
-        onRow={(record, index) => ({
-          index,
-          moveRow: this.moveRow,
-        })}
+        // components={this.components}
+        // onRow={(record, index) => ({
+        //   index,
+        //   moveRow: this.moveRow,
+        // })}
       />
     );
   }
