@@ -147,6 +147,29 @@ class AddProject extends React.Component {
     // }
   }
 
+  async submitWinningHashList () {
+    await pr.disputedProjects(this.props.address).then(winner => {
+      return winner
+      // console.log(topTaskHash)
+    }).then((topTaskHash) => {
+      Object.keys(this.props.submissions).map(async (address, i) => {
+        let hash = this.hashTasksForAddition(this.props.submissions[address])
+        // console.log('hash, tophash', hash, topTaskHash)
+        if (hash === topTaskHash) {
+          // console.log(this.props.address)
+          let list = this.hashListForSubmission(this.props.submissions[address])
+          eth.getAccounts(async (err, accounts) => {
+            if (!err) {
+              await pr.submitHashList(this.props.address, list, {from: accounts[0]}).then(() => {
+                this.props.setProjectTaskList({taskList: this.props.submissions[address], address: this.props.address})
+              })
+            }
+          })
+        }
+      })
+    })
+  }
+
   submitTaskListToStore (submitterAddress, submission) {
     this.props.setTaskSubmission({address: this.props.address, submitter: submitterAddress, taskSubmission: submission})
   }
@@ -266,7 +289,7 @@ class AddProject extends React.Component {
     }]
 
     let submissionTasks = Object.keys(this.props.submissions).map((address, i) => {
-      console.log(this.props.submissions[address])
+      // console.log(this.props.submissions[address])
       return {
         key: i,
         submitter: address,
@@ -295,14 +318,19 @@ class AddProject extends React.Component {
         </Button>
       </div>
 
+    let submitRemainingTasksButton
+    if (this.state.projectState === 'dispute') {
+      submitRemainingTasksButton = <Button onClick={() => this.submitTaskList()}>Submit Remaining Tasks</Button>
+    } else {
+      submitRemainingTasksButton = <Button disabled>Submit Remaining Tasks</Button>
+    }
+
     let submitHashListButton
     if (this.state.projectState === 'active') {
-      submitHashListButton = <Button>Submit Winning Hash List</Button>
+      submitHashListButton = <Button onClick={() => this.submitWinningHashList()}>Submit Winning Hash List</Button>
     } else {
       submitHashListButton = <Button disabled>Submit Winning Hash List</Button>
     }
-
-
 
     return (
       // <Col sm='10'>
@@ -321,7 +349,7 @@ class AddProject extends React.Component {
             <Table dataSource={tasks} columns={columns} />
           </div>
         <div>
-          <Button onClick={() => this.submitTaskList()}>Submit Remaining Tasks</Button>
+          {submitRemainingTasksButton}
         </div>
         <div>
           <div style={{display: 'flex', flexDirection: 'column'}}>
