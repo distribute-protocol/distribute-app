@@ -109,6 +109,7 @@ class AddProject extends React.Component {
     let tempTask = this.state.taskList
     tempTask.push({description: task, percentage: percentage})
     this.props.setProjectTaskList({taskList: tempTask, address: this.props.address})
+    this.setState({tempTask: {}})
     // let taskHash = this.hashTasksForAddition(tasks, taskweiReward)
     //   eth.getAccounts(async (err, accounts) => {
     //     if (!err) {
