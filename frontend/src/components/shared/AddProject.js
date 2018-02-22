@@ -7,7 +7,7 @@ import { Card, Button, Table } from 'antd'
 import {eth, web3, dt, tr, pr, P} from '../../utilities/blockchain'
 import hashing from '../../utilities/hashing'
 import * as _ from 'lodash'
-import { setProjectTaskList } from '../../actions/projectActions'
+import { setProjectTaskList, setTaskSubmission } from '../../actions/projectActions'
 
 const getProjectState = () => ({ type: 'GET_PROJECT_STATE' })
 
@@ -145,6 +145,10 @@ class AddProject extends React.Component {
     // }
   }
 
+  submitTaskListToStore (submitterAddress, submission) {
+    this.props.setTaskSubmission({address: this.props.address, submitter: submitterAddress, taskSubmission: submission})
+  }
+
   submitTaskList () {
     // this.state.taskList returns an array of objects [{description: , percentage: }, {}...]
     // need tasks & weiReward for task hash submission
@@ -165,6 +169,7 @@ class AddProject extends React.Component {
       eth.getAccounts(async (err, accounts) => {
         if (!err) {
           await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => {
+            this.submitTaskListToStore(accounts[0], taskFormatting)
           })
         }
       })
@@ -335,7 +340,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     setProjectTaskList: (taskDetails) => dispatch(setProjectTaskList(taskDetails)),
-    getProjectState: () => dispatch(getProjectState())
+    setTaskSubmission: (submissionDetails) => dispatch(setTaskSubmission(submissionDetails))
   }
 
   // return {

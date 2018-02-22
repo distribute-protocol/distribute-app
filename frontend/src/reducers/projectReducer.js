@@ -1,4 +1,4 @@
-import { PROPOSE_PROJECT, GET_PROJECT_STATE, PROJECT_STATE_RECEIVED, SET_PROJECT_TASK_LIST } from '../constants/ProjectActionTypes'
+import { PROPOSE_PROJECT, GET_PROJECT_STATE, PROJECT_STATE_RECEIVED, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION } from '../constants/ProjectActionTypes'
 const initialState = {
   allProjects: {},   // array of objects
   fetching: 'FALSE'
@@ -7,7 +7,7 @@ const initialState = {
 export default function projectReducer (state = initialState, action) {
   // For now, don't handle any actions
   // and just return the state given to us.
-  let newAllProjects
+  let newAllProjects, temp
   switch (action.type) {
     case PROPOSE_PROJECT:
       let newProject = {
@@ -15,7 +15,8 @@ export default function projectReducer (state = initialState, action) {
         description: action.projectDetails.description,
         stakingEndDate: action.projectDetails.stakingEndDate,
         address: action.projectDetails.address,
-        taskList: []
+        taskList: [],
+        submittedTasks: {}
       }
       newAllProjects = Object.assign({}, state.allProjects, {[action.projectDetails.address]: newProject})
       return Object.assign({}, state, {allProjects: newAllProjects})
@@ -26,11 +27,18 @@ export default function projectReducer (state = initialState, action) {
       // return Object.assign({}, state, {project: action.payload})
       return Object.assign({}, state, {fetching: 'FALSE'})
     case SET_PROJECT_TASK_LIST:
-      let temp = state.allProjects[action.taskDetails.address]
+      temp = state.allProjects[action.taskDetails.address]
       // console.log('all projects', state.allProjects)
       temp.taskList = action.taskDetails.taskList
       newAllProjects = Object.assign({}, state.allProjects, {[action.taskDetails.address]: temp})
       // console.log('new object', Object.assign({}, state, {allProjects: newAllProjects}))
+      return Object.assign({}, state, {allProjects: newAllProjects})
+    case SET_TASK_SUBMISSION:
+      temp = state.allProjects[action.submissionDetails.address]
+      console.log(temp)
+      temp.submittedTasks[action.submissionDetails.submitter] = action.submissionDetails.taskSubmission
+      console.log(temp)
+      newAllProjects = Object.assign({}, state.allProjects, {[action.submissionDetails.address]: temp})
       return Object.assign({}, state, {allProjects: newAllProjects})
     default:
   }
