@@ -87,6 +87,7 @@ class AddProject extends React.Component {
     let p = P.at(this.props.address)
     // console.log(p, this.props.address)
     this.getProjectStatus(p)
+    console.log(this.state.projectState)
     this.setState({project: p, taskList: this.props.taskList})
   }
 
@@ -250,8 +251,6 @@ class AddProject extends React.Component {
       key: 'addTask'
     }]
 
-    console.log(this.props.submissions)
-
     const submissionColumns = [{
       title: 'Submitter',
       dataIndex: 'submitter',
@@ -296,42 +295,14 @@ class AddProject extends React.Component {
         </Button>
       </div>
 
-    // let submission
-    // if (this.state.projectState === 'open' || this.state.projectState === 'dispute') {
-    //   submission =
-    //     <div>
-    //       <input
-    //         ref={(input) => (this.tasks = input)}
-    //         placeholder='task description'
-    //         onChange={(e) => this.onChange('tasks', this.tasks.value)}
-    //         value={this.state.tempTask.tasks || ''}
-    //       />
-    //       <input
-    //         ref={(input) => (this.percentages = input)}
-    //         style={{marginLeft: 10}}
-    //         placeholder='% of project cost'
-    //         onChange={(e) => this.onChange('percentages', this.percentages.value)}
-    //         value={this.state.tempTask.percentages || ''}
-    //       />
-    //       <Button type='primary' onClick={() => this.handleTaskInput(this.state.tempTask)} style={{marginLeft: 10}}>
-    //         Add Tasks
-    //       </Button>
-    //     </div>
-    // } else {
-    //   submission =
-    //     <div>
-    //       <input
-    //         ref={(input) => (this.submitList = input)}
-    //         placeholder='submission set'
-    //       />
-    //       <Button style={{marginLeft: 10}}>
-    //         Submit Task Set
-    //       </Button>
-    //     </div>
-    // }
+    let submitHashListButton
+    if (this.state.projectState === 'active') {
+      submitHashListButton = <Button>Submit Winning Hash List</Button>
+    } else {
+      submitHashListButton = <Button disabled>Submit Winning Hash List</Button>
+    }
 
-    // take JSON this.props.taskList --> generate the rows of table
-    // use {} and put that in
+
 
     return (
       // <Col sm='10'>
@@ -356,6 +327,7 @@ class AddProject extends React.Component {
           <div style={{display: 'flex', flexDirection: 'column'}}>
             <Table dataSource={submissionTasks} columns={submissionColumns} />
           </div>
+          {submitHashListButton}
         </div>
       </Card>
     )
