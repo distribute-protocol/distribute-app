@@ -36,11 +36,15 @@ class ClaimProject extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         // THIS WORKS
+        console.log(this.props.taskList[i].description, this.props.taskList[i].weiReward)
         let hashMe = [{description: this.props.taskList[i].description, weiReward: this.props.taskList[i].weiReward}]
         console.log(this.hashListForSubmission(hashMe))
-        await rr.claimTask(this.props.address, i, this.props.taskList[i].description, this.props.taskList[i].weiReward, 0, {from: accounts[0]}).then(() => {
-          this.props.indicateTaskClaimed({address: this.props.address, index: i})
-        })
+        await rr.claimTask(this.props.address, i, this.props.taskList[i].description, this.props.taskList[i].weiReward, '0', {from: accounts[0]})
+        let realHash = await pr.tempHash()
+        console.log(realHash, 'real Hash')
+        // .then(() => {
+        //   // this.props.indicateTaskClaimed({address: this.props.address, index: i})
+        // })
       }
     })
   }
@@ -126,21 +130,21 @@ class ClaimProject extends React.Component {
     let numArgs = hashList.length
     let args = 'bytes32'.concat(' bytes32'.repeat(numArgs - 1)).split(' ')
     let taskHash = hashing.keccakHashes(args, hashList)
-    return '0x' + taskHash
+    return taskHash
   }
 
   hashListForSubmission (taskArray) {
     let taskHashArray = []
     // define reputation reward from wei reward right now
     // task, weiReward, repReward
-    let args = ['bytes32', 'bytes32', 'bytes32']
+    let args = ['string', 'uint', 'uint']
     for (var i = 0; i < taskArray.length; i++) {
       let thisTask = []
       thisTask.push(taskArray[i].description)
       thisTask.push(taskArray[i].weiReward)
-      thisTask.push(0)
+      thisTask.push('0')
       // console.log(thisTask)
-      taskHashArray.push('0x' + hashing.keccakHashes(args, thisTask))
+      taskHashArray.push(hashing.keccakHashes(args, thisTask))
     }
     return taskHashArray
   }
@@ -157,7 +161,7 @@ class ClaimProject extends React.Component {
           description: task.description,
           ethReward: this.props.cost * (task.weiReward / 100) + ' ETH',
           addTask: <Button
-          // disabled={this.props.taskList[i].claimed}
+          disabled={this.props.taskList[i].claimed}
           type='danger' onClick={() => this.claimElement(i)} > Claim</Button>
         }
       })
