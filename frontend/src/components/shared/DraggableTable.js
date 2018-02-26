@@ -13,6 +13,8 @@ class DraggableTable extends PureComponent {
     }
   }
   componentWillReceiveProps(np) {
+    console.log('hey', np.data)
+    this.setState({data: np.data})
   }
   componentDidMount() {
     const container = document.querySelector('.ant-table-tbody');
