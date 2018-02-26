@@ -7,6 +7,7 @@ import DraggableTable from './DraggableTable'
 import {eth, web3, dt, tr, pr, P} from '../../utilities/blockchain'
 import hashing from '../../utilities/hashing'
 import * as _ from 'lodash'
+import update from 'immutability-helper';
 import { setProjectTaskList, setTaskSubmission } from '../../actions/projectActions'
 
 const getProjectState = () => ({ type: 'GET_PROJECT_STATE' })
@@ -128,23 +129,30 @@ class AddProject extends React.Component {
     }
     return taskHashArray
   }
-  handleReorder = (dragIndex, draggedIndex) => {
-    const data = [...this.props.taskList];
-    const item = data.splice(dragIndex, 1)[0];
-    data.splice(draggedIndex, 0, item);
-    this.props.setProjectTaskList({taskList: data, address: this.props.address})
-  };
+
+  componentWillReceiveProps(np) {
+    this.setState({taskList: np.taskList})
+  }
+  moveRow = (dragIndex, hoverIndex) => {
+    const { taskList } = this.state;
+    const dragRow = taskList[dragIndex];
+    let newState = update(this.state, {
+      taskList: {
+        $splice: [[dragIndex, 1], [hoverIndex, 0, dragRow]],
+      },
+    })
+    this.props.setProjectTaskList({taskList: newState.taskList, address: this.props.address})
+    this.setState(
+      newState
+    );
+  }
 
   componentWillMount () {
-  let p = P.at(this.props.address)
-  this.getProjectStatus(p)
-  console.log(this.state.projectState)
-  this.setState({project: p, taskList: this.props.taskList})
-}
-componentWillReceiveProps(np) {
-  console.log('im newProps', np)
-}
-
+    let p = P.at(this.props.address)
+    this.getProjectStatus(p)
+    console.log(this.state.projectState)
+    this.setState({project: p, taskList: this.props.taskList})
+  }
 
   render () {
     let d
@@ -157,7 +165,7 @@ componentWillReceiveProps(np) {
           description: task.description,
           percentage: task.percentage,
           ethReward: this.props.cost * (task.percentage / 100),
-          addTask: <Button type='danger' onClick={() => this.deleteElement(i)} > Delete</Button>
+          deleteTask: <Button type='danger' onClick={() => this.deleteElement(i)} >Delete</Button>
         }
       })
     } else {
@@ -178,8 +186,8 @@ componentWillReceiveProps(np) {
       key: 'ethReward'
     }, {
       title: '',
-      dataIndex: 'addTask',
-      key: 'addTask'
+      dataIndex: 'deleteTask',
+      key: 'deleteTask'
     }]
     const submissionColumns = [{
       title: 'Submitter',
@@ -239,7 +247,7 @@ componentWillReceiveProps(np) {
           {submission}
         </div>
         <div style={{display: 'flex', flexDirection: 'column'}}>
-          <DraggableTable address={this.props.address} data={tasks} columns={columns} handleReorder={this.handleReorder} />
+          <DraggableTable address={this.props.address} data={tasks} columns={columns} moveRow={this.moveRow} handleReorder={this.handleReorder} />
         </div>
         <div>
           <Button onClick={() => this.submitTaskList()}>Submit Remaining Tasks</Button>
