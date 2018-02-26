@@ -3,10 +3,10 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { Card, Button, Table } from 'antd'
-import {eth, web3, dt, tr, pr, P} from '../../utilities/blockchain'
+import {eth, web3, dt, rr, pr, P} from '../../utilities/blockchain'
 import hashing from '../../utilities/hashing'
 import * as _ from 'lodash'
-import { setProjectTaskList, indicateTaskClaimed } from '../../actions/projectActions'
+import { setProjectTaskList, indicateTaskClaimed, indicateTaskListSubmitted } from '../../actions/projectActions'
 
 class ClaimProject extends React.Component {
   constructor () {
@@ -33,8 +33,13 @@ class ClaimProject extends React.Component {
   }
 
   claimElement (i) {
-    this.props.indicateTaskClaimed({address: this.props.address, index: i})
-    console.log(eth.accounts)
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        console.log(this.props.taskList[i])
+        // await rr.claimTask(this.props.address, i, this.props.taskList[i].description, 0, this.props.taskList[i].weiReward, {from: accounts[0]})
+        this.props.indicateTaskClaimed({address: this.props.address, index: i})
+      }
+    })
   }
 
   /*
@@ -87,17 +92,23 @@ class ClaimProject extends React.Component {
 
   async submitWinningHashList () {
     await pr.disputedProjects(this.props.address).then(winner => {
+      console.log('top task hash', winner)
       return winner
     }).then((topTaskHash) => {
+      // console.log('made it here')
       Object.keys(this.props.submissions).map(async (address, i) => {
+        console.log('current submission', this.props.submissions[address])
         let hash = this.hashTasksForAddition(this.props.submissions[address])
+        console.log('hash of current submission', hash)
         if (hash === topTaskHash) {
           let list = this.hashListForSubmission(this.props.submissions[address])
+          console.log('list', list)
           eth.getAccounts(async (err, accounts) => {
             if (!err) {
+              console.log(accounts)
               await pr.submitHashList(this.props.address, list, {from: accounts[0]}).then(() => {
-                this.props.setProjectTaskList({taskList: this.props.submissions[address], address: this.props.address})
-                // console.log('set project task list', this.props)
+                this.props.indicateTaskListSubmitted({taskList: this.props.submissions[address], address: this.props.address, listSubmitted: true})
+                console.log('set project task list', this.props.projects)
               })
             }
           })
@@ -124,7 +135,7 @@ class ClaimProject extends React.Component {
       let thisTask = []
       thisTask.push(taskArray[i].description)
       thisTask.push(taskArray[i].weiReward)
-      thisTask.push(taskArray[i].weiReward)
+      thisTask.push(0)
       // console.log(thisTask)
       taskHashArray.push('0x' + hashing.keccakHashes(args, thisTask))
     }
@@ -132,7 +143,7 @@ class ClaimProject extends React.Component {
   }
 
   render () {
-    console.log(this.props.taskList)
+    // console.log(this.props.taskList)
     let d
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
     let tasks
@@ -180,7 +191,7 @@ class ClaimProject extends React.Component {
         <div style={{display: 'flex', flexDirection: 'column'}}>
           <Table dataSource={tasks} columns={columns} />
         </div>
-        <Button disabled={false} onClick={() => this.submitWinningHashList()}>Submit Winning Hash List</Button>
+        <Button disabled={this.props.projects[this.props.address].listSubmitted} onClick={() => this.submitWinningHashList()}>Submit Winning Hash List</Button>
       </Card>
     )
   }
@@ -196,7 +207,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     setProjectTaskList: (taskDetails) => dispatch(setProjectTaskList(taskDetails)),
-    indicateTaskClaimed: (submissionDetails) => dispatch(indicateTaskClaimed(submissionDetails))
+    indicateTaskClaimed: (submissionDetails) => dispatch(indicateTaskClaimed(submissionDetails)),
+    indicateTaskListSubmitted: (taskDetails) => dispatch(indicateTaskListSubmitted(taskDetails))
   }
 
   // return {

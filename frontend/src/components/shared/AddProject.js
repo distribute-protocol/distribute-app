@@ -105,6 +105,7 @@ class AddProject extends React.Component {
       eth.getAccounts(async (err, accounts) => {
         if (!err) {
           await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => {
+            console.log('submission', taskFormatting)
             this.submitTaskListToStore(accounts[0], taskFormatting)
           })
         }
@@ -130,7 +131,8 @@ class AddProject extends React.Component {
       let thisTask = []
       thisTask.push(taskArray[i].description)
       thisTask.push(taskArray[i].weiReward)
-      thisTask.push(taskArray[i].weiReward)
+      // submit 0 reputation for now
+      thisTask.push(0)
       taskHashArray.push('0x' + hashing.keccakHashes(args, thisTask))
     }
     return taskHashArray

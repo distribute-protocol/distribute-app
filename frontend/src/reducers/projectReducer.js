@@ -1,4 +1,4 @@
-import { PROPOSE_PROJECT, GET_PROJECT_STATE, PROJECT_STATE_RECEIVED, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, INDICATE_TASK_CLAIMED } from '../constants/ProjectActionTypes'
+import { PROPOSE_PROJECT, GET_PROJECT_STATE, PROJECT_STATE_RECEIVED, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, INDICATE_TASK_CLAIMED, INDICATE_TASKLIST_SUBMITTED } from '../constants/ProjectActionTypes'
 const initialState = {
   allProjects: {},   // array of objects
   fetching: 'FALSE'
@@ -28,23 +28,27 @@ export default function projectReducer (state = initialState, action) {
       return Object.assign({}, state, {fetching: 'FALSE'})
     case SET_PROJECT_TASK_LIST:
       temp = state.allProjects[action.taskDetails.address]
-      // console.log('all projects', state.allProjects)
       temp.taskList = action.taskDetails.taskList
       newAllProjects = Object.assign({}, state.allProjects, {[action.taskDetails.address]: temp})
-      // console.log('new object', Object.assign({}, state, {allProjects: newAllProjects}))
       return Object.assign({}, state, {allProjects: newAllProjects})
     case SET_TASK_SUBMISSION:
       temp = state.allProjects[action.submissionDetails.address]
-      console.log(temp)
+      // console.log(temp)
       temp.submittedTasks[action.submissionDetails.submitter] = action.submissionDetails.taskSubmission
-      console.log(temp)
+      // console.log(temp)
       newAllProjects = Object.assign({}, state.allProjects, {[action.submissionDetails.address]: temp})
+      return Object.assign({}, state, {allProjects: newAllProjects})
+    case INDICATE_TASKLIST_SUBMITTED:
+      temp = state.allProjects[action.taskDetails.address]
+      temp.taskList = action.taskDetails.taskList
+      temp = Object.assign({}, temp, {listSubmitted: action.taskDetails.listSubmitted})
+      newAllProjects = Object.assign({}, state.allProjects, {[action.taskDetails.address]: temp})
       return Object.assign({}, state, {allProjects: newAllProjects})
     case INDICATE_TASK_CLAIMED:
       temp = state.allProjects[action.taskDetails.address]
-      console.log(temp)
+      // console.log(temp)
       temp.taskList[action.taskDetails.index] = Object.assign({}, temp.taskList[action.taskDetails.index], {claimed: true})
-      console.log(temp)
+      // console.log(temp)
       newAllProjects = Object.assign({}, state.allProjects, {[action.taskDetails.address]: temp})
       return Object.assign({}, state, {allProjects: newAllProjects})
     default:
