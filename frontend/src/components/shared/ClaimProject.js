@@ -35,7 +35,9 @@ class ClaimProject extends React.Component {
   claimElement (i) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
-        console.log(this.props.taskList[i])
+        // THIS WORKS
+        let hashMe = [{description: this.props.taskList[i].description, weiReward: this.props.taskList[i].weiReward}]
+        console.log(this.hashListForSubmission(hashMe))
         await rr.claimTask(this.props.address, i, this.props.taskList[i].description, this.props.taskList[i].weiReward, 0, {from: accounts[0]}).then(() => {
           this.props.indicateTaskClaimed({address: this.props.address, index: i})
         })

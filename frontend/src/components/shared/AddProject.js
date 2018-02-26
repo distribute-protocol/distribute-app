@@ -128,10 +128,15 @@ class AddProject extends React.Component {
     }
     return taskHashArray
   }
+
   handleReorder = (dragIndex, draggedIndex) => {
-    const data = [...this.props.taskList];
+    // const data = [...this.props.taskList];
+    const data = this.props.taskList.slice()
+    console.log('first data', data)
     const item = data.splice(dragIndex, 1)[0];
+    console.log('item', item)
     data.splice(draggedIndex, 0, item);
+    console.log('updated data', data)
     this.props.setProjectTaskList({taskList: data, address: this.props.address})
   };
 
@@ -147,6 +152,7 @@ componentWillReceiveProps(np) {
 
 
   render () {
+    console.log(this.props.taskList)
     let d
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
     let tasks
