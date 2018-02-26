@@ -78,9 +78,9 @@ class AddProject extends React.Component {
     // } else {
     let totalProjectCost = web3.toWei(this.props.cost, 'ether')
     // let taskweiReward = percentage * totalProjectCost / 100
-    let tempTask = this.props.taskList
-    tempTask.push({description: task, percentage: percentage})
-    this.props.setProjectTaskList({taskList: tempTask, address: this.props.address})
+    let tempTaskList = this.props.taskList
+    tempTaskList.push({description: task, percentage: percentage})
+    this.props.setProjectTaskList({taskList: tempTaskList, address: this.props.address})
     this.setState({tempTask: {}})
   }
 
@@ -145,6 +145,7 @@ class AddProject extends React.Component {
   };
 
   render () {
+    console.log('hi', this.props.taskList)
     let d
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
     let tasks
@@ -155,7 +156,7 @@ class AddProject extends React.Component {
           description: task.description,
           percentage: task.percentage,
           ethReward: this.props.cost * (task.percentage / 100),
-          addTask: <Button type='danger' onClick={() => this.deleteElement(i)} > Delete</Button>
+          addTask: <Button type='danger' onClick={() => this.deleteElement(i)} >Delete</Button>
         }
       })
     } else {
@@ -224,7 +225,7 @@ class AddProject extends React.Component {
           Add Tasks
         </Button>
       </div>
-
+      // console.log(tasks)
     return (
       <Card title={`${this.props.description}`} >
         <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
@@ -255,7 +256,7 @@ class AddProject extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    projects: state.projects.allProjects,
+    // projects: state.projects.allProjects,
     taskList: state.projects.allProjects[ownProps.address].taskList,
     submissions: state.projects.allProjects[ownProps.address].submittedTasks
   }
