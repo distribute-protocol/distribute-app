@@ -65,7 +65,6 @@ let BodyRow = (props) => {
 
 const rowSource = {
   beginDrag(props) {
-    console.log('beginDrag', props.index)
     return {
       index: props.index,
     };
