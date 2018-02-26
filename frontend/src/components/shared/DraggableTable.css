@@ -1,0 +1,16 @@
+.ant-table-row .draggable {
+  cursor: move;
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  font-size: 1.2rem;
+  transform: rotate(90deg);
+}
+
+
+.gu-mirror {
+  background-color: rgba(16, 142, 233, 0.15);
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+}
