@@ -6,9 +6,7 @@ import { Card, Button, Table } from 'antd'
 import {eth, web3, dt, tr, pr, P} from '../../utilities/blockchain'
 import hashing from '../../utilities/hashing'
 import * as _ from 'lodash'
-import { setProjectTaskList, setTaskSubmission } from '../../actions/projectActions'
-
-const getProjectState = () => ({ type: 'GET_PROJECT_STATE' })
+import { setProjectTaskList, indicateTaskClaimed } from '../../actions/projectActions'
 
 class ClaimProject extends React.Component {
   constructor () {
@@ -18,7 +16,8 @@ class ClaimProject extends React.Component {
       percentages: '',
       tasks: '',
       tempTask: {},
-      taskList: []
+      taskList: [],
+      isSubmitted: false
     }
     window.pr = pr
     window.state = this.state
@@ -34,8 +33,18 @@ class ClaimProject extends React.Component {
   }
 
   claimElement (i) {
-    console.log('you will be able to claim this when I stop being lazy')
+    this.props.indicateTaskClaimed({address: this.props.address, index: i})
+    console.log(eth.accounts)
   }
+
+  /*
+  function claimTask(address _projectAddress, uint256 _index, string _taskDescription, uint256 _weiVal, uint256 _reputationVal) public {
+    require(balances[msg.sender] >= _reputationVal);
+    balances[msg.sender] -= _reputationVal;
+    totalFreeSupply -= _reputationVal;
+    projectRegistry.claimTask(_projectAddress, _index, _taskDescription, _weiVal, _reputationVal, msg.sender);
+  }
+  */
 
   getProjectStatus (p) {
     let accounts
@@ -63,7 +72,7 @@ class ClaimProject extends React.Component {
   componentWillMount () {
     let p = P.at(this.props.address)
     this.getProjectStatus(p)
-    console.log(this.state.projectState)
+    // console.log(this.state.projectState)
     this.setState({project: p, taskList: this.props.taskList})
   }
 
@@ -88,6 +97,7 @@ class ClaimProject extends React.Component {
             if (!err) {
               await pr.submitHashList(this.props.address, list, {from: accounts[0]}).then(() => {
                 this.props.setProjectTaskList({taskList: this.props.submissions[address], address: this.props.address})
+                // console.log('set project task list', this.props)
               })
             }
           })
@@ -122,6 +132,7 @@ class ClaimProject extends React.Component {
   }
 
   render () {
+    console.log(this.props.taskList)
     let d
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
     let tasks
@@ -130,9 +141,10 @@ class ClaimProject extends React.Component {
         return {
           key: i,
           description: task.description,
-          percentage: task.percentage + '%',
-          ethReward: this.props.cost * (task.percentage / 100) + ' ETH',
-          addTask: <Button type='danger' onClick={() => this.claimElement(i)} > Claim</Button>
+          ethReward: this.props.cost * (task.weiReward / 100) + ' ETH',
+          addTask: <Button
+          // disabled={this.props.taskList[i].claimed}
+          type='danger' onClick={() => this.claimElement(i)} > Claim</Button>
         }
       })
     } else {
@@ -143,10 +155,6 @@ class ClaimProject extends React.Component {
       title: 'Task Description',
       dataIndex: 'description',
       key: 'description'
-    }, {
-      title: 'Percentage',
-      dataIndex: 'percentage',
-      key: 'percentage'
     }, {
       title: 'ETH Reward',
       dataIndex: 'ethReward',
@@ -166,13 +174,13 @@ class ClaimProject extends React.Component {
         {/* <td>{typeof d !== 'undefined' ? `${d.toLocaleDateString()} ${d.toLocaleTimeString()}` : 'N/A'}</td> */}
         <div>
           <div>
-            task submission expires {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}
+            task completion expires {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}
           </div>
         </div>
         <div style={{display: 'flex', flexDirection: 'column'}}>
           <Table dataSource={tasks} columns={columns} />
         </div>
-        <Button onClick={() => this.submitWinningHashList()}>Submit Winning Hash List</Button>
+        <Button disabled={false} onClick={() => this.submitWinningHashList()}>Submit Winning Hash List</Button>
       </Card>
     )
   }
@@ -188,7 +196,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     setProjectTaskList: (taskDetails) => dispatch(setProjectTaskList(taskDetails)),
-    setTaskSubmission: (submissionDetails) => dispatch(setTaskSubmission(submissionDetails))
+    indicateTaskClaimed: (submissionDetails) => dispatch(indicateTaskClaimed(submissionDetails))
   }
 
   // return {

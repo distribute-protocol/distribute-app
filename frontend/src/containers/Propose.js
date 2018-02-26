@@ -216,7 +216,7 @@ class Propose extends Component {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state.projects.allProjects)
+  // console.log(state.projects.allProjects)
   return {
     projects: state.projects.allProjects
   }

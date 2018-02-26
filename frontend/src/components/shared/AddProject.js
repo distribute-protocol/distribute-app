@@ -227,9 +227,9 @@ class AddProject extends React.Component {
           </div>
           {submission}
         </div>
-          <div style={{display: 'flex', flexDirection: 'column'}}>
-            <Table dataSource={tasks} columns={columns} />
-          </div>
+        <div style={{display: 'flex', flexDirection: 'column'}}>
+          <Table dataSource={tasks} columns={columns} />
+        </div>
         <div>
           <Button onClick={() => this.submitTaskList()}>Submit Remaining Tasks</Button>
         </div>
