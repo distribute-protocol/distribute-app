@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { Card, Button, Table } from 'antd'
+import DraggableTable from './DraggableTable'
 import {eth, web3, dt, tr, pr, P} from '../../utilities/blockchain'
 import hashing from '../../utilities/hashing'
 import * as _ from 'lodash'
@@ -37,7 +38,7 @@ class AddProject extends React.Component {
 
   deleteElement (i) {
     try {
-      let newTaskList = this.state.taskList
+      let newTaskList = this.props.taskList
       newTaskList.splice(i, 1)
       this.props.setProjectTaskList({taskList: newTaskList, address: this.props.address})
     } catch (error) {
@@ -55,12 +56,11 @@ class AddProject extends React.Component {
           p.nextDeadline().then(result => {
             // blockchain reports time in seconds, javascript in milliseconds
             nextDeadline = result.toNumber() * 1000
-            this.setState({nextDeadline: nextDeadline})
           }).then(() => {
             p.state().then(result => {
               let states = ['none', 'proposed', 'none', 'dispute', 'active', 'validation', 'voting']
               projectState = states[result]
-              this.setState({projectState: projectState})
+              this.setState({nextDeadline, projectState})
             })
           })
         }
@@ -68,17 +68,17 @@ class AddProject extends React.Component {
     })
   }
 
-  componentWillMount () {
-    let p = P.at(this.props.address)
-    this.getProjectStatus(p)
-    console.log(this.state.projectState)
-    this.setState({project: p, taskList: this.props.taskList})
-  }
-
   handleTaskInput () {
+    // get tasks and percentages
     let task = this.state.tempTask.description
     let percentage = parseInt(this.state.tempTask.percentage)
-    let tempTask = this.state.taskList
+    // let sum = percentages.reduce((x, y) => x + y)
+    // if (sum !== 100 || tasks.length !== percentages.length) {
+    //   alert('PERCENTAGES MUST ADD UP TO 100, AND EACH TASK MUST HAVE AN ASSOCIATED PERCENTAGE')
+    // } else {
+    let totalProjectCost = web3.toWei(this.props.cost, 'ether')
+    // let taskweiReward = percentage * totalProjectCost / 100
+    let tempTask = this.props.taskList
     tempTask.push({description: task, percentage: percentage})
     this.props.setProjectTaskList({taskList: tempTask, address: this.props.address})
     this.setState({tempTask: {}})
@@ -137,6 +137,12 @@ class AddProject extends React.Component {
     }
     return taskHashArray
   }
+  handleReorder = (dragIndex, draggedIndex) => {
+    const data = [...this.props.taskList];
+    const item = data.splice(dragIndex, 1)[0];
+    data.splice(draggedIndex, 0, item);
+    this.props.setProjectTaskList({taskList: data, address: this.props.address})
+  };
 
   render () {
     let d
@@ -147,8 +153,8 @@ class AddProject extends React.Component {
         return {
           key: i,
           description: task.description,
-          percentage: task.percentage + '%',
-          ethReward: this.props.cost * (task.percentage / 100) + ' ETH',
+          percentage: task.percentage,
+          ethReward: this.props.cost * (task.percentage / 100),
           addTask: <Button type='danger' onClick={() => this.deleteElement(i)} > Delete</Button>
         }
       })
@@ -187,15 +193,17 @@ class AddProject extends React.Component {
       dataIndex: 'weighting',
       key: 'weighting'
     }]
-
-    let submissionTasks = Object.keys(this.props.submissions).map((address, i) => {
-      return {
-        key: i,
-        submitter: address,
-        submission: JSON.stringify(this.props.submissions[address]),
-        weighting: 'tbd'
-      }
-    })
+    let submissionTasks = []
+    if (this.props.submissions) {
+      submissionTasks = Object.keys(this.props.submissions).map((address, i) => {
+        return {
+          key: i,
+          submitter: address,
+          submission: JSON.stringify(this.props.submissions[address]),
+          weighting: 'tbd'
+        }
+      })
+    }
 
     let submission =
       <div>
@@ -230,7 +238,7 @@ class AddProject extends React.Component {
           {submission}
         </div>
         <div style={{display: 'flex', flexDirection: 'column'}}>
-          <Table dataSource={tasks} columns={columns} />
+          <DraggableTable address={this.props.address} data={tasks} columns={columns} handleReorder={this.handleReorder} />
         </div>
         <div>
           <Button onClick={() => this.submitTaskList()}>Submit Remaining Tasks</Button>
@@ -239,7 +247,6 @@ class AddProject extends React.Component {
           <div style={{display: 'flex', flexDirection: 'column'}}>
             <Table dataSource={submissionTasks} columns={submissionColumns} />
           </div>
-          { /* }{submitHashListButton} */}
         </div>
       </Card>
     )
@@ -258,10 +265,6 @@ const mapDispatchToProps = (dispatch) => {
     setProjectTaskList: (taskDetails) => dispatch(setProjectTaskList(taskDetails)),
     setTaskSubmission: (submissionDetails) => dispatch(setTaskSubmission(submissionDetails))
   }
-
-  // return {
-  //   getProjectState: () => console.log('heyhey')
-  // }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddProject)
