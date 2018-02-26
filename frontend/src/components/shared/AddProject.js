@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 // import { Card, CardBody, CardTitle, CardText, Button, Col } from 'reactstrap'
 import { Card, Button, Table } from 'antd'
-import DraggableTable from '../shared/DraggableTable'
+import DraggableTable from './DraggableTable'
 import {eth, web3, dt, tr, pr, P} from '../../utilities/blockchain'
 import hashing from '../../utilities/hashing'
 import * as _ from 'lodash'
@@ -39,7 +39,7 @@ class AddProject extends React.Component {
 
   deleteElement (i) {
     try {
-      let newTaskList = this.state.taskList
+      let newTaskList = this.props.taskList
       newTaskList.splice(i, 1)
       this.props.setProjectTaskList({taskList: newTaskList, address: this.props.address})
     } catch (error) {
@@ -58,12 +58,11 @@ class AddProject extends React.Component {
           p.nextDeadline().then(result => {
             // blockchain reports time in seconds, javascript in milliseconds
             nextDeadline = result.toNumber() * 1000
-            this.setState({nextDeadline: nextDeadline})
           }).then(() => {
             p.state().then(result => {
               let states = ['none', 'proposed', 'none', 'dispute', 'active', 'validation', 'voting']
               projectState = states[result]
-              this.setState({projectState: projectState})
+              this.setState({nextDeadline, projectState})
             })
             // pr.projectTaskList.call(this.props.address).then(result => {
             //   console.log(result)
@@ -81,23 +80,9 @@ class AddProject extends React.Component {
     })
   }
 
-  componentWillMount () {
-    // let p = P.at(this.props.address)
-    let p = P.at(this.props.address)
-    // console.log(p, this.props.address)
-    this.getProjectStatus(p)
-    this.setState({project: p, taskList: this.props.taskList})
-  }
-
-  // getProjIndex () {
-  //   return this.props.projects.projects.map((e) => { return e.address }).indexOf(this.props.address)
-  // }
-
   handleTaskInput () {
-    // console.log(this.state)
     // get tasks and percentages
     let task = this.state.tempTask.description
-    // console.log(tasks, typeof tasks)
     let percentage = parseInt(this.state.tempTask.percentage)
     // let sum = percentages.reduce((x, y) => x + y)
     // if (sum !== 100 || tasks.length !== percentages.length) {
@@ -105,8 +90,6 @@ class AddProject extends React.Component {
     // } else {
     let totalProjectCost = web3.toWei(this.props.cost, 'ether')
     // let taskweiReward = percentage * totalProjectCost / 100
-    // console.log(this.props.taskList)
-    // console.log(this.state.tempTask)
     let tempTask = this.props.taskList
     tempTask.push({description: task, percentage: percentage})
     this.props.setProjectTaskList({taskList: tempTask, address: this.props.address})
@@ -167,28 +150,24 @@ class AddProject extends React.Component {
       thisTask.push(tasks[i])
       thisTask.push(weiReward[i])
       thisTask.push(repReward[i])  // build task description, weiReward, repReward
-      // console.log(thisTask)
+
       taskHashArray.push('0x' + hashing.keccakHashes(args, thisTask))
     }
-    // console.log('taskHashArray', taskHashArray)
     return taskHashArray
   }
+  handleReorder = (dragIndex, draggedIndex) => {
+    const data = [...this.props.taskList];
+    const item = data.splice(dragIndex, 1)[0];
+    data.splice(draggedIndex, 0, item);
+    this.props.setProjectTaskList({taskList: data, address: this.props.address})
+  };
 
   render () {
-    // console.log(this.state.taskList)
-    // console.log(this.state.tempTask)
     let d
-    // if (typeof stakingEndDate !== 'undefined') { d = new Date(stakingEndDate) }
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
-    // console.log(this.state.nextDeadline)
-    // let projIndex = this.getProjIndex()
-    // let taskList = this.props.projects.projects[projIndex].taskList
     let tasks
-    // if (typeof taskList !== 'undefined') {
-    // console.log(this.props.taskList)
     if (typeof this.props.taskList !== 'undefined') {
       tasks = this.props.taskList.map((task, i) => {
-        // console.log(task)
         return {
           key: i,
           description: task.description,
@@ -239,8 +218,6 @@ class AddProject extends React.Component {
         </Button>
       </div>
 
-      // console.log(this.props.taskList)
-
     // let submission
     // if (this.state.projectState === 'open' || this.state.projectState === 'dispute') {
     //   submission =
@@ -275,7 +252,6 @@ class AddProject extends React.Component {
     //     </div>
     // }
     return (
-      // <Col sm='10'>
       <Card title={`${this.props.description}`} >
         <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
         <div>project funds: {`${this.props.cost}`} ETH</div>
@@ -288,10 +264,7 @@ class AddProject extends React.Component {
           {submission}
         </div>
         <div style={{display: 'flex', flexDirection: 'column'}}>
-          <DraggableTable address={this.props.address} dataSource={tasks} columns={columns} setProjectTaskList={this.props.setProjectTaskList} />
-        </div>
-        <div>
-          <Button>Submit Remaining Tasks</Button>
+          <DraggableTable address={this.props.address} data={tasks} columns={columns} handleReorder={this.handleReorder} />
         </div>
       </Card>
     )
@@ -299,7 +272,6 @@ class AddProject extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  // console.log(state.projects.allProjects[ownProps.address])
   return {
     projects: state.projects.allProjects,
     taskList: state.projects.allProjects[ownProps.address].taskList
@@ -307,13 +279,11 @@ const mapStateToProps = (state, ownProps) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    setProjectTaskList: (taskDetails) => dispatch(setProjectTaskList(taskDetails)),
+    setProjectTaskList: (taskDetails) => {
+      dispatch(setProjectTaskList(taskDetails))
+    },
     getProjectState: () => dispatch(getProjectState())
   }
-
-  // return {
-  //   getProjectState: () => console.log('heyhey')
-  // }
 }
  // = ({cost, description, stakingEndDate, address, index, stakeProject, unstakeProject, stakingAmount}) => {
 
