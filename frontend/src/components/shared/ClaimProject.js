@@ -36,8 +36,9 @@ class ClaimProject extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         console.log(this.props.taskList[i])
-        // await rr.claimTask(this.props.address, i, this.props.taskList[i].description, 0, this.props.taskList[i].weiReward, {from: accounts[0]})
-        this.props.indicateTaskClaimed({address: this.props.address, index: i})
+        await rr.claimTask(this.props.address, i, this.props.taskList[i].description, this.props.taskList[i].weiReward, 0, {from: accounts[0]}).then(() => {
+          this.props.indicateTaskClaimed({address: this.props.address, index: i})
+        })
       }
     })
   }
