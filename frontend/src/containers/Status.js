@@ -11,7 +11,8 @@ class Status extends Component {
   constructor () {
     super()
     this.state = {
-      value: 0
+      value: 0,
+      tokensToBuy: ''
     }
     this.buyShares = this.buyShares.bind(this)
     this.sellShares = this.sellShares.bind(this)
@@ -103,19 +104,19 @@ class Status extends Component {
             currentPrice
           // let balance = (await dt.balanceOf(accounts[0]))[0].toNumber()
           balance = (await dt.balanceOf(accounts[0])).toNumber()
-          console.log('balance', balance)
+          // console.log('balance', balance)
           totalTokenSupply = (await dt.totalSupply()).toNumber()
-          console.log('totalTokenSupply', totalTokenSupply)
+          // console.log('totalTokenSupply', totalTokenSupply)
           totalFreeTokenSupply = (await dt.totalFreeSupply()).toNumber()
-          console.log('totalFreeTokenSupply', totalFreeTokenSupply)
+          // console.log('totalFreeTokenSupply', totalFreeTokenSupply)
           weiBal = (await dt.weiBal()).toNumber()
-          console.log('weiBal', weiBal)
+          // console.log('weiBal', weiBal)
           reputationBalance = (await rr.balances(accounts[0])).toNumber()
-          console.log('reputationBalance', reputationBalance)
+          // console.log('reputationBalance', reputationBalance)
           totalReputationSupply = (await rr.totalSupply()).toNumber()
-          console.log('totalReputationSupply', totalReputationSupply)
+          // console.log('totalReputationSupply', totalReputationSupply)
           totalFreeReputationSupply = (await rr.totalFreeSupply()).toNumber()
-          console.log('totalFreeReputationSupply', totalFreeReputationSupply)
+          // console.log('totalFreeReputationSupply', totalFreeReputationSupply)
 
           currentPrice = (await dt.currentPrice()).toNumber()
           this.setState({
@@ -143,6 +144,9 @@ class Status extends Component {
           await dt.mint(this.tokensToBuy.value, {value: web3.toWei(Math.ceil(this.state.ethToSend * 100000) / 100000, 'ether'), from: accounts[0]})
           .then(() => {
             this.getBalance()
+            this.setState({
+              tokensToBuy: ''
+            })
           })
         }
       }
@@ -178,6 +182,9 @@ class Status extends Component {
           await dt.sell(this.tokensToBuy.value, {from: accounts[0]})
           .then(() => {
             this.getBalance()
+            this.setState({
+              tokensToBuy: ''
+            })
           })
         }
       }
@@ -193,7 +200,8 @@ class Status extends Component {
     })
   }
 
-  onChange (val) {
+  async onChange (val) {
+    this.setState({tokensToBuy: val})
     if (val > 0) {
       try {
         let ethRequired, totalSupply, refund
@@ -214,12 +222,12 @@ class Status extends Component {
       }
     }
   }
+
   render () {
     return (
       <div style={{marginLeft: 200}}>
         <header className='App-header'>
-          {/* <img src={logoclassName='App-logo' alt='logo' /> */}
-          <h1 className='App-title'>distribute</h1>
+          <h3 className='App-title'>Network Status</h3>
         </header>
         {/* <Button onClick={this.login} style={{marginLeft: 20, backgroundColor: 'purple'}}>
           Connect with uPort
@@ -233,11 +241,12 @@ class Status extends Component {
             <h3>Your Token Balance</h3>
             <h5>{this.state.balance}</h5>
             <h3>Controlled Market Percentage</h3>
-            <h5>{Math.round(this.state.balance / this.state.totalTokenSupply * 10000) / 100}%</h5>
+            <h5>{`${this.state.totalTokenSupply ? Math.round(this.state.balance / this.state.totalTokenSupply * 10000) / 100 : 0}`}%</h5>
             <h3>Eth Pool</h3>
-            <h5>{this.state.weiBal} ETH</h5>
+            <h5>{web3.fromWei(this.state.weiBal, 'ether')} ETH</h5>
             <h3>Capital Equivalent</h3>
-            <h5>{`$${this.state.ethPrice ? Math.round(this.state.ethPrice * this.state.weiBal) * 100 / 100 : 0}`}</h5>
+            <h5>{`$${this.state.ethPrice ? Math.round(this.state.ethPrice * web3.fromWei(this.state.weiBal, 'ether')) : 0}`}</h5>
+
             <h3>Current Token Price in Eth</h3>
             <h5>{this.state.currentPrice}</h5>
           </div>

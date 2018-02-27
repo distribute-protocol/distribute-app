@@ -2,7 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Col, Row } from 'antd'
 import StakeProject from '../components/shared/StakeProject'
-import {eth, web3, tr, dt} from '../utilities/blockchain'
+import { eth, web3, tr, dt, P } from '../utilities/blockchain'
+import * as _ from 'lodash'
 
 class Stake extends React.Component {
   constructor () {
@@ -28,26 +29,59 @@ class Stake extends React.Component {
   }
 
   async stakeProject (address, val) {
-    console.log(address, val)
+    // console.log(address, val)
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         await tr.stakeTokens(address, val, {from: accounts[0]})
+        // console.log('staked', val, 'tokens on', address)
       }
     })
   }
 
   async unstakeProject (address, val) {
-    console.log(address, val)
+    // console.log(address, val)
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         await tr.unstakeTokens(address, val, {from: accounts[0]})
       }
     })
   }
+  componentWillReceiveProps (np) {
+    let projectsArr
+
+    function projectState (address) {
+      return new Promise(async (resolve, reject) => {
+        let proj = P.at(address)
+        let isStaked = await proj.isStaked()
+        // console.log('proj in projectState', proj)
+        resolve(isStaked)
+      })
+    }
+
+    let projects = Object.keys(np.projects).map((projAddr, i) => {
+      return projectState(projAddr)
+        .then(state => {
+          if (!state) {
+            return np.projects[projAddr]
+          }
+        })
+    })
+
+    Promise.all(projects)
+      .then(results => {
+        // Handle results
+        projectsArr = _.compact(results)
+        this.setState({projects: projectsArr})
+        // console.log('projectsArr', projectsArr)
+      })
+      .catch(e => {
+        console.error(e)
+      })
+  }
 
   render () {
-    const projects = this.props.projects.projects.map((proj, i) => {
-      return <Col span={8}>
+    const projects = this.state.projects.map((proj, i) => {
+      return <Col span={10} key={i}>
         <StakeProject
           key={i}
           cost={proj.cost}
@@ -63,21 +97,12 @@ class Stake extends React.Component {
     return (
       <div style={{marginLeft: 200}}>
         <header className='App-header'>
-          {/* <img src={logoclassName='App-logo' alt='logo' /> */}
-          <h1 className='App-title'>distribute</h1>
+          <h3>Stakeable Proposals</h3>
         </header>
-        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-          <div style={{marginLeft: 20, marginTop: 40}}>
-            <h3>Stakeable Proposals</h3>
-            <div style={{display: 'flex', flexDirection: 'column'}}>
-              <Row type='flex' justify='space-around'>
-                {projects}
-              </Row>
-              {/* <CardColumns> */}
-              {/* {projects} */}
-              {/* </CardColumns> */}
-            </div>
-          </div>
+        <div style={{ padding: '30px' }}>
+          <Row gutter={8}>
+            {projects}
+          </Row>
         </div>
       </div>
     )
@@ -86,7 +111,7 @@ class Stake extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    projects: state.projects
+    projects: state.projects.allProjects
   }
 }
 

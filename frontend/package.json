@@ -7,32 +7,36 @@
     "antd": "^3.1.6",
     "babel-loader": "^7.1.2",
     "bignumber.js": "^5.0.0",
+    "dragula": "^3.7.2",
+    "ethereumjs-abi": "^0.6.5",
     "get-eth-price": "^1.0.0",
     "history": "^4.7.2",
+    "immutability-helper": "^2.6.5",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.4",
     "mnid": "^0.1.1",
     "moment": "^2.20.1",
     "react": "^15.6.1",
+    "react-dnd": "^2.5.4",
+    "react-dnd-html5-backend": "^2.5.4",
     "react-dom": "^15.6.1",
+    "react-draggable": "^3.0.5",
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",
-    "react-router-redux": "next",
+    "react-router-redux": "^5.0.0-alpha.9",
+    "react-sortable-hoc": "^0.6.8",
     "react-transition-group": "^2.2.1",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
     "redux-persist": "^4.10.1",
     "redux-saga": "^0.15.6",
     "redux-thunk": "^2.2.0",
-<<<<<<< HEAD
     "rxjs": "^5.5.6",
-=======
-    "rxjs": "5",
->>>>>>> 1b3fcf882c00c39ad6b6e12b0d330dae286e5a7f
-    "truffle-contract": "^3.0.2",
+    "truffle-contract": "^3.0.3",
     "truffle-hdwallet-provider": "0.0.3",
     "uport-connect": "^0.7.0",
-    "web3": "^0.20.4"
+    "web3": "^0.20.4",
+    "web3-utils": "^1.0.0-beta.30"
   },
   "devDependencies": {
     "react-scripts": "1.0.11"

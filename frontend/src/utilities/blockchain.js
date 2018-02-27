@@ -32,19 +32,19 @@ const TR = contract({abi: JSON.parse(TokenRegistryABI)})
 TR.setProvider(window.web3.currentProvider)
 export const tr = TR.at(TokenRegistryAddress)
 
-const RR = contract({abi: ReputationRegistryABI})
+const RR = contract({abi: JSON.parse(ReputationRegistryABI)})
 RR.setProvider(window.web3.currentProvider)
 export const rr = RR.at(ReputationRegistryAddress)
 
-const PR = contract({abi: ProjectRegistryABI})
+const PR = contract({abi: JSON.parse(ProjectRegistryABI)})
 PR.setProvider(window.web3.currentProvider)
 export const pr = PR.at(ProjectRegistryAddress)
 
-const DT = contract({abi: DistributeTokenABI})
+const DT = contract({abi: JSON.parse(DistributeTokenABI)})
 DT.setProvider(window.web3.currentProvider)
 export const dt = DT.at(DistributeTokenAddress)
 
 export const P = contract({abi: JSON.parse(ProjectABI)})
 P.setProvider(window.web3.currentProvider)
 
-export default {TR, tr, RR, rr, PR, pr, dt, P}
+export default {tr, rr, pr, dt, P}

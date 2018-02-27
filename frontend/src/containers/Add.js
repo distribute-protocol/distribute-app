@@ -2,11 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Col, Row, Button } from 'antd'
 import {eth, web3, tr, rr, pr, dt, P} from '../utilities/blockchain'
-import ClaimProject from '../components/shared/ClaimProject'
+import AddProject from '../components/shared/AddProject'
 import fastforward from '../utilities/fastforward'
 import * as _ from 'lodash'
 
-class Claim extends React.Component {
+class Add extends React.Component {
   constructor () {
     super()
     this.state = {
@@ -23,18 +23,23 @@ class Claim extends React.Component {
       return new Promise(async (resolve, reject) => {
         let proj = P.at(address)
         let state = await proj.state()
+        // if (state.toNumber() === 3) {
+        //   eth.getAccounts(async (err, accounts) => {
+        //     if (!err) {
+        //       await pr.checkActive(address, {from: accounts[0]})
+        //       state = proj.state()
+        //     }
+        //   })
+        // }
         // console.log('proj is staked', isStaked)
         resolve(state)
       })
     }
 
     let projects = Object.keys(np.projects).map((projAddr, i) => {
-      // console.log('projAddr', projAddr)
       return projectState(projAddr)
-        .then(state => {
-          // console.log('state', state)
-          if (state == 4) {
-            // return JSON.stringify(project)
+        .then(async (state) => {
+          if (state == 3) {
             return np.projects[projAddr]
           }
         })
@@ -66,12 +71,12 @@ class Claim extends React.Component {
   render () {
     const projects = this.state.projects.map((proj, i) => {
       return <Col span={25} key={i}>
-        <ClaimProject
+        <AddProject
           key={i}
           cost={proj.cost}
           description={proj.description}
           index={i}
-          // taskHashEndDate={proj.taskHashEndDate}
+          taskHashEndDate={proj.taskHashEndDate}
           address={proj.address}
         />
       </Col>
@@ -81,11 +86,14 @@ class Claim extends React.Component {
         <header className='App-header'>
           {/* <img src={logoclassName='App-logo' alt='logo' /> */}
           {/* <h1 className='App-title'>distribute</h1> */}
-          <h3>Claim Tasks from Active Projects</h3>
-
+          <h3>Add Tasks to Open Projects</h3>
+          {/* }<h4>separate tasks and percentages with commas</h4>
+          <h4>ensure percentages correspond to tasks and add up to 100%</h4>
+          <h5>e.g. install a node, install a supernode</h5>
+          <h5>e.g. 20, 80</h5> */}
           <Button type='danger' onClick={this.fastForward}>fast forward 1 week</Button>
           <h6>ONLY DO THIS IF YOU ARE READY TO MOVE EVERY PROJECT TO THE NEXT STATE</h6>
-          <h6>IF A PROJECT HAS UNCLAIMED TASKS IT WILL FAIL AND YOU WILL LOSE YOUR STAKED TOKENS</h6>
+          <h6>IF A PROJECT HAS NO TASK SUBMISSIONS IT WILL FAIL AND YOU WILL LOSE YOUR STAKED TOKENS</h6>
         </header>
         <div style={{ padding: '30px' }}>
           <Row gutter={12}>
@@ -121,4 +129,4 @@ const mapStateToProps = (state) => {
 //   }
 // }
 
-export default connect(mapStateToProps)(Claim)
+export default connect(mapStateToProps)(Add)
