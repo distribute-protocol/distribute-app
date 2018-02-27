@@ -152,10 +152,12 @@ class ClaimProject extends React.Component {
     let tasks
     if (typeof this.props.taskList !== 'undefined') {
       tasks = this.props.taskList.map((task, i) => {
+        console.log(this.props.cost)
+        console.log(task)
         return {
           key: i,
           description: task.description,
-          ethReward: this.props.cost * (task.weiReward / 100) + ' ETH',
+          ethReward: this.props.cost * (task.percentage / 100) + ' ETH',
           addTask: <Button
           // disabled={this.props.taskList[i].claimed}
           type='danger' onClick={() => this.claimElement(i)} > Claim</Button>
