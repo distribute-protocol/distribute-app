@@ -84,11 +84,8 @@ class StakeProject extends Component {
   componentWillMount () {
     // let p = P.at(this.props.address)
     let p = P.at(this.props.address)
-    let p2 = gorbeon.at(this.props.address)
-    window.p2 = p2
-    // console.log(p)
     this.getProjectStatus(p)
-    this.setState({project: p, p2})
+    this.setState({project: p})
   }
 
   onChange (val) {

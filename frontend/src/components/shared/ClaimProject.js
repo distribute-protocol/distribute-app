@@ -154,11 +154,6 @@ class ClaimProject extends React.Component {
     let tasks
     if (typeof this.props.taskList !== 'undefined') {
       tasks = this.props.taskList.map((task, i) => {
-<<<<<<< HEAD
-=======
-        // console.log(this.props.cost)
-        console.log(task)
->>>>>>> c6763715d0eaa1d312b78d546774c74f128649d4
         return {
           key: i,
           description: task.description,
