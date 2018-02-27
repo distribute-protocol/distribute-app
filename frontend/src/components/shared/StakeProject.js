@@ -11,9 +11,9 @@ class StakeProject extends Component {
   constructor () {
     super()
     this.state = {
-      value: 0
+      value: 0,
+      tokensToStake: ''
     }
-    this.getTokensLeft = this.getTokensLeft.bind(this)
   }
 
   getProjectStatus (p) {
@@ -21,7 +21,7 @@ class StakeProject extends Component {
     eth.getAccounts(async (err, result) => {
       if (!err) {
         accounts = result
-        console.log(accounts)
+        // console.log(accounts)
         if (accounts.length) {
           let weiBal,
             weiCost,
@@ -31,32 +31,32 @@ class StakeProject extends Component {
           let currentPrice
           p.weiBal().then(result => {
             weiBal = result.toNumber()
-            console.log('weiBal', weiBal)
+            // console.log('weiBal', weiBal)
             // console.log('p', p)
           }).then(() => {
             p.weiCost().then(result => {
               weiCost = result.toNumber()
-              console.log('weiCost', weiCost)
+              // console.log('weiCost', weiCost)
             })
           }).then(() => {
             p.reputationCost().then(result => {
               reputationCost = result.toNumber()
-              console.log('reputationCost', reputationCost)
+              // console.log('reputationCost', reputationCost)
             })
           }).then(() => {
             p.totalTokensStaked().then(result => {
               totalTokensStaked = result.toNumber()
-              console.log('totalTokensStaked', totalTokensStaked)
+              // console.log('totalTokensStaked', totalTokensStaked)
             })
           }).then(() => {
             p.totalReputationStaked().then(result => {
               totalReputationStaked = result.toNumber()
-              console.log('totalReputationStaked', totalReputationStaked)
+              // console.log('totalReputationStaked', totalReputationStaked)
             })
           }).then(() => {
             dt.currentPrice().then(result => {
               currentPrice = result.toNumber()
-              console.log('currentPrice', currentPrice)
+              // console.log('currentPrice', currentPrice)
               this.setState({
                 weiBal,
                 weiCost,
@@ -65,7 +65,7 @@ class StakeProject extends Component {
                 totalReputationStaked,
                 currentPrice: web3.fromWei(currentPrice, 'ether')
               })
-              console.log('state', this.state)
+              //console.log('state', this.state)
               this.getTokensLeft()
             })
           })
@@ -78,22 +78,19 @@ class StakeProject extends Component {
     let weiNeeded = this.state.weiCost - this.state.weiBal
     let tokensLeft = Math.ceil(weiNeeded / web3.toWei(this.state.currentPrice, 'ether'))
     this.setState({tokensLeft})
-    console.log('tokensLeft', tokensLeft)
+    // console.log('tokensLeft', tokensLeft)
   }
 
   componentWillMount () {
     // let p = P.at(this.props.address)
     let p = P.at(this.props.address)
-    let p2 = gorbeon.at(this.props.address)
-    window.p2 = p2
-    // console.log(p)
     this.getProjectStatus(p)
-    this.setState({project: p, p2})
+    this.setState({project: p})
   }
 
   onChange (val) {
     try {
-      this.setState({value: val})
+      this.setState({tokensToStake: val})
       // console.log('set state for description')
     } catch (error) {
       throw new Error(error)
@@ -101,8 +98,13 @@ class StakeProject extends Component {
   }
 
   stakeProject () {
-    this.props.stakeProject(this.state.value, () => { console.log('entering the void'); this.getProjectStatus(this.state.project) })
-    this.setState({value: 0})
+    this.props.stakeProject(this.state.tokensToStake)
+    this.setState({tokensToStake: ''})
+  }
+
+  unstakeProject () {
+    this.props.unstakeProject(this.state.tokensToStake)
+    this.setState({tokensToStake: ''})
   }
 
   render () {
@@ -112,9 +114,9 @@ class StakeProject extends Component {
     // console.log(this.state)
     return (
       // <Col sm='10'>
-      <Card style={{marginLeft: 10}} title={`${this.props.description}`}>
+      <Card title={`${this.props.description}`}>
         <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
-        <div>{`${this.props.cost}`} ETH</div>
+        <div>project funds: {`${this.props.cost}`} ETH</div>
         <div>needs {`${this.state.tokensLeft}`} tokens</div>
         {/* <td>{typeof d !== 'undefined' ? `${d.toLocaleDateString()} ${d.toLocaleTimeString()}` : 'N/A'}</td> */}
         <div>staking expires in {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}</div>
@@ -122,12 +124,12 @@ class StakeProject extends Component {
           ref={(input) => (this.stakedValue = input)}
           placeholder='token amount'
           onChange={() => this.onChange(this.stakedValue.value)}
-          value={this.state.value}
+          value={this.state.tokensToStake}
         />
-        <Button color='primary' onClick={() => this.props.stakeProject(this.state.value)} style={{marginLeft: 10}}>
+        <Button color='primary' onClick={() => this.stakeProject()} style={{marginLeft: 10}}>
           Stake
         </Button>
-        <Button color='primary' onClick={() => this.props.unstakeProject(this.state.value)} style={{marginLeft: 10}}>
+        <Button color='primary' onClick={() => this.unstakeProject()} style={{marginLeft: 10}}>
           Unstake
         </Button>
       </Card>
