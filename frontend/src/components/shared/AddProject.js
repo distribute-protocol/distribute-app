@@ -24,7 +24,7 @@ class AddProject extends React.Component {
     }
     window.pr = pr
     this.handleTaskInput = this.handleTaskInput.bind(this)
-    // this.submitTaskList = this.submitTaskList.bind(this)
+    // this.testFunction = this.testFunction.bind(this)
   }
 
   onChange (type, val) {
@@ -111,21 +111,21 @@ class AddProject extends React.Component {
     let numArgs = hashList.length
     let args = 'bytes32'.concat(' bytes32'.repeat(numArgs - 1)).split(' ')
     let taskHash = hashing.keccakHashes(args, hashList)
-    return '0x' + taskHash
+    return taskHash
   }
 
   hashListForSubmission (taskArray) {
     let taskHashArray = []
     // define reputation reward from wei reward right now
     // task, weiReward, repReward
-    let args = ['bytes32', 'bytes32', 'bytes32']
+    let args = ['string', 'uint', 'uint']
     for (var i = 0; i < taskArray.length; i++) {
       let thisTask = []
       thisTask.push(taskArray[i].description)
       thisTask.push(taskArray[i].weiReward)
       // submit 0 reputation for now
       thisTask.push(0)
-      taskHashArray.push('0x' + hashing.keccakHashes(args, thisTask))
+      taskHashArray.push(hashing.keccakHashes(args, thisTask))
     }
     return taskHashArray
   }
