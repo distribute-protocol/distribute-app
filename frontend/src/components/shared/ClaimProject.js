@@ -36,15 +36,13 @@ class ClaimProject extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         // THIS WORKS
-        console.log(this.props.taskList[i].description, this.props.taskList[i].weiReward)
+        // console.log(this.props.taskList[i].description, this.props.taskList[i].weiReward)
         let hashMe = [{description: this.props.taskList[i].description, weiReward: this.props.taskList[i].weiReward}]
-        console.log(this.hashListForSubmission(hashMe))
+        // console.log(this.hashListForSubmission(hashMe))
         await rr.claimTask(this.props.address, i, this.props.taskList[i].description, this.props.taskList[i].weiReward, '0', {from: accounts[0]})
-        let realHash = await pr.tempHash()
-        console.log(realHash, 'real Hash')
-        // .then(() => {
-        //   // this.props.indicateTaskClaimed({address: this.props.address, index: i})
-        // })
+        .then(() => {
+          this.props.indicateTaskClaimed({address: this.props.address, index: i})
+        })
       }
     })
   }
@@ -104,18 +102,18 @@ class ClaimProject extends React.Component {
     }).then((topTaskHash) => {
       // console.log('made it here')
       Object.keys(this.props.submissions).map(async (address, i) => {
-        console.log('current submission', this.props.submissions[address])
+        // console.log('current submission', this.props.submissions[address])
         let hash = this.hashTasksForAddition(this.props.submissions[address])
-        console.log('hash of current submission', hash)
+        // console.log('hash of current submission', hash)
         if (hash === topTaskHash) {
           let list = this.hashListForSubmission(this.props.submissions[address])
-          console.log('list', list)
+          // console.log('list', list)
           eth.getAccounts(async (err, accounts) => {
             if (!err) {
-              console.log(accounts)
+              // console.log(accounts)
               await pr.submitHashList(this.props.address, list, {from: accounts[0]}).then(() => {
                 this.props.indicateTaskListSubmitted({taskList: this.props.submissions[address], address: this.props.address, listSubmitted: true})
-                console.log('set project task list', this.props.projects)
+                // console.log('set project task list', this.props.projects)
               })
             }
           })
@@ -150,21 +148,21 @@ class ClaimProject extends React.Component {
   }
 
   render () {
-    // console.log(this.props.taskList)
+    console.log('taskList', this.props.taskList)
     let d
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
     let tasks
     if (typeof this.props.taskList !== 'undefined') {
       tasks = this.props.taskList.map((task, i) => {
-        console.log(this.props.cost)
+        // console.log(this.props.cost)
         console.log(task)
         return {
           key: i,
           description: task.description,
-          ethReward: this.props.cost * (task.percentage / 100) + ' ETH',
+          ethReward: task.weiReward + ' wei',
           addTask: <Button
-          disabled={this.props.taskList[i].claimed}
-          type='danger' onClick={() => this.claimElement(i)} > Claim</Button>
+            disabled={this.props.taskList[i].claimed || !this.props.projects[this.props.address].listSubmitted}
+            type='danger' onClick={() => this.claimElement(i)} > Claim</Button>
         }
       })
     } else {
@@ -200,7 +198,10 @@ class ClaimProject extends React.Component {
         <div style={{display: 'flex', flexDirection: 'column'}}>
           <Table dataSource={tasks} columns={columns} />
         </div>
-        <Button disabled={this.props.projects[this.props.address].listSubmitted} onClick={() => this.submitWinningHashList()}>Submit Winning Hash List</Button>
+        <Button
+          disabled={this.props.projects[this.props.address].listSubmitted}
+          onClick={() => this.submitWinningHashList()}>
+            Submit Winning Hash List</Button>
       </Card>
     )
   }
