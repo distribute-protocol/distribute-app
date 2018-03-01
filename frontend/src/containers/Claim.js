@@ -12,7 +12,6 @@ class Claim extends React.Component {
     this.state = {
       projects: []
     }
-    window.state = this.state
     this.fastForward = this.fastForward.bind(this)
   }
 
@@ -33,7 +32,8 @@ class Claim extends React.Component {
       return projectState(projAddr)
         .then(state => {
           // console.log('state', state)
-          if (state == 4) {
+          window.state = state
+          if (state.toNumber() === 3) {
             // return JSON.stringify(project)
             return np.projects[projAddr]
           }

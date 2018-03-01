@@ -66,7 +66,7 @@ class AddProject extends React.Component {
       eth.getAccounts(async (err, accounts) => {
         if (!err) {
           await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => {
-            console.log('submission', taskFormatting)
+            // console.log('submission', taskFormatting)
             this.submitTaskListToStore(accounts[0], taskFormatting)
           })
         }
@@ -150,7 +150,7 @@ class AddProject extends React.Component {
   componentWillMount () {
     let p = P.at(this.props.address)
     this.getProjectStatus(p)
-    console.log(this.state.projectState)
+    // console.log(this.state.projectState)
     this.setState({project: p, taskList: this.props.taskList})
   }
 
