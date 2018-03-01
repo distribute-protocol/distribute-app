@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Col, Row } from 'antd'
 import StakeProject from '../components/shared/StakeProject'
-import { eth, web3, tr, dt, P } from '../utilities/blockchain'
+import { eth, web3, tr, dt, pl, P } from '../utilities/blockchain'
 import * as _ from 'lodash'
 
 class Stake extends React.Component {
@@ -51,8 +51,7 @@ class Stake extends React.Component {
 
     function projectState (address) {
       return new Promise(async (resolve, reject) => {
-        let proj = P.at(address)
-        let isStaked = await proj.isStaked()
+        let isStaked = await pl.isStaked(address)
         // console.log('proj in projectState', proj)
         resolve(isStaked)
       })
