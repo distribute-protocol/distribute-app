@@ -11,7 +11,7 @@ const hashing = {
     }
 
     let hash = soliditySha3(...objArray)
-    console.log('keccakHash', hash)
+    // console.log('keccakHash', hash)
     return hash
   }
 }

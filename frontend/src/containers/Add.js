@@ -12,7 +12,6 @@ class Add extends React.Component {
     this.state = {
       projects: []
     }
-    window.state = this.state
     this.fastForward = this.fastForward.bind(this)
   }
 
@@ -39,7 +38,7 @@ class Add extends React.Component {
     let projects = Object.keys(np.projects).map((projAddr, i) => {
       return projectState(projAddr)
         .then(async (state) => {
-          if (state == 3) {
+          if (state.toNumber() === 2) {
             return np.projects[projAddr]
           }
         })

@@ -20,7 +20,6 @@ class ClaimProject extends React.Component {
       isSubmitted: false
     }
     window.pr = pr
-    window.state = this.state
   }
 
   onChange (type, val) {
