@@ -86,7 +86,7 @@ class AddProject extends React.Component {
             // this.setState({nextDeadline: nextDeadline})
           }).then(() => {
             p.state().then(result => {
-              let states = ['none', 'proposed', 'none', 'dispute', 'active', 'validation', 'voting']
+              let states = ['none', 'proposed', 'staked', 'actove', 'validation', 'voting', 'complete', 'failed', 'expired']
               projectState = states[result]
               this.setState({projectState, nextDeadline})
             })

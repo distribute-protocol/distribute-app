@@ -17,6 +17,7 @@ class Stake extends React.Component {
     }
 
     window.projects = this.state.projects
+    window.pl = pl
   }
 
   componentWillMount () {
@@ -52,15 +53,15 @@ class Stake extends React.Component {
     function projectState (address) {
       return new Promise(async (resolve, reject) => {
         let isStaked = await pl.isStaked(address)
-        // console.log('proj in projectState', proj)
         resolve(isStaked)
       })
     }
 
     let projects = Object.keys(np.projects).map((projAddr, i) => {
       return projectState(projAddr)
-        .then(state => {
-          if (!state) {
+        .then(isStaked => {
+          if (!isStaked) {
+            console.log(projAddr)
             return np.projects[projAddr]
           }
         })
