@@ -66,7 +66,7 @@ class AddProject extends React.Component {
       eth.getAccounts(async (err, accounts) => {
         if (!err) {
           await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => {
-            console.log(taskHash)
+            // console.log(taskHash)
             this.submitTaskListToStore(accounts[0], taskFormatting)
           })
         }
@@ -117,15 +117,15 @@ class AddProject extends React.Component {
   hashListForSubmission (taskArray) {
     let taskHashArray = []
     // define reputation reward from wei reward right now
-    // task, weiReward, repReward
-    let args = ['string', 'uint', 'uint']
+    // task, weighting
+    let args = ['bytes32', 'uint']
     for (var i = 0; i < taskArray.length; i++) {
       let thisTask = []
       thisTask.push(taskArray[i].description)
-      thisTask.push(taskArray[i].weiReward)
-      // submit 0 reputation for now
-      thisTask.push(0)
+      thisTask.push(100 * taskArray[i].weiReward / web3.toWei(this.props.cost, 'ether'))
       taskHashArray.push(hashing.keccakHashes(args, thisTask))
+      console.log(taskArray[i].description)
+      console.log(100 * taskArray[i].weiReward / web3.toWei(this.props.cost, 'ether'))
     }
     return taskHashArray
   }
