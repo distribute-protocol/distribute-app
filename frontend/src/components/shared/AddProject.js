@@ -66,7 +66,7 @@ class AddProject extends React.Component {
       eth.getAccounts(async (err, accounts) => {
         if (!err) {
           await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => {
-            // console.log('submission', taskFormatting)
+            console.log(taskHash)
             this.submitTaskListToStore(accounts[0], taskFormatting)
           })
         }
@@ -86,7 +86,7 @@ class AddProject extends React.Component {
             // this.setState({nextDeadline: nextDeadline})
           }).then(() => {
             p.state().then(result => {
-              let states = ['none', 'proposed', 'staked', 'actove', 'validation', 'voting', 'complete', 'failed', 'expired']
+              let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
               projectState = states[result]
               this.setState({projectState, nextDeadline})
             })
@@ -250,7 +250,7 @@ class AddProject extends React.Component {
           <DraggableTable address={this.props.address} data={tasks} columns={columns} moveRow={this.moveRow} handleReorder={this.handleReorder} />
         </div>
         <div>
-          <Button onClick={() => this.submitTaskList()}>Submit Remaining Tasks</Button>
+          <Button onClick={() => this.submitTaskList()}>Submit Remaining Tasks / Move Project to Claim Task Phase</Button>
         </div>
         <div>
           <div style={{display: 'flex', flexDirection: 'column'}}>

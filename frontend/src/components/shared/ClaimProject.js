@@ -36,7 +36,7 @@ class ClaimProject extends React.Component {
       if (!err) {
         // THIS WORKS
         // console.log(this.props.taskList[i].description, this.props.taskList[i].weiReward)
-        let hashMe = [{description: this.props.taskList[i].description, weiReward: this.props.taskList[i].weiReward}]
+        // let hashMe = [{description: this.props.taskList[i].description, weiReward: this.props.taskList[i].weiReward}]
         // console.log(this.hashListForSubmission(hashMe))
         await rr.claimTask(this.props.address, i, this.props.taskList[i].description, this.props.taskList[i].weiReward, '0', {from: accounts[0]})
         .then(() => {
@@ -68,7 +68,7 @@ class ClaimProject extends React.Component {
             this.setState({nextDeadline: nextDeadline})
           }).then(() => {
             p.state().then(result => {
-              let states = ['none', 'proposed', 'none', 'dispute', 'active', 'validation', 'voting']
+              let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
               projectState = states[result]
               this.setState({projectState: projectState})
             })
@@ -95,7 +95,7 @@ class ClaimProject extends React.Component {
   }
 
   async submitWinningHashList () {
-    await pr.disputedProjects(this.props.address).then(winner => {
+    await pr.stakedProjects(this.props.address).then(winner => {
       console.log('top task hash', winner)
       return winner
     }).then((topTaskHash) => {
@@ -103,16 +103,15 @@ class ClaimProject extends React.Component {
       Object.keys(this.props.submissions).map(async (address, i) => {
         // console.log('current submission', this.props.submissions[address])
         let hash = this.hashTasksForAddition(this.props.submissions[address])
-        // console.log('hash of current submission', hash)
+        console.log(hash)
         if (hash === topTaskHash) {
           let list = this.hashListForSubmission(this.props.submissions[address])
-          // console.log('list', list)
+          console.log('list', list)
           eth.getAccounts(async (err, accounts) => {
             if (!err) {
-              // console.log(accounts)
               await pr.submitHashList(this.props.address, list, {from: accounts[0]}).then(() => {
                 this.props.indicateTaskListSubmitted({taskList: this.props.submissions[address], address: this.props.address, listSubmitted: true})
-                // console.log('set project task list', this.props.projects)
+                console.log('set project task list', this.props.projects)
               })
             }
           })
