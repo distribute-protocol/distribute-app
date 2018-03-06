@@ -36,10 +36,13 @@ class ClaimProject extends React.Component {
       if (!err) {
         // THIS WORKS
         // console.log(this.props.taskList[i].description, this.props.taskList[i].weiReward)
-        let hashMe = [{description: this.props.taskList[i].description, weiReward: this.props.taskList[i].weiReward}]
+        // let hashMe = [{description: this.props.taskList[i].description, weiReward: this.props.taskList[i].weiReward}]
         // console.log(this.hashListForSubmission(hashMe))
-        await rr.claimTask(this.props.address, i, this.props.taskList[i].description, this.props.taskList[i].weiReward, '0', {from: accounts[0]})
-        .then(() => {
+        // console.log(i, 100 * this.props.taskList[i].weiReward / web3.toWei(this.props.cost, 'ether'))
+        // this.hashListForSubmission([{description: this.props.taskList[i].description, weiReward: this.props.taskList[i].weiReward}])
+        console.log(100 * (this.props.taskList[i].weiReward / web3.toWei(this.props.cost, 'ether')))
+        await rr.claimTask(this.props.address, i, this.props.taskList[i].description, 100 * (this.props.taskList[i].weiReward / web3.toWei(this.props.cost, 'ether')), {from: accounts[0]})
+        .then(async() => {
           this.props.indicateTaskClaimed({address: this.props.address, index: i})
         })
       }
@@ -68,7 +71,7 @@ class ClaimProject extends React.Component {
             this.setState({nextDeadline: nextDeadline})
           }).then(() => {
             p.state().then(result => {
-              let states = ['none', 'proposed', 'none', 'dispute', 'active', 'validation', 'voting']
+              let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
               projectState = states[result]
               this.setState({projectState: projectState})
             })
@@ -96,23 +99,20 @@ class ClaimProject extends React.Component {
 
   async submitWinningHashList () {
     await pr.stakedProjects(this.props.address).then(winner => {
-      console.log('top task hash', winner)
+      // console.log('top task hash', winner)
       return winner
     }).then((topTaskHash) => {
       // console.log('made it here')
       Object.keys(this.props.submissions).map(async (address, i) => {
-        // console.log('current submission', this.props.submissions[address])
         let hash = this.hashTasksForAddition(this.props.submissions[address])
-        // console.log('hash of current submission', hash)
+        // console.log(hash)
         if (hash === topTaskHash) {
           let list = this.hashListForSubmission(this.props.submissions[address])
           // console.log('list', list)
           eth.getAccounts(async (err, accounts) => {
             if (!err) {
-              // console.log(accounts)
               await pr.submitHashList(this.props.address, list, {from: accounts[0]}).then(() => {
                 this.props.indicateTaskListSubmitted({taskList: this.props.submissions[address], address: this.props.address, listSubmitted: true})
-                // console.log('set project task list', this.props.projects)
               })
             }
           })
@@ -133,21 +133,21 @@ class ClaimProject extends React.Component {
   hashListForSubmission (taskArray) {
     let taskHashArray = []
     // define reputation reward from wei reward right now
-    // task, weiReward, repReward
-    let args = ['string', 'uint', 'uint']
+    // task, weighting
+    let args = ['bytes32', 'uint']
     for (var i = 0; i < taskArray.length; i++) {
       let thisTask = []
       thisTask.push(taskArray[i].description)
-      thisTask.push(taskArray[i].weiReward)
-      thisTask.push('0')
-      // console.log(thisTask)
+      thisTask.push(100 * taskArray[i].weiReward / web3.toWei(this.props.cost, 'ether'))
       taskHashArray.push(hashing.keccakHashes(args, thisTask))
+      console.log(hashing.keccakHashes(args, thisTask))
+      console.log(taskArray[i].description)
+      console.log(100 * taskArray[i].weiReward / web3.toWei(this.props.cost, 'ether'))
     }
     return taskHashArray
   }
 
   render () {
-    console.log('taskList', this.props.taskList)
     let d
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
     let tasks
