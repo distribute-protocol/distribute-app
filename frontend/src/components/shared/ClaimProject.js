@@ -6,7 +6,7 @@ import { Card, Button, Table } from 'antd'
 import {eth, web3, dt, rr, pr, P} from '../../utilities/blockchain'
 import hashing from '../../utilities/hashing'
 import * as _ from 'lodash'
-import { setProjectTaskList, indicateTaskClaimed, indicateTaskListSubmitted } from '../../actions/projectActions'
+import { setProjectTaskList, indicateTaskClaimed, indicateTaskListSubmitted, indicateTaskSubmitted } from '../../actions/projectActions'
 
 class ClaimProject extends React.Component {
   constructor () {
@@ -34,13 +34,6 @@ class ClaimProject extends React.Component {
   claimElement (i) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
-        // THIS WORKS
-        // console.log(this.props.taskList[i].description, this.props.taskList[i].weiReward)
-        // let hashMe = [{description: this.props.taskList[i].description, weiReward: this.props.taskList[i].weiReward}]
-        // console.log(this.hashListForSubmission(hashMe))
-        // console.log(i, 100 * this.props.taskList[i].weiReward / web3.toWei(this.props.cost, 'ether'))
-        // this.hashListForSubmission([{description: this.props.taskList[i].description, weiReward: this.props.taskList[i].weiReward}])
-        console.log(100 * (this.props.taskList[i].weiReward / web3.toWei(this.props.cost, 'ether')))
         await rr.claimTask(this.props.address, i, this.props.taskList[i].description, 100 * (this.props.taskList[i].weiReward / web3.toWei(this.props.cost, 'ether')), {from: accounts[0]})
         .then(async() => {
           this.props.indicateTaskClaimed({address: this.props.address, index: i})
@@ -49,14 +42,16 @@ class ClaimProject extends React.Component {
     })
   }
 
-  /*
-  function claimTask(address _projectAddress, uint256 _index, string _taskDescription, uint256 _weiVal, uint256 _reputationVal) public {
-    require(balances[msg.sender] >= _reputationVal);
-    balances[msg.sender] -= _reputationVal;
-    totalFreeSupply -= _reputationVal;
-    projectRegistry.claimTask(_projectAddress, _index, _taskDescription, _weiVal, _reputationVal, msg.sender);
+  submitTask (i) {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        await pr.submitTaskComplete(this.props.address, i, {from: accounts[0]})
+        .then(async() => {
+          this.props.indicateTaskSubmitted({address: this.props.address, index: i})
+        })
+      }
+    })
   }
-  */
 
   getProjectStatus (p) {
     let accounts
@@ -84,7 +79,6 @@ class ClaimProject extends React.Component {
   componentWillMount () {
     let p = P.at(this.props.address)
     this.getProjectStatus(p)
-    // console.log(this.state.projectState)
     this.setState({project: p, taskList: this.props.taskList})
   }
 
@@ -99,16 +93,12 @@ class ClaimProject extends React.Component {
 
   async submitWinningHashList () {
     await pr.stakedProjects(this.props.address).then(winner => {
-      // console.log('top task hash', winner)
       return winner
     }).then((topTaskHash) => {
-      // console.log('made it here')
       Object.keys(this.props.submissions).map(async (address, i) => {
         let hash = this.hashTasksForAddition(this.props.submissions[address])
-        // console.log(hash)
         if (hash === topTaskHash) {
           let list = this.hashListForSubmission(this.props.submissions[address])
-          // console.log('list', list)
           eth.getAccounts(async (err, accounts) => {
             if (!err) {
               await pr.submitHashList(this.props.address, list, {from: accounts[0]}).then(() => {
@@ -132,7 +122,6 @@ class ClaimProject extends React.Component {
 
   hashListForSubmission (taskArray) {
     let taskHashArray = []
-    // define reputation reward from wei reward right now
     // task, weighting
     let args = ['bytes32', 'uint']
     for (var i = 0; i < taskArray.length; i++) {
@@ -140,9 +129,9 @@ class ClaimProject extends React.Component {
       thisTask.push(taskArray[i].description)
       thisTask.push(100 * taskArray[i].weiReward / web3.toWei(this.props.cost, 'ether'))
       taskHashArray.push(hashing.keccakHashes(args, thisTask))
-      console.log(hashing.keccakHashes(args, thisTask))
-      console.log(taskArray[i].description)
-      console.log(100 * taskArray[i].weiReward / web3.toWei(this.props.cost, 'ether'))
+      // console.log(hashing.keccakHashes(args, thisTask))
+      // console.log(taskArray[i].description)
+      // console.log(100 * taskArray[i].weiReward / web3.toWei(this.props.cost, 'ether'))
     }
     return taskHashArray
   }
@@ -153,13 +142,20 @@ class ClaimProject extends React.Component {
     let tasks
     if (typeof this.props.taskList !== 'undefined') {
       tasks = this.props.taskList.map((task, i) => {
+        let weiReward
+        typeof task.weiReward !== 'undefined'
+         ? weiReward = task.weiReward + ' wei'
+         : weiReward = ''
         return {
           key: i,
           description: task.description,
-          ethReward: task.weiReward + ' wei',
+          ethReward: weiReward,
           addTask: <Button
             disabled={this.props.taskList[i].claimed || !this.props.projects[this.props.address].listSubmitted}
-            type='danger' onClick={() => this.claimElement(i)} > Claim</Button>
+            type='danger' onClick={() => this.claimElement(i)} >Claim</Button>,
+          submitTask: <Button
+            disabled={this.props.taskList[i].submitted || !this.props.taskList[i].claimed || !this.props.projects[this.props.address].listSubmitted}
+            type='danger' onClick={() => this.submitTask(i)} >Task Complete</Button>
         }
       })
     } else {
@@ -178,6 +174,10 @@ class ClaimProject extends React.Component {
       title: '',
       dataIndex: 'addTask',
       key: 'addTask'
+    }, {
+      title: '',
+      dataIndex: 'submitTask',
+      key: 'submitTask'
     }]
 
     return (
@@ -215,12 +215,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setProjectTaskList: (taskDetails) => dispatch(setProjectTaskList(taskDetails)),
     indicateTaskClaimed: (submissionDetails) => dispatch(indicateTaskClaimed(submissionDetails)),
-    indicateTaskListSubmitted: (taskDetails) => dispatch(indicateTaskListSubmitted(taskDetails))
+    indicateTaskListSubmitted: (taskDetails) => dispatch(indicateTaskListSubmitted(taskDetails)),
+    indicateTaskSubmitted: (taskDetails) => dispatch(indicateTaskSubmitted(taskDetails))
   }
-
-  // return {
-  //   getProjectState: () => console.log('heyhey')
-  // }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ClaimProject)

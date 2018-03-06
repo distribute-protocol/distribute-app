@@ -1,4 +1,4 @@
-import { PROPOSE_PROJECT, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, INDICATE_TASK_CLAIMED, INDICATE_TASKLIST_SUBMITTED } from '../constants/ProjectActionTypes'
+import { PROPOSE_PROJECT, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, INDICATE_TASK_CLAIMED, INDICATE_TASKLIST_SUBMITTED, INDICATE_TASK_SUBMITTED } from '../constants/ProjectActionTypes'
 
 export function proposeProject (projectDetails) {
   return {
@@ -31,6 +31,13 @@ export function indicateTaskClaimed (taskDetails) {
 export function indicateTaskListSubmitted (taskDetails) {
   return {
     type: INDICATE_TASKLIST_SUBMITTED,
+    taskDetails
+  }
+}
+
+export function indicateTaskSubmitted (taskDetails) {
+  return {
+    type: INDICATE_TASK_SUBMITTED,
     taskDetails
   }
 }
