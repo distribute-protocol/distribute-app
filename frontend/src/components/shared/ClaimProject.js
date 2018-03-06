@@ -95,7 +95,7 @@ class ClaimProject extends React.Component {
   }
 
   async submitWinningHashList () {
-    await pr.disputedProjects(this.props.address).then(winner => {
+    await pr.stakedProjects(this.props.address).then(winner => {
       console.log('top task hash', winner)
       return winner
     }).then((topTaskHash) => {

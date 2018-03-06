@@ -80,6 +80,7 @@ class Stake extends React.Component {
 
   render () {
     const projects = this.state.projects.map((proj, i) => {
+      console.log(proj)
       return <Col span={10} key={i}>
         <StakeProject
           key={i}

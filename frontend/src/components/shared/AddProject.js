@@ -73,6 +73,31 @@ class AddProject extends React.Component {
       })
     }
   }
+
+  finalizeTaskList () {
+    let tasks = this.props.taskList
+    let sumTotal = tasks.map(el => el.percentage).reduce((prev, curr) => {
+      return prev + curr
+    }, 0)
+    if (sumTotal !== 100) {
+       alert('percentages must add up to 100!')
+    } else {
+      let totalProjectCost = web3.toWei(this.props.cost, 'ether')
+      let taskFormatting = tasks.map(task => ({
+        description: task.description,
+        weiReward: task.percentage * totalProjectCost / 100
+      }))
+      let taskHashArray = this.hashTasksForSubmission(taskFormatting)
+      eth.getAccounts(async (err, accounts) => {
+        if (!err) {
+          await pr.submitHashList(this.props.address, taskHashArray, {from: accounts[0]}).then(() => {
+            // console.log('submission', taskFormatting)
+            // this.submitTaskListToStore(accounts[0], taskFormatting)
+          })
+        }
+      })
+    }
+  }
   getProjectStatus (p) {
     let accounts
     eth.getAccounts(async (err, result) => {
@@ -155,6 +180,7 @@ class AddProject extends React.Component {
   }
 
   render () {
+    console.log(this.props.taskList)
     let d
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
     let tasks
@@ -250,7 +276,7 @@ class AddProject extends React.Component {
           <DraggableTable address={this.props.address} data={tasks} columns={columns} moveRow={this.moveRow} handleReorder={this.handleReorder} />
         </div>
         <div>
-          <Button onClick={() => this.submitTaskList()}>Submit Remaining Tasks</Button>
+          <Button onClick={() => this.submitTaskList()}>Submit Task Hash</Button>
         </div>
         <div>
           <div style={{display: 'flex', flexDirection: 'column'}}>

@@ -96,7 +96,6 @@ class Status extends Component {
           ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
           let balance,
             totalTokenSupply,
-            totalFreeTokenSupply,
             weiBal,
             reputationBalance,
             totalReputationSupply,
@@ -107,7 +106,6 @@ class Status extends Component {
           // console.log('balance', balance)
           totalTokenSupply = (await dt.totalSupply()).toNumber()
           // console.log('totalTokenSupply', totalTokenSupply)
-          totalFreeTokenSupply = (await dt.totalFreeSupply()).toNumber()
           // console.log('totalFreeTokenSupply', totalFreeTokenSupply)
           weiBal = (await dt.weiBal()).toNumber()
           // console.log('weiBal', weiBal)
@@ -115,7 +113,6 @@ class Status extends Component {
           // console.log('reputationBalance', reputationBalance)
           totalReputationSupply = (await rr.totalSupply()).toNumber()
           // console.log('totalReputationSupply', totalReputationSupply)
-          totalFreeReputationSupply = (await rr.totalFreeSupply()).toNumber()
           // console.log('totalFreeReputationSupply', totalFreeReputationSupply)
 
           currentPrice = (await dt.currentPrice()).toNumber()
@@ -124,9 +121,7 @@ class Status extends Component {
             balance,
             ethPrice,
             weiBal,
-            totalFreeTokenSupply,
             totalReputationSupply,
-            totalFreeReputationSupply,
             reputationBalance,
             currentPrice: web3.fromWei(currentPrice, 'ether')
           })
@@ -236,8 +231,6 @@ class Status extends Component {
           <div>
             <h3>Total Token Supply</h3>
             <h5>{this.state.totalTokenSupply}</h5>
-            <h3>Total Free Token Supply</h3>
-            <h5>{this.state.totalFreeTokenSupply}</h5>
             <h3>Your Token Balance</h3>
             <h5>{this.state.balance}</h5>
             <h3>Controlled Market Percentage</h3>
@@ -253,8 +246,6 @@ class Status extends Component {
           <div style={{marginLeft: 25}}>
             <h3>Total Reputation Supply</h3>
             <h5>{this.state.totalReputationSupply}</h5>
-            <h3>Total Free Reputation Supply</h3>
-            <h5>{this.state.totalFreeReputationSupply}</h5>
             <h3>Reputation Balance</h3>
             <h5>{this.state.reputationBalance}</h5>
           </div>
