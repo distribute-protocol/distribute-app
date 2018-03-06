@@ -50,58 +50,51 @@ class Stake extends React.Component {
   componentWillReceiveProps (np) {
     let projectsArr
 
-    // function projectState (address) {
-    //   return new Promise(async (resolve, reject) => {
-    //     let isStaked = await pl.isStaked(address)
-    //     resolve(isStaked)
-    //   })
-    // }
-    //
-    let projects = Object.keys(np.projects).map(async (projAddr, i) => {
-      // pl.isStaked(projAddr)
-      console.log(projAddr)
-      window.pl = pl
-      return np.projects[projAddr]
-      // let staked = await pl.isStaked(projAddr)
-      // return await.pl
-      // return projectState(projAddr)
-      //   .then(isStaked => {
-      //     if (!isStaked) {
-      //       console.log(projAddr)
-      //       return np.projects[projAddr]
-      //     }
-      //   })
+    function projectState (address) {
+      return new Promise(async (resolve, reject) => {
+        let isStaked = await pl.isStaked(address)
+        resolve(isStaked)
+      })
+    }
+
+    let projects = Object.keys(np.projects).map((projAddr, i) => {
+      return projectState(projAddr)
+        .then(isStaked => {
+          if (!isStaked) {
+            console.log(projAddr)
+            return np.projects[projAddr]
+          }
+        })
     })
 
-    // Promise.all(projects)
-    //   .then(results => {
-    //     // Handle results
-    //     projectsArr = _.compact(results)
-    //     this.setState({projects: projectsArr})
-    //     // console.log('projectsArr', projectsArr)
-    //   })
-    //   .catch(e => {
-    //     console.error(e)
-    //   })
+    Promise.all(projects)
+      .then(results => {
+        // Handle results
+        projectsArr = _.compact(results)
+        this.setState({projects: projectsArr})
+        // console.log('projectsArr', projectsArr)
+      })
+      .catch(e => {
+        console.error(e)
+      })
   }
 
   render () {
-    // const projects = this.state.projects.map((proj, i) => {
-    //   console.log(proj)
-    //   return <Col span={10} key={i}>
-    //     <StakeProject
-    //       key={i}
-    //       cost={proj.cost}
-    //       description={proj.description}
-    //       index={i}
-    //       stakingEndDate={proj.stakingEndDate}
-    //       address={proj.address}
-    //       stakeProject={(val) => this.stakeProject(proj.address, val)}
-    //       unstakeProject={(val) => this.unstakeProject(proj.address, val)}
-    //     />
-    //   </Col>
-    // })
-    let projects = []
+    const projects = this.state.projects.map((proj, i) => {
+      console.log(proj)
+      return <Col span={10} key={i}>
+        <StakeProject
+          key={i}
+          cost={proj.cost}
+          description={proj.description}
+          index={i}
+          stakingEndDate={proj.stakingEndDate}
+          address={proj.address}
+          stakeProject={(val) => this.stakeProject(proj.address, val)}
+          unstakeProject={(val) => this.unstakeProject(proj.address, val)}
+        />
+      </Col>
+    })
     return (
       <div style={{marginLeft: 200}}>
         <header className='App-header'>

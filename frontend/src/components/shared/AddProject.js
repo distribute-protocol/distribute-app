@@ -146,7 +146,7 @@ class AddProject extends React.Component {
     let args = ['bytes32', 'uint']
     for (var i = 0; i < taskArray.length; i++) {
       let thisTask = []
-      thisTask.push(taskArray[i].description)
+      thisTask.push(web3.fromAscii(taskArray[i].description, 32))
       thisTask.push(100 * taskArray[i].weiReward / web3.toWei(this.props.cost, 'ether'))
       taskHashArray.push(hashing.keccakHashes(args, thisTask))
       console.log(taskArray[i].description)

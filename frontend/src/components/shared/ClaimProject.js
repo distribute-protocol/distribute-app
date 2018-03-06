@@ -20,6 +20,7 @@ class ClaimProject extends React.Component {
       isSubmitted: false
     }
     window.pr = pr
+    window.hashing = hashing
   }
 
   onChange (type, val) {
@@ -41,7 +42,8 @@ class ClaimProject extends React.Component {
         // console.log(i, 100 * this.props.taskList[i].weiReward / web3.toWei(this.props.cost, 'ether'))
         // this.hashListForSubmission([{description: this.props.taskList[i].description, weiReward: this.props.taskList[i].weiReward}])
         console.log(100 * (this.props.taskList[i].weiReward / web3.toWei(this.props.cost, 'ether')))
-        await rr.claimTask(this.props.address, i, this.props.taskList[i].description, 100 * (this.props.taskList[i].weiReward / web3.toWei(this.props.cost, 'ether')), {from: accounts[0]})
+        let hash = web3.fromAscii(this.props.taskList[i].description, 32)
+        await rr.claimTask(this.props.address, i, hash, 100 * (this.props.taskList[i].weiReward / web3.toWei(this.props.cost, 'ether')), {from: accounts[0]})
         .then(async() => {
           this.props.indicateTaskClaimed({address: this.props.address, index: i})
         })
@@ -137,7 +139,7 @@ class ClaimProject extends React.Component {
     let args = ['bytes32', 'uint']
     for (var i = 0; i < taskArray.length; i++) {
       let thisTask = []
-      thisTask.push(taskArray[i].description)
+      thisTask.push(web3.fromAscii(taskArray[i].description, 32))
       thisTask.push(100 * taskArray[i].weiReward / web3.toWei(this.props.cost, 'ether'))
       taskHashArray.push(hashing.keccakHashes(args, thisTask))
       console.log(hashing.keccakHashes(args, thisTask))
