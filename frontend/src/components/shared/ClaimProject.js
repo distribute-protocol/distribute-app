@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { Card, Button, Table } from 'antd'
-import {eth, web3, dt, rr, pr, P} from '../../utilities/blockchain'
+import {eth, web3, dt, rr, pr, pl, P} from '../../utilities/blockchain'
 import hashing from '../../utilities/hashing'
 import * as _ from 'lodash'
 import { setProjectTaskList, indicateTaskClaimed, indicateTaskListSubmitted, indicateTaskSubmitted } from '../../actions/projectActions'
@@ -35,19 +35,9 @@ class ClaimProject extends React.Component {
   claimElement (i) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
-<<<<<<< HEAD
-        await rr.claimTask(this.props.address, i, this.props.taskList[i].description, 100 * (this.props.taskList[i].weiReward / web3.toWei(this.props.cost, 'ether')), {from: accounts[0]})
-=======
-        // THIS WORKS
-        // console.log(this.props.taskList[i].description, this.props.taskList[i].weiReward)
-        // let hashMe = [{description: this.props.taskList[i].description, weiReward: this.props.taskList[i].weiReward}]
-        // console.log(this.hashListForSubmission(hashMe))
-        // console.log(i, 100 * this.props.taskList[i].weiReward / web3.toWei(this.props.cost, 'ether'))
-        // this.hashListForSubmission([{description: this.props.taskList[i].description, weiReward: this.props.taskList[i].weiReward}])
         console.log(100 * (this.props.taskList[i].weiReward / web3.toWei(this.props.cost, 'ether')))
         let hash = web3.fromAscii(this.props.taskList[i].description, 32)
         await rr.claimTask(this.props.address, i, hash, 100 * (this.props.taskList[i].weiReward / web3.toWei(this.props.cost, 'ether')), {from: accounts[0]})
->>>>>>> 4d8292456af457dedc91a17c33e50e3f2bbb4455
         .then(async() => {
           this.props.indicateTaskClaimed({address: this.props.address, index: i})
         })
@@ -91,6 +81,8 @@ class ClaimProject extends React.Component {
 
   componentWillMount () {
     let p = P.at(this.props.address)
+    window.p = p
+    window.pl = pl
     this.getProjectStatus(p)
     this.setState({project: p, taskList: this.props.taskList})
   }
@@ -147,6 +139,16 @@ class ClaimProject extends React.Component {
       // console.log(100 * taskArray[i].weiReward / web3.toWei(this.props.cost, 'ether'))
     }
     return taskHashArray
+  }
+
+  checkValidation () {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        await pr.checkValidate(this.props.address, {from: accounts[0]}).then((res) => {
+          window.heyhey = res
+        })
+      }
+    })
   }
 
   render () {
@@ -212,6 +214,9 @@ class ClaimProject extends React.Component {
           disabled={this.props.projects[this.props.address].listSubmitted}
           onClick={() => this.submitWinningHashList()}>
             Submit Winning Hash List</Button>
+        <Button
+          onClick={() => this.checkValidation()}>
+            Check Validate</Button>
       </Card>
     )
   }
