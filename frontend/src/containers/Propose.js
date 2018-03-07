@@ -7,7 +7,7 @@ import { Button, Table } from 'antd'
 // import Project from '../components/shared/Project'
 import { proposeProject } from '../actions/projectActions'
 // import utils from '../utilities/utils'
-import {eth, web3, tr, dt} from '../utilities/blockchain'
+import {eth, web3, tr, dt, P, pl} from '../utilities/blockchain'
 import utils from '../utilities/utils'
 import * as _ from 'lodash'
 import moment from 'moment'
@@ -27,6 +27,7 @@ class Propose extends Component {
     this.getCurrentPrice = this.getCurrentPrice.bind(this)
     // this.checkTransactionMined = this.checkTransactionMined.bind(this)
     this.getProjects = this.getProjects.bind(this)
+    // this.processProjects = this.processProjects.bind(this)
     window.tr = tr
     // window.projects = this.state.projects
   }
@@ -114,33 +115,48 @@ class Propose extends Component {
     try {
       let temp = Object.assign({}, this.state.tempProject, {[type]: val})
       this.setState({tempProject: temp})
-      // console.log('tempProject', this.state.tempProject)
-      // console.log('set state for description')
     } catch (error) {
       throw new Error(error)
     }
   }
 
-  render () {
-    // console.log(this.props.projects)
-    const projects = Object.keys(this.props.projects).map((projAddr, i) => {
- //      key: '1',
- // name: 'Mike',
- // age: 32,
- // address: '10 Downing Street'
-      let proj = this.props.projects[projAddr]
-      let d
-      if (typeof proj.stakingEndDate !== 'undefined') { d = moment(proj.stakingEndDate) }
-      return {
-        key: i,
-        index: i,
-        address: proj.address,
-        cost: proj.cost,
-        description: proj.description,
-        stakingEndDate: (typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A')
-      }
-      // return <Project key={i} index={i} address={proj.address} cost={proj.cost} description={proj.description} stakingEndDate={proj.stakingEndDate} />
+  componentWillReceiveProps (np) {
+    let projectsArr
+    function projectState (address) {
+      return new Promise(async (resolve, reject) => {
+        let status = await pl.isStaked(address)
+        resolve(status)
+      })
+    }
+    let d
+    let projects = Object.keys(np.projects).map((projAddr, i) => {
+      let proj = np.projects[projAddr]
+      return projectState(projAddr)
+        .then(status => {
+          if (!status) {
+            if (typeof proj.stakingEndDate !== 'undefined') { d = moment(proj.stakingEndDate) }
+            return {
+              key: i,
+              index: i,
+              address: proj.address,
+              cost: proj.cost,
+              description: proj.description,
+              stakingEndDate: (typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A')
+            }
+          }
+        })
     })
+
+    Promise.all(projects)
+      .then(results => {
+        projectsArr = _.compact(results)
+        this.setState({projects: projectsArr})
+      })
+      .catch(e => {
+        console.error(e)
+      })
+  }
+  render () {
     const columns = [{
       title: '#',
       dataIndex: 'index',
@@ -165,13 +181,12 @@ class Propose extends Component {
     return (
       <div style={{marginLeft: 200}}>
         <header className='App-header'>
-          {/* <img src={logoclassName='App-logo' alt='logo' /> */}
           <h3 className='App-title'>Current Proposals</h3>
         </header>
         <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
           <div style={{marginLeft: 20, marginTop: 40}}>
             <div style={{display: 'flex', flexDirection: 'column'}}>
-              <Table dataSource={projects} columns={columns} />
+              <Table dataSource={this.state.projects} columns={columns} />
             </div>
           </div>
           <div style={{marginLeft: 20, marginTop: 40}}>

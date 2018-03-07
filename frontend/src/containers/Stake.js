@@ -61,7 +61,7 @@ class Stake extends React.Component {
       return projectState(projAddr)
         .then(isStaked => {
           if (!isStaked) {
-            console.log(projAddr)
+            // console.log(projAddr)
             return np.projects[projAddr]
           }
         })
@@ -81,7 +81,7 @@ class Stake extends React.Component {
 
   render () {
     const projects = this.state.projects.map((proj, i) => {
-      console.log(proj)
+      // console.log(proj)
       return <Col span={10} key={i}>
         <StakeProject
           key={i}

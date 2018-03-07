@@ -149,8 +149,8 @@ class AddProject extends React.Component {
       thisTask.push(web3.fromAscii(taskArray[i].description, 32))
       thisTask.push(100 * taskArray[i].weiReward / web3.toWei(this.props.cost, 'ether'))
       taskHashArray.push(hashing.keccakHashes(args, thisTask))
-      console.log(taskArray[i].description)
-      console.log(100 * taskArray[i].weiReward / web3.toWei(this.props.cost, 'ether'))
+      // console.log(taskArray[i].description)
+      // console.log(100 * taskArray[i].weiReward / web3.toWei(this.props.cost, 'ether'))
     }
     return taskHashArray
   }
@@ -180,7 +180,7 @@ class AddProject extends React.Component {
   }
 
   render () {
-    console.log(this.props.taskList)
+    // console.log(this.props.taskList)
     let d
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
     let tasks

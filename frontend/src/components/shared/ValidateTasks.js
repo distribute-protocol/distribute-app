@@ -26,6 +26,7 @@ class ValidateTasks extends React.Component {
   }
 
   onChange (type, val) {
+    console.log(type, val)
     try {
       let temp = Object.assign({}, this.state, {[type]: val})
       this.setState(temp)
@@ -102,26 +103,27 @@ class ValidateTasks extends React.Component {
           yesVal: (
             <div>
               <Button
-                disabled={this.props.taskList[i].submitted || !this.props.taskList[i].claimed || !this.props.projects[this.props.address].listSubmitted}
+                // disabled={this.props.taskList[i].submitted || !this.props.taskList[i].claimed || !this.props.projects[this.props.address].listSubmitted}
                 type='danger' onClick={() => this.validateTask(this.state.totalYes, i, true)} >Yes</Button>
               <input
-                ref={(input) => (this.totalYes = input)}
+                ref={(input) => (this.yes = input)}
                 placeholder='Tokens'
-                onChange={(e) => this.onChange('totalYes', this.totalYes.value)}
-                value={this.state.totalYes || ''}
+                type='numeric'
+                onChange={(e) => { window.yes = this.yes; this.onChange('totalYes', this.yes.value) }}
+                value={this.state.totalYes}
               />
             </div>
           ),
           noVal: (
             <div>
               <Button
-                disabled={this.props.taskList[i].submitted || !this.props.taskList[i].claimed || !this.props.projects[this.props.address].listSubmitted}
+                // disabled={this.props.taskList[i].submitted || !this.props.taskList[i].claimed || !this.props.projects[this.props.address].listSubmitted}
                 type='danger' onClick={() => this.validateTask(this.state.totalNo, i, false)}>No</Button>
               <input
-                ref={(input) => (this.totalNo = input)}
+                ref={(input) => (this.no = input)}
                 placeholder='Tokens'
-                onChange={(e) => this.onChange('totalNo', this.totalNo.value)}
-                value={this.state.totalNo || ''}
+                onChange={(e) => this.onChange('totalNo', this.no.value)}
+                value={this.state.totalNo}
               />
             </div>
           )

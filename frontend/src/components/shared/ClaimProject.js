@@ -26,7 +26,7 @@ class ClaimProject extends React.Component {
   claimElement (i) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
-        console.log(100 * (this.props.taskList[i].weiReward / web3.toWei(this.props.cost, 'ether')))
+        // console.log(100 * (this.props.taskList[i].weiReward / web3.toWei(this.props.cost, 'ether')))
         let hash = web3.fromAscii(this.props.taskList[i].description, 32)
         await rr.claimTask(this.props.address, i, hash, 100 * (this.props.taskList[i].weiReward / web3.toWei(this.props.cost, 'ether')), {from: accounts[0]})
         .then(async() => {

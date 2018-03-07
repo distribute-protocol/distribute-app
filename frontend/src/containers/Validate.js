@@ -46,7 +46,7 @@ class Validate extends React.Component {
         // Handle results
         // console.log('results', results)
         projectsArr = _.compact(results)
-        console.log(projectsArr)
+        // console.log(projectsArr)
         this.setState({projects: projectsArr})
         // console.log(this.state.projects)
         // console.log('projectsArr', projectsArr)
@@ -63,7 +63,7 @@ class Validate extends React.Component {
 
   render () {
     const projects = this.state.projects.map((proj, i) => {
-      console.log(proj)
+      // console.log(proj)
       return <Col span={25} key={i}>
         <ValidateTasks
           key={i}
