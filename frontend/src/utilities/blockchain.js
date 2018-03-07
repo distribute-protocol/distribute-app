@@ -3,6 +3,7 @@ import { ReputationRegistryABI, ReputationRegistryAddress } from '../abi/Reputat
 import { ProjectRegistryABI, ProjectRegistryAddress } from '../abi/ProjectRegistry'
 import { DistributeTokenABI, DistributeTokenAddress } from '../abi/DistributeToken'
 import { ProjectABI } from '../abi/Project'
+import { TaskABI } from '../abi/Task'
 import { ProjectLibraryABI, ProjectLibraryAddress } from '../abi/ProjectLibrary'
 import Web3 from 'web3'
 import contract from 'truffle-contract'
@@ -52,4 +53,7 @@ export const pl = PL.at(ProjectLibraryAddress)
 export const P = contract({abi: JSON.parse(ProjectABI)})
 P.setProvider(window.web3.currentProvider)
 
-export default {tr, rr, pr, dt, pl, P}
+export const T = contract({abi: JSON.parse(TaskABI)})
+T.setProvider(window.web3.currentProvider)
+
+export default {tr, rr, pr, dt, pl, P, T}

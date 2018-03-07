@@ -8,6 +8,9 @@ import Claim from './Claim'
 import Add from './Add'
 import Validate from './Validate'
 import Vote from './Vote'
+import Complete from './Complete'
+import Failed from './Failed'
+import Expired from './Expired'
 // import Landing from './Landing'
 // import Profiles from './Profiles/index'
 // import MapView from './MapView'
@@ -23,11 +26,14 @@ const Main = () =>
         <a href='/status'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Status</h3></a>
         {/* <a href='/projects'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Current Projects</h3></a> */}
         <a href='/propose'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Propose Projects</h3></a>
-        <a href='/stake'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Stake Tokens on Proposed Projects</h3></a>
-        <a href='/add'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Add Tasks to Open Projects</h3></a>
-        <a href='/claim'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Claim Tasks from Active Projects</h3></a>
+        <a href='/stake'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Stake</h3></a>
+        <a href='/add'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Add Tasks</h3></a>
+        <a href='/claim'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Claim Tasks</h3></a>
         <a href='/validate'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Validate</h3></a>
         <a href='/vote'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Vote</h3></a>
+        <a href='/complete'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Complete</h3></a>
+        <a href='/failed'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Failed</h3></a>
+        <a href='/expired'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Expired</h3></a>
       </div>
     </div>
     <Switch>
@@ -40,6 +46,9 @@ const Main = () =>
       <Route path='/claim' component={Claim} />
       <Route path='/validate' component={Validate} />
       <Route path='/vote' component={Vote} />
+      <Route path='/complete' component={Complete} />
+      <Route path='/failed' component={Failed} />
+      <Route path='/expired' component={Expired} />
     </Switch>
   </main>
 

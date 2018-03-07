@@ -1,14 +1,14 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { Col, Row, Button } from 'antd'
-import ValidateTasks from '../components/shared/ValidateTasks'
+import VoteTasks from '../components/shared/VoteTasks'
 import fastforward from '../utilities/fastforward'
 
 import { connect } from 'react-redux'
 import {eth, web3, tr, rr, pr, dt, P, pl} from '../utilities/blockchain'
 import * as _ from 'lodash'
 
-class Validate extends React.Component {
+class Vote extends React.Component {
   constructor () {
     super()
     this.state = {
@@ -33,7 +33,7 @@ class Validate extends React.Component {
       // console.log('projAddr', projAddr)
       return projectState(projAddr)
         .then(state => {
-          if (state.toNumber() === 4) {
+          if (state.toNumber() === 7) {
             // return JSON.stringify(project)
             return np.projects[projAddr]
           }
@@ -46,7 +46,7 @@ class Validate extends React.Component {
         // Handle results
         // console.log('results', results)
         projectsArr = _.compact(results)
-        console.log(projectsArr)
+        // console.log(projectsArr)
         this.setState({projects: projectsArr})
         // console.log(this.state.projects)
         // console.log('projectsArr', projectsArr)
@@ -63,9 +63,9 @@ class Validate extends React.Component {
 
   render () {
     const projects = this.state.projects.map((proj, i) => {
-      console.log(proj)
+      // console.log(proj)
       return <Col span={25} key={i}>
-        <ValidateTasks
+        <VoteTasks
           key={i}
           cost={proj.cost}
           description={proj.description}
@@ -80,7 +80,7 @@ class Validate extends React.Component {
         <header className='App-header'>
           {/* <img src={logoclassName='App-logo' alt='logo' /> */}
           {/* <h1 className='App-title'>distribute</h1> */}
-          <h3>Validate Tasks</h3>
+          <h3>Vote Tasks</h3>
 
           <Button type='danger' onClick={this.fastForward}>fast forward 1 week</Button>
           <h6>ONLY DO THIS IF YOU ARE READY TO MOVE EVERY PROJECT TO THE NEXT STATE</h6>
@@ -102,4 +102,4 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export default connect(mapStateToProps)(Validate)
+export default connect(mapStateToProps)(Vote)

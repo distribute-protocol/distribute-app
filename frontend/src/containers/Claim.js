@@ -33,7 +33,7 @@ class Claim extends React.Component {
         .then(state => {
           // console.log('state', state)
           window.state = state
-          if (state.toNumber() === 3 || state.toNumber() === 2) {
+          if (state.toNumber() === 3) {
             // return JSON.stringify(project)
             return np.projects[projAddr]
           }

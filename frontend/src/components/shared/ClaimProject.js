@@ -23,15 +23,6 @@ class ClaimProject extends React.Component {
     window.hashing = hashing
   }
 
-  onChange (type, val) {
-    try {
-      let temp = Object.assign({}, this.state.tempTask, {[type]: val})
-      this.setState({tempTask: temp})
-    } catch (error) {
-      throw new Error(error)
-    }
-  }
-
   claimElement (i) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
