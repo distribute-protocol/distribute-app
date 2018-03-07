@@ -80,7 +80,7 @@ class Vote extends React.Component {
         <header className='App-header'>
           {/* <img src={logoclassName='App-logo' alt='logo' /> */}
           {/* <h1 className='App-title'>distribute</h1> */}
-          <h3>Vote Tasks</h3>
+          <h3>Completed Projects</h3>
 
           <Button type='danger' onClick={this.fastForward}>fast forward 1 week</Button>
           <h6>ONLY DO THIS IF YOU ARE READY TO MOVE EVERY PROJECT TO THE NEXT STATE</h6>

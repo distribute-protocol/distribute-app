@@ -29,6 +29,7 @@ class Propose extends Component {
     this.getProjects = this.getProjects.bind(this)
     // this.processProjects = this.processProjects.bind(this)
     window.tr = tr
+    window.DT = dt
     // window.projects = this.state.projects
   }
 

@@ -141,9 +141,9 @@ class Status extends Component {
       try {
         let ethRequired, totalSupply, refund
         await dt.weiRequired(val).then(result => {
-          console.log(result)
+          // console.log(result)
           ethRequired = web3.fromWei(result.toNumber(), 'ether')
-          console.log('eth to send', ethRequired)
+          // console.log('eth to send', ethRequired)
         })
         totalSupply = (await dt.totalSupply()).toNumber()
         if (totalSupply === 0) {
