@@ -53,7 +53,7 @@ export default function projectReducer (state = initialState, action) {
       // console.log(temp)
       newAllProjects = Object.assign({}, state.allProjects, {[action.taskDetails.address]: temp})
       return Object.assign({}, state, {allProjects: newAllProjects})
-    case INDICATE_TASKLIST_SUBMITTED:
+    case INDICATE_TASK_SUBMITTED:
       temp = state.allProjects[action.taskDetails.address]
       // console.log(temp)
       temp.taskList[action.taskDetails.index] = Object.assign({}, temp.taskList[action.taskDetails.index], {submitted: true})

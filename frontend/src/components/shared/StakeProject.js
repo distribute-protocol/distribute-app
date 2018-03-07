@@ -65,7 +65,7 @@ class StakeProject extends Component {
                 totalReputationStaked,
                 currentPrice: web3.fromWei(currentPrice, 'ether')
               })
-              //console.log('state', this.state)
+              // console.log('state', this.state)
               this.getTokensLeft()
             })
           })

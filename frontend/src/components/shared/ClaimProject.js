@@ -143,6 +143,7 @@ class ClaimProject extends React.Component {
   }
 
   render () {
+    console.log(this.props.taskList)
     let d
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
     let tasks

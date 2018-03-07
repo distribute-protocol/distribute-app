@@ -7,7 +7,7 @@ import { Button, Table } from 'antd'
 // import Project from '../components/shared/Project'
 import { proposeProject } from '../actions/projectActions'
 // import utils from '../utilities/utils'
-import {eth, web3, tr, dt, P, pl} from '../utilities/blockchain'
+import {eth, web3, tr, dt, pr, P, pl} from '../utilities/blockchain'
 import utils from '../utilities/utils'
 import * as _ from 'lodash'
 import moment from 'moment'
@@ -124,6 +124,7 @@ class Propose extends Component {
   componentWillReceiveProps (np) {
     let projectsArr
     function projectState (address) {
+      console.log(address)
       return new Promise(async (resolve, reject) => {
         let status = await pl.isStaked(address)
         resolve(status)

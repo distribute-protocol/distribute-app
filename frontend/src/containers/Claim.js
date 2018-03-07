@@ -59,7 +59,7 @@ class Claim extends React.Component {
 
 // fast forward Ganache 1 week
   async fastForward () {
-    await fastforward(7 * 24 * 60 * 60)
+    await fastforward(2 * 7 * 24 * 60 * 60)
     // console.log('fastForward')
   }
 
@@ -83,7 +83,7 @@ class Claim extends React.Component {
           {/* <h1 className='App-title'>distribute</h1> */}
           <h3>Claim Tasks from Active Projects</h3>
 
-          <Button type='danger' onClick={this.fastForward}>fast forward 1 week</Button>
+          <Button type='danger' onClick={this.fastForward}>fast forward 2 weeks</Button>
           <h6>ONLY DO THIS IF YOU ARE READY TO MOVE EVERY PROJECT TO THE NEXT STATE</h6>
           <h6>IF A PROJECT HAS UNCLAIMED TASKS IT WILL FAIL AND YOU WILL LOSE YOUR STAKED TOKENS</h6>
         </header>

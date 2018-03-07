@@ -18,17 +18,20 @@ class ValidateTasks extends React.Component {
       tempTask: {},
       taskList: [],
       isSubmitted: false,
-      totalYes: 0,
-      totalNo: 0
+      yes: [],
+      no: []
     }
     window.pr = pr
     window.hashing = hashing
+    window.state = this.state
   }
 
-  onChange (type, val) {
-    console.log(type, val)
+  onChange (type, index, val) {
+    console.log(type, index, val)
     try {
-      let temp = Object.assign({}, this.state, {[type]: val})
+      let temp = this.state[type]
+      temp[index] = val
+      console.log(temp)
       this.setState(temp)
     } catch (error) {
       throw new Error(error)
@@ -101,29 +104,26 @@ class ValidateTasks extends React.Component {
           description: task.description,
           ethReward: weiReward,
           yesVal: (
-            <div>
+            <div props={{index: 'yes' + i}}>
               <Button
-                // disabled={this.props.taskList[i].submitted || !this.props.taskList[i].claimed || !this.props.projects[this.props.address].listSubmitted}
                 type='danger' onClick={() => this.validateTask(this.state.totalYes, i, true)} >Yes</Button>
               <input
-                ref={(input) => (this.yes = input)}
-                placeholder='Tokens'
-                type='numeric'
-                onChange={(e) => { window.yes = this.yes; this.onChange('totalYes', this.yes.value) }}
-                value={this.state.totalYes}
+                ref={(input) => (this.this.props.index.yes = input)}
+                placeholder='tokens'
+                onChange={(e) => this.onChange('yes', i, this.yes.value)}
+                value={this.state.yes[i] || ''}
               />
             </div>
           ),
           noVal: (
             <div>
               <Button
-                // disabled={this.props.taskList[i].submitted || !this.props.taskList[i].claimed || !this.props.projects[this.props.address].listSubmitted}
                 type='danger' onClick={() => this.validateTask(this.state.totalNo, i, false)}>No</Button>
               <input
                 ref={(input) => (this.no = input)}
-                placeholder='Tokens'
-                onChange={(e) => this.onChange('totalNo', this.no.value)}
-                value={this.state.totalNo}
+                placeholder='tokens'
+                onChange={(e) => this.onChange('no', i, this.no.value)}
+                value={this.state.no[i] || ''}
               />
             </div>
           )
