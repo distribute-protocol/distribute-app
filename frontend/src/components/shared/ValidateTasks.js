@@ -19,23 +19,16 @@ class ValidateTasks extends React.Component {
       taskList: [],
       isSubmitted: false,
       yes: [],
-      no: []
+      no: [],
+      nextDeadline: ''
     }
     window.pr = pr
     window.hashing = hashing
     window.state = this.state
   }
 
-  onChange (type, index, val) {
-    console.log(type, index, val)
-    try {
-      let temp = this.state[type]
-      temp[index] = val
-      console.log(temp)
-      this.setState(temp)
-    } catch (error) {
-      throw new Error(error)
-    }
+  onChange (e) {
+    this.setState({[e.target.name]: e.target.value})
   }
 
   validateTask (val, index, status) {
@@ -57,6 +50,7 @@ class ValidateTasks extends React.Component {
         accounts = result
         if (accounts.length) {
           let nextDeadline, projectState
+          console.log('peepee', p)
           p.nextDeadline().then(result => {
             // blockchain reports time in seconds, javascript in milliseconds
             nextDeadline = result.toNumber() * 1000
@@ -99,40 +93,33 @@ class ValidateTasks extends React.Component {
         typeof task.weiReward !== 'undefined'
          ? weiReward = task.weiReward + ' wei'
          : weiReward = ''
+
+        let inputs = ['yes', 'no'].map((val, j) => {
+          let bools = [true, false]
+          return (
+            <div>
+              <Button
+                type='danger' onClick={() => this.validateTask(this.state[val + i], i, bools[j])} >{val}</Button>
+              <input
+                name={val + i}
+                placeholder='tokens'
+                onChange={(e) => this.onChange(e)}
+                value={this.state[val + i] || ''}
+              />
+            </div>
+          )
+        })
         return {
           key: i,
           description: task.description,
           ethReward: weiReward,
-          yesVal: (
-            <div props={{index: 'yes' + i}}>
-              <Button
-                type='danger' onClick={() => this.validateTask(this.state.totalYes, i, true)} >Yes</Button>
-              <input
-                ref={(input) => (this.this.props.index.yes = input)}
-                placeholder='tokens'
-                onChange={(e) => this.onChange('yes', i, this.yes.value)}
-                value={this.state.yes[i] || ''}
-              />
-            </div>
-          ),
-          noVal: (
-            <div>
-              <Button
-                type='danger' onClick={() => this.validateTask(this.state.totalNo, i, false)}>No</Button>
-              <input
-                ref={(input) => (this.no = input)}
-                placeholder='tokens'
-                onChange={(e) => this.onChange('no', i, this.no.value)}
-                value={this.state.no[i] || ''}
-              />
-            </div>
-          )
+          yesVal: inputs[0],
+          noVal: inputs[1]
         }
       })
     } else {
       tasks = []
     }
-
     const columns = [{
       title: 'Task Description',
       dataIndex: 'description',
