@@ -26,6 +26,7 @@
     "ethjs": "^0.3.1",
     "express": "^4.16.2",
     "get-eth-price": "^1.0.0",
+    "ipfs-api": "^18.1.1",
     "lodash": "^4.17.4",
     "mongodb": "^3.0.0-rc0",
     "redux-observable": "^0.17.0",

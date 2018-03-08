@@ -5,6 +5,8 @@ import moment from 'moment'
 import { Card, Button } from 'antd'
 import {eth, web3, dt, pr, P} from '../../utilities/blockchain'
 import { updateProject } from '../../actions/projectActions'
+import ipfsAPI from 'ipfs-api'
+let ipfs = ipfsAPI()
 const ButtonGroup = Button.Group
 const getProjectState = () => ({ type: 'GET_PROJECT_STATE' })
 
@@ -17,59 +19,75 @@ class StakeProject extends Component {
     }
   }
 
-  getProjectStatus (p) {
+  async getProjectStatus (p) {
     let accounts
     eth.getAccounts(async (err, result) => {
       if (!err) {
         accounts = result
         // console.log(accounts)
         if (accounts.length) {
-          let weiBal,
+          let weiBal = (await p.weiBal()).toNumber()
+          let weiCost = (await p.weiCost()).toNumber()
+          let reputationCost = (await p.reputationCost()).toNumber()
+          let totalTokensStaked = (await p.totalTokensStaked()).toNumber()
+          let totalReputationStaked = (await p.totalReputationStaked()).toNumber()
+          let ipfsHash = web3.toAscii(await p.ipfsHash())
+          let currentPrice = (await dt.currentPrice()).toNumber()
+          let projObj = {
+            weiBal,
             weiCost,
             reputationCost,
             totalTokensStaked,
-            totalReputationStaked
-          let currentPrice
-          p.weiBal().then(result => {
-            weiBal = result.toNumber()
-            // console.log('weiBal', weiBal)
-            // console.log('p', p)
-          }).then(() => {
-            p.weiCost().then(result => {
-              weiCost = result.toNumber()
-              // console.log('weiCost', weiCost)
-            })
-          }).then(() => {
-            p.reputationCost().then(result => {
-              reputationCost = result.toNumber()
-              // console.log('reputationCost', reputationCost)
-            })
-          }).then(() => {
-            p.totalTokensStaked().then(result => {
-              totalTokensStaked = result.toNumber()
-              // console.log('totalTokensStaked', totalTokensStaked)
-            })
-          }).then(() => {
-            p.totalReputationStaked().then(result => {
-              totalReputationStaked = result.toNumber()
-              // console.log('totalReputationStaked', totalReputationStaked)
-            })
-          }).then(() => {
-            dt.currentPrice().then(result => {
-              currentPrice = result.toNumber()
-              let projObj = {
-                weiBal,
-                weiCost,
-                reputationCost,
-                totalTokensStaked,
-                totalReputationStaked,
-                currentPrice: web3.fromWei(currentPrice, 'ether')
-              }
-              this.props.updateProject(this.props.address, projObj)
-              this.setState(projObj)
-              this.getTokensLeft()
-            })
+            totalReputationStaked,
+            ipfsHash,
+            currentPrice: web3.fromWei(currentPrice, 'ether')
+          }
+          ipfs.object.get(ipfsHash, (err, node) => {
+            if (err) {
+              throw err
+            }
+            let dataString = new TextDecoder('utf-8').decode(node.toJSON().data)
+            projObj = Object.assign({}, projObj, JSON.parse(dataString))
+            this.props.updateProject(this.props.address, projObj)
+            this.setState(projObj)
+            this.getTokensLeft()
           })
+
+          //
+          //   totalTokensStaked,
+          //   totalReputationStaked
+          // let currentPrice
+          // .then(result => {
+          //   weiBal = result.toNumber()
+          //   // console.log('weiBal', weiBal)
+          //   // console.log('p', p)
+          // }).then(() => {
+          // .then(result => {
+          //     weiCost = result.toNumber()
+          //     // console.log('weiCost', weiCost)
+          //   })
+          // }).then(() => {
+          //   .then(result => {
+          //     reputationCost = result.toNumber()
+          //     // console.log('reputationCost', reputationCost)
+          //   })
+          // }).then(() => {
+          //   .then(result => {
+          //     totalTokensStaked = result.toNumber()
+          //     // console.log('totalTokensStaked', totalTokensStaked)
+          //   })
+          // }).then(() => {
+          //   p.totalReputationStaked().then(result => {
+          //
+          //     // console.log('totalReputationStaked', totalReputationStaked)
+          //   })
+          // }).then(() => {
+          //   .then(result => {
+          //     currentPrice = result.toNumber()
+          //
+          //
+          //   })
+          // })
         }
       }
     })
@@ -132,12 +150,19 @@ class StakeProject extends Component {
     let d
     if (typeof this.props.stakingEndDate !== 'undefined') { d = moment(this.props.stakingEndDate) }
     return (
-      <div style={{backgroundColor: '#DDE4E5'}}>
+      <div style={{backgroundColor: '#DDE4E5', marginTop: 30}}>
         <div style={{padding: 10}}>
           <h3>{this.props.description}</h3>
         </div>
         <div style={{padding: 10, paddingTop: 0}}>
           <div style={{wordWrap: 'break-word'}}>{`Address: ${this.props.address}`}</div>
+          { typeof this.state.photo !== 'undefined'
+            ? <img style={{height: 200, width: 200}} src={this.state.photo} />
+            : null
+          }
+          <div>Name: {`${this.state.name}`}</div>
+          <div>Summary: {`${this.state.summary}`}</div>
+          <div>Location: {`${this.state.location}`}</div>
           <div>Cost: {`${this.props.cost}`} ETH</div>
           <div>Tokens Remaining: {`${this.state.tokensLeft}`}</div>
           <div>Reputation Remaining {`${this.state.reputationCost}`}</div>
@@ -160,7 +185,6 @@ class StakeProject extends Component {
                   <Button style={{backgroundColor: '#08734E', color: 'white'}} icon='up-circle-o' color='primary' onClick={() => this.stakeReputation()}>
                     Reputation
                   </Button>
-
                 </ButtonGroup>
               </div>
               <div style={{marginTop: 5}}>
