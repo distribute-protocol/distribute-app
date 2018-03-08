@@ -37,8 +37,8 @@ class VoteTasks extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         await tr.validateTask(this.props.address, index, val, status, {from: accounts[0]})
-        .then(async(hey) => {
-          console.log(hey)
+        .then(async(res) => {
+          return res
           // this.props.indicateTaskClaimed({address: this.props.address, index: i})
         })
       }
@@ -78,7 +78,7 @@ class VoteTasks extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         await pr.checkEnd(this.props.address, {from: accounts[0]}).then((res) => {
-          console.log(res)
+          return res
         })
       }
     })

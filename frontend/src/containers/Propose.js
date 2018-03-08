@@ -195,7 +195,6 @@ class Propose extends Component {
         />
       </div>)
     })
-    console.log(this.state.tempProject)
     return (
       <div>
         <Sidebar />

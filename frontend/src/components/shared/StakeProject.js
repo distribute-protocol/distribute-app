@@ -140,7 +140,8 @@ class StakeProject extends Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         await pr.checkStaked(this.props.address, {from: accounts[0]}).then((res) => {
-          console.log(res)
+          // console.log(res)
+          return res
         })
       }
     })

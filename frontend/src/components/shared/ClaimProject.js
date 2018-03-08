@@ -154,7 +154,7 @@ class ClaimProject extends React.Component {
          : weiReward = ''
         let reputationCost = this.props.projects[this.props.address].reputationCost
         let weiCost = this.props.projects[this.props.address].weiCost
-        console.log(reputationCost, weiCost)
+        // console.log(reputationCost, weiCost)
         return {
           key: i,
           description: task.description,

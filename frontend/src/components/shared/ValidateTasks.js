@@ -19,14 +19,9 @@ class ValidateTasks extends React.Component {
       call: [],
       nextDeadline: ''
     }
-    window.pr = pr
-    window.hashing = hashing
-    window.state = this.state
   }
 
   onChange (e) {
-    console.log(e.target.name)
-    console.log(e.target.value)
     this.setState({[e.target.name]: e.target.value})
   }
 
@@ -48,7 +43,6 @@ class ValidateTasks extends React.Component {
         accounts = result
         if (accounts.length) {
           let nextDeadline, projectState
-          console.log('peepee', p)
           p.nextDeadline().then(result => {
             // blockchain reports time in seconds, javascript in milliseconds
             nextDeadline = result.toNumber() * 1000
@@ -75,7 +69,7 @@ class ValidateTasks extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         await pr.checkVoting(this.props.address, {from: accounts[0]}).then((res) => {
-          console.log(res)
+          return res
         })
       }
     })
