@@ -99,20 +99,18 @@ class Stake extends React.Component {
 
   render () {
     const projects = this.state.projects.map((proj, i) => {
-      return <Col span={10} key={i}>
-        <StakeProject
-          key={i}
-          cost={proj.cost}
-          description={proj.description}
-          index={i}
-          stakingEndDate={proj.stakingEndDate}
-          address={proj.address}
-          stakeTokens={(val) => this.stakeTokens(proj.address, val)}
-          unstakeTokens={(val) => this.unstakeTokens(proj.address, val)}
-          stakeReputation={(val) => this.stakeReputation(proj.address, val)}
-          unstakeReputation={(val) => this.unstakeReputation(proj.address, val)}
-        />
-      </Col>
+      return <StakeProject
+        key={i}
+        cost={proj.cost}
+        description={proj.description}
+        index={i}
+        stakingEndDate={proj.stakingEndDate}
+        address={proj.address}
+        stakeTokens={(val) => this.stakeTokens(proj.address, val)}
+        unstakeTokens={(val) => this.unstakeTokens(proj.address, val)}
+        stakeReputation={(val) => this.stakeReputation(proj.address, val)}
+        unstakeReputation={(val) => this.unstakeReputation(proj.address, val)}
+      />
     })
     return (
       <div>
@@ -122,9 +120,7 @@ class Stake extends React.Component {
             <h3>Stakeable Proposals</h3>
           </header>
           <div style={{ padding: '30px' }}>
-            <Row gutter={8}>
-              {projects}
-            </Row>
+            {projects}
           </div>
         </div>
       </div>
