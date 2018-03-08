@@ -141,7 +141,7 @@ class ValidateTasks extends React.Component {
 
     return (
       // <Col sm='10'>
-      <Card title={`${this.props.description}`} >
+      <Card title={`${typeof this.state.projectData !== 'undefined' ? this.state.projectData.name : 'N/A'}`} style={{backgroundColor: '#DDE4E5', marginTop: 30}} >
         <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
         <div>project funds: {`${this.props.cost}`} ETH</div>
         <div>project state: <strong>{`${this.state.projectState}`}</strong></div>
@@ -151,7 +151,7 @@ class ValidateTasks extends React.Component {
             task completion expires {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}
           </div>
         </div>
-        <div style={{display: 'flex', flexDirection: 'column'}}>
+        <div style={{display: 'flex', flexDirection: 'column', backgroundColor: '#DDD3AA', marginTop: 30}}>
           <Table dataSource={tasks} columns={columns} />
         </div>
         <Button

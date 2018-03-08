@@ -67,6 +67,14 @@ class AddProject extends React.Component {
     }
   }
 
+  checkActive() {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        await pr.checkActive(this.props.address, {from: accounts[0]})
+      }
+    })
+  }
+
   finalizeTaskList () {
     let tasks = this.props.taskList
     let sumTotal = tasks.map(el => el.percentage).reduce((prev, curr) => {
@@ -252,7 +260,7 @@ class AddProject extends React.Component {
       </div>
 
     return (
-      <Card title={`${typeof this.state.projectData !== 'undefined' ? this.state.projectData.name : 'N/A'}`} >
+      <Card title={`${typeof this.state.projectData !== 'undefined' ? this.state.projectData.name : 'N/A'}`} style={{backgroundColor: '#DDE4E5', marginTop: 30}} >
         <div style={{wordWrap: 'break-word'}}>Address: <strong>{`${this.props.address}`}</strong></div>
 
         <div>Cost: <strong>{`${this.props.cost}`} ETH</strong></div>
@@ -273,14 +281,17 @@ class AddProject extends React.Component {
           </div>
           {submission}
         </div>
-        <div style={{display: 'flex', flexDirection: 'column'}}>
-          <DraggableTable address={this.props.address} data={tasks} columns={columns} moveRow={this.moveRow} handleReorder={this.handleReorder} />
+        <div style={{display: 'flex', flexDirection: 'column', backgroundColor: '#DDD3AA', marginTop: 30}}>
+          <DraggableTable address={this.props.address} data={tasks} columns={columns} moveRow={this.moveRow} handleReorder={this.handleReorder}  />
         </div>
         <div>
-          <Button onClick={() => this.submitTaskList()}>Submit Remaining Tasks / Move Project to Claim Task Phase</Button>
+          <Button onClick={() => this.submitTaskList()}>Submit Remaining Tasks</Button>
         </div>
         <div>
-          <div style={{display: 'flex', flexDirection: 'column'}}>
+          <Button onClick={() => this.checkActive()}>Check Active</Button>
+        </div>
+        <div>
+          <div style={{display: 'flex', flexDirection: 'column', backgroundColor: '#DDD3AA', marginTop: 30}}>
             <Table dataSource={submissionTasks} columns={submissionColumns} />
           </div>
         </div>

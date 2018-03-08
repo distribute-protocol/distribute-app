@@ -41,7 +41,7 @@ class Sidebar extends React.Component {
           <a href='/status'><h3 className='ActionText' style={Object.assign({}, titleStyle, {textAlign: 'center'})}>Network Status</h3></a>
           {/* <a href='/projects'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Current Projects</h3></a> */}
           <h3 onClick={() => this.toggleShow('actions')} style={Object.assign({}, titleBarStyle, {textAlign: 'center'})}>Projects Actions</h3>
-          { this.state.actions
+          { true
             ? <div>
               <a href='/propose'><h3 className='ActionText' style={titleStyle}>Propose</h3></a>
               <a href='/stake'><h3 className='ActionText' style={titleStyle}>Stake</h3></a>
@@ -53,7 +53,7 @@ class Sidebar extends React.Component {
             : null
           }
           <h3 onClick={() => this.toggleShow('projects')} style={Object.assign({}, titleBarStyle, {textAlign: 'center'})}>Finished Projects</h3>
-          { this.state.projects
+          { true
             ? <div>
               <a href='/complete'><h3 className='ActionText' style={titleStyle}>Complete</h3></a>
               <a href='/failed'><h3 className='ActionText' style={titleStyle}>Failed</h3></a>
