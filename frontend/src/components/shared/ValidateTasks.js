@@ -19,9 +19,6 @@ class ValidateTasks extends React.Component {
       call: [],
       nextDeadline: ''
     }
-    window.pr = pr
-    window.hashing = hashing
-    window.state = this.state
   }
 
   onChange (e) {
@@ -78,7 +75,7 @@ class ValidateTasks extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         await pr.checkVoting(this.props.address, {from: accounts[0]}).then((res) => {
-          console.log(res)
+          return res
         })
       }
     })
