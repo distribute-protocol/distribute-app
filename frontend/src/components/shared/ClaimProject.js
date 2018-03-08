@@ -149,6 +149,7 @@ class ClaimProject extends React.Component {
     if (typeof this.props.taskList !== 'undefined') {
       tasks = this.props.taskList.map((task, i) => {
         let weiReward
+        console.log(task.weiReward)
         typeof task.weiReward !== 'undefined'
          ? weiReward = task.weiReward + ' wei'
          : weiReward = ''
@@ -159,7 +160,7 @@ class ClaimProject extends React.Component {
           key: i,
           description: task.description,
           ethReward: weiReward,
-          repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' ? reputationCost * task.weiReward / weiCost : 0,
+          repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' && typeof taskWeiReward !== 'undefined' ? reputationCost * task.weiReward / weiCost : '',
           buttons: <ButtonGroup>
             <Button
               disabled={this.props.taskList[i].claimed || !this.props.projects[this.props.address].listSubmitted}
