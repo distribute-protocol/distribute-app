@@ -184,7 +184,7 @@ class Status extends Component {
         <Sidebar />
         <div style={{marginLeft: 200, flexDirection: 'column', display: 'flex', justifyContent: 'space-between', alignItems: 'space-between'}}>
           <header className='App-header'>
-            <h3 className='App-title'>Network Status</h3>
+            <h3 className='App-title2'>Network Status</h3>
           </header>
           {/* <Button onClick={this.login} style={{marginLeft: 20, backgroundColor: 'purple'}}>
             Connect with uPort

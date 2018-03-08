@@ -93,7 +93,7 @@ class Add extends React.Component {
         <div style={{marginLeft: 200}}>
           <header className='App-header'>
             {/* <img src={logoclassName='App-logo' alt='logo' /> */}
-            {/* <h1 className='App-title'>distribute</h1> */}
+            {/* <h1 className='App-title2'>distribute</h1> */}
             <h3>Add Tasks to Open Projects</h3>
             {/* }<h4>separate tasks and percentages with commas</h4>
             <h4>ensure percentages correspond to tasks and add up to 100%</h4>

@@ -13,8 +13,9 @@
   padding: 20px;
   background-color: '#A1B7C4';
 }
-.App-title {
+.App-title2 {
   background-color: '#000' !important;
+  font-size: 24px;
 }
 
 .App-intro {

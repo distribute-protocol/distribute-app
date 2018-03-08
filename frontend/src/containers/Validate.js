@@ -87,7 +87,7 @@ class Validate extends React.Component {
         <div style={{marginLeft: 200}}>
           <header className='App-header'>
             {/* <img src={logoclassName='App-logo' alt='logo' /> */}
-            {/* <h1 className='App-title'>distribute</h1> */}
+            {/* <h1 className='App-title2'>distribute</h1> */}
             <h3>Validate Tasks</h3>
 
             <Button type='danger' onClick={this.fastForward}>fast forward 1 week</Button>

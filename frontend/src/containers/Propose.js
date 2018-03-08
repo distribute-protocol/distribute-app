@@ -135,7 +135,7 @@ class Propose extends Component {
         <Sidebar />
         <div style={{marginLeft: 200}}>
           <header className='App-header'>
-            <h3 className='App-title'>Propose Project</h3>
+            <h3 className='App-title2'>Propose Project</h3>
           </header>
           <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
             <div style={{marginLeft: 20, marginTop: 40}}>
