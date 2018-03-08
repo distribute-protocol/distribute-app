@@ -25,6 +25,8 @@ class ValidateTasks extends React.Component {
   }
 
   onChange (e) {
+    console.log(e.target.name)
+    console.log(e.target.value)
     this.setState({[e.target.name]: e.target.value})
   }
 
@@ -33,8 +35,7 @@ class ValidateTasks extends React.Component {
       if (!err) {
         await tr.validateTask(this.props.address, index, val, status, {from: accounts[0]})
         .then(async(hey) => {
-          console.log(hey)
-          // this.props.indicateTaskClaimed({address: this.props.address, index: i})
+          this.setState({['val' + index]: ''})
         })
       }
     })
