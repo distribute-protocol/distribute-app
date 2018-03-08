@@ -4,24 +4,20 @@ import moment from 'moment'
 import { Card, Button, Table } from 'antd'
 import DraggableTable from './DraggableTable'
 import {eth, web3, pr, P} from '../../utilities/blockchain'
-
 import hashing from '../../utilities/hashing'
 import update from 'immutability-helper';
 import { setProjectTaskList, setTaskSubmission } from '../../actions/projectActions'
+import ipfsAPI from 'ipfs-api'
+let ipfs = ipfsAPI()
 
 class AddProject extends React.Component {
   constructor () {
     super()
     this.state = {
-      value: '',
-      percentages: '',
-      tasks: '',
       tempTask: {},
       taskList: []
     }
-    window.pr = pr
     this.handleTaskInput = this.handleTaskInput.bind(this)
-    // this.testFunction = this.testFunction.bind(this)
   }
 
   onChange (type, val) {
@@ -95,23 +91,22 @@ class AddProject extends React.Component {
       })
     }
   }
-  getProjectStatus (p) {
+  async getProjectStatus (p) {
     let accounts
     eth.getAccounts(async (err, result) => {
       if (!err) {
+        let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
         accounts = result
         if (accounts.length) {
-          let nextDeadline, projectState
-          p.nextDeadline().then(result => {
-            // blockchain reports time in seconds, javascript in milliseconds
-            nextDeadline = result.toNumber() * 1000
-            // this.setState({nextDeadline: nextDeadline})
-          }).then(() => {
-            p.state().then(result => {
-              let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
-              projectState = states[result]
-              this.setState({projectState, nextDeadline})
-            })
+          let nextDeadline = (await p.nextDeadline()) * 1000
+          let projectState = states[(await p.state())]
+          let ipfsHash = web3.toAscii(await p.ipfsHash())
+          ipfs.object.get(ipfsHash, (err, node) => {
+            if (err) {
+              throw err
+            }
+            let dataString = new TextDecoder('utf-8').decode(node.toJSON().data)
+            this.setState({projectState, nextDeadline, projectData: JSON.parse(dataString)})
           })
         }
       }
@@ -177,7 +172,6 @@ class AddProject extends React.Component {
   }
 
   render () {
-    // console.log(this.props.taskList)
     let d
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
     let tasks
@@ -258,14 +252,24 @@ class AddProject extends React.Component {
       </div>
 
     return (
-      <Card title={`${this.props.description}`} >
-        <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
-        <div>project funds: {`${this.props.cost}`} ETH</div>
-        <div>project state: <strong>{`${this.state.projectState}`}</strong></div>
+      <Card title={`${typeof this.state.projectData !== 'undefined' ? this.state.projectData.name : 'N/A'}`} >
+        <div style={{wordWrap: 'break-word'}}>Address: <strong>{`${this.props.address}`}</strong></div>
+
+        <div>Cost: <strong>{`${this.props.cost}`} ETH</strong></div>
+        <div>State: <strong>{`${this.state.projectState}`}</strong></div>
+        <div>Summary: <strong>{`${typeof this.state.projectData !== 'undefined' ? this.state.projectData.summary : 'N/A'}`}</strong></div>
+        <div>Location: <strong>{`${typeof this.state.projectData !== 'undefined' ? this.state.projectData.location : 'N/A'}`}</strong></div>
+        { typeof this.state.projectData !== 'undefined'
+          ? typeof this.state.projectData.photo !== 'undefined'
+            ? <img style={{height: 200, width: 200}} src={this.state.projectData.photo} />
+            : null
+          : null
+        }
+
         {/* <td>{typeof d !== 'undefined' ? `${d.toLocaleDateString()} ${d.toLocaleTimeString()}` : 'N/A'}</td> */}
         <div>
           <div>
-            task submission expires {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}
+            Task Submission Expiration<strong> {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}</strong>
           </div>
           {submission}
         </div>
@@ -287,7 +291,6 @@ class AddProject extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    projects: state.projects.allProjects,
     taskList: state.projects.allProjects[ownProps.address].taskList,
     submissions: state.projects.allProjects[ownProps.address].submittedTasks
   }
