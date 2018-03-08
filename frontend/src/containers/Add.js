@@ -2,7 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import Sidebar from './Sidebar'
 import { Col, Row, Button } from 'antd'
-import {eth, web3, tr, rr, pr, dt, P} from '../utilities/blockchain'
+import { push } from 'react-router-redux'
+import { P } from '../utilities/blockchain'
 import AddProject from '../components/shared/AddProject'
 import fastforward from '../utilities/fastforward'
 import * as _ from 'lodash'
@@ -16,6 +17,11 @@ class Add extends React.Component {
     this.fastForward = this.fastForward.bind(this)
   }
 
+  componentWillMount () {
+    if (_.isEmpty(this.props.user)) {
+      // this.props.reroute()
+    }
+  }
   componentWillReceiveProps (np) {
     let projectsArr
 
@@ -126,10 +132,10 @@ const mapStateToProps = (state) => {
   }
 }
 
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     proposeProject: (projectDetails) => dispatch(proposeProject(projectDetails))
-//   }
-// }
+const mapDispatchToProps = (dispatch) => {
+  return {
+    reroute: () => dispatch(push('/'))
+  }
+}
 
-export default connect(mapStateToProps)(Add)
+export default connect(mapStateToProps, mapDispatchToProps)(Add)

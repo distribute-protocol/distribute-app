@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 import { getEthPriceNow } from 'get-eth-price'
 import Button from 'antd/lib/button'
 import Sidebar from './Sidebar'
 import {eth, web3, tr, rr, dt} from '../utilities/blockchain'
-
+import * as _ from 'lodash'
 // import uport from '../utilities/uport'
 // var mnid = require('mnid')
 
@@ -42,6 +44,13 @@ class Status extends Component {
     // })
   }
   componentWillMount () {
+    if (_.isEmpty(this.props.user)) {
+      // this.props.reroute()
+    } else {
+
+    }
+    this.getBalance()
+  }
     // let config = {
     //   method: 'GET',
     //   headers: new Headers(),
@@ -50,8 +59,6 @@ class Status extends Component {
     // }
     // fetch('/api', config).then((res, req) => {})
     // this.queryDatabaseTest()
-    this.getBalance()
-  }
 
   getBalance () {
     eth.getAccounts(async (err, accounts) => {
@@ -229,4 +236,16 @@ class Status extends Component {
   }
 }
 
-export default Status
+const mapStateToProps = (state) => {
+  return {
+    user: state.user.user
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    reroute: () => dispatch(push('/'))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Status)

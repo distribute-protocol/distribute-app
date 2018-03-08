@@ -1,11 +1,9 @@
 import React from 'react'
-import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { Card, Button, Table } from 'antd'
-import {eth, web3, dt, rr, pr, pl, tr, P, T} from '../../utilities/blockchain'
+import {eth, pr, tr, P, T} from '../../utilities/blockchain'
 import hashing from '../../utilities/hashing'
-import * as _ from 'lodash'
 import { setProjectTaskList, indicateTaskClaimed, indicateTaskListSubmitted, indicateTaskSubmitted } from '../../actions/projectActions'
 
 class VoteTasks extends React.Component {

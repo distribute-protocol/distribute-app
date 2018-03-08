@@ -1,18 +1,17 @@
 import { all, put, takeEvery } from 'redux-saga/effects'
 import { push } from 'react-router-redux'
-import { LOGIN_USER, REGISTER_USER } from '../constants/UserActionTypes'
+import { LOGIN_USER } from '../constants/UserActionTypes'
 import { loggedInUser } from '../actions/userActions'
-import * as _ from 'lodash'
-import {eth, web3, tr, rr, dt} from '../utilities/blockchain'
+import { eth, rr } from '../utilities/blockchain'
 
 function * loginUser (action) {
   const credentials = action.credentials
   let accounts = eth.accounts
-  let bal
-  yield bal = rr.first(accounts[0])
-  if (!bal) {
-    yield rr.register({from: accounts[0]})
-  }
+  yield rr.first(accounts[0]).then(val => {
+    if (!val) {
+      rr.register({from: accounts[0]})
+    }
+  })
   yield put(loggedInUser(credentials))
   yield put(push(`/status`))
 }

@@ -12,7 +12,7 @@ class StakeProject extends Component {
     super()
     this.state = {
       value: 0,
-      tokensToStake: ''
+      stake: ''
     }
   }
 
@@ -90,33 +90,42 @@ class StakeProject extends Component {
 
   onChange (val) {
     try {
-      this.setState({tokensToStake: val})
+      this.setState({stake: val})
       // console.log('set state for description')
     } catch (error) {
       throw new Error(error)
     }
   }
 
-  stakeProject () {
-    this.props.stakeProject(this.state.tokensToStake)
-    this.setState({tokensToStake: ''})
+  stakeTokens () {
+    this.props.stakeTokens(this.state.stake)
+    this.setState({stake: ''})
   }
 
-  unstakeProject () {
-    this.props.unstakeProject(this.state.tokensToStake)
-    this.setState({tokensToStake: ''})
+  unstakeTokens () {
+    this.props.unstakeTokens(this.state.stake)
+    this.setState({stake: ''})
   }
 
-    checkStaked () {
-      eth.getAccounts(async (err, accounts) => {
-        if (!err) {
-          await pr.checkStaked(this.props.address, {from: accounts[0]}).then((res) => {
-            console.log(res)
-          })
-        }
-      })
-    }
+  stakeReputation () {
+    this.props.stakeReputation(this.state.stake)
+    this.setState({stake: ''})
+  }
 
+  unstakeReputation () {
+    this.props.unstakeReputation(this.state.stake)
+    this.setState({stake: ''})
+  }
+
+  checkStaked () {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        await pr.checkStaked(this.props.address, {from: accounts[0]}).then((res) => {
+          console.log(res)
+        })
+      }
+    })
+  }
 
   render () {
     let d
@@ -126,6 +135,7 @@ class StakeProject extends Component {
         <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
         <div>project funds: {`${this.props.cost}`} ETH</div>
         <div>needs {`${this.state.tokensLeft}`} tokens</div>
+        <div>needs {`${this.state.reputationCost}`} reputation</div>
         {/* <td>{typeof d !== 'undefined' ? `${d.toLocaleDateString()} ${d.toLocaleTimeString()}` : 'N/A'}</td> */}
         <div>staking expires in {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}</div>
         <input
@@ -134,11 +144,17 @@ class StakeProject extends Component {
           onChange={() => this.onChange(this.stakedValue.value)}
           value={this.state.tokensToStake}
         />
-        <Button color='primary' onClick={() => this.stakeProject()} style={{marginLeft: 10}}>
-          Stake
+        <Button color='primary' onClick={() => this.stakeTokens()} style={{marginLeft: 10}}>
+          Stake Tokens
         </Button>
-        <Button color='primary' onClick={() => this.unstakeProject()} style={{marginLeft: 10}}>
-          Unstake
+        <Button color='primary' onClick={() => this.unstakeTokens()} style={{marginLeft: 10}}>
+          Unstake Tokens
+        </Button>
+        <Button color='primary' onClick={() => this.stakeReputation()} style={{marginLeft: 10}}>
+          Stake Reputation
+        </Button>
+        <Button color='primary' onClick={() => this.unstakeReputation()} style={{marginLeft: 10}}>
+          Unstake Reputation
         </Button>
         <Button
           onClick={() => this.checkStaked()}
@@ -164,6 +180,6 @@ const mapDispatchToProps = (dispatch) => {
   //   getProjectState: () => console.log('heyhey')
   // }
 }
- // = ({cost, description, stakingEndDate, address, index, stakeProject, unstakeProject, stakingAmount}) => {
+ // = ({cost, description, stakingEndDate, address, index, stakeTokens, unstakeTokens, stakingAmount}) => {
 
 export default connect(mapStateToProps, mapDispatchToProps)(StakeProject)

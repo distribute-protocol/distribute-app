@@ -2,7 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Col, Row, Button } from 'antd'
 import Sidebar from './Sidebar'
-import {eth, web3, tr, rr, pr, dt, P} from '../utilities/blockchain'
+import { push } from 'react-router-redux'
+import { P } from '../utilities/blockchain'
 import ClaimProject from '../components/shared/ClaimProject'
 import fastforward from '../utilities/fastforward'
 import * as _ from 'lodash'
@@ -14,6 +15,12 @@ class Claim extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
+  }
+
+  componentWillMount () {
+    if (_.isEmpty(this.props.user)) {
+      // this.props.reroute()
+    }
   }
 
   componentWillReceiveProps (np) {
@@ -119,10 +126,10 @@ const mapStateToProps = (state) => {
   }
 }
 
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     proposeProject: (projectDetails) => dispatch(proposeProject(projectDetails))
-//   }
-// }
+const mapDispatchToProps = (dispatch) => {
+  return {
+    reroute: () => dispatch(push('/'))
+  }
+}
 
-export default connect(mapStateToProps)(Claim)
+export default connect(mapStateToProps, mapDispatchToProps)(Claim)

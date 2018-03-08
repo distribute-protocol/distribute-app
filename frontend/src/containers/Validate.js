@@ -1,12 +1,11 @@
 import React from 'react'
-import { bindActionCreators } from 'redux'
 import { Col, Row, Button } from 'antd'
 import Sidebar from './Sidebar'
 import ValidateTasks from '../components/shared/ValidateTasks'
 import fastforward from '../utilities/fastforward'
-
+import { push } from 'react-router-redux'
 import { connect } from 'react-redux'
-import {eth, web3, tr, rr, pr, dt, P, pl} from '../utilities/blockchain'
+import { P } from '../utilities/blockchain'
 import * as _ from 'lodash'
 
 class Validate extends React.Component {
@@ -16,6 +15,12 @@ class Validate extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
+  }
+
+  componentWillMount () {
+    if (_.isEmpty(this.props.user)) {
+      // this.props.reroute()
+    }
   }
 
   componentWillReceiveProps (np) {
@@ -106,4 +111,10 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export default connect(mapStateToProps)(Validate)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    reroute: () => dispatch(push('/'))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Validate)

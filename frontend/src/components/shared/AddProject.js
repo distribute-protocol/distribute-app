@@ -1,16 +1,13 @@
 import React from 'react'
-import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { Card, Button, Table } from 'antd'
 import DraggableTable from './DraggableTable'
-import {eth, web3, dt, tr, pr, P} from '../../utilities/blockchain'
+import {eth, web3, pr, P} from '../../utilities/blockchain'
+
 import hashing from '../../utilities/hashing'
-import * as _ from 'lodash'
 import update from 'immutability-helper';
 import { setProjectTaskList, setTaskSubmission } from '../../actions/projectActions'
-
-const getProjectState = () => ({ type: 'GET_PROJECT_STATE' })
 
 class AddProject extends React.Component {
   constructor () {
@@ -123,7 +120,7 @@ class AddProject extends React.Component {
 
   handleTaskInput () {
      let task = this.state.tempTask.description
-     let percentage = parseInt(this.state.tempTask.percentage)
+     let percentage = parseInt(this.state.tempTask.percentage, 10)
      let tempTask = this.state.taskList
      tempTask.push({description: task, percentage: percentage})
      this.props.setProjectTaskList({taskList: tempTask, address: this.props.address})

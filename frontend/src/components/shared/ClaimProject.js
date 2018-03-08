@@ -1,11 +1,9 @@
 import React from 'react'
-import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { Card, Button, Table } from 'antd'
-import {eth, web3, dt, rr, pr, pl, P} from '../../utilities/blockchain'
+import {eth, web3, rr, pr, pl, P} from '../../utilities/blockchain'
 import hashing from '../../utilities/hashing'
-import * as _ from 'lodash'
 import { setProjectTaskList, indicateTaskClaimed, indicateTaskListSubmitted, indicateTaskSubmitted } from '../../actions/projectActions'
 
 class ClaimProject extends React.Component {
@@ -80,7 +78,7 @@ class ClaimProject extends React.Component {
 
   handleTaskInput () {
     let task = this.state.tempTask.description
-    let percentage = parseInt(this.state.tempTask.percentage)
+    let percentage = parseInt(this.state.tempTask.percentage, 10)
     let tempTask = this.state.taskList
     tempTask.push({description: task, percentage: percentage})
     this.props.setProjectTaskList({taskList: tempTask, address: this.props.address})

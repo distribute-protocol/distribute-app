@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import { Col, Row } from 'antd'
 import Sidebar from './Sidebar'
 import StakeProject from '../components/shared/StakeProject'
-import { eth, web3, tr, dt, pl, P } from '../utilities/blockchain'
+import { push } from 'react-router-redux'
+import { eth, tr, rr, pl } from '../utilities/blockchain'
 import * as _ from 'lodash'
 
 class Stake extends React.Component {
@@ -20,17 +21,13 @@ class Stake extends React.Component {
     window.projects = this.state.projects
     window.pl = pl
   }
-
   componentWillMount () {
-    // this.getProjects()
-    // dt.currentPrice((err, val) => {
-    //   if (!err) {
-    //     this.setState({currPrice: val.toNumber()})
-    //   }
-    // })
+    if (_.isEmpty(this.props.user)) {
+      // this.props.reroute()
+    }
   }
 
-  async stakeProject (address, val) {
+  async stakeTokens (address, val) {
     // console.log(address, val)
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
@@ -40,7 +37,7 @@ class Stake extends React.Component {
     })
   }
 
-  async unstakeProject (address, val) {
+  async unstakeTokens (address, val) {
     // console.log(address, val)
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
@@ -48,6 +45,26 @@ class Stake extends React.Component {
       }
     })
   }
+
+  async stakeReputation (address, val) {
+    // console.log(address, val)
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        await rr.stakeReputation(address, val, {from: accounts[0]})
+        // console.log('staked', val, 'tokens on', address)
+      }
+    })
+  }
+
+  async unstakeReputation (address, val) {
+    // console.log(address, val)
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        await rr.stakeReputation(address, val, {from: accounts[0]})
+      }
+    })
+  }
+
   componentWillReceiveProps (np) {
     let projectsArr
 
@@ -83,6 +100,7 @@ class Stake extends React.Component {
   render () {
     const projects = this.state.projects.map((proj, i) => {
       // console.log(proj)
+      console.log(proj)
       return <Col span={10} key={i}>
         <StakeProject
           key={i}
@@ -91,8 +109,10 @@ class Stake extends React.Component {
           index={i}
           stakingEndDate={proj.stakingEndDate}
           address={proj.address}
-          stakeProject={(val) => this.stakeProject(proj.address, val)}
-          unstakeProject={(val) => this.unstakeProject(proj.address, val)}
+          stakeTokens={(val) => this.stakeTokens(proj.address, val)}
+          unstakeTokens={(val) => this.unstakeTokens(proj.address, val)}
+          stakeReputation={(val) => this.stakeReputation(proj.address, val)}
+          unstakeReputation={(val) => this.unstakeReputation(proj.address, val)}
         />
       </Col>
     })
@@ -120,10 +140,10 @@ const mapStateToProps = (state) => {
   }
 }
 
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     proposeProject: (projectDetails) => dispatch(proposeProject(projectDetails))
-//   }
-// }
+const mapDispatchToProps = (dispatch) => {
+  return {
+    reroute: () => dispatch(push('/'))
+  }
+}
 
-export default connect(mapStateToProps)(Stake)
+export default connect(mapStateToProps, mapDispatchToProps)(Stake)

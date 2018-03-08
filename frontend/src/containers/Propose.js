@@ -3,9 +3,8 @@ import { connect } from 'react-redux'
 import Sidebar from './Sidebar'
 import { Button, Table } from 'antd'
 import { proposeProject } from '../actions/projectActions'
-// import utils from '../utilities/utils'
-import {eth, web3, tr, dt, pr, P, pl} from '../utilities/blockchain'
-import utils from '../utilities/utils'
+import { push } from 'react-router-redux'
+import {eth, web3, tr, dt, pl} from '../utilities/blockchain'
 import * as _ from 'lodash'
 import moment from 'moment'
 
@@ -27,6 +26,10 @@ class Propose extends Component {
   }
 
   componentWillMount () {
+    if (_.isEmpty(this.props.user)) {
+      // this.props.reroute()
+    } else {
+    }
     this.getCurrentPrice()
   }
 
@@ -46,7 +49,7 @@ class Propose extends Component {
     this.setState({tempProject: Object.assign({}, this.state.tempProject, {stakingEndDate: stakeEndDate})})
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
-        let cost = parseInt(web3.toWei(this.state.tempProject.cost, 'ether').toString())
+        let cost = parseInt(web3.toWei(this.state.tempProject.cost, 'ether').toString(), 10)
         await tr.proposeProject(cost, stakeEndDate, {from: accounts[0]}).then(tx => {
           let txReceipt = tx.receipt
           let projectAddress = '0x' + txReceipt.logs[0].topics[1].slice(txReceipt.logs[0].topics[1].length - 40, (txReceipt.logs[0].topics[1].length))
@@ -71,7 +74,7 @@ class Propose extends Component {
   componentWillReceiveProps (np) {
     let projectsArr
     function projectState (address) {
-      console.log(address)
+      // console.log(address)
       return new Promise(async (resolve, reject) => {
         let status = await pl.isStaked(address)
         resolve(status)
@@ -184,13 +187,15 @@ class Propose extends Component {
 const mapStateToProps = (state) => {
   // console.log(state.projects.allProjects)
   return {
+    user: state.user.user,
     projects: state.projects.allProjects
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    proposeProject: (projectDetails) => dispatch(proposeProject(projectDetails))
+    proposeProject: (projectDetails) => dispatch(proposeProject(projectDetails)),
+    reroute: () => dispatch(push('/'))
   }
 }
 
