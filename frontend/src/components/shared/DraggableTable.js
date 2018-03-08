@@ -3,6 +3,7 @@ import { Table } from 'antd';
 import { DragDropContext, DragSource, DropTarget } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 // import update from 'immutability-helper';
+import * as _ from 'lodash'
 
 function dragDirection(
   dragIndex,
@@ -51,11 +52,11 @@ let BodyRow = (props) => {
       className += ' drop-over-upward';
     }
   }
-
+  const omittedIndex = _.omit(restProps, ['index'])
   return connectDragSource(
     connectDropTarget(
       <tr
-        {...restProps}
+        {...omittedIndex}
         className={className}
         style={style}
       />
