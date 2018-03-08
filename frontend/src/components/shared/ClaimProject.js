@@ -5,6 +5,7 @@ import { Card, Button, Table } from 'antd'
 import {eth, web3, rr, pr, pl, P} from '../../utilities/blockchain'
 import hashing from '../../utilities/hashing'
 import { setProjectTaskList, indicateTaskClaimed, indicateTaskListSubmitted, indicateTaskSubmitted } from '../../actions/projectActions'
+const ButtonGroup = Button.Group
 
 class ClaimProject extends React.Component {
   constructor () {
@@ -159,12 +160,14 @@ class ClaimProject extends React.Component {
           description: task.description,
           ethReward: weiReward,
           repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' ? reputationCost * task.weiReward / weiCost : 0,
-          addTask: <Button
-            disabled={this.props.taskList[i].claimed || !this.props.projects[this.props.address].listSubmitted}
-            type='danger' onClick={() => this.claimElement(i)} >Claim</Button>,
-          submitTask: <Button
-            disabled={this.props.taskList[i].submitted || !this.props.taskList[i].claimed || !this.props.projects[this.props.address].listSubmitted}
-            type='danger' onClick={() => this.submitTask(i)} >Task Complete</Button>
+          buttons: <ButtonGroup>
+            <Button
+              disabled={this.props.taskList[i].claimed || !this.props.projects[this.props.address].listSubmitted}
+              type='danger' onClick={() => this.claimElement(i)} >Claim</Button>,
+            <Button
+              disabled={this.props.taskList[i].submitted || !this.props.taskList[i].claimed || !this.props.projects[this.props.address].listSubmitted}
+              type='danger' onClick={() => this.submitTask(i)} >Task Complete</Button>
+          </ButtonGroup>
         }
       })
     } else {
@@ -185,12 +188,8 @@ class ClaimProject extends React.Component {
       key: 'repClaim'
     }, {
       title: '',
-      dataIndex: 'addTask',
-      key: 'addTask'
-    }, {
-      title: '',
-      dataIndex: 'submitTask',
-      key: 'submitTask'
+      dataIndex: 'buttons',
+      key: 'buttons'
     }]
 
     return (

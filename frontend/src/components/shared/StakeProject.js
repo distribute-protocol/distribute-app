@@ -5,7 +5,7 @@ import moment from 'moment'
 import { Card, Button } from 'antd'
 import {eth, web3, dt, pr, P} from '../../utilities/blockchain'
 import { updateProject } from '../../actions/projectActions'
-
+const ButtonGroup = Button.Group
 const getProjectState = () => ({ type: 'GET_PROJECT_STATE' })
 
 class StakeProject extends Component {
@@ -132,37 +132,54 @@ class StakeProject extends Component {
     let d
     if (typeof this.props.stakingEndDate !== 'undefined') { d = moment(this.props.stakingEndDate) }
     return (
-      <Card title={`${this.props.description}`}>
-        <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
-        <div>project funds: {`${this.props.cost}`} ETH</div>
-        <div>needs {`${this.state.tokensLeft}`} tokens</div>
-        <div>needs {`${this.state.reputationCost}`} reputation</div>
-        {/* <td>{typeof d !== 'undefined' ? `${d.toLocaleDateString()} ${d.toLocaleTimeString()}` : 'N/A'}</td> */}
-        <div>staking expires in {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}</div>
-        <input
-          ref={(input) => (this.stakedValue = input)}
-          placeholder='token amount'
-          onChange={() => this.onChange(this.stakedValue.value)}
-          value={this.state.tokensToStake}
-        />
-        <Button color='primary' onClick={() => this.stakeTokens()} style={{marginLeft: 10}}>
-          Stake Tokens
-        </Button>
-        <Button color='primary' onClick={() => this.unstakeTokens()} style={{marginLeft: 10}}>
-          Unstake Tokens
-        </Button>
-        <Button color='primary' onClick={() => this.stakeReputation()} style={{marginLeft: 10}}>
-          Stake Reputation
-        </Button>
-        <Button color='primary' onClick={() => this.unstakeReputation()} style={{marginLeft: 10}}>
-          Unstake Reputation
-        </Button>
-        <Button
-          onClick={() => this.checkStaked()}
-        >
-          Check Staked
-        </Button>
-      </Card>
+      <div style={{backgroundColor: '#DDE4E5'}}>
+        <div style={{padding: 10}}>
+          <h3>{this.props.description}</h3>
+        </div>
+        <div style={{padding: 10, paddingTop: 0}}>
+          <div style={{wordWrap: 'break-word'}}>{`Address: ${this.props.address}`}</div>
+          <div>Cost: {`${this.props.cost}`} ETH</div>
+          <div>Tokens Remaining: {`${this.state.tokensLeft}`}</div>
+          <div>Reputation Remaining {`${this.state.reputationCost}`}</div>
+          {/* <td>{typeof d !== 'undefined' ? `${d.toLocaleDateString()} ${d.toLocaleTimeString()}` : 'N/A'}</td> */}
+          <div>Expiration: {typeof d !== 'undefined' ? `${d.fromNow()}` : 'N/A'}</div>
+          <div style={{display: 'flex', flexDirection: 'row', marginTop: 10}}>
+            <input
+              ref={(input) => (this.stakedValue = input)}
+              placeholder='Amount'
+              onChange={() => this.onChange(this.stakedValue.value)}
+              value={this.state.tokensToStake}
+              style={{height: 30, marginRight: 15}}
+            />
+            <div>
+              <div>
+                <ButtonGroup>
+                  <Button style={{backgroundColor: '#0B1899', color: 'white'}} icon='up-circle-o' color='primary' onClick={() => this.stakeTokens()}>
+                    Tokens
+                  </Button>
+                  <Button style={{backgroundColor: '#08734E', color: 'white'}} icon='up-circle-o' color='primary' onClick={() => this.stakeReputation()}>
+                    Reputation
+                  </Button>
+
+                </ButtonGroup>
+              </div>
+              <div style={{marginTop: 5}}>
+                <ButtonGroup>
+                  <Button style={{backgroundColor: '#1FA9FF', color: 'white'}} icon='down-circle-o' color='primary' onClick={() => this.unstakeTokens()}>
+                    Tokens
+                  </Button>
+                  <Button style={{backgroundColor: '#0BA16D', color: 'white'}} icon='down-circle-o' color='primary' onClick={() => this.unstakeReputation()}>
+                    Reputation
+                  </Button>
+                </ButtonGroup>
+              </div>
+            </div>
+          </div>
+          <Button onClick={() => this.checkStaked()}>
+            Check Staked
+          </Button>
+        </div>
+      </div>
     )
   }
 }

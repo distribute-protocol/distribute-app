@@ -141,11 +141,7 @@ class Status extends Component {
 
   register () {
     let accounts = eth.accounts
-    rr.register({from: accounts[0]}, (err, result) => {
-      if (!err) {
-        console.log('yayyyyy')
-      }
-    })
+    rr.register({from: accounts[0]})
   }
 
   faucet () {
