@@ -6,6 +6,7 @@ import Button from 'antd/lib/button'
 import Sidebar from './Sidebar'
 import {eth, web3, tr, rr, dt} from '../utilities/blockchain'
 import * as _ from 'lodash'
+const ButtonGroup = Button.Group
 // import uport from '../utilities/uport'
 // var mnid = require('mnid')
 
@@ -181,7 +182,7 @@ class Status extends Component {
     return (
       <div>
         <Sidebar />
-        <div style={{marginLeft: 200}}>
+        <div style={{marginLeft: 200, flexDirection: 'column', display: 'flex', justifyContent: 'space-between', alignItems: 'space-between'}}>
           <header className='App-header'>
             <h3 className='App-title'>Network Status</h3>
           </header>
@@ -210,8 +211,11 @@ class Status extends Component {
               <h5>{this.state.reputationBalance}</h5>
             </div>
           </div>
-          <div style={{display: 'flex', justifyContent: 'center'}}>
-            <div>
+          <Button style={{marginLeft: 20, marginTop: 10, width: 160, backgroundColor: '#115D8C', color: '#FFF'}} icon='reload' color='info' onClick={this.getBalance}>
+            Refresh Balances
+          </Button>
+          <div style={{display: 'flex', flexDirection: 'row', marginTop: 30}}>
+            <div style={{backgroundColor: '#C7D9D9', padding: 30, width: 250}}>
               {/* <Input getRef={(input) => (this.location = input)}  onChange={(e) => this.onChange('location', this.location.value)} value={location || ''} /> */}
               <div>
                 <h3>Tokens:</h3>
@@ -224,21 +228,30 @@ class Status extends Component {
                 <h4>{`Refund Amount: ${typeof this.state.ethToRefund === 'undefined' ? 'n/a' : Math.round(this.state.ethToRefund * 100000) / 100000} ETH`}</h4>
               </div>
               <div style={{marginTop: 20}}>
-                <Button color='primary' onClick={this.buyShares}>
-                  Buy
-                </Button>
-                <Button color='warning' onClick={this.sellShares} style={{marginLeft: 10}}>
-                  Sell
-                </Button>
-                <Button color='info' onClick={this.getBalance} style={{marginLeft: 10}}>
-                  Refresh Balances
-                </Button>
-                {this.state.reputationBalance === 0 && !this.state.first ? <Button color='success' onClick={this.register} style={{marginLeft: 10}}>
-                  Register
-                </Button> : null}
-                {this.state.reputationBalance < 10000 ? <Button color='success' onClick={this.faucet} style={{marginLeft: 10}}>
-                  Faucet
-                </Button> : null}
+                <ButtonGroup>
+                  <Button icon='plus-circle-o' color='primary' onClick={this.buyShares}>
+                    Buy
+                  </Button>
+                  <Button icon='minus-circle-o' color='warning' onClick={this.sellShares}>
+                    Sell
+                  </Button>
+                </ButtonGroup>
+              </div>
+            </div>
+            <div style={{backgroundColor: '#F2A35E', padding: 30}}>
+              {/* <Input getRef={(input) => (this.location = input)}  onChange={(e) => this.onChange('location', this.location.value)} value={location || ''} /> */}
+              <div>
+                <h3>Reputation:</h3>
+              </div>
+              <div style={{marginTop: 20}}>
+                <ButtonGroup>
+                  {this.state.reputationBalance === 0 && !this.state.first ? <Button color='success' icon='user-add' onClick={this.register}>
+                    Register
+                  </Button> : null}
+                  {this.state.reputationBalance < 10000 ? <Button icon='download' color='success' onClick={this.faucet}>
+                    Faucet
+                  </Button> : null}
+                </ButtonGroup>
               </div>
             </div>
           </div>

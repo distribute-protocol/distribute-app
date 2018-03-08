@@ -11,6 +11,10 @@
 
 .App-header {
   padding: 20px;
+  background-color: '#A1B7C4';
+}
+.App-title {
+  background-color: '#000' !important;
 }
 
 .App-intro {
