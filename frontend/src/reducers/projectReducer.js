@@ -1,4 +1,4 @@
-import { PROPOSE_PROJECT, GET_PROJECT_STATE, PROJECT_STATE_RECEIVED, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, INDICATE_TASK_CLAIMED, INDICATE_TASKLIST_SUBMITTED, INDICATE_TASK_SUBMITTED, UPDATE_PROJECT } from '../constants/ProjectActionTypes'
+import { PROPOSE_PROJECT, GET_PROJECT_STATE, PROJECT_STATE_RECEIVED, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, INDICATE_TASK_CLAIMED, INDICATE_TASKLIST_SUBMITTED, INDICATE_TASK_SUBMITTED, UPDATE_PROJECT, INDICATE_TASK_VALIDATED } from '../constants/ProjectActionTypes'
 const initialState = {
   allProjects: {},   // array of objects
   fetching: 'FALSE'
@@ -7,7 +7,7 @@ const initialState = {
 export default function projectReducer (state = initialState, action) {
   // For now, don't handle any actions
   // and just return the state given to us.
-  let newAllProjects, temp
+  let newAllProjects, temp, proj, taskList, task
   switch (action.type) {
     case PROPOSE_PROJECT:
       let newProject = {
@@ -56,13 +56,19 @@ export default function projectReducer (state = initialState, action) {
     case INDICATE_TASK_SUBMITTED:
       temp = state.allProjects[action.taskDetails.address]
       // console.log(temp)
-      temp.taskList[action.taskDetails.index] = Object.assign({}, temp.taskList[action.taskDetails.index], {submitted: true})
+      temp.taskList[action.taskDetails.index] = Object.assign({}, temp.taskList[action.taskDetails.index], {submitted: true, validated: {}})
       // console.log(temp)
       newAllProjects = Object.assign({}, state.allProjects, {[action.taskDetails.address]: temp})
       return Object.assign({}, state, {allProjects: newAllProjects})
     case UPDATE_PROJECT:
-      let proj = Object.assign({}, state.allProjects[action.address], action.projObj)
+      proj = Object.assign({}, state.allProjects[action.address], action.projObj)
       newAllProjects = Object.assign({}, state.allProjects, {[action.address]: proj})
+      return Object.assign({}, state, {allProjects: newAllProjects})
+    case INDICATE_TASK_VALIDATED:
+      temp = state.allProjects[action.validationDetails.address]
+      temp.taskList[action.validationDetails.index].validated[action.validationDetails.validator] = Object.assign({}, {status: action.validationDetails.status})
+      newAllProjects = Object.assign({}, state.allProjects, {[action.validationDetails.address]: temp})
+      console.log(newAllProjects)
       return Object.assign({}, state, {allProjects: newAllProjects})
     default:
   }

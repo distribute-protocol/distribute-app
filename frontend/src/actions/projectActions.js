@@ -1,4 +1,4 @@
-import { PROPOSE_PROJECT, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, INDICATE_TASK_CLAIMED, INDICATE_TASKLIST_SUBMITTED, INDICATE_TASK_SUBMITTED, UPDATE_PROJECT } from '../constants/ProjectActionTypes'
+import { PROPOSE_PROJECT, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, INDICATE_TASK_CLAIMED, INDICATE_TASKLIST_SUBMITTED, INDICATE_TASK_SUBMITTED, UPDATE_PROJECT, INDICATE_TASK_VALIDATED } from '../constants/ProjectActionTypes'
 
 export function proposeProject (projectDetails) {
   return {
@@ -47,5 +47,12 @@ export function updateProject (address, projObj) {
     type: UPDATE_PROJECT,
     address,
     projObj
+  }
+}
+
+export function indicateTaskValidated (validationDetails) {
+  return {
+    type: INDICATE_TASK_VALIDATED,
+    validationDetails
   }
 }

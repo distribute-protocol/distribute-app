@@ -4,7 +4,7 @@ import moment from 'moment'
 import { Card, Button, Table } from 'antd'
 import {eth, pr, tr, P} from '../../utilities/blockchain'
 import hashing from '../../utilities/hashing'
-import { setProjectTaskList, indicateTaskClaimed, indicateTaskListSubmitted, indicateTaskSubmitted } from '../../actions/projectActions'
+import { setProjectTaskList, indicateTaskClaimed, indicateTaskListSubmitted, indicateTaskSubmitted, indicateTaskValidated } from '../../actions/projectActions'
 
 class ValidateTasks extends React.Component {
   constructor () {
@@ -25,18 +25,22 @@ class ValidateTasks extends React.Component {
   }
 
   onChange (e) {
-    console.log(e.target.name)
-    console.log(e.target.value)
     this.setState({[e.target.name]: e.target.value})
   }
 
   validateTask (val, index, status) {
+    let validator
+    let valStatus = status
     eth.getAccounts(async (err, accounts) => {
+      validator = accounts[0]
       if (!err) {
-        await tr.validateTask(this.props.address, index, val, status, {from: accounts[0]})
-        .then(async(hey) => {
-          this.setState({['val' + index]: ''})
-        })
+        if (accounts.length) {
+          await tr.validateTask(this.props.address, index, val, status, {from: accounts[0]})
+          .then(async () => {
+            this.setState({['val' + index]: ''})
+            this.props.indicateTaskValidated({ address: this.props.address, validator: validator, index: index, status: valStatus })
+          })
+        }
       }
     })
   }
@@ -48,7 +52,6 @@ class ValidateTasks extends React.Component {
         accounts = result
         if (accounts.length) {
           let nextDeadline, projectState
-          console.log('peepee', p)
           p.nextDeadline().then(result => {
             // blockchain reports time in seconds, javascript in milliseconds
             nextDeadline = result.toNumber() * 1000
@@ -92,6 +95,8 @@ class ValidateTasks extends React.Component {
          ? weiReward = task.weiReward + ' wei'
          : weiReward = ''
         let val = 'val'
+        let account = eth.accounts[0]
+        console.log(this.props.taskList[i])
         let input =
           <div>
             <div>
@@ -105,11 +110,11 @@ class ValidateTasks extends React.Component {
             <div>
               <Button
                 type='danger'
-                disabled={false}
+                disabled={this.props.taskList[i].validated[account]}
                 onClick={() => this.validateTask(this.state[val + i], i, true)} >Yes</Button>
               <Button
                 type='danger'
-                disabled={false}
+                disabled={this.props.taskList[i].validated[account]}
                 onClick={() => this.validateTask(this.state[val + i], i, false)} >No</Button>
             </div>
           </div>
@@ -172,7 +177,8 @@ const mapDispatchToProps = (dispatch) => {
     setProjectTaskList: (taskDetails) => dispatch(setProjectTaskList(taskDetails)),
     indicateTaskClaimed: (submissionDetails) => dispatch(indicateTaskClaimed(submissionDetails)),
     indicateTaskListSubmitted: (taskDetails) => dispatch(indicateTaskListSubmitted(taskDetails)),
-    indicateTaskSubmitted: (taskDetails) => dispatch(indicateTaskSubmitted(taskDetails))
+    indicateTaskSubmitted: (taskDetails) => dispatch(indicateTaskSubmitted(taskDetails)),
+    indicateTaskValidated: (validationDetails) => dispatch(indicateTaskValidated(validationDetails))
   }
 }
 
