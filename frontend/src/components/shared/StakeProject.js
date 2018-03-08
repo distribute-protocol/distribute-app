@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import { Card, Button } from 'antd'
 import {eth, web3, dt, pr, P} from '../../utilities/blockchain'
+import { updateProject } from '../../actions/projectActions'
 
 const getProjectState = () => ({ type: 'GET_PROJECT_STATE' })
 
@@ -56,16 +57,16 @@ class StakeProject extends Component {
           }).then(() => {
             dt.currentPrice().then(result => {
               currentPrice = result.toNumber()
-              // console.log('currentPrice', currentPrice)
-              this.setState({
+              let projObj = {
                 weiBal,
                 weiCost,
                 reputationCost,
                 totalTokensStaked,
                 totalReputationStaked,
                 currentPrice: web3.fromWei(currentPrice, 'ether')
-              })
-              // console.log('state', this.state)
+              }
+              this.props.updateProject(this.props.address, projObj)
+              this.setState(projObj)
               this.getTokensLeft()
             })
           })
@@ -174,7 +175,8 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    getProjectState: getProjectState
+    getProjectState,
+    updateProject
   }, dispatch)
   // return {
   //   getProjectState: () => console.log('heyhey')

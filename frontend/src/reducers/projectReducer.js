@@ -1,4 +1,4 @@
-import { PROPOSE_PROJECT, GET_PROJECT_STATE, PROJECT_STATE_RECEIVED, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, INDICATE_TASK_CLAIMED, INDICATE_TASKLIST_SUBMITTED, INDICATE_TASK_SUBMITTED } from '../constants/ProjectActionTypes'
+import { PROPOSE_PROJECT, GET_PROJECT_STATE, PROJECT_STATE_RECEIVED, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, INDICATE_TASK_CLAIMED, INDICATE_TASKLIST_SUBMITTED, INDICATE_TASK_SUBMITTED, UPDATE_PROJECT } from '../constants/ProjectActionTypes'
 const initialState = {
   allProjects: {},   // array of objects
   fetching: 'FALSE'
@@ -59,6 +59,10 @@ export default function projectReducer (state = initialState, action) {
       temp.taskList[action.taskDetails.index] = Object.assign({}, temp.taskList[action.taskDetails.index], {submitted: true})
       // console.log(temp)
       newAllProjects = Object.assign({}, state.allProjects, {[action.taskDetails.address]: temp})
+      return Object.assign({}, state, {allProjects: newAllProjects})
+    case UPDATE_PROJECT:
+      let proj = Object.assign({}, state.allProjects[action.address], action.projObj)
+      newAllProjects = Object.assign({}, state.allProjects, {[action.address]: proj})
       return Object.assign({}, state, {allProjects: newAllProjects})
     default:
   }

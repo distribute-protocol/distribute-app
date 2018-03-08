@@ -72,7 +72,8 @@ class Status extends Component {
             weiBal,
             reputationBalance,
             totalReputationSupply,
-            currentPrice
+            currentPrice,
+            first
           // let balance = (await dt.balanceOf(accounts[0]))[0].toNumber()
           balance = (await dt.balanceOf(accounts[0])).toNumber()
           // console.log('balance', balance)
@@ -83,6 +84,8 @@ class Status extends Component {
           reputationBalance = (await rr.balances(accounts[0])).toNumber()
           // console.log('reputationBalance', reputationBalance)
           totalReputationSupply = (await rr.totalSupply()).toNumber()
+
+          first = (await rr.first(accounts[0]))
           // console.log('totalReputationSupply', totalReputationSupply)
 
           currentPrice = (await dt.currentPrice()).toNumber()
@@ -93,6 +96,7 @@ class Status extends Component {
             weiBal,
             totalReputationSupply,
             reputationBalance,
+            first,
             currentPrice: web3.fromWei(currentPrice, 'ether')
           })
         } else {
@@ -141,6 +145,11 @@ class Status extends Component {
         console.log('yayyyyy')
       }
     })
+  }
+
+  faucet () {
+    let accounts = eth.accounts
+    rr.faucet({from: accounts[0]})
   }
 
   async onChange (val) {
@@ -224,8 +233,11 @@ class Status extends Component {
                 <Button color='info' onClick={this.getBalance} style={{marginLeft: 10}}>
                   Refresh Balances
                 </Button>
-                {this.state.reputationBalance < 1 ? <Button color='success' onClick={this.register} style={{marginLeft: 10}}>
+                {this.state.reputationBalance === 0 && !this.state.first ? <Button color='success' onClick={this.register} style={{marginLeft: 10}}>
                   Register
+                </Button> : null}
+                {this.state.reputationBalance < 10000 ? <Button color='success' onClick={this.faucet} style={{marginLeft: 10}}>
+                  Faucet
                 </Button> : null}
               </div>
             </div>

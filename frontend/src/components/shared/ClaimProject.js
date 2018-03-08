@@ -141,7 +141,7 @@ class ClaimProject extends React.Component {
   }
 
   render () {
-    console.log(this.props.taskList)
+    // console.log(this.props.taskList)
     let d
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
     let tasks
@@ -151,10 +151,14 @@ class ClaimProject extends React.Component {
         typeof task.weiReward !== 'undefined'
          ? weiReward = task.weiReward + ' wei'
          : weiReward = ''
+        let reputationCost = this.props.projects[this.props.address].reputationCost
+        let weiCost = this.props.projects[this.props.address].weiCost
+        console.log(reputationCost, weiCost)
         return {
           key: i,
           description: task.description,
           ethReward: weiReward,
+          repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' ? reputationCost * task.weiReward / weiCost : 0,
           addTask: <Button
             disabled={this.props.taskList[i].claimed || !this.props.projects[this.props.address].listSubmitted}
             type='danger' onClick={() => this.claimElement(i)} >Claim</Button>,
@@ -175,6 +179,10 @@ class ClaimProject extends React.Component {
       title: 'ETH Reward',
       dataIndex: 'ethReward',
       key: 'ethReward'
+    }, {
+      title: 'Rep to Claim',
+      dataIndex: 'repClaim',
+      key: 'repClaim'
     }, {
       title: '',
       dataIndex: 'addTask',
