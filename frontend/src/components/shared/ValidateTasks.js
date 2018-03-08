@@ -16,8 +16,7 @@ class ValidateTasks extends React.Component {
       tempTask: {},
       taskList: [],
       isSubmitted: false,
-      yes: [],
-      no: [],
+      call: [],
       nextDeadline: ''
     }
     window.pr = pr
@@ -91,13 +90,10 @@ class ValidateTasks extends React.Component {
         typeof task.weiReward !== 'undefined'
          ? weiReward = task.weiReward + ' wei'
          : weiReward = ''
-
-        let inputs = ['yes', 'no'].map((val, j) => {
-          let bools = [true, false]
-          return (
+        let val = 'val'
+        let input =
+          <div>
             <div>
-              <Button
-                type='danger' onClick={() => this.validateTask(this.state[val + i], i, bools[j])} >{val}</Button>
               <input
                 name={val + i}
                 placeholder='tokens'
@@ -105,14 +101,22 @@ class ValidateTasks extends React.Component {
                 value={this.state[val + i] || ''}
               />
             </div>
-          )
-        })
+            <div>
+              <Button
+                type='danger'
+                disabled={false}
+                onClick={() => this.validateTask(this.state[val + i], i, true)} >Yes</Button>
+              <Button
+                type='danger'
+                disabled={false}
+                onClick={() => this.validateTask(this.state[val + i], i, false)} >No</Button>
+            </div>
+          </div>
         return {
           key: i,
           description: task.description,
           ethReward: weiReward,
-          yesVal: inputs[0],
-          noVal: inputs[1]
+          input: input
         }
       })
     } else {
@@ -128,12 +132,8 @@ class ValidateTasks extends React.Component {
       key: 'ethReward'
     }, {
       title: '',
-      dataIndex: 'yesVal',
-      key: 'yesVal'
-    }, {
-      title: '',
-      dataIndex: 'noVal',
-      key: 'noVal'
+      dataIndex: 'input',
+      key: 'input'
     }]
 
     return (
