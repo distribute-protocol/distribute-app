@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Col, Row } from 'antd'
+import Sidebar from './Sidebar'
 import StakeProject from '../components/shared/StakeProject'
 import { eth, web3, tr, dt, pl, P } from '../utilities/blockchain'
 import * as _ from 'lodash'
@@ -96,14 +97,17 @@ class Stake extends React.Component {
       </Col>
     })
     return (
-      <div style={{marginLeft: 200}}>
-        <header className='App-header'>
-          <h3>Stakeable Proposals</h3>
-        </header>
-        <div style={{ padding: '30px' }}>
-          <Row gutter={8}>
-            {projects}
-          </Row>
+      <div>
+        <Sidebar />
+        <div style={{marginLeft: 200}}>
+          <header className='App-header'>
+            <h3>Stakeable Proposals</h3>
+          </header>
+          <div style={{ padding: '30px' }}>
+            <Row gutter={8}>
+              {projects}
+            </Row>
+          </div>
         </div>
       </div>
     )

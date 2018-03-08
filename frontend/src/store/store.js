@@ -20,16 +20,15 @@ const routeMiddleware = routerMiddleware(history)
 function configureStore () {
   const epicMiddleware = createEpicMiddleware(epics)
 
-  // const sagaMiddleware = createSagaMiddleware()
+  const sagaMiddleware = createSagaMiddleware()
   const store = createStore(
     reducers,
-    applyMiddleware(epicMiddleware),
     compose(
-      applyMiddleware(routeMiddleware, epicMiddleware),
+      applyMiddleware(routeMiddleware, sagaMiddleware, epicMiddleware),
       autoRehydrate()
     )
   )
-  // sagaMiddleware.run(rootSaga)
+  sagaMiddleware.run(rootSaga)
   return store
 }
 

@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { Card, Button } from 'antd'
-import {eth, web3, dt, P} from '../../utilities/blockchain'
+import {eth, web3, dt, pr, P} from '../../utilities/blockchain'
 
 const getProjectState = () => ({ type: 'GET_PROJECT_STATE' })
 
@@ -107,13 +107,21 @@ class StakeProject extends Component {
     this.setState({tokensToStake: ''})
   }
 
+    checkStaked () {
+      eth.getAccounts(async (err, accounts) => {
+        if (!err) {
+          await pr.checkStaked(this.props.address, {from: accounts[0]}).then((res) => {
+            console.log(res)
+          })
+        }
+      })
+    }
+
+
   render () {
     let d
-    // if (typeof stakingEndDate !== 'undefined') { d = new Date(stakingEndDate) }
     if (typeof this.props.stakingEndDate !== 'undefined') { d = moment(this.props.stakingEndDate) }
-    // console.log(this.state)
     return (
-      // <Col sm='10'>
       <Card title={`${this.props.description}`}>
         <div style={{wordWrap: 'break-word'}}>{`${this.props.address}`}</div>
         <div>project funds: {`${this.props.cost}`} ETH</div>
@@ -131,6 +139,11 @@ class StakeProject extends Component {
         </Button>
         <Button color='primary' onClick={() => this.unstakeProject()} style={{marginLeft: 10}}>
           Unstake
+        </Button>
+        <Button
+          onClick={() => this.checkStaked()}
+        >
+          Check Staked
         </Button>
       </Card>
     )

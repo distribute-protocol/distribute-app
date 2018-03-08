@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { getEthPriceNow } from 'get-eth-price'
 import Button from 'antd/lib/button'
+import Sidebar from './Sidebar'
 import {eth, web3, tr, rr, dt} from '../utilities/blockchain'
 
 // import uport from '../utilities/uport'
@@ -162,61 +163,64 @@ class Status extends Component {
 
   render () {
     return (
-      <div style={{marginLeft: 200}}>
-        <header className='App-header'>
-          <h3 className='App-title'>Network Status</h3>
-        </header>
-        {/* <Button onClick={this.login} style={{marginLeft: 20, backgroundColor: 'purple'}}>
-          Connect with uPort
-        </Button> */}
-        <div style={{marginLeft: 20, marginTop: 40, display: 'flex', justifyContent: 'flex-start'}}>
-          <div>
-            <h3>Total Token Supply</h3>
-            <h5>{this.state.totalTokenSupply}</h5>
-            <h3>Your Token Balance</h3>
-            <h5>{this.state.balance}</h5>
-            <h3>Controlled Market Percentage</h3>
-            <h5>{`${this.state.totalTokenSupply ? Math.round(this.state.balance / this.state.totalTokenSupply * 10000) / 100 : 0}`}%</h5>
-            <h3>Eth Pool</h3>
-            <h5>{web3.fromWei(this.state.weiBal, 'ether')} ETH</h5>
-            <h3>Capital Equivalent</h3>
-            <h5>{`$${this.state.ethPrice ? Math.round(this.state.ethPrice * web3.fromWei(this.state.weiBal, 'ether')) : 0}`}</h5>
-            <h3>Current Token Price in Eth</h3>
-            <h5>{this.state.currentPrice}</h5>
-          </div>
-          <div style={{marginLeft: 25}}>
-            <h3>Total Reputation Supply</h3>
-            <h5>{this.state.totalReputationSupply}</h5>
-            <h3>Reputation Balance</h3>
-            <h5>{this.state.reputationBalance}</h5>
-          </div>
-        </div>
-        <div style={{display: 'flex', justifyContent: 'center'}}>
-          <div>
-            {/* <Input getRef={(input) => (this.location = input)}  onChange={(e) => this.onChange('location', this.location.value)} value={location || ''} /> */}
+      <div>
+        <Sidebar />
+        <div style={{marginLeft: 200}}>
+          <header className='App-header'>
+            <h3 className='App-title'>Network Status</h3>
+          </header>
+          {/* <Button onClick={this.login} style={{marginLeft: 20, backgroundColor: 'purple'}}>
+            Connect with uPort
+          </Button> */}
+          <div style={{marginLeft: 20, marginTop: 40, display: 'flex', justifyContent: 'flex-start'}}>
             <div>
-              <h3>Tokens:</h3>
-              <input ref={(input) => (this.tokensToBuy = input)} placeholder='Number of Tokens' onChange={(e) => this.onChange(this.tokensToBuy.value)} value={this.state.tokensToBuy} type='number' />
+              <h3>Total Token Supply</h3>
+              <h5>{this.state.totalTokenSupply}</h5>
+              <h3>Your Token Balance</h3>
+              <h5>{this.state.balance}</h5>
+              <h3>Controlled Market Percentage</h3>
+              <h5>{`${this.state.totalTokenSupply ? Math.round(this.state.balance / this.state.totalTokenSupply * 10000) / 100 : 0}`}%</h5>
+              <h3>Eth Pool</h3>
+              <h5>{web3.fromWei(this.state.weiBal, 'ether')} ETH</h5>
+              <h3>Capital Equivalent</h3>
+              <h5>{`$${this.state.ethPrice ? Math.round(this.state.ethPrice * web3.fromWei(this.state.weiBal, 'ether')) : 0}`}</h5>
+              <h3>Current Token Price in Eth</h3>
+              <h5>{this.state.currentPrice}</h5>
             </div>
-            <div style={{marginTop: 20}}>
-              <h4>{`Cost to Buy: ${typeof this.state.ethToSend === 'undefined' ? 'n/a' : Math.round(this.state.ethToSend * 100000) / 100000} ETH`}</h4>
+            <div style={{marginLeft: 25}}>
+              <h3>Total Reputation Supply</h3>
+              <h5>{this.state.totalReputationSupply}</h5>
+              <h3>Reputation Balance</h3>
+              <h5>{this.state.reputationBalance}</h5>
             </div>
+          </div>
+          <div style={{display: 'flex', justifyContent: 'center'}}>
             <div>
-              <h4>{`Refund Amount: ${typeof this.state.ethToRefund === 'undefined' ? 'n/a' : Math.round(this.state.ethToRefund * 100000) / 100000} ETH`}</h4>
-            </div>
-            <div style={{marginTop: 20}}>
-              <Button color='primary' onClick={this.buyShares}>
-                Buy
-              </Button>
-              <Button color='warning' onClick={this.sellShares} style={{marginLeft: 10}}>
-                Sell
-              </Button>
-              <Button color='info' onClick={this.getBalance} style={{marginLeft: 10}}>
-                Refresh Balances
-              </Button>
-              {this.state.reputationBalance < 1 ? <Button color='success' onClick={this.register} style={{marginLeft: 10}}>
-                Register
-              </Button> : null}
+              {/* <Input getRef={(input) => (this.location = input)}  onChange={(e) => this.onChange('location', this.location.value)} value={location || ''} /> */}
+              <div>
+                <h3>Tokens:</h3>
+                <input ref={(input) => (this.tokensToBuy = input)} placeholder='Number of Tokens' onChange={(e) => this.onChange(this.tokensToBuy.value)} value={this.state.tokensToBuy} type='number' />
+              </div>
+              <div style={{marginTop: 20}}>
+                <h4>{`Cost to Buy: ${typeof this.state.ethToSend === 'undefined' ? 'n/a' : Math.round(this.state.ethToSend * 100000) / 100000} ETH`}</h4>
+              </div>
+              <div>
+                <h4>{`Refund Amount: ${typeof this.state.ethToRefund === 'undefined' ? 'n/a' : Math.round(this.state.ethToRefund * 100000) / 100000} ETH`}</h4>
+              </div>
+              <div style={{marginTop: 20}}>
+                <Button color='primary' onClick={this.buyShares}>
+                  Buy
+                </Button>
+                <Button color='warning' onClick={this.sellShares} style={{marginLeft: 10}}>
+                  Sell
+                </Button>
+                <Button color='info' onClick={this.getBalance} style={{marginLeft: 10}}>
+                  Refresh Balances
+                </Button>
+                {this.state.reputationBalance < 1 ? <Button color='success' onClick={this.register} style={{marginLeft: 10}}>
+                  Register
+                </Button> : null}
+              </div>
             </div>
           </div>
         </div>

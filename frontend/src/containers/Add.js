@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import Sidebar from './Sidebar'
 import { Col, Row, Button } from 'antd'
 import {eth, web3, tr, rr, pr, dt, P} from '../utilities/blockchain'
 import AddProject from '../components/shared/AddProject'
@@ -81,23 +82,26 @@ class Add extends React.Component {
       </Col>
     })
     return (
-      <div style={{marginLeft: 200}}>
-        <header className='App-header'>
-          {/* <img src={logoclassName='App-logo' alt='logo' /> */}
-          {/* <h1 className='App-title'>distribute</h1> */}
-          <h3>Add Tasks to Open Projects</h3>
-          {/* }<h4>separate tasks and percentages with commas</h4>
-          <h4>ensure percentages correspond to tasks and add up to 100%</h4>
-          <h5>e.g. install a node, install a supernode</h5>
-          <h5>e.g. 20, 80</h5> */}
-          <Button type='danger' onClick={this.fastForward}>fast forward 1 week</Button>
-          <h6>ONLY DO THIS IF YOU ARE READY TO MOVE EVERY PROJECT TO THE NEXT STATE</h6>
-          <h6>IF A PROJECT HAS NO TASK SUBMISSIONS IT WILL FAIL AND YOU WILL LOSE YOUR STAKED TOKENS</h6>
-        </header>
-        <div style={{ padding: '30px' }}>
-          <Row gutter={12}>
-            {projects}
-          </Row>
+      <div>
+        <Sidebar />
+        <div style={{marginLeft: 200}}>
+          <header className='App-header'>
+            {/* <img src={logoclassName='App-logo' alt='logo' /> */}
+            {/* <h1 className='App-title'>distribute</h1> */}
+            <h3>Add Tasks to Open Projects</h3>
+            {/* }<h4>separate tasks and percentages with commas</h4>
+            <h4>ensure percentages correspond to tasks and add up to 100%</h4>
+            <h5>e.g. install a node, install a supernode</h5>
+            <h5>e.g. 20, 80</h5> */}
+            <Button type='danger' onClick={this.fastForward}>fast forward 1 week</Button>
+            <h6>ONLY DO THIS IF YOU ARE READY TO MOVE EVERY PROJECT TO THE NEXT STATE</h6>
+            <h6>IF A PROJECT HAS NO TASK SUBMISSIONS IT WILL FAIL AND YOU WILL LOSE YOUR STAKED TOKENS</h6>
+          </header>
+          <div style={{ padding: '30px' }}>
+            <Row gutter={12}>
+              {projects}
+            </Row>
+          </div>
         </div>
       </div>
     )
