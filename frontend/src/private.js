@@ -1,6 +1,6 @@
-export const nemoClientID = '2oqNQxEfeM6M9BXTo12M7YNQFj2ByaZ6YvB'
-export const nemoPK = '48c8577021d267d66fd52aa71ea49cbf2af895f815bfe09457347a6664b1ada7'
-export const nemoPubKey = '0x04b83fca2900876947e89df89e78b0d2a687e15912d0a965889fb8967842371e2f83a4dae2d3e393bc38a1f8bd728bf0852346b7193c4468a2d65259781424a44c'
+export const distributeClientID = '2p2Aubzc3fupyN9KZ4iQ81Ta8wbeT1WrsFj'
+export const distributePK = 'd4a2a2a813f0c078718767e43d2e7f401bb30c1b4e63ec1beecfdfa2e3959295'
+export const distributePubKey = '0x0499ff131711332bbfa267825795fc268907689613b20d2ff89d9a2266e59b1f12bccb350a25f670239d5f51978e88599f0e280335adbf4f9ea293f499c031064f'
 
     //
     // import { Connect, SimpleSigner } from 'uport-connect'
