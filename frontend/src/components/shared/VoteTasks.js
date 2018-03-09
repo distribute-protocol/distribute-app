@@ -99,9 +99,7 @@ class VoteTasks extends React.Component {
     let tasks
     if (typeof this.props.taskList !== 'undefined') {
       let rewardVal, rewardWork, needsVote
-      console.log(this.props)
       tasks = this.state.tasks.map((task, i) => {
-        console.log(this.state.tasks)
         if (this.state.tasks[i].claimable) {
           if (this.state.tasks[i].claimableByRep) {
             // validators and workers can claim
@@ -121,7 +119,7 @@ class VoteTasks extends React.Component {
             rewardVal =
               <div>
                 <Button
-                  type='danger' onClick={() => console.log('reward validator')}> Reward Yes Validator </Button>
+                  type='danger' onClick={() => console.log('reward validator')}> Reward No Validator </Button>
               </div>
             rewardWork = <div>'nope, never'</div>
             needsVote = <div>'nope, never'</div>
@@ -137,13 +135,13 @@ class VoteTasks extends React.Component {
             </div>
         }
         let weiReward
-        typeof task.weiReward !== 'undefined'
-         ? weiReward = task.weiReward + ' wei'
+        typeof this.props.taskList[i].weiReward !== 'undefined'
+         ? weiReward = this.props.taskList[i].weiReward + ' wei'
          : weiReward = ''
 
         return {
           key: i,
-          description: task.description,
+          description: this.props.taskList[i].description,
           ethReward: weiReward,
           rewardValidator: rewardVal,
           rewardWorker: rewardWork,
