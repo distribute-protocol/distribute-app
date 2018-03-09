@@ -12,16 +12,13 @@ class VoteTasks extends React.Component {
     this.state = {
       value: '',
       percentages: '',
-      tasks: '',
+      tasks: [],
       tempTask: {},
       taskList: [],
-      isSubmitted: false,
-      totalYes: 0,
-      totalNo: 0
+      isSubmitted: false
     }
     window.pr = pr
     window.hashing = hashing
-    this.processTasks = this.processTasks.bind(this)
   }
 
   onChange (type, val) {
@@ -72,6 +69,17 @@ class VoteTasks extends React.Component {
     let p = P.at(this.props.address)
     this.getProjectStatus(p)
     this.setState({project: p, taskList: this.props.taskList})
+    this.props.taskList.map(async (task, i) => {
+      let claimable, claimableByRep
+      let p = await P.at(this.props.address)
+      let index = await p.tasks(i)
+      let t = T.at(index)
+      claimable = await t.claimable()
+      claimableByRep = await t.claimableByRep()
+      let stateTasks = this.state.tasks
+      stateTasks[i] = {claimable, claimableByRep}
+      this.setState({tasks: stateTasks})
+    })
   }
 
   checkEnd () {
@@ -83,66 +91,65 @@ class VoteTasks extends React.Component {
       }
     })
   }
-  processTasks () {
-    let tasks = this.props.taskList.map(async (task, i) => {
-      let weiReward
-      typeof task.weiReward !== 'undefined'
-       ? weiReward = task.weiReward + ' wei'
-       : weiReward = ''
-      let p = P.at(this.props.address)
-      let taskAddress = await p.tasks(i)
-      let taskContract = await T.at(taskAddress)
-      let claimable = await taskContract.claimable()
-      if (!claimable) {
-        return {
-          key: i,
-          description: task.description,
-          ethReward: weiReward,
-          yesVal: (
-            <div>
-              <Button
-                disabled={this.props.taskList[i].submitted || !this.props.taskList[i].claimed || !this.props.projects[this.props.address].listSubmitted}
-                type='danger' onClick={() => this.validateTask(this.state.totalYes, i, true)} >Yes</Button>
-              <input
-                ref={(input) => (this.totalYes = input)}
-                placeholder='Tokens'
-                onChange={(e) => this.onChange('totalYes', this.totalYes.value)}
-                value={this.state.totalYes || ''}
-              />
-            </div>
-          ),
-          noVal: (
-            <div>
-              <Button
-                disabled={this.props.taskList[i].submitted || !this.props.taskList[i].claimed || !this.props.projects[this.props.address].listSubmitted}
-                type='danger' onClick={() => this.validateTask(this.state.totalNo, i, false)}>No</Button>
-              <input
-                ref={(input) => (this.totalNo = input)}
-                placeholder='Tokens'
-                onChange={(e) => this.onChange('totalNo', this.totalNo.value)}
-                value={this.state.totalNo || ''}
-              />
-            </div>
-          )
-        }
-      }
-      // p.tasks(i).then(val => T.at(val).then(con => con.claimable().then(val2 => {
-      //   if (!val2) {
 
-      // })))
-       // let contract = T.at(val)
-       // console.log('hey', contract.weighting())
-       // let val = p.tasks(i).then(r => T.at(r).then(val => console.log(val.claimable))))
-    })
-    return tasks
-  }
 
   render () {
     let d
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
     let tasks
     if (typeof this.props.taskList !== 'undefined') {
-      tasks = this.processTasks()
+      let rewardVal, rewardWork, needsVote
+      console.log(this.props)
+      tasks = this.state.tasks.map((task, i) => {
+        console.log(this.state.tasks)
+        if (this.state.tasks[i].claimable) {
+          if (this.state.tasks[i].claimableByRep) {
+            // validators and workers can claim
+            rewardVal =
+              <div>
+                <Button
+                  type='danger' onClick={() => console.log('reward validator')}> Reward Yes Validator </Button>
+              </div>
+            rewardWork =
+              <div>
+                <Button
+                  type='danger' onClick={() => console.log('reward worker')}> Reward Worker </Button>
+              </div>
+            needsVote = ''
+          } else {
+            // validators can claim, task fails
+            rewardVal =
+              <div>
+                <Button
+                  type='danger' onClick={() => console.log('reward validator')}> Reward Yes Validator </Button>
+              </div>
+            rewardWork = <div>'nope, never'</div>
+            needsVote = <div>'nope, never'</div>
+          }
+        } else {
+          // vote needs to happen
+          rewardVal = <div>'nope, not yet'</div>
+          rewardWork = <div>'nope, not yet'</div>
+          needsVote =
+            <div>
+              <Button
+                type='danger' onClick={() => console.log('vote!')}> Vote! </Button>
+            </div>
+        }
+        let weiReward
+        typeof task.weiReward !== 'undefined'
+         ? weiReward = task.weiReward + ' wei'
+         : weiReward = ''
+
+        return {
+          key: i,
+          description: task.description,
+          ethReward: weiReward,
+          rewardValidator: rewardVal,
+          rewardWorker: rewardWork,
+          taskNeedsVote: needsVote
+        }
+      })
     } else {
       tasks = []
     }
@@ -156,13 +163,17 @@ class VoteTasks extends React.Component {
       dataIndex: 'ethReward',
       key: 'ethReward'
     }, {
-      title: '',
-      dataIndex: 'yesVal',
-      key: 'yesVal'
+      title: 'Reward Validator?',
+      dataIndex: 'rewardValidator',
+      key: 'rewardValidator'
     }, {
-      title: '',
-      dataIndex: 'noVal',
-      key: 'noVal'
+      title: 'Reward Worker?',
+      dataIndex: 'rewardWorker',
+      key: 'rewardWorker'
+    }, {
+      title: 'Task Needs Vote?',
+      dataIndex: 'taskNeedsVote',
+      key: 'taskNeedsVote'
     }]
 
     return (
@@ -181,8 +192,7 @@ class VoteTasks extends React.Component {
           <Table dataSource={tasks} columns={columns} />
         </div>
         <Button
-          onClick={() => this.checkEnd()}
-        >
+          onClick={() => this.checkEnd()}>
           Check End
         </Button>
       </Card>
