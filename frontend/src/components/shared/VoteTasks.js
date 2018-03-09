@@ -113,7 +113,7 @@ class VoteTasks extends React.Component {
                 <Button
                   type='danger' onClick={() => console.log('reward worker')}> Reward Worker </Button>
               </div>
-            needsVote = ''
+            needsVote = <div>nope, never</div>
           } else {
             // validators can claim, task fails
             rewardVal =
@@ -121,13 +121,13 @@ class VoteTasks extends React.Component {
                 <Button
                   type='danger' onClick={() => console.log('reward validator')}> Reward No Validator </Button>
               </div>
-            rewardWork = <div>'nope, never'</div>
-            needsVote = <div>'nope, never'</div>
+            rewardWork = <div>nope, never</div>
+            needsVote = <div>nope, never</div>
           }
         } else {
           // vote needs to happen
-          rewardVal = <div>'nope, not yet'</div>
-          rewardWork = <div>'nope, not yet'</div>
+          rewardVal = <div>nope, not yet</div>
+          rewardWork = <div>nope, not yet</div>
           needsVote =
             <div>
               <Button
