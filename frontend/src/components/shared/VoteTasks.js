@@ -92,7 +92,6 @@ class VoteTasks extends React.Component {
     })
   }
 
-
   render () {
     let d
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
