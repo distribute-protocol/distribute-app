@@ -149,7 +149,7 @@ class ClaimProject extends React.Component {
     if (typeof this.props.taskList !== 'undefined') {
       tasks = this.props.taskList.map((task, i) => {
         let weiReward
-        console.log(task.weiReward)
+        // console.log(task.weiReward)
         typeof task.weiReward !== 'undefined'
          ? weiReward = task.weiReward + ' wei'
          : weiReward = ''

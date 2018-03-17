@@ -93,7 +93,7 @@ class ValidateTasks extends React.Component {
          : weiReward = ''
         let val = 'val'
         let account = eth.accounts[0]
-        console.log(this.state.tasks)
+        // console.log(this.state.tasks)
         let input =
           <div>
             <div>

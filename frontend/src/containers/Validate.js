@@ -36,7 +36,7 @@ class Validate extends React.Component {
     }
 
     let projects = Object.keys(np.projects).map((projAddr, i) => {
-      console.log('projAddr', projAddr)
+      // console.log('projAddr', projAddr)
       return projectState(projAddr)
         .then(state => {
           if (state.toNumber() === 4) {

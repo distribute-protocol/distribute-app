@@ -17,6 +17,7 @@ class VoteTasks extends React.Component {
       taskList: [],
       isSubmitted: false
     }
+    this.voteTask = this.voteTask.bind(this)
     window.pr = pr
     window.hashing = hashing
   }
@@ -30,17 +31,17 @@ class VoteTasks extends React.Component {
     }
   }
 
-  validateTask (val, index, status) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        await tr.validateTask(this.props.address, index, val, status, {from: accounts[0]})
-        .then(async(res) => {
-          return res
-          // this.props.indicateTaskClaimed({address: this.props.address, index: i})
-        })
-      }
-    })
-  }
+  // validateTask (val, index, status) {
+  //   eth.getAccounts(async (err, accounts) => {
+  //     if (!err) {
+  //       await tr.validateTask(this.props.address, index, val, status, {from: accounts[0]})
+  //       .then(async(res) => {
+  //         return res
+  //         // this.props.indicateTaskClaimed({address: this.props.address, index: i})
+  //       })
+  //     }
+  //   })
+  // }
 
   getProjectStatus (p) {
     let accounts
@@ -92,6 +93,23 @@ class VoteTasks extends React.Component {
     })
   }
 
+  voteTask (i) {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        // console.log(100 * (this.props.taskList[i].weiReward / web3.toWei(this.props.cost, 'ether')))
+        // let hash = web3.fromAscii(this.props.taskList[i].description, 32)
+        // await rr.claimTask(this.props.address, i, hash, 100 * (this.props.taskList[i].weiReward / web3.toWei(this.props.cost, 'ether')), {from: accounts[0]})
+        // .then(async() => {
+        //   this.props.indicateTaskClaimed({address: this.props.address, index: i})
+        // })
+        await tr.voteCommit(this.props.address, i, 100, 'hash', 0, {from: accounts[0]})
+          // .then(async() => {
+          //
+          // })
+      }
+    })
+  }
+
   render () {
     let d
     if (typeof this.state.nextDeadline !== 'undefined') { d = moment(this.state.nextDeadline) }
@@ -130,7 +148,7 @@ class VoteTasks extends React.Component {
           needsVote =
             <div>
               <Button
-                type='danger' onClick={() => console.log('vote!')}> Vote! </Button>
+                type='danger' onClick={() => this.voteTask(i)}> Vote! </Button>
             </div>
         }
         let weiReward

@@ -68,7 +68,7 @@ export default function projectReducer (state = initialState, action) {
       temp = state.allProjects[action.validationDetails.address]
       temp.taskList[action.validationDetails.index].validated[action.validationDetails.validator] = Object.assign({}, {status: action.validationDetails.status})
       newAllProjects = Object.assign({}, state.allProjects, {[action.validationDetails.address]: temp})
-      console.log(newAllProjects)
+      // console.log(newAllProjects)
       return Object.assign({}, state, {allProjects: newAllProjects})
     default:
   }

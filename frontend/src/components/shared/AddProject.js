@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import { Card, Button, Table } from 'antd'
 import DraggableTable from './DraggableTable'
-import {eth, web3, pr, P} from '../../utilities/blockchain'
+import {eth, web3, pr, P, pl} from '../../utilities/blockchain'
 import hashing from '../../utilities/hashing'
 import update from 'immutability-helper';
 import { setProjectTaskList, setTaskSubmission } from '../../actions/projectActions'
@@ -230,12 +230,15 @@ class AddProject extends React.Component {
     let submissionTasks = []
     if (this.props.submissions) {
       submissionTasks = Object.keys(this.props.submissions).map((address, i) => {
-        return {
-          key: i,
-          submitter: address,
-          submission: JSON.stringify(this.props.submissions[address]),
-          weighting: 'tbd'
-        }
+        // pl.calculateWeightOfAddress(this.props.address, address).then(weight => {
+        //   console.log(weight.toNumber())
+          return {
+            key: i,
+            submitter: address,
+            submission: JSON.stringify(this.props.submissions[address]),
+            weighting: 'tbd'
+          }
+        // })
       })
     }
 
