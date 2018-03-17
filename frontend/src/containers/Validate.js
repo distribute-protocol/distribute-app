@@ -1,6 +1,6 @@
 import React from 'react'
 import { Col, Row, Button } from 'antd'
-import Sidebar from './Sidebar'
+import Sidebar from '../components/shared/Sidebar'
 import ValidateTasks from '../components/shared/ValidateTasks'
 import fastforward from '../utilities/fastforward'
 import { push } from 'react-router-redux'

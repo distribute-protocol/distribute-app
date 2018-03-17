@@ -2,11 +2,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { getEthPriceNow } from 'get-eth-price'
-import Button from 'antd/lib/button'
-import Sidebar from './Sidebar'
+
 import {eth, web3, tr, rr, dt} from '../utilities/blockchain'
 import * as _ from 'lodash'
-const ButtonGroup = Button.Group
+import StatusComponent from '../components/Status'
 // import uport from '../utilities/uport'
 // var mnid = require('mnid')
 
@@ -47,9 +46,7 @@ class Status extends Component {
   componentWillMount () {
     if (_.isEmpty(this.props.user)) {
       // this.props.reroute()
-    } else {
-
-    }
+    } else {}
     this.getBalance()
   }
     // let config = {
@@ -65,31 +62,15 @@ class Status extends Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
-          // console.log(accounts[0])
-          let ethPrice = await getEthPriceNow()
+          let ethPrice = (await getEthPriceNow())
           ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
-          let balance,
-            totalTokenSupply,
-            weiBal,
-            reputationBalance,
-            totalReputationSupply,
-            currentPrice,
-            first
-          // let balance = (await dt.balanceOf(accounts[0]))[0].toNumber()
-          balance = (await dt.balanceOf(accounts[0])).toNumber()
-          // console.log('balance', balance)
-          totalTokenSupply = (await dt.totalSupply()).toNumber()
-          // console.log('totalTokenSupply', totalTokenSupply)
-          weiBal = (await dt.weiBal()).toNumber()
-          // console.log('weiBal', weiBal)
-          reputationBalance = (await rr.balances(accounts[0])).toNumber()
-          // console.log('reputationBalance', reputationBalance)
-          totalReputationSupply = (await rr.totalSupply()).toNumber()
-
-          first = (await rr.first(accounts[0]))
-          // console.log('totalReputationSupply', totalReputationSupply)
-
-          currentPrice = (await dt.currentPrice()).toNumber()
+          let balance = (await dt.balanceOf(accounts[0])).toNumber()
+          let totalTokenSupply = (await dt.totalSupply()).toNumber()
+          let weiBal = (await dt.weiBal()).toNumber()
+          let reputationBalance = (await rr.balances(accounts[0])).toNumber()
+          let totalReputationSupply = (await rr.totalSupply()).toNumber()
+          let first = (await rr.first(accounts[0]))
+          let currentPrice = (await dt.currentPrice()).toNumber()
           this.setState({
             totalTokenSupply,
             balance,
@@ -107,7 +88,7 @@ class Status extends Component {
     })
   }
 
-  async buyShares () {
+  buyShares () {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
@@ -155,9 +136,7 @@ class Status extends Component {
       try {
         let ethRequired, totalSupply, refund
         await dt.weiRequired(val).then(result => {
-          // console.log(result)
           ethRequired = web3.fromWei(result.toNumber(), 'ether')
-          // console.log('eth to send', ethRequired)
         })
         totalSupply = (await dt.totalSupply()).toNumber()
         if (totalSupply === 0) {
@@ -176,83 +155,38 @@ class Status extends Component {
 
   render () {
     return (
-      <div>
-        <Sidebar />
-        <div style={{marginLeft: 200, flexDirection: 'column', display: 'flex', justifyContent: 'space-between', alignItems: 'space-between'}}>
-          <header className='App-header'>
-            <h3 className='App-title2'>Network Status</h3>
-          </header>
-          {/* <Button onClick={this.login} style={{marginLeft: 20, backgroundColor: 'purple'}}>
-            Connect with uPort
-          </Button> */}
-          <div style={{marginLeft: 20, marginTop: 40, display: 'flex', justifyContent: 'flex-start'}}>
-            <div>
-              <h3>Total Token Supply</h3>
-              <h5>{this.state.totalTokenSupply}</h5>
-              <h3>Your Token Balance</h3>
-              <h5>{this.state.balance}</h5>
-              <h3>Controlled Market Percentage</h3>
-              <h5>{`${this.state.totalTokenSupply ? Math.round(this.state.balance / this.state.totalTokenSupply * 10000) / 100 : 0}`}%</h5>
-              <h3>Eth Pool</h3>
-              <h5>{web3.fromWei(this.state.weiBal, 'ether')} ETH</h5>
-              <h3>Capital Equivalent</h3>
-              <h5>{`$${this.state.ethPrice ? Math.round(this.state.ethPrice * web3.fromWei(this.state.weiBal, 'ether')) : 0}`}</h5>
-              <h3>Current Token Price in Eth</h3>
-              <h5>{this.state.currentPrice}</h5>
-            </div>
-            <div style={{marginLeft: 25}}>
-              <h3>Total Reputation Supply</h3>
-              <h5>{this.state.totalReputationSupply}</h5>
-              <h3>Reputation Balance</h3>
-              <h5>{this.state.reputationBalance}</h5>
-            </div>
-          </div>
-          <Button style={{marginLeft: 20, marginTop: 10, width: 160, backgroundColor: '#115D8C', color: '#FFF'}} icon='reload' color='info' onClick={this.getBalance}>
-            Refresh Balances
-          </Button>
-          <div style={{display: 'flex', flexDirection: 'row', marginTop: 30}}>
-            <div style={{backgroundColor: '#C7D9D9', padding: 30, width: 250}}>
-              {/* <Input getRef={(input) => (this.location = input)}  onChange={(e) => this.onChange('location', this.location.value)} value={location || ''} /> */}
-              <div>
-                <h3>Tokens:</h3>
-                <input ref={(input) => (this.tokensToBuy = input)} placeholder='Number of Tokens' onChange={(e) => this.onChange(this.tokensToBuy.value)} value={this.state.tokensToBuy} type='number' />
-              </div>
-              <div style={{marginTop: 20}}>
-                <h4>{`Cost to Buy: ${typeof this.state.ethToSend === 'undefined' ? 'n/a' : Math.round(this.state.ethToSend * 100000) / 100000} ETH`}</h4>
-              </div>
-              <div>
-                <h4>{`Refund Amount: ${typeof this.state.ethToRefund === 'undefined' ? 'n/a' : Math.round(this.state.ethToRefund * 100000) / 100000} ETH`}</h4>
-              </div>
-              <div style={{marginTop: 20}}>
-                <ButtonGroup>
-                  <Button icon='plus-circle-o' color='primary' onClick={this.buyShares}>
-                    Buy
-                  </Button>
-                  <Button icon='minus-circle-o' color='warning' onClick={this.sellShares}>
-                    Sell
-                  </Button>
-                </ButtonGroup>
-              </div>
-            </div>
-            <div style={{backgroundColor: '#F2A35E', padding: 30}}>
-              {/* <Input getRef={(input) => (this.location = input)}  onChange={(e) => this.onChange('location', this.location.value)} value={location || ''} /> */}
-              <div>
-                <h3>Reputation:</h3>
-              </div>
-              <div style={{marginTop: 20}}>
-                <ButtonGroup>
-                  {this.state.reputationBalance === 0 && !this.state.first ? <Button color='success' icon='user-add' onClick={this.register}>
-                    Register
-                  </Button> : null}
-                  {this.state.reputationBalance < 10000 ? <Button icon='download' color='success' onClick={this.faucet}>
-                    Faucet
-                  </Button> : null}
-                </ButtonGroup>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <StatusComponent
+        totalTokenSupply={this.state.totalTokenSupply}
+        balance={this.state.balance}
+        marketPercentage={this.state.totalTokenSupply
+          ? Math.round(this.state.balance / this.state.totalTokenSupply * 10000) / 100
+          : 0}
+        ethPool={web3.fromWei(this.state.weiBal, 'ether')}
+        capitalEquivalent={this.state.ethPrice
+          ? Math.round(this.state.ethPrice * web3.fromWei(this.state.weiBal, 'ether'))
+          : 0}
+        currentPrice={this.state.currentPrice}
+        totalReputationSupply={this.state.totalReputationSupply}
+        reputationBalance={this.state.reputationBalance}
+        ethToSend={typeof this.state.ethToSend === 'undefined'
+          ? 'n/a'
+          : Math.round(this.state.ethToSend * 100000) / 100000}
+        ethToRefund={typeof this.state.ethToRefund === 'undefined'
+          ? 'n/a'
+          : Math.round(this.state.ethToRefund * 100000) / 100000}
+        buyShares={this.buyShares}
+        sellShares={this.sellShares}
+        input={
+          <input ref={(input) => (this.tokensToBuy = input)}
+            placeholder='Number of Tokens'
+            onChange={(e) => this.onChange(this.tokensToBuy.value)}
+            value={this.state.tokensToBuy} type='number'
+          />}
+        notRegistered={(this.state.reputationBalance === 0 && !this.state.first)}
+        register={this.register}
+        openFaucet={this.state.reputationBalance < 10000}
+        faucet={this.faucet}
+      />
     )
   }
 }

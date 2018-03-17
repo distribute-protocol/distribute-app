@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Col, Row } from 'antd'
-import Sidebar from './Sidebar'
+import Sidebar from '../components/shared/Sidebar'
 import StakeProject from '../components/shared/StakeProject'
 import { push } from 'react-router-redux'
 import { eth, tr, rr, pl } from '../utilities/blockchain'

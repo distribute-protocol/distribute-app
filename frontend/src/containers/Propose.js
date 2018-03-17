@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import Sidebar from './Sidebar'
+import Sidebar from '../components/shared/Sidebar'
 import { Button, Form, Input, DatePicker, Upload, Icon } from 'antd'
 import { proposeProject } from '../actions/projectActions'
 import { push } from 'react-router-redux'

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Col, Row, Button } from 'antd'
 import { push } from 'react-router-redux'
-import Sidebar from './Sidebar'
+import Sidebar from '../components/shared/Sidebar'
 import VoteTasks from '../components/shared/VoteTasks'
 import fastforward from '../utilities/fastforward'
 import { connect } from 'react-redux'
