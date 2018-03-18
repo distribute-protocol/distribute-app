@@ -135,6 +135,7 @@ class DragSortingTable extends React.Component {
           index,
           moveRow: this.props.moveRow,
         })}
+        pagination={false}
       />
     );
   }

@@ -14,17 +14,15 @@ class Status extends Component {
   constructor () {
     super()
     this.state = {
-      value: 0,
       tokensToBuy: ''
     }
+    this.getNetworkStatus = this.getNetworkStatus.bind(this)
     this.buyShares = this.buyShares.bind(this)
     this.sellShares = this.sellShares.bind(this)
-    this.getBalance = this.getBalance.bind(this)
     this.login = this.login.bind(this)
     this.register = this.register.bind(this)
-    window.tr = tr
-    window.rr = rr
   }
+
   login () {
     // uport.requestCredentials({
     //   requested: ['name', 'avatar'],
@@ -47,7 +45,7 @@ class Status extends Component {
     if (_.isEmpty(this.props.user)) {
       // this.props.reroute()
     } else {}
-    this.getBalance()
+    this.getNetworkStatus()
   }
     // let config = {
     //   method: 'GET',
@@ -58,7 +56,7 @@ class Status extends Component {
     // fetch('/api', config).then((res, req) => {})
     // this.queryDatabaseTest()
 
-  getBalance () {
+  async getNetworkStatus () {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
@@ -174,6 +172,7 @@ class Status extends Component {
         ethToRefund={typeof this.state.ethToRefund === 'undefined'
           ? 'n/a'
           : Math.round(this.state.ethToRefund * 100000) / 100000}
+        getNetworkStatus={this.getNetworkStatus}
         buyShares={this.buyShares}
         sellShares={this.sellShares}
         input={

@@ -14,14 +14,16 @@ class StakeProject extends Component {
     this.state = {
       stake: ''
     }
+    this.tokens = this.tokens.bind(this)
+    this.reputation = this.reputation.bind(this)
   }
 
-  async getProjectStatus (p) {
+  async getProjectStatus () {
     let accounts
+    let p = P.at(this.props.address)
     eth.getAccounts(async (err, result) => {
       if (!err) {
         accounts = result
-        // console.log(accounts)
         if (accounts.length) {
           let weiBal = (await p.weiBal()).toNumber()
           let weiCost = (await p.weiCost()).toNumber()
@@ -46,7 +48,7 @@ class StakeProject extends Component {
             let dataString = new TextDecoder('utf-8').decode(node.toJSON().data)
             projObj = Object.assign({}, projObj, JSON.parse(dataString), {tokensLeft: Math.ceil((weiCost - weiBal) / currentPrice)})
             this.props.updateProject(this.props.address, projObj)
-            this.setState(projObj)
+            this.setState({...projObj, project: p})
           })
         }
       }
@@ -54,9 +56,7 @@ class StakeProject extends Component {
   }
 
   componentWillMount () {
-    let p = P.at(this.props.address)
-    this.getProjectStatus(p)
-    this.setState({project: p})
+    this.getProjectStatus()
   }
 
   onChange (val) {

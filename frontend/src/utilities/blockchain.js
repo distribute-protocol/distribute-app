@@ -20,16 +20,6 @@ if (typeof web3init !== 'undefined') {
 export const web3 = web3init
 export const eth = web3init.eth
 
-// export const P = web3.eth.contract(JSON.parse(ProjectABI))
-// const TR = web3.eth.contract(JSON.parse(TokenRegistryABI))
-// export const tr = TR.at(TokenRegistryAddress)
-// const RR = web3.eth.contract(JSON.parse(ReputationRegistryABI))
-// export const rr = RR.at(ReputationRegistryAddress)
-// const PR = web3.eth.contract(JSON.parse(ProjectRegistryABI))
-// export const pr = PR.at(ProjectRegistryAddress)
-// const DT = web3.eth.contract(JSON.parse(DistributeTokenABI))
-// export const dt = DT.at(DistributeTokenAddress)
-
 const TR = contract({abi: JSON.parse(TokenRegistryABI)})
 TR.setProvider(window.web3.currentProvider)
 export const tr = TR.at(TokenRegistryAddress)

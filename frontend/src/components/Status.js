@@ -13,6 +13,7 @@ export default ({
   reputationBalance,
   ethToSend,
   ethToRefund,
+  getNetworkStatus,
   buyShares,
   sellShares,
   input,
@@ -59,7 +60,7 @@ export default ({
           marginTop: 10,
           width: 160,
           backgroundColor: '#115D8C',
-          color: '#FFF'}} icon='reload' color='info' onClick={this.getBalance}>
+          color: '#FFF'}} icon='reload' color='info' onClick={getNetworkStatus}>
           Refresh Balances
         </Button>
         <div style={{display: 'flex', flexDirection: 'row', marginTop: 30}}>

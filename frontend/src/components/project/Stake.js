@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button } from 'antd'
+import ProjectHeader from '../shared/ProjectHeader'
 const ButtonGroup = Button.Group
 
 export default ({
@@ -20,20 +21,17 @@ export default ({
 }) => {
   return (
     <div style={{backgroundColor: '#DDE4E5', marginTop: 30}}>
-      <div style={{padding: 10}}>
-        <h3>{name}</h3>
-      </div>
+      <ProjectHeader
+        name={name}
+        address={address}
+        photo={photo}
+        summary={summary}
+        location={location}
+        cost={cost}
+        reputationCost={reputationCost}
+      />
       <div style={{padding: 10, paddingTop: 0}}>
-        <div style={{wordWrap: 'break-word'}}>{`Address: ${address}`}</div>
-        { typeof photo !== 'undefined'
-          ? <img style={{height: 200, width: 200}} src={photo} />
-          : null
-        }
-        <div>Summary: {`${summary}`}</div>
-        <div>Location: {`${location}`}</div>
-        <div>Cost: {`${cost} ETH`}</div>
-        <div>Reputation Cost: {`${reputationCost}`}</div>
-        <div>Tokens Remaining: {`${tokensLeft}`}</div>
+        <div>{`Tokens Remaining: ${tokensLeft}`}</div>
         <div>Reputation Remaining {`${reputationCost - totalReputationStaked}`}</div>
         <div>Expiration: {typeof date !== 'undefined' ? `${date.fromNow()}` : 'N/A'}</div>
         <div style={{display: 'flex', flexDirection: 'row', marginTop: 10}}>

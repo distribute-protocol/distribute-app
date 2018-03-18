@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Col, Row } from 'antd'
 import Sidebar from '../components/shared/Sidebar'
 import Project from './project/Stake'
 import { push } from 'react-router-redux'
@@ -52,7 +51,6 @@ class Stake extends React.Component {
   }
 
   async unstakeReputation (address, val) {
-    // console.log(address, val)
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         await rr.stakeReputation(address, val, {from: accounts[0]})
@@ -74,7 +72,6 @@ class Stake extends React.Component {
       return projectState(projAddr)
         .then(isStaked => {
           if (!isStaked) {
-            // console.log(projAddr)
             return np.projects[projAddr]
           }
         })
@@ -82,10 +79,8 @@ class Stake extends React.Component {
 
     Promise.all(projects)
       .then(results => {
-        // Handle results
         projectsArr = _.compact(results)
         this.setState({projects: projectsArr})
-        // console.log('projectsArr', projectsArr)
       })
       .catch(e => {
         console.error(e)

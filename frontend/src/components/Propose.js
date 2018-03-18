@@ -16,6 +16,7 @@ const ProposeForm = (props) => {
   } = props
   let submitHandler = (type) => {
     proposeProject(type, props.form.getFieldsValue())
+    props.form.resetFields()
   }
   const uploadButton = (
     <div>
