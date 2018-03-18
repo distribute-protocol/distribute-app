@@ -53,7 +53,7 @@ export default ({
         </div>
       </div>
       <div style={{display: 'flex', flexDirection: 'column', backgroundColor: '#FCFCFC', marginTop: 30}}>
-        <Table dataSource={tasks} columns={columns} />
+        <Table dataSource={tasks} columns={columns} pagination={false} />
       </div>
       <Button
         onClick={() => checkEnd()}>
