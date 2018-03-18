@@ -4,7 +4,7 @@ import moment from 'moment'
 import { Button } from 'antd'
 import AddComponent from '../../components/project/Add'
 import {eth, web3, pr, P} from '../../utilities/blockchain'
-import hashing from '../../utilities/hashing'
+import { hashTasksArray } from '../../utilities/hashing'
 import update from 'immutability-helper'
 import { setProjectTaskList, setTaskSubmission } from '../../actions/projectActions'
 import ipfsAPI from 'ipfs-api'
@@ -39,14 +39,17 @@ class AddProject extends React.Component {
       if (!err) {
         accounts = result
         if (accounts.length) {
-          let nextDeadline = (await p.nextDeadline()) * 1000
           let weiCost = (await p.weiCost()).toNumber()
           let reputationCost = (await p.reputationCost()).toNumber()
           let ipfsHash = web3.toAscii(await p.ipfsHash())
+          let nextDeadline = (await p.nextDeadline()) * 1000
           let projObj = {
             weiCost,
             reputationCost,
-            ipfsHash
+            ipfsHash,
+            nextDeadline,
+            project: p,
+            taskList: this.props.taskList
           }
           ipfs.object.get(ipfsHash, (err, node) => {
             if (err) {
@@ -54,7 +57,7 @@ class AddProject extends React.Component {
             }
             let dataString = new TextDecoder('utf-8').decode(node.toJSON().data)
             projObj = Object.assign({}, projObj, JSON.parse(dataString))
-            this.setState({...projObj, nextDeadline, taskList: this.props.taskList})
+            this.setState(projObj)
           })
         }
       }
@@ -109,12 +112,11 @@ class AddProject extends React.Component {
     if (sumTotal !== 100) {
       alert('percentages must add up to 100!')
     } else {
-      let totalProjectCost = web3.toWei(this.props.cost, 'ether')
       let taskArray = tasks.map(task => ({
         description: task.description,
-        weiReward: task.percentage * totalProjectCost / 100
+        weiReward: task.percentage * this.state.weiCost / 100
       }))
-      let taskHash = this.hashTasksArray(taskArray)
+      let taskHash = hashTasksArray(taskArray, this.state.weiCost)
       eth.getAccounts(async (err, accounts) => {
         if (!err) {
           await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => {
@@ -127,27 +129,6 @@ class AddProject extends React.Component {
         }
       })
     }
-  }
-
-  hashTasks (taskArray) {
-    let taskHashArray = []
-    let args = ['bytes32', 'uint']
-    for (var i = 0; i < taskArray.length; i++) {
-      let thisTask = []
-      thisTask.push(web3.fromAscii(taskArray[i].description, 32))
-      thisTask.push(100 * taskArray[i].weiReward / web3.toWei(this.props.cost, 'ether'))
-      taskHashArray.push(hashing.keccakHashes(args, thisTask))
-    }
-    return taskHashArray
-  }
-
-  hashTasksArray (taskArray) {
-    let hashList = this.hashTasks(taskArray)
-    hashList.map(arr => arr.slice(2))
-    let numArgs = hashList.length
-    let args = 'bytes32'.concat(' bytes32'.repeat(numArgs - 1)).split(' ')
-    let taskHash = hashing.keccakHashes(args, hashList)
-    return taskHash
   }
 
   checkActive () {

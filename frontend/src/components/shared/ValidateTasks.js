@@ -4,7 +4,7 @@ import moment from 'moment'
 import { Card, Button, Table } from 'antd'
 import {eth, pr, tr, P} from '../../utilities/blockchain'
 import hashing from '../../utilities/hashing'
-import { setProjectTaskList, indicateTaskClaimed, indicateTaskListSubmitted, indicateTaskSubmitted, indicateTaskValidated } from '../../actions/projectActions'
+import { setProjectTaskList, indicateTaskClaimed, taskListSubmitted, indicateTaskSubmitted, indicateTaskValidated } from '../../actions/projectActions'
 
 class ValidateTasks extends React.Component {
   constructor () {
@@ -173,7 +173,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setProjectTaskList: (taskDetails) => dispatch(setProjectTaskList(taskDetails)),
     indicateTaskClaimed: (submissionDetails) => dispatch(indicateTaskClaimed(submissionDetails)),
-    indicateTaskListSubmitted: (taskDetails) => dispatch(indicateTaskListSubmitted(taskDetails)),
+    taskListSubmitted: (taskDetails) => dispatch(taskListSubmitted(taskDetails)),
     indicateTaskSubmitted: (taskDetails) => dispatch(indicateTaskSubmitted(taskDetails)),
     indicateTaskValidated: (validationDetails) => dispatch(indicateTaskValidated(validationDetails))
   }

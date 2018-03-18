@@ -51,7 +51,6 @@ export default ({
   submissionTasks,
   moveRow
 }) => {
-
   return (
     <div style={{backgroundColor: '#DDE4E5'}}>
       <ProjectHeader

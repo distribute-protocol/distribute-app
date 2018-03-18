@@ -3,8 +3,7 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import { Card, Button, Table } from 'antd'
 import {eth, pr, tr, P, T} from '../../utilities/blockchain'
-import hashing from '../../utilities/hashing'
-import { setProjectTaskList, indicateTaskClaimed, indicateTaskListSubmitted, indicateTaskSubmitted } from '../../actions/projectActions'
+import { setProjectTaskList, indicateTaskClaimed, taskListSubmitted, indicateTaskSubmitted } from '../../actions/projectActions'
 
 class VoteTasks extends React.Component {
   constructor () {
@@ -18,8 +17,6 @@ class VoteTasks extends React.Component {
       isSubmitted: false
     }
     this.voteTask = this.voteTask.bind(this)
-    window.pr = pr
-    window.hashing = hashing
   }
 
   onChange (type, val) {
@@ -226,7 +223,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setProjectTaskList: (taskDetails) => dispatch(setProjectTaskList(taskDetails)),
     indicateTaskClaimed: (submissionDetails) => dispatch(indicateTaskClaimed(submissionDetails)),
-    indicateTaskListSubmitted: (taskDetails) => dispatch(indicateTaskListSubmitted(taskDetails)),
+    indicateTaskListSubmitted: (taskDetails) => dispatch(taskListSubmitted(taskDetails)),
     indicateTaskSubmitted: (taskDetails) => dispatch(indicateTaskSubmitted(taskDetails))
   }
 }
