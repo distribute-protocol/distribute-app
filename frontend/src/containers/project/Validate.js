@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import ValidateComponent from '../../components/project/Validate'
 import { Button } from 'antd'
 import {eth, pr, tr, web3, P} from '../../utilities/blockchain'
-import { indicateTaskValidated } from '../../actions/projectActions'
+import { taskValidated } from '../../actions/projectActions'
 import moment from 'moment'
 import ipfsAPI from 'ipfs-api'
 let ipfs = ipfsAPI()
@@ -68,7 +68,7 @@ class ValidateTasks extends React.Component {
           await tr.validateTask(this.props.address, index, val, status, {from: accounts[0]})
           .then(async () => {
             this.setState({['val' + index]: ''})
-            this.props.indicateTaskValidated({ address: this.props.address, validator: validator, index: index, status: valStatus })
+            this.props.taskValidated({ address: this.props.address, validator: validator, index: index, status: valStatus })
           })
         }
       }
@@ -149,7 +149,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    indicateTaskValidated: (validationDetails) => dispatch(indicateTaskValidated(validationDetails))
+    taskValidated: (validationDetails) => dispatch(taskValidated(validationDetails))
   }
 }
 

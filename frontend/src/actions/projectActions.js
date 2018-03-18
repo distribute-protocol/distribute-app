@@ -1,4 +1,4 @@
-import { PROPOSE_PROJECT, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, INDICATE_TASK_CLAIMED, TASKLIST_SUBMITTED, INDICATE_TASK_SUBMITTED, UPDATE_PROJECT, INDICATE_TASK_VALIDATED } from '../constants/ProjectActionTypes'
+import { PROPOSE_PROJECT, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, TASK_CLAIMED, TASKLIST_SUBMITTED, TASK_COMPLETED, UPDATE_PROJECT, TASK_VALIDATED } from '../constants/ProjectActionTypes'
 
 export function proposeProject (projectDetails) {
   return {
@@ -21,9 +21,9 @@ export function setTaskSubmission (submissionDetails) {
   }
 }
 
-export function indicateTaskClaimed (taskDetails) {
+export function taskClaimed (taskDetails) {
   return {
-    type: INDICATE_TASK_CLAIMED,
+    type: TASK_CLAIMED,
     taskDetails
   }
 }
@@ -35,9 +35,9 @@ export function taskListSubmitted (taskDetails) {
   }
 }
 
-export function indicateTaskSubmitted (taskDetails) {
+export function taskCompleted (taskDetails) {
   return {
-    type: INDICATE_TASK_SUBMITTED,
+    type: TASK_COMPLETED,
     taskDetails
   }
 }
@@ -50,9 +50,9 @@ export function updateProject (address, projObj) {
   }
 }
 
-export function indicateTaskValidated (validationDetails) {
+export function taskValidated (validationDetails) {
   return {
-    type: INDICATE_TASK_VALIDATED,
+    type: TASK_VALIDATED,
     validationDetails
   }
 }

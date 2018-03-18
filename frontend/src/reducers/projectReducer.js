@@ -1,4 +1,4 @@
-import { PROPOSE_PROJECT, GET_PROJECT_STATE, PROJECT_STATE_RECEIVED, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, INDICATE_TASK_CLAIMED, TASKLIST_SUBMITTED, INDICATE_TASK_SUBMITTED, UPDATE_PROJECT, INDICATE_TASK_VALIDATED } from '../constants/ProjectActionTypes'
+import { PROPOSE_PROJECT, GET_PROJECT_STATE, PROJECT_STATE_RECEIVED, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, TASK_CLAIMED, TASKLIST_SUBMITTED, TASK_COMPLETED, UPDATE_PROJECT, TASK_VALIDATED } from '../constants/ProjectActionTypes'
 const initialState = {
   allProjects: {},
   fetching: 'FALSE'
@@ -39,12 +39,12 @@ export default function projectReducer (state = initialState, action) {
       temp = Object.assign({}, temp, {listSubmitted: action.taskDetails.listSubmitted})
       newAllProjects = Object.assign({}, state.allProjects, {[action.taskDetails.address]: temp})
       return Object.assign({}, state, {allProjects: newAllProjects})
-    case INDICATE_TASK_CLAIMED:
+    case TASK_CLAIMED:
       temp = state.allProjects[action.taskDetails.address]
       temp.taskList[action.taskDetails.index] = Object.assign({}, temp.taskList[action.taskDetails.index], {claimed: true})
       newAllProjects = Object.assign({}, state.allProjects, {[action.taskDetails.address]: temp})
       return Object.assign({}, state, {allProjects: newAllProjects})
-    case INDICATE_TASK_SUBMITTED:
+    case TASK_COMPLETED:
       temp = state.allProjects[action.taskDetails.address]
       temp.taskList[action.taskDetails.index] = Object.assign({}, temp.taskList[action.taskDetails.index], {submitted: true, validated: {}})
       newAllProjects = Object.assign({}, state.allProjects, {[action.taskDetails.address]: temp})
@@ -53,7 +53,7 @@ export default function projectReducer (state = initialState, action) {
       proj = Object.assign({}, state.allProjects[action.address], action.projObj)
       newAllProjects = Object.assign({}, state.allProjects, {[action.address]: proj})
       return Object.assign({}, state, {allProjects: newAllProjects})
-    case INDICATE_TASK_VALIDATED:
+    case TASK_VALIDATED:
       temp = state.allProjects[action.validationDetails.address]
       temp.taskList[action.validationDetails.index].validated[action.validationDetails.validator] = Object.assign({}, {status: action.validationDetails.status})
       newAllProjects = Object.assign({}, state.allProjects, {[action.validationDetails.address]: temp})

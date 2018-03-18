@@ -4,7 +4,7 @@ import ClaimComponent from '../../components/project/Claim'
 import { Button } from 'antd'
 import {eth, web3, rr, pr, P} from '../../utilities/blockchain'
 import { hashTasksArray, hashTasks } from '../../utilities/hashing'
-import { indicateTaskClaimed, taskListSubmitted, indicateTaskSubmitted } from '../../actions/projectActions'
+import { taskClaimed, taskListSubmitted, taskCompleted } from '../../actions/projectActions'
 import moment from 'moment'
 import ipfsAPI from 'ipfs-api'
 let ipfs = ipfsAPI()
@@ -85,7 +85,7 @@ class ClaimProject extends React.Component {
         let hash = web3.fromAscii(this.props.project.taskList[i].description, 32)
         await rr.claimTask(this.props.address, i, hash, 100 * (this.props.project.taskList[i].weiReward / this.state.weiCost), {from: accounts[0]})
         .then(async() => {
-          this.props.indicateTaskClaimed({address: this.props.address, index: i})
+          this.props.taskClaimed({address: this.props.address, index: i})
         })
       }
     })
@@ -96,7 +96,7 @@ class ClaimProject extends React.Component {
       if (!err) {
         await pr.submitTaskComplete(this.props.address, i, {from: accounts[0]})
         .then(async() => {
-          this.props.indicateTaskSubmitted({address: this.props.address, index: i})
+          this.props.taskCompleted({address: this.props.address, index: i})
         })
       }
     })
@@ -166,9 +166,9 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    indicateTaskClaimed: (submissionDetails) => dispatch(indicateTaskClaimed(submissionDetails)),
+    taskClaimed: (submissionDetails) => dispatch(taskClaimed(submissionDetails)),
     taskListSubmitted: (taskDetails) => dispatch(taskListSubmitted(taskDetails)),
-    indicateTaskSubmitted: (taskDetails) => dispatch(indicateTaskSubmitted(taskDetails))
+    taskCompleted: (taskDetails) => dispatch(taskCompleted(taskDetails))
   }
 }
 
