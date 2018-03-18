@@ -56,6 +56,7 @@ export default ({
         <Table dataSource={tasks} columns={columns} pagination={false} />
       </div>
       <Button
+        style={{marginTop: 30}}
         onClick={() => checkEnd()}>
         Check End
       </Button>

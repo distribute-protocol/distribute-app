@@ -79,7 +79,7 @@ export default ({
           </div>
         </div>
         {/* disabled={Date.now() < date.valueOf()} */}
-        <Button style={{marginTop: 10}} onClick={() => checkActive()} >Check Active</Button>
+        <Button style={{marginTop: 30}} onClick={() => checkActive()} >Check Active</Button>
       </div>
     </div>
   )

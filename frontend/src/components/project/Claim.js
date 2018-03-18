@@ -53,14 +53,17 @@ export default ({
       <div style={{display: 'flex', flexDirection: 'column', backgroundColor: '#FCFCFC', marginTop: 30}}>
         <Table dataSource={tasks} columns={columns} pagination={false} />
       </div>
-      <Button
-        disabled={listSubmitted}
-        onClick={() => submitWinningHashList()}>
-          Submit Winning Hash List
-      </Button>
-      <Button onClick={() => checkValidation()}>
-        Check Validate
-      </Button>
+      <div style={{marginTop: 30}}>
+        <Button
+          disabled={listSubmitted}
+          onClick={() => submitWinningHashList()}>
+            Submit Winning Hash List
+        </Button>
+        <Button onClick={() => checkValidation()}>
+          Check Validate
+        </Button>
+      </div>
+
     </div>
   )
 }

@@ -67,7 +67,7 @@ export default ({
             </div>
           </div>
         </div>
-        <Button onClick={() => checkStaked()}>
+        <Button style={{marginTop: 30}} onClick={() => checkStaked()}>
           Check Staked
         </Button>
       </div>

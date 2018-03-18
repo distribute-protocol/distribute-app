@@ -48,6 +48,7 @@ export default ({
         <Table dataSource={tasks} columns={columns} pagination={false} />
       </div>
       <Button
+        style={{marginTop: 30}}
         onClick={() => checkVoting()}>
           Check Voting
       </Button>
