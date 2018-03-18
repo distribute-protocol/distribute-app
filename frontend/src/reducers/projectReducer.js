@@ -1,13 +1,11 @@
 import { PROPOSE_PROJECT, GET_PROJECT_STATE, PROJECT_STATE_RECEIVED, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, INDICATE_TASK_CLAIMED, TASKLIST_SUBMITTED, INDICATE_TASK_SUBMITTED, UPDATE_PROJECT, INDICATE_TASK_VALIDATED } from '../constants/ProjectActionTypes'
 const initialState = {
-  allProjects: {},   // array of objects
+  allProjects: {},
   fetching: 'FALSE'
 }
 
 export default function projectReducer (state = initialState, action) {
-  // For now, don't handle any actions
-  // and just return the state given to us.
-  let newAllProjects, temp, proj, taskList, task
+  let newAllProjects, temp, proj
   switch (action.type) {
     case PROPOSE_PROJECT:
       let newProject = {

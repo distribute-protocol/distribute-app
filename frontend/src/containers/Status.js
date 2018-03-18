@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { getEthPriceNow } from 'get-eth-price'
 
-import {eth, web3, tr, rr, dt} from '../utilities/blockchain'
+import {eth, web3, rr, dt} from '../utilities/blockchain'
 import * as _ from 'lodash'
 import StatusComponent from '../components/Status'
 // import uport from '../utilities/uport'

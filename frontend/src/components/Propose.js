@@ -1,5 +1,4 @@
 import React from 'react'
-import Sidebar from '../components/shared/Sidebar'
 import { Button, Form, Input, DatePicker, Upload, Icon } from 'antd'
 const FormItem = Form.Item
 

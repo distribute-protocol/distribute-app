@@ -4,7 +4,7 @@ import ClaimComponent from '../../components/project/Claim'
 import { Button } from 'antd'
 import {eth, web3, rr, pr, P} from '../../utilities/blockchain'
 import { hashTasksArray, hashTasks } from '../../utilities/hashing'
-import { setProjectTaskList, indicateTaskClaimed, taskListSubmitted, indicateTaskSubmitted } from '../../actions/projectActions'
+import { indicateTaskClaimed, taskListSubmitted, indicateTaskSubmitted } from '../../actions/projectActions'
 import moment from 'moment'
 import ipfsAPI from 'ipfs-api'
 let ipfs = ipfsAPI()
@@ -13,14 +13,6 @@ const ButtonGroup = Button.Group
 class ClaimProject extends React.Component {
   constructor () {
     super()
-    this.state = {
-      value: '',
-      percentages: '',
-      tasks: '',
-      tempTask: {},
-      taskList: [],
-      isSubmitted: false
-    }
     this.getProjectStatus = this.getProjectStatus.bind(this)
     this.submitWinningHashList = this.submitWinningHashList.bind(this)
     this.checkValidation = this.checkValidation.bind(this)
@@ -49,7 +41,7 @@ class ClaimProject extends React.Component {
             nextDeadline,
             state: projectState,
             project: p,
-            taskList: this.props.taskList
+            taskList: this.props.project.taskList
           }
           ipfs.object.get(ipfsHash, (err, node) => {
             if (err) {
@@ -68,14 +60,14 @@ class ClaimProject extends React.Component {
     await pr.stakedProjects(this.props.address).then(winner => {
       return winner
     }).then((topTaskHash) => {
-      Object.keys(this.props.submissions).map(async (address, i) => {
-        let hash = hashTasksArray(this.props.submissions[address], this.state.weiCost)
+      Object.keys(this.props.project.submittedTasks).map(async (address, i) => {
+        let hash = hashTasksArray(this.props.project.submittedTasks[address], this.state.weiCost)
         if (hash === topTaskHash) {
-          let list = hashTasks(this.props.submissions[address], this.state.weiCost)
+          let list = hashTasks(this.props.project.submittedTasks[address], this.state.weiCost)
           eth.getAccounts(async (err, accounts) => {
             if (!err) {
               await pr.submitHashList(this.props.address, list, {from: accounts[0]}).then(() => {
-                this.props.taskListSubmitted({taskList: this.props.submissions[address], address: this.props.address, listSubmitted: true})
+                this.props.project.taskListSubmitted({taskList: this.props.project.submittedTasks[address], address: this.props.address, listSubmitted: true})
               })
             }
           })
@@ -90,8 +82,8 @@ class ClaimProject extends React.Component {
   claimTask (i) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
-        let hash = web3.fromAscii(this.props.taskList[i].description, 32)
-        await rr.claimTask(this.props.address, i, hash, 100 * (this.props.taskList[i].weiReward / this.state.weiCost), {from: accounts[0]})
+        let hash = web3.fromAscii(this.props.project.taskList[i].description, 32)
+        await rr.claimTask(this.props.address, i, hash, 100 * (this.props.project.taskList[i].weiReward / this.state.weiCost), {from: accounts[0]})
         .then(async() => {
           this.props.indicateTaskClaimed({address: this.props.address, index: i})
         })
@@ -120,8 +112,8 @@ class ClaimProject extends React.Component {
 
   render () {
     let tasks
-    if (typeof this.props.taskList !== 'undefined') {
-      tasks = this.props.taskList.map((task, i) => {
+    if (typeof this.props.project.taskList !== 'undefined') {
+      tasks = this.props.project.taskList.map((task, i) => {
         let weiReward
         typeof task.weiReward !== 'undefined'
          ? weiReward = task.weiReward + ' wei'
@@ -135,10 +127,10 @@ class ClaimProject extends React.Component {
           repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' && typeof taskWeiReward !== 'undefined' ? reputationCost * task.weiReward / weiCost : '',
           buttons: <ButtonGroup>
             <Button
-              disabled={this.props.taskList[i].claimed || !this.props.project.listSubmitted}
+              disabled={this.props.project.taskList[i].claimed || !this.props.project.listSubmitted}
               type='danger' onClick={() => this.claimTask(i)}>Claim</Button>
             <Button
-              disabled={this.props.taskList[i].submitted || !this.props.taskList[i].claimed || !this.props.project.listSubmitted}
+              disabled={this.props.project.taskList[i].submitted || !this.props.project.taskList[i].claimed || !this.props.project.listSubmitted}
               type='danger' onClick={() => this.markTaskComplete(i)}>Task Complete</Button>
           </ButtonGroup>
         }
@@ -168,14 +160,12 @@ class ClaimProject extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    project: state.projects.allProjects[ownProps.address],
-    taskList: state.projects.allProjects[ownProps.address].taskList,
-    submissions: state.projects.allProjects[ownProps.address].submittedTasks
+    project: state.projects.allProjects[ownProps.address]
   }
 }
+
 const mapDispatchToProps = (dispatch) => {
   return {
-    setProjectTaskList: (taskDetails) => dispatch(setProjectTaskList(taskDetails)),
     indicateTaskClaimed: (submissionDetails) => dispatch(indicateTaskClaimed(submissionDetails)),
     taskListSubmitted: (taskDetails) => dispatch(taskListSubmitted(taskDetails)),
     indicateTaskSubmitted: (taskDetails) => dispatch(indicateTaskSubmitted(taskDetails))
