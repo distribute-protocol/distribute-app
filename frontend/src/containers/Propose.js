@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { proposeProject } from '../actions/projectActions'
 import ProposePage from '../components/Propose'
+import Sidebar from '../components/shared/Sidebar'
 import { push } from 'react-router-redux'
 import {eth, web3, tr, rr, dt} from '../utilities/blockchain'
 import * as _ from 'lodash'
@@ -20,7 +21,6 @@ class Propose extends Component {
     }
     this.proposeProject = this.proposeProject.bind(this)
     this.getContractValues = this.getContractValues.bind(this)
-    // this.checkTransactionMined = this.checkTransactionMined.bind(this)
     this.handlePhotoUpload = this.handlePhotoUpload.bind(this)
     this.handlePriceChange = this.handlePriceChange.bind(this)
     this.handleChange = this.handleChange.bind(this)
@@ -129,22 +129,23 @@ class Propose extends Component {
 
   render () {
     return (
-      <ProposePage
-        handleSubmit={this.handleSubmit}
-        handleChange={this.handleChange}
-        imageUrl={this.state.imageUrl}
-        loading={this.state.loading}
-        cost={typeof this.state.cost === 'undefined'
-          ? 0
-          : Math.ceil(this.state.cost / 20 / this.state.currPrice)
-        }
-        reputationCost={typeof this.state.cost === 'undefined'
-          ? 0
-          : Math.ceil(this.state.cost / this.state.weiBal * this.state.totalReputationSupply / 20)
-        }
-        handlePriceChange={this.handlePriceChange}
-        proposeProject={this.proposeProject}
-      />
+      <div>
+        <Sidebar />
+        <ProposePage
+          handleSubmit={this.handleSubmit}
+          handleChange={this.handleChange}
+          imageUrl={this.state.imageUrl}
+          loading={this.state.loading}
+          cost={typeof this.state.cost === 'undefined'
+            ? 0
+            : Math.ceil(this.state.cost / 20 / this.state.currPrice)}
+          reputationCost={typeof this.state.cost === 'undefined'
+            ? 0
+            : Math.ceil(this.state.cost / this.state.weiBal * this.state.totalReputationSupply / 20)}
+          handlePriceChange={this.handlePriceChange}
+          proposeProject={this.proposeProject}
+        />
+      </div>
     )
   }
 }

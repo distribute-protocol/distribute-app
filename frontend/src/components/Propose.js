@@ -31,7 +31,6 @@ const ProposeForm = (props) => {
   const { getFieldDecorator } = props.form
   return (
     <div>
-      <Sidebar />
       <div style={{marginLeft: 200, marginBottom: 100}}>
         <header className='App-header'>
           <h3 className='App-title2'>Propose Project</h3>

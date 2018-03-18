@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Col, Row } from 'antd'
 import Sidebar from '../components/shared/Sidebar'
-import StakeProject from '../components/shared/StakeProject'
+import Project from './project/Stake'
 import { push } from 'react-router-redux'
 import { eth, tr, rr, pl } from '../utilities/blockchain'
 import * as _ from 'lodash'
@@ -28,17 +28,14 @@ class Stake extends React.Component {
   }
 
   async stakeTokens (address, val) {
-    // console.log(address, val)
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         await tr.stakeTokens(address, val, {from: accounts[0]})
-        // console.log('staked', val, 'tokens on', address)
       }
     })
   }
 
   async unstakeTokens (address, val) {
-    // console.log(address, val)
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         await tr.unstakeTokens(address, val, {from: accounts[0]})
@@ -47,11 +44,9 @@ class Stake extends React.Component {
   }
 
   async stakeReputation (address, val) {
-    // console.log(address, val)
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         await rr.stakeReputation(address, val, {from: accounts[0]})
-        // console.log('staked', val, 'tokens on', address)
       }
     })
   }
@@ -99,12 +94,9 @@ class Stake extends React.Component {
 
   render () {
     const projects = this.state.projects.map((proj, i) => {
-      return <StakeProject
+      return <Project
         key={i}
-        cost={proj.cost}
-        description={proj.description}
         index={i}
-        stakingEndDate={proj.stakingEndDate}
         address={proj.address}
         stakeTokens={(val) => this.stakeTokens(proj.address, val)}
         unstakeTokens={(val) => this.unstakeTokens(proj.address, val)}
@@ -119,7 +111,7 @@ class Stake extends React.Component {
           <header className='App-header'>
             <h3>Stakeable Proposals</h3>
           </header>
-          <div style={{ padding: '30px' }}>
+          <div style={{ paddingLeft: '30px', paddingRight: '30px' }}>
             {projects}
           </div>
         </div>
