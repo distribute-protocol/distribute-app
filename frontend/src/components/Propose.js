@@ -4,7 +4,6 @@ const FormItem = Form.Item
 
 const ProposeForm = (props) => {
   let {
-    handleSubmit,
     handleChange,
     imageUrl,
     cost,
@@ -36,7 +35,7 @@ const ProposeForm = (props) => {
           <h3 className='App-title2'>Propose Project</h3>
         </header>
         <div style={{display: 'flex', flexDirection: 'column', marginLeft: 100, marginRight: 200}}>
-          <Form layout='horizontal' onSubmit={handleSubmit}>
+          <Form layout='horizontal'>
             <FormItem label='Name'>
               {getFieldDecorator('name')(<Input placeholder='Project Name' />)}
             </FormItem>

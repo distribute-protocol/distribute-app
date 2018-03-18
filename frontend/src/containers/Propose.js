@@ -132,7 +132,6 @@ class Propose extends Component {
       <div>
         <Sidebar />
         <ProposePage
-          handleSubmit={this.handleSubmit}
           handleChange={this.handleChange}
           imageUrl={this.state.imageUrl}
           loading={this.state.loading}

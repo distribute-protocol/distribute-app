@@ -5,59 +5,65 @@ const initialState = {
 }
 
 export default function projectReducer (state = initialState, action) {
-  let newAllProjects, temp, proj
+  let allProjects, project, address, taskList, index
+  let updateAllProjects = (state, address, project) => {
+    allProjects = Object.assign({}, state.allProjects, {[address]: project})
+    return Object.assign({}, state, {allProjects})
+  }
   switch (action.type) {
     case PROPOSE_PROJECT:
-      let newProject = {
-        cost: action.projectDetails.cost,
-        description: action.projectDetails.description,
-        stakingEndDate: action.projectDetails.stakingEndDate,
-        address: action.projectDetails.address,
-        taskList: [],
-        submittedTasks: {}
-      }
-      newAllProjects = Object.assign({}, state.allProjects, {[action.projectDetails.address]: newProject})
-      return Object.assign({}, state, {allProjects: newAllProjects})
-      // console.log(state.allProjects
-    case GET_PROJECT_STATE:
-      return Object.assign({}, state, {fetching: 'TRUE'})
-    case PROJECT_STATE_RECEIVED:
-      return Object.assign({}, state, {fetching: 'FALSE'})
-    case SET_PROJECT_TASK_LIST:
-      temp = state.allProjects[action.taskDetails.address]
-      temp.taskList = action.taskDetails.taskList
-      newAllProjects = Object.assign({}, state.allProjects, {[action.taskDetails.address]: temp})
-      return Object.assign({}, state, {allProjects: newAllProjects})
-    case SET_TASK_SUBMISSION:
-      temp = state.allProjects[action.submissionDetails.address]
-      temp.submittedTasks[action.submissionDetails.submitter] = action.submissionDetails.taskSubmission
-      newAllProjects = Object.assign({}, state.allProjects, {[action.submissionDetails.address]: temp})
-      return Object.assign({}, state, {allProjects: newAllProjects})
-    case TASKLIST_SUBMITTED:
-      temp = state.allProjects[action.taskDetails.address]
-      temp.taskList = action.taskDetails.taskList
-      temp = Object.assign({}, temp, {listSubmitted: action.taskDetails.listSubmitted})
-      newAllProjects = Object.assign({}, state.allProjects, {[action.taskDetails.address]: temp})
-      return Object.assign({}, state, {allProjects: newAllProjects})
-    case TASK_CLAIMED:
-      temp = state.allProjects[action.taskDetails.address]
-      temp.taskList[action.taskDetails.index] = Object.assign({}, temp.taskList[action.taskDetails.index], {claimed: true})
-      newAllProjects = Object.assign({}, state.allProjects, {[action.taskDetails.address]: temp})
-      return Object.assign({}, state, {allProjects: newAllProjects})
-    case TASK_COMPLETED:
-      temp = state.allProjects[action.taskDetails.address]
-      temp.taskList[action.taskDetails.index] = Object.assign({}, temp.taskList[action.taskDetails.index], {submitted: true, validated: {}})
-      newAllProjects = Object.assign({}, state.allProjects, {[action.taskDetails.address]: temp})
-      return Object.assign({}, state, {allProjects: newAllProjects})
+      ({address} = action.projectDetails)
+      allProjects = Object.assign(
+        {},
+        state.allProjects,
+        {[address]: Object.assign({}, {...action.projectDetails}, {taskList: [], submittedTasks: {}})}
+      )
+      return Object.assign({}, state, {allProjects})
+    // case GET_PROJECT_STATE:
+    //   return Object.assign({}, state, {fetching: 'TRUE'})
+    // case PROJECT_STATE_RECEIVED:
+    //   return Object.assign({}, state, {fetching: 'FALSE'})
     case UPDATE_PROJECT:
-      proj = Object.assign({}, state.allProjects[action.address], action.projObj)
-      newAllProjects = Object.assign({}, state.allProjects, {[action.address]: proj})
-      return Object.assign({}, state, {allProjects: newAllProjects})
+      project = Object.assign({}, state.allProjects[action.address], action.projObj)
+      return updateAllProjects(state, action.address, project)
+    case SET_PROJECT_TASK_LIST:
+      ({address, taskList} = action.taskDetails)
+      project = state.allProjects[address]
+      project.taskList = taskList
+      return updateAllProjects(state, address, project)
+    case SET_TASK_SUBMISSION:
+      ({address} = action.submissionDetails)
+      let {submitter, taskSubmission} = action.submissionDetails
+      project = state.allProjects[address]
+      project.submittedTasks[submitter] = taskSubmission
+      return updateAllProjects(state, address, project)
+    case TASKLIST_SUBMITTED:
+      ({address, taskList} = action.taskDetails)
+      let {listSubmitted} = action.taskDetails
+      project = state.allProjects[address]
+      project.taskList = taskList
+      project.listSubmitted = listSubmitted
+      return updateAllProjects(state, address, project)
+    case TASK_CLAIMED:
+      ({address, index} = action.taskDetails)
+      project = state.allProjects[address]
+      project.taskList[index].claimed = true
+      return updateAllProjects(state, address, project)
+    case TASK_COMPLETED:
+      ({address, index} = action.taskDetails)
+      project = state.allProjects[address]
+      project.taskList[index] = Object.assign(
+        {},
+        project.taskList[index],
+        {submitted: true, validated: {}}
+      )
+      return updateAllProjects(state, address, project)
     case TASK_VALIDATED:
-      temp = state.allProjects[action.validationDetails.address]
-      temp.taskList[action.validationDetails.index].validated[action.validationDetails.validator] = Object.assign({}, {status: action.validationDetails.status})
-      newAllProjects = Object.assign({}, state.allProjects, {[action.validationDetails.address]: temp})
-      return Object.assign({}, state, {allProjects: newAllProjects})
+      ({address, index} = action.validationDetails)
+      let {validator, status} = action.validationDetails
+      project = state.allProjects[address]
+      project.taskList[index].validated[validator].status = status
+      return updateAllProjects(state, address, project)
     default:
   }
   return state
