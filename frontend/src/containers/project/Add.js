@@ -1,12 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import moment from 'moment'
 import { Button } from 'antd'
 import AddComponent from '../../components/project/Add'
 import {eth, web3, pr, P} from '../../utilities/blockchain'
 import { hashTasksArray } from '../../utilities/hashing'
 import update from 'immutability-helper'
 import { setProjectTaskList, setTaskSubmission } from '../../actions/projectActions'
+import moment from 'moment'
 import ipfsAPI from 'ipfs-api'
 let ipfs = ipfsAPI()
 

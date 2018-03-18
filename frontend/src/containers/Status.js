@@ -92,7 +92,7 @@ class Status extends Component {
         if (accounts.length) {
           await dt.mint(this.tokensToBuy.value, {value: web3.toWei(Math.ceil(this.state.ethToSend * 100000) / 100000, 'ether'), from: accounts[0]})
           .then(() => {
-            this.getBalance()
+            this.getNetworkStatus()
             this.setState({
               tokensToBuy: ''
             })

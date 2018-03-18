@@ -44,7 +44,7 @@ export default ({
             <h3>Eth Pool</h3>
             <h5>{`${ethPool} ETH`}</h5>
             <h3>Capital Equivalent</h3>
-            <h5>{`${capitalEquivalent}`}</h5>
+            <h5>{`$${capitalEquivalent} USD`}</h5>
             <h3>Current Token Price in Eth</h3>
             <h5>{currentPrice}</h5>
           </div>

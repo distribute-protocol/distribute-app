@@ -23,6 +23,7 @@ class ClaimProject extends React.Component {
     }
     this.getProjectStatus = this.getProjectStatus.bind(this)
     this.submitWinningHashList = this.submitWinningHashList.bind(this)
+    this.checkValidation = this.checkValidation.bind(this)
   }
 
   componentWillMount () {
