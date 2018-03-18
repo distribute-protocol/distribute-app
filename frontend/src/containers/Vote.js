@@ -68,7 +68,7 @@ class Vote extends React.Component {
     return (
       <div>
         <Sidebar />
-        <div style={{marginLeft: 200}}>
+        <div style={{marginLeft: 200, marginBottom: 30}}>
           <header className='App-header'>
             <h3>Vote Tasks</h3>
             <Button type='danger' onClick={this.fastForward}>fast forward 1 week</Button>
