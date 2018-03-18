@@ -9,9 +9,9 @@ import Claim from './Claim'
 import Add from './Add'
 import Validate from './Validate'
 import Vote from './Vote'
-import Complete from './Complete'
-import Failed from './Failed'
-import Expired from './Expired'
+import Complete from './Finished/Complete'
+import Failed from './Finished/Failed'
+import Expired from './Finished/Expired'
 import Landing from './Landing'
 
 const Main = () =>

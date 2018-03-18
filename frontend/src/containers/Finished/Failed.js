@@ -1,11 +1,9 @@
 import React from 'react'
-import { Button } from 'antd'
 import { push } from 'react-router-redux'
-import Sidebar from '../components/shared/Sidebar'
-import Project from './project/Vote'
-import fastforward from '../utilities/fastforward'
+import Sidebar from '../../components/shared/Sidebar'
+import Project from '../project/Finished'
 import { connect } from 'react-redux'
-import { P } from '../utilities/blockchain'
+import { P } from '../../utilities/blockchain'
 import * as _ from 'lodash'
 
 class Vote extends React.Component {
@@ -14,7 +12,6 @@ class Vote extends React.Component {
     this.state = {
       projects: []
     }
-    this.fastForward = this.fastForward.bind(this)
   }
 
   componentWillMount () {
@@ -37,7 +34,7 @@ class Vote extends React.Component {
     let projects = Object.keys(np.projects).map((projAddr, i) => {
       return projectState(projAddr)
         .then(state => {
-          if (state.toNumber() === 5) {
+          if (state.toNumber() === 7) {
             return np.projects[projAddr]
           }
         })
@@ -52,9 +49,6 @@ class Vote extends React.Component {
         console.error(e)
       })
   }
-  async fastForward () {
-    await fastforward(7 * 24 * 60 * 60)
-  }
 
   render () {
     const projects = this.state.projects.map((proj, i) => {
@@ -68,12 +62,9 @@ class Vote extends React.Component {
     return (
       <div>
         <Sidebar />
-        <div style={{marginLeft: 200}}>
+        <div style={{marginLeft: 200, marginBottom: 30}}>
           <header className='App-header'>
-            <h3>Vote Tasks</h3>
-            <Button type='danger' onClick={this.fastForward}>fast forward 1 week</Button>
-            <h6>ONLY DO THIS IF YOU ARE READY TO MOVE EVERY PROJECT TO THE NEXT STATE</h6>
-            <h6>IF A PROJECT HAS UNCLAIMED TASKS IT WILL FAIL AND YOU WILL LOSE YOUR STAKED TOKENS</h6>
+            <h3>Failed Projects</h3>
           </header>
           <div style={{paddingLeft: '30px', paddingRight: '30px'}}>
             {projects}
