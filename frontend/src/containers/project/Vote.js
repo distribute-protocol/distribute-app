@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import VoteComponent from '../../components/project/Vote'
 import { Button } from 'antd'
-import {eth, pr, tr, web3, P, T} from '../../utilities/blockchain'
+import {eth, pr, tr, rr, web3, P, T} from '../../utilities/blockchain'
 import moment from 'moment'
 import ipfsAPI from 'ipfs-api'
 let ipfs = ipfsAPI()
@@ -75,10 +75,35 @@ class VoteTasks extends React.Component {
     }
   }
 
-  voteTask (i) {
+  voteTask (i, type) {
+    eth.getAccounts(async (err, accounts) => {
+      // I don't get what the last parameter is doing here
+      if (!err) {
+        type === 'token'
+          ? await tr.voteCommit(this.props.address, i, 100, 'hash', 0, {from: accounts[0]})
+          : await rr.voteCommit(this.props.address, i, 100, 'hash', 0, {from: accounts[0]})
+          // .then(async() => {
+          //
+          // })
+      }
+    })
+  }
+
+  rewardValidator (i) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
-        await tr.voteCommit(this.props.address, i, 100, 'hash', 0, {from: accounts[0]})
+        await tr.rewardValidator(this.props.address, i, {from: accounts[0]})
+          // .then(async() => {
+          //
+          // })
+      }
+    })
+  }
+
+  rewardTask (i) {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        await rr.rewardTask(this.props.address, i, {from: accounts[0]})
           // .then(async() => {
           //
           // })
@@ -107,23 +132,23 @@ class VoteTasks extends React.Component {
             rewardVal =
               <div>
                 <Button
-                  type='danger' onClick={() => console.log('reward validator')}> Reward Yes Validator </Button>
+                  type='danger' onClick={() => this.rewardValidator(i)}> Reward Yes Validator </Button>
               </div>
             rewardWork =
               <div>
                 <Button
-                  type='danger' onClick={() => console.log('reward worker')}> Reward Worker </Button>
+                  type='danger' onClick={() => this.rewardTask(i)}> Reward Task </Button>
               </div>
-            needsVote = <div>nope, never</div>
+            needsVote = <div />
           } else {
             // validators can claim, task fails
             rewardVal =
               <div>
                 <Button
-                  type='danger' onClick={() => console.log('reward validator')}> Reward No Validator </Button>
+                  type='danger' onClick={() => this.rewardValidator(i)}> Reward No Validator </Button>
               </div>
-            rewardWork = <div>nope, never</div>
-            needsVote = <div>nope, never</div>
+            rewardWork = <div>Ineligible</div>
+            needsVote = <div />
           }
         } else {
           // vote needs to happen
@@ -132,7 +157,11 @@ class VoteTasks extends React.Component {
           needsVote =
             <div>
               <Button
-                type='danger' onClick={() => this.voteTask(i)}> Vote! </Button>
+                type='danger' onClick={() => this.voteTask(i, 'tokens')}> Vote Tokens!
+              </Button>
+              <Button
+                type='danger' onClick={() => this.voteTask(i, 'rep')}> Vote Rep!
+              </Button>
             </div>
         }
 
