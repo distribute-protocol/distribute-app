@@ -62,7 +62,7 @@ const ProposeForm = (props) => {
               {getFieldDecorator('location')(<Input placeholder='Project Location' />)}
             </FormItem>
             <FormItem label='Cost'>
-              {getFieldDecorator('cost')(<Input placeholder='Project Cost' type='number' onChange={handlePriceChange} />)}
+              {getFieldDecorator('cost')(<Input placeholder='ETH' type='number' onChange={handlePriceChange} />)}
             </FormItem>
             <FormItem label='Staking End Date'>
               {getFieldDecorator('date')(<DatePicker />)}

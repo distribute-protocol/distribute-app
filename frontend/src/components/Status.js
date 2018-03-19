@@ -51,7 +51,7 @@ export default ({
           <div style={{marginLeft: 25}}>
             <h3>Total Reputation Supply</h3>
             <h5>{totalReputationSupply}</h5>
-            <h3>Reputation Balance</h3>
+            <h3>Your Reputation Balance</h3>
             <h5>{reputationBalance}</h5>
           </div>
         </div>

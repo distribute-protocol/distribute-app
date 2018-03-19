@@ -40,7 +40,7 @@ class Sidebar extends React.Component {
         <div style={{alignItems: 'flex-start', marginTop: 20}}>
           <a href='/status'><h3 className='ActionText' style={Object.assign({}, titleStyle, {textAlign: 'center'})}>Network Status</h3></a>
           {/* <a href='/projects'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Current Projects</h3></a> */}
-          <h3 onClick={() => this.toggleShow('actions')} style={Object.assign({}, titleBarStyle, {textAlign: 'center'})}>Projects Actions</h3>
+          <h3 onClick={() => this.toggleShow('actions')} style={Object.assign({}, titleBarStyle, {textAlign: 'center'})}>Project Actions</h3>
           { true
             ? <div>
               <a href='/propose'><h3 className='ActionText' style={titleStyle}>Propose</h3></a>

@@ -69,6 +69,7 @@ class Stake extends React.Component {
     }
 
     let projects = Object.keys(np.projects).map((projAddr, i) => {
+      console.log(projAddr)
       return projectState(projAddr)
         .then(isStaked => {
           if (!isStaked) {
