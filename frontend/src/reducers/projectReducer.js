@@ -62,7 +62,7 @@ export default function projectReducer (state = initialState, action) {
       ({address, index} = action.validationDetails)
       let {validator, status} = action.validationDetails
       project = state.allProjects[address]
-      project.taskList[index].validated[validator].status = status
+      project.taskList[index].validated[validator] = Object.assign({}, {status})
       return updateAllProjects(state, address, project)
     default:
   }

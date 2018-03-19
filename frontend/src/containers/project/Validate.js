@@ -110,14 +110,10 @@ class ValidateTasks extends React.Component {
       </div>)
     if (typeof this.props.project.taskList !== 'undefined') {
       tasks = this.props.project.taskList.map((task, i) => {
-        let weiReward
-        typeof task.weiReward !== 'undefined'
-         ? weiReward = task.weiReward + ' wei'
-         : weiReward = ''
         return {
           key: i,
           description: task.description,
-          ethReward: weiReward,
+          ethReward: `${web3.fromWei(task.weiReward, 'ether')} ETH`,
           input: returnInput(i)
         }
       })

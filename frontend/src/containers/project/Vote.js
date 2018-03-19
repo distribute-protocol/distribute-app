@@ -135,15 +135,11 @@ class VoteTasks extends React.Component {
                 type='danger' onClick={() => this.voteTask(i)}> Vote! </Button>
             </div>
         }
-        let weiReward
-        typeof this.props.project.taskList[i].weiReward !== 'undefined'
-         ? weiReward = this.props.project.taskList[i].weiReward + ' wei'
-         : weiReward = ''
 
         return {
           key: i,
           description: this.props.project.taskList[i].description,
-          ethReward: weiReward,
+          ethReward: `${web3.fromWei(this.props.project.taskList[i].weiReward, 'ether')} ETH`,
           rewardValidator: rewardVal,
           rewardWorker: rewardWork,
           taskNeedsVote: needsVote
@@ -152,7 +148,7 @@ class VoteTasks extends React.Component {
     } else {
       tasks = []
     }
-    console.log(tasks)
+
     return (
       <VoteComponent
         name={this.state.name}

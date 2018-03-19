@@ -13,6 +13,7 @@ const ButtonGroup = Button.Group
 class ClaimProject extends React.Component {
   constructor () {
     super()
+    this.state = {}
     this.getProjectStatus = this.getProjectStatus.bind(this)
     this.submitWinningHashList = this.submitWinningHashList.bind(this)
     this.checkValidation = this.checkValidation.bind(this)
@@ -67,7 +68,7 @@ class ClaimProject extends React.Component {
           eth.getAccounts(async (err, accounts) => {
             if (!err) {
               await pr.submitHashList(this.props.address, list, {from: accounts[0]}).then(() => {
-                this.props.project.taskListSubmitted({taskList: this.props.project.submittedTasks[address], address: this.props.address, listSubmitted: true})
+                this.props.taskListSubmitted({taskList: this.props.project.submittedTasks[address], address: this.props.address, listSubmitted: true})
               })
             }
           })
@@ -114,16 +115,12 @@ class ClaimProject extends React.Component {
     let tasks
     if (typeof this.props.project.taskList !== 'undefined') {
       tasks = this.props.project.taskList.map((task, i) => {
-        let weiReward
-        typeof task.weiReward !== 'undefined'
-         ? weiReward = task.weiReward + ' wei'
-         : weiReward = ''
         let reputationCost = this.props.project.reputationCost
         let weiCost = this.props.project.weiCost
         return {
           key: i,
           description: task.description,
-          ethReward: weiReward,
+          ethReward: `${web3.fromWei(task.weiReward, 'ether')} ETH`,
           repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' && typeof taskWeiReward !== 'undefined' ? reputationCost * task.weiReward / weiCost : '',
           buttons: <ButtonGroup>
             <Button
