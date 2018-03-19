@@ -86,21 +86,24 @@ export default ({
               </ButtonGroup>
             </div>
           </div>
-          <div style={{backgroundColor: '#F2A35E', padding: 30}}>
-            <div>
-              <h3>Reputation:</h3>
+          { (openFaucet || notRegistered)
+            ? <div style={{backgroundColor: '#F2A35E', padding: 30}}>
+              <div>
+                <h3>Reputation:</h3>
+              </div>
+              <div style={{marginTop: 20}}>
+                <ButtonGroup>
+                  {notRegistered ? <Button color='success' icon='user-add' onClick={register}>
+                    Register
+                  </Button> : null}
+                  {openFaucet ? <Button icon='download' color='success' onClick={faucet}>
+                    Faucet
+                  </Button> : null}
+                </ButtonGroup>
+              </div>
             </div>
-            <div style={{marginTop: 20}}>
-              <ButtonGroup>
-                {notRegistered ? <Button color='success' icon='user-add' onClick={register}>
-                  Register
-                </Button> : null}
-                {openFaucet ? <Button icon='download' color='success' onClick={faucet}>
-                  Faucet
-                </Button> : null}
-              </ButtonGroup>
-            </div>
-          </div>
+            : null
+          }
         </div>
       </div>
     </div>
