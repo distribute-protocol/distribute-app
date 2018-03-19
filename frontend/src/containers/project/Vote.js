@@ -66,23 +66,23 @@ class VoteTasks extends React.Component {
       }
     })
   }
-  onChange (type, val) {
-    try {
-      let temp = Object.assign({}, this.state, {[type]: val})
-      this.setState(temp)
-    } catch (error) {
-      throw new Error(error)
-    }
+
+  onChange (e) {
+    this.setState({[e.target.name]: e.target.value})
+    console.log(e.target)
   }
 
   // Can Vote Commit...Vote Reveal is another beast, need to think about UI
-  voteTask (i, type) {
+  voteTask (i, type, status) {
     eth.getAccounts(async (err, accounts) => {
-      // I don't get what the last parameter is doing here
       if (!err) {
+        // secrethash is just fromAscii of voting status
+        // hardcode previous pollID for now as 0 --> this will probably throw
+        let secretHash = web3.fromAscii(status, 32)
+        let prevPollID = 0
         type === 'token'
-          ? await tr.voteCommit(this.props.address, i, 100, 'hash', 0, {from: accounts[0]})
-          : await rr.voteCommit(this.props.address, i, 100, 'hash', 0, {from: accounts[0]})
+          ? await tr.voteCommit(this.props.address, i, this.state['tokVal' + i], secretHash, prevPollID, {from: accounts[0]})
+          : await rr.voteCommit(this.props.address, i, this.state['repVal' + i], secretHash, prevPollID, {from: accounts[0]})
       }
     })
   }
@@ -141,7 +141,7 @@ class VoteTasks extends React.Component {
                 <Button
                   type='danger' onClick={() => this.rewardValidator(i)}> Reward No Validator </Button>
               </div>
-            rewardWork = <div>Ineligible</div>
+            rewardWork = <div>ineligible</div>
             needsVote = <div />
           }
         } else {
@@ -150,12 +150,34 @@ class VoteTasks extends React.Component {
           rewardWork = <div>nope, not yet</div>
           needsVote =
             <div>
-              <Button
-                type='danger' onClick={() => this.voteTask(i, 'tokens')}> Vote Tokens!
-              </Button>
-              <Button
-                type='danger' onClick={() => this.voteTask(i, 'rep')}> Vote Rep!
-              </Button>
+              <div>
+                <input
+                  name={'tokVal' + i}
+                  placeholder='tokens'
+                  onChange={(e) => this.onChange(e)}
+                  value={this.state['tokVal' + i] || ''}
+                />
+                <Button
+                  type='danger' onClick={() => this.voteTask(i, 'tokens', true)}> Yes
+                </Button>
+                <Button
+                  type='danger' onClick={() => this.voteTask(i, 'tokens', false)}> No
+                </Button>
+              </div>
+              <div>
+                <input
+                  name={'repVal' + i}
+                  placeholder='reputation'
+                  onChange={(e) => this.onChange(e)}
+                  value={this.state['repVal' + i] || ''}
+                />
+                <Button
+                  type='danger' onClick={() => this.voteTask(i, 'rep', true)}> Yes
+                </Button>
+                <Button
+                  type='danger' onClick={() => this.voteTask(i, 'rep', false)}> No
+                </Button>
+              </div>
             </div>
         }
 
