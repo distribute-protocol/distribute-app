@@ -26,7 +26,8 @@ class Landing extends React.Component {
       <div style={{padding: 30}}>
         <h1 className='display-3'>Welcome to Distribute</h1>
         <hr className='my-2' />
-        <p>You need a uport to continue. You can download the mobile app with one of the links below.</p>
+        <p>You need a uPort to continue. You can download the mobile app with one of the links below.</p>
+        <p>Upon login, you will be prompted to receive your first reputation points.</p>
         <text>
           <a href='https://itunes.apple.com/us/app/uport-identity-wallet-ethereum/id1123434510?mt=8'>uPort iOS</a>
           <text> | </text>

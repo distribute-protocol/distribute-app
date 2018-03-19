@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { P } from '../../utilities/blockchain'
 import * as _ from 'lodash'
 
-class Vote extends React.Component {
+class Failed extends React.Component {
   constructor () {
     super()
     this.state = {
@@ -87,4 +87,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Vote)
+export default connect(mapStateToProps, mapDispatchToProps)(Failed)

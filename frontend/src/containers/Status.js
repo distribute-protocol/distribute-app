@@ -6,10 +6,7 @@ import { getEthPriceNow } from 'get-eth-price'
 import {eth, web3, rr, dt} from '../utilities/blockchain'
 import * as _ from 'lodash'
 import StatusComponent from '../components/Status'
-// import uport from '../utilities/uport'
-// var mnid = require('mnid')
 
-// let uportWR = uport.contract(JSON.parse(ReputationRegistryABI)).at(ReputationRegistryAddress)
 class Status extends Component {
   constructor () {
     super()
@@ -19,42 +16,15 @@ class Status extends Component {
     this.getNetworkStatus = this.getNetworkStatus.bind(this)
     this.buyShares = this.buyShares.bind(this)
     this.sellShares = this.sellShares.bind(this)
-    this.login = this.login.bind(this)
     this.register = this.register.bind(this)
   }
 
-  login () {
-    // uport.requestCredentials({
-    //   requested: ['name', 'avatar'],
-    //   notifications: true
-    // }).then((credentials) => {
-    //   console.log(credentials)
-    //   // console.log(mnid.decode(credentials.address))
-    //   this.uportWR.register()
-    //   // https://rinkeby.infura.io/11XiCuI1EjsowYvplZ24
-    //   // const txobject = {
-    //   //   to: '0xeec918d74c746167564401103096d45bbd494b74',
-    //   //   function: WR.register(),
-    //   //   appName: 'Nemo'
-    //   // }
-    //   // uport.sendTranaction(txobject).then(txID => console.log(txID))
-    //   // WR.register()
-    // })
-  }
   componentWillMount () {
     if (_.isEmpty(this.props.user)) {
       // this.props.reroute()
     } else {}
     this.getNetworkStatus()
   }
-    // let config = {
-    //   method: 'GET',
-    //   headers: new Headers(),
-    //   mode: 'cors',
-    //   cache: 'default'
-    // }
-    // fetch('/api', config).then((res, req) => {})
-    // this.queryDatabaseTest()
 
   async getNetworkStatus () {
     eth.getAccounts(async (err, accounts) => {
@@ -125,6 +95,7 @@ class Status extends Component {
 
   faucet () {
     let accounts = eth.accounts
+    console.log(accounts)
     rr.faucet({from: accounts[0]})
   }
 
@@ -183,7 +154,7 @@ class Status extends Component {
           />}
         notRegistered={(this.state.reputationBalance === 0 && !this.state.first)}
         register={this.register}
-        openFaucet={this.state.reputationBalance < 10000}
+        openFaucet={(this.state.reputationBalance < 10000 && this.state.first)}
         faucet={this.faucet}
       />
     )
