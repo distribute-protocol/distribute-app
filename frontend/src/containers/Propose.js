@@ -17,7 +17,8 @@ class Propose extends Component {
     this.state = {
       tempProject: {},
       currPrice: 0,
-      loading: false
+      loading: false,
+      imageUrl: false
     }
     this.proposeProject = this.proposeProject.bind(this)
     this.getContractValues = this.getContractValues.bind(this)
@@ -63,7 +64,7 @@ class Propose extends Component {
       let txReceipt = tx.receipt
       let projectAddress = '0x' + txReceipt.logs[0].topics[1].slice(txReceipt.logs[0].topics[1].length - 40, (txReceipt.logs[0].topics[1].length))
       this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress, ipfsHash: `https://ipfs.io/ipfs/${multiHash}`}))
-      this.setState({cost: 0, photo: false, imageUrl: null})
+      this.setState({cost: 0, photo: false, imageUrl: false})
     }
 
     await ipfs.object.put(obj, {enc: 'json'}, (err, node) => {

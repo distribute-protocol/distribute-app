@@ -13,7 +13,7 @@ export default ({
   state
 }) => {
   return (
-    <div>
+    <div style={{backgroundColor: '#DDE4E5', marginBottom: 30}}>
       <ProjectHeader
         name={name}
         address={address}
@@ -23,7 +23,7 @@ export default ({
         cost={cost}
         reputationCost={reputationCost}
       />
-      <div>
+      <div style={{padding: 10}}>
         {`Project State: ${state}`}
       </div>
     </div>

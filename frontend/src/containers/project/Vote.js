@@ -75,6 +75,7 @@ class VoteTasks extends React.Component {
     }
   }
 
+  // Can Vote Commit...Vote Reveal is another beast, need to think about UI
   voteTask (i, type) {
     eth.getAccounts(async (err, accounts) => {
       // I don't get what the last parameter is doing here
@@ -82,31 +83,24 @@ class VoteTasks extends React.Component {
         type === 'token'
           ? await tr.voteCommit(this.props.address, i, 100, 'hash', 0, {from: accounts[0]})
           : await rr.voteCommit(this.props.address, i, 100, 'hash', 0, {from: accounts[0]})
-          // .then(async() => {
-          //
-          // })
       }
     })
   }
 
+  // Works - need to check all related state
   rewardValidator (i) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         await tr.rewardValidator(this.props.address, i, {from: accounts[0]})
-          // .then(async() => {
-          //
-          // })
       }
     })
   }
 
+  // Doesn't work because project needs to be in complete state, instatiating a task doesn't seem to work
   rewardTask (i) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         await rr.rewardTask(this.props.address, i, {from: accounts[0]})
-          // .then(async() => {
-          //
-          // })
       }
     })
   }

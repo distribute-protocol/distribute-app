@@ -35,7 +35,7 @@ export default ({
   checkValidation
 }) => {
   return (
-    <div>
+    <div style={{backgroundColor: '#DDE4E5', marginBottom: 30}}>
       <ProjectHeader
         name={name}
         address={address}
@@ -45,15 +45,17 @@ export default ({
         cost={cost}
         reputationCost={reputationCost}
       />
-      <div>
+      <div style={{padding: 10}}>
         <div>
-          Task Period Expires In {typeof date !== 'undefined' ? `${date.fromNow()}` : 'N/A'}
+          <div>
+            Task Period Expires In {typeof date !== 'undefined' ? `${date.fromNow()}` : 'N/A'}
+          </div>
+        </div>
+        <div style={{display: 'flex', flexDirection: 'column', backgroundColor: '#FCFCFC', marginTop: 30}}>
+          <Table dataSource={tasks} columns={columns} pagination={false} />
         </div>
       </div>
-      <div style={{display: 'flex', flexDirection: 'column', backgroundColor: '#FCFCFC', marginTop: 30}}>
-        <Table dataSource={tasks} columns={columns} pagination={false} />
-      </div>
-      <div style={{marginTop: 30}}>
+      <div style={{margin: 20}}>
         <Button
           disabled={listSubmitted}
           onClick={() => submitWinningHashList()}>
@@ -63,7 +65,6 @@ export default ({
           Check Validate
         </Button>
       </div>
-
     </div>
   )
 }

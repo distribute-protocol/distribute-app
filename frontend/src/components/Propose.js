@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, Form, Input, DatePicker, Upload, Icon } from 'antd'
+const { TextArea } = Input
 const FormItem = Form.Item
 
 const ProposeForm = (props) => {
@@ -49,13 +50,13 @@ const ProposeForm = (props) => {
                 // beforeUpload={beforeUpload}
                 onChange={handleChange}
               >
-                {typeof imageUrl !== 'undefined'
+                {imageUrl
                   ? <img style={{width: 200, height: 200}} src={imageUrl} alt='' />
                   : uploadButton}
               </Upload>
             </FormItem>
             <FormItem label='Summary'>
-              {getFieldDecorator('summary')(<Input type='textarea' placeholder='Project Summary' />)}
+              {getFieldDecorator('summary')(<TextArea rows={4} type='textarea' placeholder='Project Summary' />)}
             </FormItem>
             <FormItem label='Location'>
               {getFieldDecorator('location')(<Input placeholder='Project Location' />)}

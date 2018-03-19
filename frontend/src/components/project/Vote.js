@@ -37,7 +37,7 @@ export default ({
   checkEnd
 }) => {
   return (
-    <div>
+    <div style={{backgroundColor: '#DDE4E5', marginBottom: 30}}>
       <ProjectHeader
         name={name}
         address={address}
@@ -47,16 +47,18 @@ export default ({
         cost={cost}
         reputationCost={reputationCost}
       />
-      <div>
+      <div style={{padding: 10}}>
         <div>
-          Voting Period Expires In {typeof date !== 'undefined' ? `${date.fromNow()}` : 'N/A'}
+          <div>
+            Voting Period Expires In {typeof date !== 'undefined' ? `${date.fromNow()}` : 'N/A'}
+          </div>
+        </div>
+        <div style={{display: 'flex', flexDirection: 'column', backgroundColor: '#FCFCFC', marginTop: 30}}>
+          <Table dataSource={tasks} columns={columns} pagination={false} />
         </div>
       </div>
-      <div style={{display: 'flex', flexDirection: 'column', backgroundColor: '#FCFCFC', marginTop: 30}}>
-        <Table dataSource={tasks} columns={columns} pagination={false} />
-      </div>
       <Button
-        style={{marginTop: 30}}
+        style={{margin: 20}}
         onClick={() => checkEnd()}>
         Check End
       </Button>

@@ -52,7 +52,7 @@ export default ({
   moveRow
 }) => {
   return (
-    <div style={{backgroundColor: '#DDE4E5'}}>
+    <div style={{backgroundColor: '#DDE4E5', marginBottom: 30}}>
       <ProjectHeader
         name={name}
         address={address}
@@ -79,7 +79,7 @@ export default ({
           </div>
         </div>
         {/* disabled={Date.now() < date.valueOf()} */}
-        <Button style={{marginTop: 30}} onClick={() => checkActive()} >Check Active</Button>
+        <Button style={{margin: 20}} onClick={() => checkActive()} >Check Active</Button>
       </div>
     </div>
   )
