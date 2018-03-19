@@ -6,6 +6,12 @@ import ipfsAPI from 'ipfs-api'
 let ipfs = ipfsAPI()
 
 class FinishedProject extends React.Component {
+  constructor () {
+    super()
+    this.state = {
+      tasks: []
+    }
+  }
   componentWillMount () {
     this.getProjectStatus()
   }
@@ -29,8 +35,7 @@ class FinishedProject extends React.Component {
             ipfsHash,
             nextDeadline,
             state: states[projectState],
-            project: p,
-            taskList: this.props.project.taskList
+            project: p
           }
           ipfs.object.get(ipfsHash, (err, node) => {
             if (err) {

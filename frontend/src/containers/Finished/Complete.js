@@ -24,9 +24,7 @@ class Complete extends React.Component {
     let projectsArr
     function projectState (address) {
       return new Promise(async (resolve, reject) => {
-        let proj = P.at(address)
-        let state = await proj.state()
-        console.log(state.toNumber())
+        let state = P.at(address).state()
         resolve(state)
       })
     }

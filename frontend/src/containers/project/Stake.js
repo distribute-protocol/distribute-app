@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import StakeComponent from '../../components/project/Stake'
 import moment from 'moment'
-import {eth, web3, dt, pr, P} from '../../utilities/blockchain'
+import {eth, web3, dt, P} from '../../utilities/blockchain'
 import { updateProject } from '../../actions/projectActions'
 import ipfsAPI from 'ipfs-api'
 let ipfs = ipfsAPI()
@@ -16,6 +16,7 @@ class StakeProject extends Component {
     }
     this.tokens = this.tokens.bind(this)
     this.reputation = this.reputation.bind(this)
+    this.checkStaked = this.checkStaked.bind(this)
   }
 
   async getProjectStatus () {
@@ -82,13 +83,7 @@ class StakeProject extends Component {
   }
 
   checkStaked () {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        await pr.checkStaked(this.props.address, {from: accounts[0]}).then((res) => {
-          return res
-        })
-      }
-    })
+    this.props.checkStaked()
   }
 
   render () {

@@ -34,7 +34,7 @@ export default ({
   reputationCost,
   date,
   tasks,
-  checkEnd
+  checkVoting
 }) => {
   return (
     <div style={{backgroundColor: '#DDE4E5', marginBottom: 30}}>
@@ -59,7 +59,7 @@ export default ({
       </div>
       <Button
         style={{margin: 20}}
-        onClick={() => checkEnd()}>
+        onClick={() => checkVoting()}>
         Check End
       </Button>
     </div>

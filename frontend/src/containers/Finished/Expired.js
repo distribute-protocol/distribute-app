@@ -25,8 +25,7 @@ class Expired extends React.Component {
 
     function projectState (address) {
       return new Promise(async (resolve, reject) => {
-        let proj = P.at(address)
-        let state = await proj.state()
+        let state = P.at(address).state()
         resolve(state)
       })
     }

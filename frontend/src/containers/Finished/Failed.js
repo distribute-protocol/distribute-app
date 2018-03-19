@@ -25,13 +25,14 @@ class Failed extends React.Component {
 
     function projectState (address) {
       return new Promise(async (resolve, reject) => {
-        let proj = P.at(address)
-        let state = await proj.state()
+        let state = await P.at(address).state()
+        console.log(state)
         resolve(state)
       })
     }
 
     let projects = Object.keys(np.projects).map((projAddr, i) => {
+      console.log(projAddr)
       return projectState(projAddr)
         .then(state => {
           if (state.toNumber() === 7) {
@@ -52,6 +53,7 @@ class Failed extends React.Component {
 
   render () {
     const projects = this.state.projects.map((proj, i) => {
+      console.log(proj)
       return <Project
         key={i}
         index={i}

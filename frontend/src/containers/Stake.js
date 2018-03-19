@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import Sidebar from '../components/shared/Sidebar'
 import Project from './project/Stake'
 import { push } from 'react-router-redux'
-import { eth, tr, rr, pl } from '../utilities/blockchain'
+import { eth, tr, rr, pl, pr, P } from '../utilities/blockchain'
 import * as _ from 'lodash'
 
 class Stake extends React.Component {
@@ -58,21 +58,29 @@ class Stake extends React.Component {
     })
   }
 
+  async checkStaked (address) {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        await pr.checkStaked(address, {from: accounts[0]})
+      }
+    })
+  }
+
   componentWillReceiveProps (np) {
     let projectsArr
 
     function projectState (address) {
       return new Promise(async (resolve, reject) => {
-        let isStaked = await pl.isStaked(address)
-        resolve(isStaked)
+        let state = await P.at(address).state()
+        resolve(state)
       })
     }
 
     let projects = Object.keys(np.projects).map((projAddr, i) => {
-      console.log(projAddr)
       return projectState(projAddr)
-        .then(isStaked => {
-          if (!isStaked) {
+        .then(state => {
+          if (state.toNumber() === 1) {
+            console.log(state.toNumber())
             return np.projects[projAddr]
           }
         })
@@ -98,6 +106,7 @@ class Stake extends React.Component {
         unstakeTokens={(val) => this.unstakeTokens(proj.address, val)}
         stakeReputation={(val) => this.stakeReputation(proj.address, val)}
         unstakeReputation={(val) => this.unstakeReputation(proj.address, val)}
+        checkStaked={() => this.checkStaked(proj.address)}
       />
     })
     return (
