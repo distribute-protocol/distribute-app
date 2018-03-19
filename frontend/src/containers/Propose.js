@@ -46,15 +46,16 @@ class Propose extends Component {
   }
 
   async proposeProject (type, values) {
-    // stakingPeriod in Days changed to milliseconds
+    // stakingPeriod in Days changed to seconds -> blockchain understands seconds
     let projObj = {
       cost: this.state.cost,
-      stakingEndDate: values.date.valueOf(),
+      stakingEndDate: Math.floor(values.date.valueOf() / 1000),
       photo: this.state.photo,
       name: values.name,
       location: values.location,
       summary: values.summary
     }
+
     const obj = {
       Data: JSON.stringify(projObj),
       Links: []
