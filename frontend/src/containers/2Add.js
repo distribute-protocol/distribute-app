@@ -1,14 +1,14 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import Sidebar from '../components/shared/Sidebar'
 import { Button } from 'antd'
 import { push } from 'react-router-redux'
-import Sidebar from '../components/shared/Sidebar'
-import Project from './project/Vote'
-import fastforward from '../utilities/fastforward'
-import { connect } from 'react-redux'
 import { P } from '../utilities/blockchain'
+import Project from './project/2Add'
+import fastforward from '../utilities/fastforward'
 import * as _ from 'lodash'
 
-class Vote extends React.Component {
+class Add extends React.Component {
   constructor () {
     super()
     this.state = {
@@ -22,7 +22,6 @@ class Vote extends React.Component {
       // this.props.reroute()
     }
   }
-
   componentWillReceiveProps (np) {
     let projectsArr
 
@@ -36,8 +35,8 @@ class Vote extends React.Component {
 
     let projects = Object.keys(np.projects).map((projAddr, i) => {
       return projectState(projAddr)
-        .then(state => {
-          if (state.toNumber() === 5) {
+        .then(async (state) => {
+          if (state.toNumber() === 2) {
             return np.projects[projAddr]
           }
         })
@@ -52,6 +51,8 @@ class Vote extends React.Component {
         console.error(e)
       })
   }
+
+// fast forward Ganache 1 week
   async fastForward () {
     await fastforward(7 * 24 * 60 * 60)
   }
@@ -64,18 +65,17 @@ class Vote extends React.Component {
         address={proj.address}
       />
     })
-
     return (
       <div>
         <Sidebar />
         <div style={{marginLeft: 200, marginBottom: 30}}>
           <header className='App-header'>
-            <h3>Vote Tasks</h3>
+            <h3>Add Tasks to Open Projects</h3>
             <Button type='danger' onClick={this.fastForward}>fast forward 1 week</Button>
             <h6>ONLY DO THIS IF YOU ARE READY TO MOVE EVERY PROJECT TO THE NEXT STATE</h6>
-            <h6>IF A PROJECT HAS UNCLAIMED TASKS IT WILL FAIL AND YOU WILL LOSE YOUR STAKED TOKENS</h6>
+            <h6>IF A PROJECT HAS NO TASK SUBMISSIONS IT WILL FAIL AND YOU WILL LOSE YOUR STAKED TOKENS</h6>
           </header>
-          <div style={{paddingLeft: '30px', paddingRight: '30px'}}>
+          <div style={{ paddingLeft: '30px', paddingRight: '30px' }}>
             {projects}
           </div>
         </div>
@@ -84,7 +84,7 @@ class Vote extends React.Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state) => {
   return {
     projects: state.projects.allProjects
   }
@@ -96,4 +96,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Vote)
+export default connect(mapStateToProps, mapDispatchToProps)(Add)

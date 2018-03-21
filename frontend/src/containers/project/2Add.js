@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Button } from 'antd'
-import AddComponent from '../../components/project/Add'
+import AddComponent from '../../components/project/2Add'
 import {eth, web3, pr, P} from '../../utilities/blockchain'
 import { hashTasksArray } from '../../utilities/hashing'
 import update from 'immutability-helper'

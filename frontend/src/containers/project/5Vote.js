@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import VoteComponent from '../../components/project/Vote'
+import VoteComponent from '../../components/project/5Vote'
 import { Button } from 'antd'
 import {eth, pr, tr, rr, web3, P, T} from '../../utilities/blockchain'
 import moment from 'moment'

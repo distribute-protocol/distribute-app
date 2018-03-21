@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Sidebar from '../components/shared/Sidebar'
-import Project from './project/Stake'
+import Project from './project/1Stake'
 import { push } from 'react-router-redux'
 import { eth, tr, rr, pl, pr, P } from '../utilities/blockchain'
 import * as _ from 'lodash'

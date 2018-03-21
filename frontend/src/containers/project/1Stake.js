@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import StakeComponent from '../../components/project/Stake'
+import StakeComponent from '../../components/project/1Stake'
 import moment from 'moment'
 import {eth, web3, dt, P} from '../../utilities/blockchain'
 import { updateProject } from '../../actions/projectActions'

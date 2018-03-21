@@ -4,7 +4,7 @@ import { Button } from 'antd'
 import Sidebar from '../components/shared/Sidebar'
 import { push } from 'react-router-redux'
 import { P } from '../utilities/blockchain'
-import Project from './project/Claim'
+import Project from './project/3Claim'
 import fastforward from '../utilities/fastforward'
 import * as _ from 'lodash'
 

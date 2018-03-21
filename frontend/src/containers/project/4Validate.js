@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import ValidateComponent from '../../components/project/Validate'
+import ValidateComponent from '../../components/project/4Validate'
 import { Button } from 'antd'
 import {eth, pr, tr, web3, P} from '../../utilities/blockchain'
 import { taskValidated } from '../../actions/projectActions'

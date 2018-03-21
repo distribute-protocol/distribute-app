@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import ClaimComponent from '../../components/project/Claim'
+import ClaimComponent from '../../components/project/3Claim'
 import { Button } from 'antd'
 import {eth, web3, rr, pr, P} from '../../utilities/blockchain'
 import { hashTasksArray, hashTasks } from '../../utilities/hashing'

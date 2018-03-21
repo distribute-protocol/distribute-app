@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from 'antd'
 import Sidebar from '../components/shared/Sidebar'
-import Project from './project/Validate'
+import Project from './project/4Validate'
 import fastforward from '../utilities/fastforward'
 import { push } from 'react-router-redux'
 import { connect } from 'react-redux'
