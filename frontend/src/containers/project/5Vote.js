@@ -89,17 +89,23 @@ class VoteTasks extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         let prevPollID = this.getPrevPollID(numTokens, accounts[0])
-        // await tr.voteCommit(this.props.address, i, this.state['tokVal' + i], hash, prevPollID, {from: accounts[0]})
-        // this.voteCommitted({address: this.props.address, index: i, status: status, salt: salt, voter: eth.accounts[0], numTokens: this.state['tokVal' + i]})
+        let taskAddr = await P.at(this.props.address).tasks(i)
+        let pollID = await T.at(taskAddr).pollID()
+        await tr.voteCommit(this.props.address, i, numTokens, hash, prevPollID, {from: accounts[0]})
+        this.voteCommitted({status: status, salt: salt, pollID: pollID, user: accounts[0], numTokens: numTokens})
       }
     })
   }
 
   commitReputation (i, hash, status, salt) {
+    let numRep = this.state['repVal' + i]
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
-        // await rr.voteCommit(this.props.address, i, this.state['repVal' + i], hash, prevPollID, {from: accounts[0]})
-        this.voteCommitted({address: this.props.address, index: i, status: status, salt: salt, voter: eth.accounts[0], numTokens: this.state['repVal' + i]})
+        let prevPollID = this.getPrevPollID(numRep, accounts[0])
+        let taskAddr = await P.at(this.props.address).tasks(i)
+        let pollID = await T.at(taskAddr).pollID()
+        await rr.voteCommit(this.props.address, i, numRep, hash, prevPollID, {from: accounts[0]})
+        this.voteCommitted({status: status, salt: salt, pollID: pollID, user: accounts[0], numTokens: numRep})
       }
     })
   }
