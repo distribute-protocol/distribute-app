@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import VoteComponent from '../../components/project/5Vote'
 import { Button } from 'antd'
 import {eth, pr, tr, rr, web3, P, T} from '../../utilities/blockchain'
-import { voteCommitted, voteRevealed } from '../../actions/projectActions'
+import { voteCommitted, voteRevealed } from '../../actions/pollActions'
 import moment from 'moment'
 import ipfsAPI from 'ipfs-api'
 let ipfs = ipfsAPI()
@@ -75,27 +75,30 @@ class VoteTasks extends React.Component {
 
   // Can Vote Commit...Vote Reveal is another beast, need to think about UI
   voteTask (i, type, status) {
-    let secretHash = web3.fromAscii(status, 32)
+    let salt = Math.floor(Math.random() * Math.floor(10000)).toString()   // get random salt between 0 and 10000
+    let secretHash = web3.fromAscii(status + salt, 32)
     let prevPollID = 0
-    console.log(i, type, status, this.state['tokVal' + i], this.state['repVal' + i])
+    // console.log(i, type, status, this.state['tokVal' + i], this.state['repVal' + i])
+    console.log(this.props.project)
     type === 'tokens'
-      ? this.commitToken(i, secretHash, prevPollID)
+      ? this.commitToken(i, secretHash, status, salt, prevPollID)
       : this.commitReputation(i, secretHash, prevPollID)
   }
 
-  commitToken (i, hash, prevPollID) {
+  commitToken (i, hash, status, salt, prevPollID) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         // await tr.voteCommit(this.props.address, i, this.state['tokVal' + i], hash, prevPollID, {from: accounts[0]})
-        await console.log('goobi')
+        this.voteCommitted({address: this.props.address, index: i, status: status, salt: salt, voter: eth.accounts[0], numTokens: this.state['tokVal' + i]})
       }
     })
   }
 
-  commitReputation (i, hash, prevPollID) {
+  commitReputation (i, hash, status, salt, prevPollID) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         // await rr.voteCommit(this.props.address, i, this.state['repVal' + i], hash, prevPollID, {from: accounts[0]})
+        this.voteCommitted({address: this.props.address, index: i, status: status, salt: salt, voter: eth.accounts[0], numTokens: this.state['repVal' + i]})
       }
     })
   }
@@ -226,7 +229,8 @@ class VoteTasks extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    project: state.projects.allProjects[ownProps.address]
+    project: state.projects.allProjects[ownProps.address],
+    polls: state.polls.allPolls
   }
 }
 
