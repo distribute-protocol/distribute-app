@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import VoteComponent from '../../components/project/5Vote'
 import { Button } from 'antd'
 import {eth, pr, tr, rr, web3, P, T} from '../../utilities/blockchain'
+import { voteCommitted, voteRevealed } from '../../actions/projectActions'
 import moment from 'moment'
 import ipfsAPI from 'ipfs-api'
 let ipfs = ipfsAPI()
@@ -74,15 +75,25 @@ class VoteTasks extends React.Component {
 
   // Can Vote Commit...Vote Reveal is another beast, need to think about UI
   voteTask (i, type, status) {
+    let secretHash = web3.fromAscii(status, 32)
+    let prevPollID = 0
+    type === 'token'
+      ? this.commitToken(i, secretHash, prevPollID)
+      : this.commitReputation(i, secretHash, prevPollID)
+  }
+
+  commitToken (i, hash, prevPollID) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
-        // secrethash is just fromAscii of voting status
-        // hardcode previous pollID for now as 0 --> this will probably throw
-        let secretHash = web3.fromAscii(status, 32)
-        let prevPollID = 0
-        type === 'token'
-          ? await tr.voteCommit(this.props.address, i, this.state['tokVal' + i], secretHash, prevPollID, {from: accounts[0]})
-          : await rr.voteCommit(this.props.address, i, this.state['repVal' + i], secretHash, prevPollID, {from: accounts[0]})
+        await tr.voteCommit(this.props.address, i, this.state['tokVal' + i], hash, prevPollID, {from: accounts[0]})
+      }
+    })
+  }
+
+  commitReputation (i, hash, prevPollID) {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        await rr.voteCommit(this.props.address, i, this.state['tokVal' + i], hash, prevPollID, {from: accounts[0]})
       }
     })
   }
@@ -217,4 +228,11 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export default connect(mapStateToProps)(VoteTasks)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    voteCommitted: (voteDetails) => dispatch(voteCommitted(voteDetails)),
+    voteRevealed: (voteDetails) => dispatch(voteCommitted(voteDetails))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(VoteTasks)

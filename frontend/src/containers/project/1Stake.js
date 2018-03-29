@@ -29,8 +29,8 @@ class StakeProject extends Component {
           let weiBal = (await p.weiBal()).toNumber()
           let weiCost = (await p.weiCost()).toNumber()
           let reputationCost = (await p.reputationCost()).toNumber()
-          let totalTokensStaked = (await p.totalTokensStaked()).toNumber()
-          let totalReputationStaked = (await p.totalReputationStaked()).toNumber()
+          let totalTokensStaked = (await p.tokensStaked()).toNumber()
+          let totalReputationStaked = (await p.reputationStaked()).toNumber()
           let ipfsHash = web3.toAscii(await p.ipfsHash())
           let currentPrice = (await dt.currentPrice()).toNumber()
           let projObj = {

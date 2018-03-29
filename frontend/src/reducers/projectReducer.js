@@ -1,4 +1,4 @@
-import { PROPOSE_PROJECT, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, TASK_CLAIMED, TASKLIST_SUBMITTED, TASK_COMPLETED, UPDATE_PROJECT, TASK_VALIDATED } from '../constants/ProjectActionTypes'
+import { PROPOSE_PROJECT, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, TASK_CLAIMED, TASKLIST_SUBMITTED, TASK_COMPLETED, UPDATE_PROJECT, TASK_VALIDATED, VOTE_COMMITTED, VOTE_REVEALED } from '../constants/ProjectActionTypes'
 const initialState = {
   allProjects: {},
   fetching: 'FALSE'
@@ -60,6 +60,12 @@ export default function projectReducer (state = initialState, action) {
       project = state.allProjects[address]
       project.taskList[index].validated[validator] = Object.assign({}, {status})
       return updateAllProjects(state, address, project)
+    case VOTE_COMMITTED:
+      console.log('vote submitted')
+      return allProjects
+    case VOTE_REVEALED:
+      console.log('vote revealed')
+      return allProjects
     default:
   }
   return state
