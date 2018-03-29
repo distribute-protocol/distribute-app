@@ -12,7 +12,7 @@ export default function pollReducer (state = initialState, action) {
   switch (action.type) {
     case VOTE_COMMITTED:
       ({status, user, pollID, salt, numTokens} = action.voteDetails)
-      poll = Object.assign({}, state.allUsers[user][pollID], {salt: salt, status: status, numTokens: numTokens})
+      poll = Object.assign({}, state.allUsers[user], {[pollID]: {salt: salt, status: status, numTokens: numTokens}})
       return updateAllUsers(state, user, poll)
     case VOTE_REVEALED:
       console.log('vote revealed')
