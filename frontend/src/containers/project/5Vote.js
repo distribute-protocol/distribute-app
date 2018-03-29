@@ -77,30 +77,45 @@ class VoteTasks extends React.Component {
   voteTask (i, type, status) {
     let salt = Math.floor(Math.random() * Math.floor(10000)).toString()   // get random salt between 0 and 10000
     let secretHash = web3.fromAscii(status + salt, 32)
-    let prevPollID = 0
     // console.log(i, type, status, this.state['tokVal' + i], this.state['repVal' + i])
     console.log(this.props.project)
     type === 'tokens'
-      ? this.commitToken(i, secretHash, status, salt, prevPollID)
-      : this.commitReputation(i, secretHash, prevPollID)
+      ? this.commitToken(i, secretHash, status, salt)
+      : this.commitReputation(i, secretHash)
   }
 
-  commitToken (i, hash, status, salt, prevPollID) {
+  commitToken (i, hash, status, salt) {
+    let numTokens = this.state['tokVal' + i]
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
+        let prevPollID = this.getPrevPollID(numTokens, accounts[0])
         // await tr.voteCommit(this.props.address, i, this.state['tokVal' + i], hash, prevPollID, {from: accounts[0]})
-        this.voteCommitted({address: this.props.address, index: i, status: status, salt: salt, voter: eth.accounts[0], numTokens: this.state['tokVal' + i]})
+        // this.voteCommitted({address: this.props.address, index: i, status: status, salt: salt, voter: eth.accounts[0], numTokens: this.state['tokVal' + i]})
       }
     })
   }
 
-  commitReputation (i, hash, status, salt, prevPollID) {
+  commitReputation (i, hash, status, salt) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         // await rr.voteCommit(this.props.address, i, this.state['repVal' + i], hash, prevPollID, {from: accounts[0]})
         this.voteCommitted({address: this.props.address, index: i, status: status, salt: salt, voter: eth.accounts[0], numTokens: this.state['repVal' + i]})
       }
     })
+  }
+
+  getPrevPollID (numTokens, user) {
+    let pollInfo = this.props.users[user]   // get object of poll data w/pollID's as keys
+    let keys = Object.keys(pollInfo)
+    let currPollID = 0
+    let currNumTokens = 0
+    for (let i = 0; i < keys.length; i++) {
+      if ((pollInfo[keys[i]].numTokens < numTokens) && (pollInfo[keys[i]].numTokens > currNumTokens)) {
+        currNumTokens = pollInfo[keys[i]].numTokens
+        currPollID = keys[i]
+      }
+    }
+    return currPollID
   }
 
   // Works - need to check all related state
@@ -230,7 +245,7 @@ class VoteTasks extends React.Component {
 const mapStateToProps = (state, ownProps) => {
   return {
     project: state.projects.allProjects[ownProps.address],
-    polls: state.polls.allPolls
+    users: state.polls.allUsers
   }
 }
 
