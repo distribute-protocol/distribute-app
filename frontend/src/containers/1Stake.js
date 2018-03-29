@@ -81,7 +81,7 @@ class Stake extends React.Component {
       return projectState(projAddr)
         .then(state => {
           if (state.toNumber() === 1) {
-            console.log(state.toNumber())
+            // console.log(state.toNumber())
             return np.projects[projAddr]
           }
         })

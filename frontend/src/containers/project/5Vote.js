@@ -77,7 +77,8 @@ class VoteTasks extends React.Component {
   voteTask (i, type, status) {
     let secretHash = web3.fromAscii(status, 32)
     let prevPollID = 0
-    type === 'token'
+    console.log(i, type, status, this.state['tokVal' + i], this.state['repVal' + i])
+    type === 'tokens'
       ? this.commitToken(i, secretHash, prevPollID)
       : this.commitReputation(i, secretHash, prevPollID)
   }
@@ -85,7 +86,8 @@ class VoteTasks extends React.Component {
   commitToken (i, hash, prevPollID) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
-        await tr.voteCommit(this.props.address, i, this.state['tokVal' + i], hash, prevPollID, {from: accounts[0]})
+        // await tr.voteCommit(this.props.address, i, this.state['tokVal' + i], hash, prevPollID, {from: accounts[0]})
+        await console.log('goobi')
       }
     })
   }
@@ -93,7 +95,7 @@ class VoteTasks extends React.Component {
   commitReputation (i, hash, prevPollID) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
-        await rr.voteCommit(this.props.address, i, this.state['tokVal' + i], hash, prevPollID, {from: accounts[0]})
+        // await rr.voteCommit(this.props.address, i, this.state['repVal' + i], hash, prevPollID, {from: accounts[0]})
       }
     })
   }
