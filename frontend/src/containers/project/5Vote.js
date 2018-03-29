@@ -89,6 +89,7 @@ class VoteTasks extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         let prevPollID = this.getPrevPollID(numTokens, accounts[0])
+        console.log(prevPollID)
         let taskAddr = await P.at(this.props.address).tasks(i)
         // console.log(taskAddr)
         let pollID = await T.at(taskAddr).pollId()
@@ -117,6 +118,7 @@ class VoteTasks extends React.Component {
 
   getPrevPollID (numTokens, user) {
     let pollInfo = this.props.users[user]   // get object of poll data w/pollID's as keys
+    console.log(pollInfo)
     if (pollInfo === undefined) {
       return 0
     }
@@ -124,7 +126,7 @@ class VoteTasks extends React.Component {
     let currPollID = 0
     let currNumTokens = 0
     for (let i = 0; i < keys.length; i++) {
-      if ((pollInfo[keys[i]].numTokens < numTokens) && (pollInfo[keys[i]].numTokens > currNumTokens)) {
+      if ((pollInfo[keys[i]].numTokens <= numTokens) && (pollInfo[keys[i]].numTokens > currNumTokens)) {
         currNumTokens = pollInfo[keys[i]].numTokens
         currPollID = keys[i]
       }
