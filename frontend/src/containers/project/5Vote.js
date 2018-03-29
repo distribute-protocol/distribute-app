@@ -78,7 +78,7 @@ class VoteTasks extends React.Component {
     let salt = Math.floor(Math.random() * Math.floor(10000)).toString()   // get random salt between 0 and 10000
     let secretHash = web3.fromAscii(status + salt, 32)
     // console.log(i, type, status, this.state['tokVal' + i], this.state['repVal' + i])
-    console.log(this.props.users)
+    // console.log(this.props.users)
     type === 'tokens'
       ? this.commitToken(i, secretHash, status, salt)
       : this.commitReputation(i, secretHash)
@@ -90,7 +90,7 @@ class VoteTasks extends React.Component {
       if (!err) {
         let prevPollID = this.getPrevPollID(numTokens, accounts[0])
         let taskAddr = await P.at(this.props.address).tasks(i)
-        console.log(taskAddr)
+        // console.log(taskAddr)
         let pollID = await T.at(taskAddr).pollId()
         await tr.voteCommit(this.props.address, i, numTokens, hash, prevPollID, {from: accounts[0]})
         this.props.voteCommitted({status: status, salt: salt, pollID: pollID, user: accounts[0], numTokens: numTokens})
