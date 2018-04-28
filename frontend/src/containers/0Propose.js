@@ -4,7 +4,7 @@ import { proposeProject } from '../actions/projectActions'
 import ProposePage from '../components/Propose'
 import Sidebar from '../components/shared/Sidebar'
 import { push } from 'react-router-redux'
-import {eth, web3, tr, rr, dt} from '../utilities/blockchain'
+import {eth, web3, tr, rr, dt, P} from '../utilities/blockchain'
 import * as _ from 'lodash'
 import moment from 'moment'
 import ipfsAPI from 'ipfs-api'
@@ -55,15 +55,14 @@ class Propose extends Component {
       location: values.location,
       summary: values.summary
     }
-
+    let multiHash
     const obj = {
       Data: JSON.stringify(projObj),
       Links: []
     }
-    let multiHash
-    let receiptHandler = (tx) => {
+    let receiptHandler = (tx, multiHash) => {
       let txReceipt = tx.receipt
-      let projectAddress = '0x' + txReceipt.logs[0].topics[1].slice(txReceipt.logs[0].topics[1].length - 40, (txReceipt.logs[0].topics[1].length))
+      let projectAddress = '0x' + txReceipt.logs[1].topics[1].slice(txReceipt.logs[1].topics[1].length - 40, (txReceipt.logs[1].topics[1].length))
       this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress, ipfsHash: `https://ipfs.io/ipfs/${multiHash}`}))
       this.setState({cost: 0, photo: false, imageUrl: false})
     }
@@ -76,9 +75,9 @@ class Propose extends Component {
       eth.getAccounts(async (err, accounts) => {
         if (!err) {
           if (type === 'tokens') {
-            await tr.proposeProject(projObj.cost, projObj.stakingEndDate, web3.fromAscii(multiHash), {from: accounts[0]}).then(tx => receiptHandler(tx))
+            await tr.proposeProject(projObj.cost, projObj.stakingEndDate, multiHash, {from: accounts[0]}).then(tx => receiptHandler(tx, multiHash))
           } else if (type === 'reputation') {
-            await rr.proposeProject(projObj.cost, projObj.stakingEndDate, web3.fromAscii(multiHash), {from: accounts[0]}).then(tx => receiptHandler(tx))
+            await rr.proposeProject(projObj.cost, projObj.stakingEndDate, multiHash, {from: accounts[0]}).then(tx => receiptHandler(tx, multiHash))
           }
         }
       })
