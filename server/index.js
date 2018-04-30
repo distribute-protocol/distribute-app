@@ -139,10 +139,11 @@ app.get('/api/login', (req, res) => {
       }
     })
   }
-  MongoClient.connect(url, (err, db) => {
+  MongoClient.connect(url, (err, client) => {
     assert.equal(null, err)
+    var db = client.db('distribute')
     fetchUser(db, () => {
-      db.close()
+      client.close()
     })
   })
 })
@@ -169,10 +170,11 @@ app.post('/api/register', (req, res) => {
       callback()
     })
   }
-  MongoClient.connect(url, (err, db) => {
+  MongoClient.connect(url, (err, client) => {
     assert.equal(null, err)
+    var db = client.db('distribute')
     registerUser(db, () => {
-      db.close()
+      client.close()
     })
   })
 })
