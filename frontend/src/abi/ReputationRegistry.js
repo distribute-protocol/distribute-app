@@ -1,6 +1,6 @@
 let obj = require('./build/ReputationRegistry.json')
 
-const ReputationRegistryAddress = obj.networks['5777'].address
+const ReputationRegistryAddress = obj.networks['1525200010312'].address
 
 const ReputationRegistryABI = JSON.stringify(obj.abi)
 
