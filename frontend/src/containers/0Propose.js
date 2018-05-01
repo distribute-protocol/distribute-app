@@ -15,7 +15,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiY29uc2Vuc3lzIiwiYSI6ImNqOHBmY2w0NjBmcmYyd3F1N
 let ipfs = ipfsAPI()
 window.moment = moment
 
-const WAIT_INTERVAL = 1500;
+const WAIT_INTERVAL = 1500
 
 class Propose extends Component {
   constructor () {
@@ -45,11 +45,13 @@ class Propose extends Component {
   }
 
   componentDidMount () {
+    console.log('component did mount')
     const map = new mapboxgl.Map({
       container: this.mapContainer,
       style: 'mapbox://styles/mapbox/streets-v10'
       // style: 'mapbox://styles/consensys/cj8ppygty9tga2smvqxtu8vqw'
     })
+    this.setState({map: map})
     let coordHandler = (pos) => {
       let ll = new mapboxgl.LngLat(pos.coords.longitude, pos.coords.latitude)
       map.setCenter(ll)
@@ -59,7 +61,6 @@ class Propose extends Component {
         map.setCenter(e.lngLat)
         this.setState({coords: e.lngLat})
       })
-      this.setState({map: map})
     }
     window.navigator.geolocation.getCurrentPosition(coordHandler)
   }
@@ -171,6 +172,7 @@ class Propose extends Component {
     const { location } = this.state
     client.geocodeForward(location, (err, data, res) => {
       if (err) { console.error(err) }
+      console.log(this.state)
       this.state.map.setCenter(data.features[0].geometry.coordinates)
       this.state.map.setZoom(18)
       new mapboxgl.Marker()
@@ -181,6 +183,7 @@ class Propose extends Component {
   }
 
   render () {
+    console.log('render', this.mapContainer, this.state.map)
     return (
       <div>
         <Sidebar />
