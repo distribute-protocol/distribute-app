@@ -31,7 +31,7 @@ class StakeProject extends Component {
           let reputationCost = (await p.reputationCost()).toNumber()
           let totalTokensStaked = (await p.tokensStaked()).toNumber()
           let totalReputationStaked = (await p.reputationStaked()).toNumber()
-          let stakingEndDate = (await p.nextDeadline()).toNumber()
+          let nextDeadline = (await p.nextDeadline()).toNumber() * 1000
           let ipfsHash = web3.toAscii(await p.ipfsHash())
           let currentPrice = (await dt.currentPrice()).toNumber()
           let projObj = {
@@ -42,7 +42,7 @@ class StakeProject extends Component {
             totalReputationStaked,
             ipfsHash,
             currentPrice,
-            stakingEndDate
+            nextDeadline
           }
           ipfs.object.get(ipfsHash, (err, node) => {
             if (err) {
@@ -100,7 +100,7 @@ class StakeProject extends Component {
         tokensLeft={this.state.tokensLeft}
         reputationCost={this.state.reputationCost}
         totalReputationStaked={this.state.totalReputationStaked}
-        date={moment(this.state.stakingEndDate * 1000)}
+        date={moment(this.state.nextDeadline)}
         stakeInput={
           <input
             ref={(input) => (this.stakedValue = input)}

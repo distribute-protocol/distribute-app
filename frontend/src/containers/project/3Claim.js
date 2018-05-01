@@ -121,7 +121,7 @@ class ClaimProject extends React.Component {
           key: i,
           description: task.description,
           ethReward: `${web3.fromWei(task.weiReward, 'ether')} ETH`,
-          repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' && typeof taskWeiReward !== 'undefined' ? reputationCost * task.weiReward / weiCost : '',
+          repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' && typeof task.weiReward !== 'undefined' ? reputationCost * task.weiReward / weiCost : '',
           buttons: <ButtonGroup>
             <Button
               disabled={this.props.project.taskList[i].claimed || !this.props.project.listSubmitted}
@@ -145,7 +145,7 @@ class ClaimProject extends React.Component {
         location={this.state.location}
         cost={web3.fromWei(this.state.cost, 'ether')}
         reputationCost={this.state.reputationCost}
-        date={moment(this.state.nextDeadline * 1000)}
+        date={moment(this.state.nextDeadline)}
         tasks={tasks}
         listSubmitted={this.props.project.listSubmitted}
         submitWinningHashList={this.submitWinningHashList}

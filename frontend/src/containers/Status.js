@@ -31,8 +31,10 @@ class Status extends Component {
       if (!err) {
         if (accounts.length) {
           let ethPrice = (await getEthPriceNow())
+          console.log(ethPrice)
           ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
           let balance = (await dt.balanceOf(accounts[0])).toNumber()
+          console.log(balance)
           let totalTokenSupply = (await dt.totalSupply()).toNumber()
           let weiBal = (await dt.weiBal()).toNumber()
           let reputationBalance = (await rr.balances(accounts[0])).toNumber()
@@ -61,12 +63,12 @@ class Status extends Component {
       if (!err) {
         if (accounts.length) {
           await dt.mint(this.tokensToBuy.value, {value: web3.toWei(Math.ceil(this.state.ethToSend * 100000) / 100000, 'ether'), from: accounts[0]})
-          .then(() => {
-            this.getNetworkStatus()
-            this.setState({
-              tokensToBuy: ''
+            .then(() => {
+              this.getNetworkStatus()
+              this.setState({
+                tokensToBuy: ''
+              })
             })
-          })
         }
       }
     })
@@ -77,12 +79,12 @@ class Status extends Component {
       if (!err) {
         if (accounts.length) {
           await dt.sell(this.tokensToBuy.value, {from: accounts[0]})
-          .then(() => {
-            this.getBalance()
-            this.setState({
-              tokensToBuy: ''
+            .then(() => {
+              this.getBalance()
+              this.setState({
+                tokensToBuy: ''
+              })
             })
-          })
         }
       }
     })

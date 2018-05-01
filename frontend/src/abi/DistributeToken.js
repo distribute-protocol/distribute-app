@@ -1,6 +1,6 @@
 let obj = require('./build/DistributeToken.json')
 
-const DistributeTokenAddress = obj.networks['5777'].address
+const DistributeTokenAddress = obj.networks['1525204504899'].address
 
 const DistributeTokenABI = JSON.stringify(obj.abi)
 

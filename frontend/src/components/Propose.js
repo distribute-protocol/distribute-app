@@ -11,7 +11,9 @@ const ProposeForm = (props) => {
     reputationCost,
     loading,
     handlePriceChange,
-    proposeProject
+    handleLocationChange,
+    proposeProject,
+    map
   } = props
   let submitHandler = (type) => {
     proposeProject(type, props.form.getFieldsValue())
@@ -59,8 +61,9 @@ const ProposeForm = (props) => {
               {getFieldDecorator('summary')(<TextArea rows={4} type='textarea' placeholder='Project Summary' />)}
             </FormItem>
             <FormItem label='Location'>
-              {getFieldDecorator('location')(<Input placeholder='Project Location' />)}
+              {getFieldDecorator('location')(<Input placeholder='Project Location' onChange={handleLocationChange} />)}
             </FormItem>
+            {map}
             <FormItem label='Cost'>
               {getFieldDecorator('cost')(<Input placeholder='ETH' type='number' onChange={handlePriceChange} />)}
             </FormItem>
