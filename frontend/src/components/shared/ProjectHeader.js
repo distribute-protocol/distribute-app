@@ -1,5 +1,5 @@
 import React from 'react'
-
+import Map from './Map'
 export default ({
   name,
   address,
@@ -22,7 +22,8 @@ export default ({
           : null
         }
         <div>Summary: {`${summary}`}</div>
-        <div>Location: <strong>{`${location}`}</strong></div>
+        {<Map lngLat={location} />}
+        {/* <div>Location: <strong>{`${location}`}</strong></div> */}
         <div>Cost: <strong>{`${cost}`} ETH</strong></div>
         <div>Reputation Cost: <strong>{`${reputationCost}`}</strong></div>
       </div>
