@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import Sidebar from '../components/shared/Sidebar'
 import Project from './project/1Stake'
 import { push } from 'react-router-redux'
-import { eth, tr, rr, pl, pr, P } from '../utilities/blockchain'
+import { eth, tr, rr, pr, P } from '../utilities/blockchain'
 import * as _ from 'lodash'
 
 class Stake extends React.Component {
@@ -16,9 +16,8 @@ class Stake extends React.Component {
       tempProject: {},
       currPrice: 0
     }
-
-    window.projects = this.state.projects
-    window.pl = pl
+    // window.projects = this.state.projects
+    // window.pl = pl
   }
   componentWillMount () {
     if (_.isEmpty(this.props.user)) {
@@ -81,7 +80,6 @@ class Stake extends React.Component {
       return projectState(projAddr)
         .then(state => {
           if (state.toNumber() === 1) {
-            // console.log(state.toNumber())
             return np.projects[projAddr]
           }
         })

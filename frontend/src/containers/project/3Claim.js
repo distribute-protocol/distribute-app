@@ -145,7 +145,7 @@ class ClaimProject extends React.Component {
         location={this.state.location}
         cost={web3.fromWei(this.state.cost, 'ether')}
         reputationCost={this.state.reputationCost}
-        date={moment(this.state.nextDeadline)}
+        date={moment(this.state.nextDeadline * 1000)}
         tasks={tasks}
         listSubmitted={this.props.project.listSubmitted}
         submitWinningHashList={this.submitWinningHashList}
