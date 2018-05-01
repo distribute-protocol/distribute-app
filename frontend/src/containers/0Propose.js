@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import mapboxgl from 'mapbox-gl'
 import { proposeProject } from '../actions/projectActions'
 import ProposePage from '../components/Propose'
 import Sidebar from '../components/shared/Sidebar'
@@ -8,8 +9,13 @@ import {eth, web3, tr, rr, dt, P} from '../utilities/blockchain'
 import * as _ from 'lodash'
 import moment from 'moment'
 import ipfsAPI from 'ipfs-api'
+import MapboxClient from 'mapbox/lib/services/geocoding'
+const client = new MapboxClient('pk.eyJ1IjoiY29uc2Vuc3lzIiwiYSI6ImNqOHBmY2w0NjBmcmYyd3F1NHNmOXJwMWgifQ.8-GlTlTTUHLL8bJSnK2xIA')
+mapboxgl.accessToken = 'pk.eyJ1IjoiY29uc2Vuc3lzIiwiYSI6ImNqOHBmY2w0NjBmcmYyd3F1NHNmOXJwMWgifQ.8-GlTlTTUHLL8bJSnK2xIA'
 let ipfs = ipfsAPI()
 window.moment = moment
+
+const WAIT_INTERVAL = 1500;
 
 class Propose extends Component {
   constructor () {
@@ -18,13 +24,16 @@ class Propose extends Component {
       tempProject: {},
       currPrice: 0,
       loading: false,
-      imageUrl: false
+      imageUrl: false,
+      location: [0, 0]
     }
     this.proposeProject = this.proposeProject.bind(this)
     this.getContractValues = this.getContractValues.bind(this)
     this.handlePhotoUpload = this.handlePhotoUpload.bind(this)
     this.handlePriceChange = this.handlePriceChange.bind(this)
+    this.handleLocationChange = this.handleLocationChange.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.triggerChange = this.triggerChange.bind(this)
   }
 
   componentWillMount () {
@@ -32,6 +41,31 @@ class Propose extends Component {
       // this.props.reroute()
     }
     this.getContractValues()
+    this.timer = null
+  }
+
+  componentDidMount () {
+    const map = new mapboxgl.Map({
+      container: this.mapContainer,
+      style: 'mapbox://styles/mapbox/streets-v10'
+      // style: 'mapbox://styles/consensys/cj8ppygty9tga2smvqxtu8vqw'
+    })
+    let coordHandler = (pos) => {
+      let ll = new mapboxgl.LngLat(pos.coords.longitude, pos.coords.latitude)
+      map.setCenter(ll)
+      map.setZoom(12)
+      map.addControl(new mapboxgl.NavigationControl())
+      map.on('click', function (e) {
+        map.setCenter(e.lngLat)
+        this.setState({coords: e.lngLat})
+      })
+      this.setState({map: map})
+    }
+    window.navigator.geolocation.getCurrentPosition(coordHandler)
+  }
+
+  componentWillUnmount () {
+    this.state.map.remove()
   }
 
   async getContractValues () {
@@ -52,7 +86,7 @@ class Propose extends Component {
       stakingEndDate: Math.floor(values.date.valueOf() / 1000),
       photo: this.state.photo,
       name: values.name,
-      location: values.location,
+      location: this.state.coords,
       summary: values.summary
     }
     let multiHash
@@ -64,7 +98,7 @@ class Propose extends Component {
       let txReceipt = tx.receipt
       let projectAddress = '0x' + txReceipt.logs[1].topics[1].slice(txReceipt.logs[1].topics[1].length - 40, (txReceipt.logs[1].topics[1].length))
       this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress, ipfsHash: `https://ipfs.io/ipfs/${multiHash}`}))
-      this.setState({cost: 0, photo: false, imageUrl: false})
+      this.setState({cost: 0, photo: false, imageUrl: false, coords: 0, location: ''})
     }
 
     await ipfs.object.put(obj, {enc: 'json'}, (err, node) => {
@@ -127,6 +161,25 @@ class Propose extends Component {
     this.setState({cost: web3.toWei(val.target.value, 'ether')})
   }
 
+  handleLocationChange (val) {
+    clearTimeout(this.timer)
+    this.setState({location: val.target.value})
+    this.timer = setTimeout(this.triggerChange, WAIT_INTERVAL)
+  }
+
+  triggerChange () {
+    const { location } = this.state
+    client.geocodeForward(location, (err, data, res) => {
+      if (err) { console.error(err) }
+      this.state.map.setCenter(data.features[0].geometry.coordinates)
+      this.state.map.setZoom(18)
+      new mapboxgl.Marker()
+        .setLngLat(data.features[0].geometry.coordinates)
+        .addTo(this.state.map)
+      this.setState({coords: data.features[0].geometry.coordinates})
+    })
+  }
+
   render () {
     return (
       <div>
@@ -142,7 +195,9 @@ class Propose extends Component {
             ? 0
             : Math.ceil(this.state.cost / this.state.weiBal * this.state.totalReputationSupply / 20)}
           handlePriceChange={this.handlePriceChange}
+          handleLocationChange={this.handleLocationChange}
           proposeProject={this.proposeProject}
+          map={<div id='map' style={{width: 400, height: 400}} ref={el => { this.mapContainer = el; return }} />}
         />
       </div>
     )
