@@ -2,12 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Button } from 'antd'
 import AddComponent from '../../components/project/2Add'
-import {eth, web3, pr, P} from '../../utilities/blockchain'
+import {eth, web3, pr, pl, P} from '../../utilities/blockchain'
 import { hashTasksArray } from '../../utilities/hashing'
 import update from 'immutability-helper'
 import { setProjectTaskList, setTaskSubmission } from '../../actions/projectActions'
 import moment from 'moment'
 import ipfsAPI from 'ipfs-api'
+import * as _ from 'lodash'
 let ipfs = ipfsAPI()
 
 class AddProject extends React.Component {
@@ -26,6 +27,37 @@ class AddProject extends React.Component {
 
   componentWillMount () {
     this.getProjectStatus()
+    let submissionTasks
+    const projAddr = this.props.address
+    function submissionWeighting (address) {
+      return new Promise(async (resolve, reject) => {
+        let weighting = await pl.calculateWeightOfAddress(projAddr, address)
+        resolve(weighting)
+      })
+    }
+    if (this.props.submissions) {
+      let submissions = Object.keys(this.props.submissions).map((address, i) => {
+        return submissionWeighting(address)
+          .then(async (weighting) => {
+            return {
+              key: i,
+              submitter: address,
+              submission: JSON.stringify(this.props.submissions[address]),
+              weighting: (<div style={{minWidth: 70}}>{weighting.toNumber()}</div>)
+            }
+          })
+      })
+
+      Promise.all(submissions)
+        .then(results => {
+          submissionTasks = _.compact(results)
+          this.setState({taskList: this.props.taskList, submissionTasks: submissionTasks})
+        })
+        .catch(e => {
+          console.error(e)
+        })
+    }
+    this.setState({submissionTasks})
   }
 
   componentWillReceiveProps (np) {
@@ -154,21 +186,6 @@ class AddProject extends React.Component {
     } else {
       tasks = []
     }
-
-    let submissionTasks = []
-    if (this.props.submissions) {
-      submissionTasks = Object.keys(this.props.submissions).map((address, i) => {
-        // pl.calculateWeightOfAddress(this.props.address, address).then(weight => {
-        return {
-          key: i,
-          submitter: address,
-          submission: JSON.stringify(this.props.submissions[address]),
-          weighting: (<div style={{minWidth: 70}}>'tbd'</div>)
-        }
-        // })
-      })
-    }
-
     let submission =
       <div>
         <input
@@ -199,11 +216,11 @@ class AddProject extends React.Component {
         cost={web3.fromWei(this.state.cost, 'ether')}
         reputationCost={this.state.reputationCost}
         date={moment(this.state.nextDeadline)}
-        submission={submission}
         tasks={tasks}
         submitTaskList={this.submitTaskList}
         checkActive={this.checkActive}
-        submissionTasks={submissionTasks}
+        submission={submission}
+        submissionTasks={this.state.submissionTasks}
         moveRow={this.moveRow}
       />
     )
