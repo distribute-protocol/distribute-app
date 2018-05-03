@@ -134,7 +134,7 @@ app.get('/api/login', (req, res) => {
       assert.equal(null, err)
       if (doc !== null) {
         res.send(doc)
-        console.log(doc, 'login server')
+        // console.log(doc, 'login server')
       } else {
         res.send({})
         callback()

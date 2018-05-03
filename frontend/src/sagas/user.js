@@ -5,16 +5,18 @@ import { push } from 'react-router-redux'
 import { LOGIN_USER } from '../constants/UserActionTypes'
 import { loggedInUser } from '../actions/userActions'
 import * as _ from 'lodash'
-import { eth, rr } from '../utilities/blockchain'
+import { ethjs, rr } from '../utilities/blockchain'
 
 function * loginUser (action) {
   const credentials = action.credentials
-  let accounts = eth.accounts
   // if user is not yet registered, do that now
-  yield rr.first(accounts[0]).then(val => {
-    if (!val) {
-      rr.register({from: accounts[0]})
-    }
+  yield ethjs.accounts().then(accounts => {
+    // console.log(accounts)
+    rr.first(accounts[0]).then(val => {
+      if (!val) {
+        rr.register({from: accounts[0]})
+      }
+    })
   })
   let config = {
     method: 'GET',

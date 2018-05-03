@@ -6,6 +6,7 @@ import { ProjectABI } from '../abi/Project'
 import { TaskABI } from '../abi/Task'
 import { ProjectLibraryABI, ProjectLibraryAddress } from '../abi/ProjectLibrary'
 import Web3 from 'web3'
+import Eth from 'ethjs'
 import contract from 'truffle-contract'
 
 let web3init
@@ -16,9 +17,13 @@ if (typeof web3init !== 'undefined') {
   web3init = new Web3(window.web3.currentProvider)
   // web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
 }
+// const Eth = require('ethjs')
 
 export const web3 = web3init
 export const eth = web3init.eth
+
+// need to do this for promisified eth.accounts() for sagas
+export const ethjs = new Eth(window.web3.currentProvider)
 
 const TR = contract({abi: JSON.parse(TokenRegistryABI)})
 TR.setProvider(window.web3.currentProvider)

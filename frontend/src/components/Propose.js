@@ -27,7 +27,7 @@ const ProposeForm = (props) => {
           <Icon type={'plus'} />
           <div className='ant-upload-text'>Upload</div>
         </div>)
-        }
+      }
     </div>
   )
   const { getFieldDecorator } = props.form

@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom'
 import uport from '../utilities/uport'
 
 import { Button } from 'antd'
@@ -10,9 +9,6 @@ import { loginUser } from '../actions/userActions'
 class Landing extends React.Component {
   constructor () {
     super()
-    this.state = {
-      isLoggedIn: false
-    }
     this.getUport = this.getUport.bind(this)
   }
   getUport () {
@@ -20,22 +16,14 @@ class Landing extends React.Component {
       requested: ['name', 'avatar'],
       notifications: true
     }).then((credentials) => {
-      console.log(credentials)
       this.props.loginUser(credentials)
-      console.log('landing.js login')
-      this.setState({isLoggedIn: true})
+      // this.props.login()
+      // console.log(credentials)
     })
   }
-
   render () {
-    return this.state.isLoggedIn
-      ? <Redirect
-        to={{
-          pathname: '/Status',
-          state: { from: this.props.location }
-        }}
-      />
-      : <div style={{padding: 30}}>
+    return (
+      <div style={{padding: 30}}>
         <h1 className='display-3'>Welcome to Distribute</h1>
         <hr className='my-2' />
         <p>You need a uPort to continue. You can download the mobile app with one of the links below.</p>
@@ -48,10 +36,11 @@ class Landing extends React.Component {
 
         <p className='lead' style={{marginTop: 30, alignItems: 'center'}}>
           <Button color='primary' onClick={this.getUport}>
-          Connect with uPort
+            Connect with uPort
           </Button>
         </p>
       </div>
+    )
   }
 }
 
