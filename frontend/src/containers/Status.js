@@ -31,10 +31,10 @@ class Status extends Component {
       if (!err) {
         if (accounts.length) {
           let ethPrice = (await getEthPriceNow())
-          console.log(ethPrice)
+          // console.log(ethPrice)
           ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
           let balance = (await dt.balanceOf(accounts[0])).toNumber()
-          console.log(balance)
+          // console.log(balance)
           let totalTokenSupply = (await dt.totalSupply()).toNumber()
           let weiBal = (await dt.weiBal()).toNumber()
           let reputationBalance = (await rr.balances(accounts[0])).toNumber()
