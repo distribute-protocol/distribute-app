@@ -106,6 +106,7 @@ class Stake extends React.Component {
         stakeReputation={(val) => this.stakeReputation(proj.address, val)}
         unstakeReputation={(val) => this.unstakeReputation(proj.address, val)}
         checkStaked={() => this.checkStaked(proj.address)}
+        getProjectStatus={() => this.getProjectStatus(proj.address)}
       />
     })
     return (

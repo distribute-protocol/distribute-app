@@ -17,7 +17,8 @@ export default ({
   stakeInput,
   tokens,
   reputation,
-  checkStaked
+  checkStaked,
+  getProjectStatus
 }) => {
   return (
     <div style={{backgroundColor: '#DDE4E5', marginTop: 30}}>
@@ -67,8 +68,16 @@ export default ({
             </div>
           </div>
         </div>
-        <Button style={{margin: 20}} onClick={() => checkStaked()}>
+        <Button style={{margin: 20}} onClick={checkStaked}>
           Check Staked
+        </Button>
+        <Button style={{
+          marginLeft: 20,
+          marginTop: 10,
+          width: 160,
+          backgroundColor: '#115D8C',
+          color: '#FFF'}} icon='reload' color='info' onClick={getProjectStatus}>
+          Refresh Balances
         </Button>
       </div>
     </div>

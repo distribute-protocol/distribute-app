@@ -1,3 +1,5 @@
+/* global TextDecoder */
+
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -17,6 +19,7 @@ class StakeProject extends Component {
     this.tokens = this.tokens.bind(this)
     this.reputation = this.reputation.bind(this)
     this.checkStaked = this.checkStaked.bind(this)
+    this.getProjectStatus = this.getProjectStatus.bind(this)
   }
 
   async getProjectStatus () {
@@ -72,15 +75,15 @@ class StakeProject extends Component {
 
   tokens (bool) {
     bool
-    ? this.props.stakeTokens(this.state.stake)
-    : this.props.unstakeTokens(this.state.stake)
+      ? this.props.stakeTokens(this.state.stake)
+      : this.props.unstakeTokens(this.state.stake)
     this.setState({stake: ''})
   }
 
   reputation (bool) {
     bool
-    ? this.props.stakeReputation(this.state.stake)
-    : this.props.unstakeReputation(this.state.stake)
+      ? this.props.stakeReputation(this.state.stake)
+      : this.props.unstakeReputation(this.state.stake)
     this.setState({stake: ''})
   }
 
@@ -114,6 +117,7 @@ class StakeProject extends Component {
         tokens={this.tokens}
         reputation={this.reputation}
         checkStaked={this.checkStaked}
+        getProjectStatus={this.getProjectStatus}
       />
     )
   }

@@ -154,8 +154,6 @@ class Status extends Component {
           />}
         notRegistered={(this.state.reputationBalance === 0 && !this.state.first)}
         register={this.register}
-        openFaucet={(this.state.reputationBalance < 10000 && this.state.first)}
-        faucet={this.faucet}
       />
     )
   }

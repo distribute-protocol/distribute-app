@@ -1,3 +1,5 @@
+/* global FileReader */
+
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import mapboxgl from 'mapbox-gl'
@@ -5,7 +7,7 @@ import { proposeProject } from '../actions/projectActions'
 import ProposePage from '../components/Propose'
 import Sidebar from '../components/shared/Sidebar'
 import { push } from 'react-router-redux'
-import {eth, web3, tr, rr, dt, P} from '../utilities/blockchain'
+import {eth, web3, tr, rr, dt} from '../utilities/blockchain'
 import * as _ from 'lodash'
 import moment from 'moment'
 import ipfsAPI from 'ipfs-api'
@@ -45,7 +47,6 @@ class Propose extends Component {
   }
 
   componentDidMount () {
-    console.log('component did mount')
     const map = new mapboxgl.Map({
       container: this.mapContainer,
       style: 'mapbox://styles/mapbox/streets-v10'
@@ -81,6 +82,7 @@ class Propose extends Component {
   }
 
   async proposeProject (type, values) {
+    console.log(values)
     // stakingPeriod in Days changed to seconds -> blockchain understands seconds
     let projObj = {
       cost: this.state.cost,
@@ -172,7 +174,6 @@ class Propose extends Component {
     const { location } = this.state
     client.geocodeForward(location, (err, data, res) => {
       if (err) { console.error(err) }
-      console.log(this.state)
       this.state.map.setCenter(data.features[0].geometry.coordinates)
       this.state.map.setZoom(18)
       new mapboxgl.Marker()
@@ -183,7 +184,6 @@ class Propose extends Component {
   }
 
   render () {
-    console.log('render', this.mapContainer, this.state.map)
     return (
       <div>
         <Sidebar />
