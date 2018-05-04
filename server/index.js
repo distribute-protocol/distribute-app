@@ -80,7 +80,7 @@ app.get('/api/userbalance', function (req, res) {
   const fetchResponse = (db, callback) => {
     db.collection('user').find().toArray((err, docs) => {
       assert.equal(null, err)
-      console.log(docs, 'docs')
+      console.log('get user balance')
       // res.send()
       if (docs !== null) {
         res.send(docs)
@@ -106,7 +106,7 @@ app.post('/api/userbalance', (req, res) => {
   const setValue = (db, callback) => {
     db.collection('user').insert({value: req.query.value}, (err, doc) => {
       assert.equal(null, err)
-      console.log('post')
+      console.log('post user balance')
       res.send(doc.value)
       callback()
     })
@@ -126,7 +126,7 @@ app.post('/api/userbalance', (req, res) => {
 })
 
 app.get('/api/login', (req, res) => {
-  console.log('api/login', req, res)
+  console.log('api/login get')
   const address = req.query.address
   // const pubKey = req.query.pubkey
   const fetchUser = (db, callback) => {

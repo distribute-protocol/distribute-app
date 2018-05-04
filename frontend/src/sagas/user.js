@@ -30,7 +30,7 @@ function * loginUser (action) {
     .then((response) => response.json())
     .then((user) => {
       userObj = user
-      console.log('userObj', userObj)
+      console.log('userObj')
     })
   yield _.isEmpty(userObj)
     // user is not already stored in the database -> store them!

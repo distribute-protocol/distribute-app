@@ -61,12 +61,15 @@ class Status extends Component {
       if (!err) {
         if (accounts.length) {
           await dt.mint(this.tokensToBuy.value, {value: web3.toWei(Math.ceil(this.state.ethToSend * 100000) / 100000, 'ether'), from: accounts[0]})
-            .then(() => {
-              this.getNetworkStatus()
-              this.setState({
-                tokensToBuy: ''
-              })
-            })
+          await this.getNetworkStatus()
+          this.setState({
+            tokensToBuy: ''
+          })
+          // web3.eth.getTransactionReceipt(tx, async (err, res) => {
+          //   if (!err) {
+          //     // console.log('getting network status')
+          //   }
+          // })
         }
       }
     })
@@ -77,26 +80,23 @@ class Status extends Component {
       if (!err) {
         if (accounts.length) {
           await dt.sell(this.tokensToBuy.value, {from: accounts[0]})
-            .then(() => {
-              this.getBalance()
-              this.setState({
-                tokensToBuy: ''
-              })
-            })
+          await this.getNetworkStatus()
+          this.setState({
+            tokensToBuy: ''
+          })
         }
       }
     })
   }
 
   register () {
-    let accounts = eth.accounts
-    rr.register({from: accounts[0]})
-  }
-
-  faucet () {
-    let accounts = eth.accounts
-    console.log(accounts)
-    rr.faucet({from: accounts[0]})
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        if (accounts.length) {
+          await rr.register({from: accounts[0]})
+        }
+      }
+    })
   }
 
   async onChange (val) {
