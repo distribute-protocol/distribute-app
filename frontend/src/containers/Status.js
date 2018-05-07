@@ -26,6 +26,7 @@ class Status extends Component {
     this.getNetworkStatus()
   }
 
+  // replace this with observable query from
   async getNetworkStatus () {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
@@ -33,14 +34,14 @@ class Status extends Component {
           let ethPrice = await getEthPriceNow()
           ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
           let balance = (await dt.balanceOf(accounts[0])).toNumber()
-          let totalTokenSupply = (await dt.totalSupply()).toNumber()
+          // let totalTokenSupply = (await dt.totalSupply()).toNumber()
           let weiBal = (await dt.weiBal()).toNumber()
           let reputationBalance = (await rr.balances(accounts[0])).toNumber()
           let totalReputationSupply = (await rr.totalSupply()).toNumber()
           let first = (await rr.first(accounts[0]))
           let currentPrice = (await dt.currentPrice()).toNumber()
           this.setState({
-            totalTokenSupply,
+            // totalTokenSupply,
             balance,
             ethPrice,
             weiBal,
@@ -107,7 +108,8 @@ class Status extends Component {
         await dt.weiRequired(val).then(result => {
           ethRequired = web3.fromWei(result.toNumber(), 'ether')
         })
-        totalSupply = (await dt.totalSupply()).toNumber()
+        // totalSupply = (await dt.totalSupply()).toNumber()
+        totalSupply = this.props.totalSupply
         if (totalSupply === 0) {
           refund = ethRequired
         } else {
@@ -125,10 +127,10 @@ class Status extends Component {
   render () {
     return (
       <StatusComponent
-        totalTokenSupply={this.state.totalTokenSupply}
+        totalTokenSupply={this.props.general.totalTokens}
         balance={this.state.balance}
-        marketPercentage={this.state.totalTokenSupply
-          ? Math.round(this.state.balance / this.state.totalTokenSupply * 10000) / 100
+        marketPercentage={this.props.general.totalTokens
+          ? Math.round(this.state.balance / this.props.general.totalTokens * 10000) / 100
           : 0}
         ethPool={web3.fromWei(this.state.weiBal, 'ether')}
         capitalEquivalent={this.state.ethPrice
@@ -161,7 +163,8 @@ class Status extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user.user
+    user: state.user.user,
+    general: state.general.generalDetails
   }
 }
 
