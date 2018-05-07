@@ -187,36 +187,27 @@ app.get('/api/totaltokens', (req, res) => {
   console.log('api/totaltokens get')
   // const pubKey = req.query.pubkey
   const fetchBalance = (db, callback) => {
-    db.collection('user').aggregate(
-      [
-        {
-          totalTokens: { $sum: '$balance' }
-        }
-      ]
-      , (err, doc) => {
-        assert.equal(null, err)
-        if (doc !== null) {
-          // console.log(doc, 'YOLO')
-          res.send(doc)
-          // console.log(doc, 'login server')
-        } else {
-          res.send({})
-          callback()
-        }
-      })
+    db.collection('user').find().toArray((err, doc) => {
+      assert.equal(null, err)
+      if (doc !== null) {
+        // doc is an array of documents
+        res.send(doc)
+      } else {
+        res.send({})
+        callback()
+      }
+    })
   }
   MongoClient.connect(url, (err, client) => {
     assert.equal(null, err)
     var db = client.db('distribute')
-    fetchBalance(db, () => {
-      client.close()
-    })
+    fetchBalance(db)
+    client.close()
   })
 })
 
 app.post('/api/mint', (req, res) => {
   const mintTokens = (db, callback) => {
-    console.log(parseInt(req.query.value))
     db.collection('user').update(
       { address: req.query.address },
       {

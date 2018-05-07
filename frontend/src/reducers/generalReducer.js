@@ -18,6 +18,7 @@ export default function generalReducer (state = initialState, action) {
       // return updateAllUsers(state, user, poll)
     case TOTAL_TOKENS_RECEIVED:
       console.log(action.responseDetails)
+      // doc.reduce(function (cnt, o) { return cnt + o.balance }, 0)
       // totalTokens = action.responseDetails.totalTokens
       // console.log('total tokens received')
       // return Object.assign({}, state, {totalTokens})
