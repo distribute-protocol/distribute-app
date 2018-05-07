@@ -6,6 +6,8 @@ import { getEthPriceNow } from 'get-eth-price'
 import {eth, web3, rr, dt} from '../utilities/blockchain'
 import * as _ from 'lodash'
 import StatusComponent from '../components/Status'
+import { getTotalTokens } from '../actions/generalActions'
+
 
 class Status extends Component {
   constructor () {
@@ -28,6 +30,7 @@ class Status extends Component {
 
   // replace this with observable query from
   async getNetworkStatus () {
+    this.props.getTotalTokens()
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
@@ -62,6 +65,14 @@ class Status extends Component {
       if (!err) {
         if (accounts.length) {
           await dt.mint(this.tokensToBuy.value, {value: web3.toWei(Math.ceil(this.state.ethToSend * 100000) / 100000, 'ether'), from: accounts[0]})
+          let config = {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            }
+          }
+          await fetch(`/api/mint?address='2oviuJhgy5PmF5tK4pNzGjakdjamTqnBNkV'&value=${this.tokensToBuy.value}`, config)
           await this.getNetworkStatus()
           this.setState({
             tokensToBuy: ''
@@ -170,7 +181,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    reroute: () => dispatch(push('/'))
+    reroute: () => dispatch(push('/')),
+    getTotalTokens: () => dispatch(getTotalTokens())
   }
 }
 

@@ -9,26 +9,17 @@ import { Observable } from 'rxjs/Observable'
 
 // import { projectStateEpic } from './project'
 
-const api = {
-  fetchTokens: id => {
-    let config = {
-      method: 'GET',
-      headers: new Headers(),
-      mode: 'cors',
-      cache: 'default'
-    }
-    const request = fetch('/api/totaltokens', config)
-      .then(response => response.json())
-    return Observable.from(request)
-  }
-}
-
 const generalStateEpic = action$ =>
   action$.ofType(GET_TOTAL_TOKENS)
   // pull value from database
     .mergeMap(action =>
       // call database to see if user is already stored
-      api.fetchTokens())
+      fetch(`/api/totaltokens`, {
+        method: 'GET',
+        headers: new Headers(),
+        mode: 'cors',
+        cache: 'default'
+      }))
     .map(response => totalTokensReceived(response))
 
 export default combineEpics(generalStateEpic)

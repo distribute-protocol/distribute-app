@@ -8,6 +8,7 @@ import * as _ from 'lodash'
 import { ethjs, rr } from '../utilities/blockchain'
 
 function * loginUser (action) {
+  console.log('login user!')
   const credentials = action.credentials
   // if user is not yet registered, do that now
   yield ethjs.accounts().then(accounts => {
@@ -41,6 +42,7 @@ function * loginUser (action) {
 }
 
 function * registerUser (credentials) {
+  console.log('register user!')
   let config = {
     method: 'POST',
     headers: {

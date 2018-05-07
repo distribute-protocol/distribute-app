@@ -104,7 +104,7 @@ app.get('/api/userbalance', function (req, res) {
 app.post('/api/userbalance', (req, res) => {
   // console.log('value', req.query.value)
   const setValue = (db, callback) => {
-    db.collection('user').insert({value: req.query.value}, (err, doc) => {
+    db.collection('user').insertOne({value: req.query.value}, (err, doc) => {
       assert.equal(null, err)
       console.log('post user balance')
       res.send(doc.value)
@@ -134,7 +134,7 @@ app.get('/api/login', (req, res) => {
       assert.equal(null, err)
       if (doc !== null) {
         res.send(doc)
-        // console.log(doc, 'login server')
+        console.log('login', address, 'server')
       } else {
         res.send({})
         callback()
@@ -152,15 +152,17 @@ app.get('/api/login', (req, res) => {
 
 app.post('/api/register', (req, res) => {
   const registerUser = (db, callback) => {
+    let body = Object.assign({}, req.body, {balance: 0})
+    console.log(body, 'REGISTER')
     db.collection('user').insertOne(
       // 'address': req.body.address,
       // 'publicKey': req.body.publicKey
-      req.body
+      body
       , (err, result) => {
         assert.equal(err, null)
-
         const objID = new ObjectId(result.insertedId)
-        db.collection('user').findOne({'_id': objID}).then((user) => {
+        db.collection('user').findOne({}, {'_id': objID}).then((user) => {
+          console.log(user)
           res.send(user)
         })
         // doc.each((err, user) => {
@@ -185,20 +187,23 @@ app.get('/api/totaltokens', (req, res) => {
   console.log('api/totaltokens get')
   // const pubKey = req.query.pubkey
   const fetchBalance = (db, callback) => {
-    db.collection('user').sum([
-      {
-        totalTokens: { $sum: '$balance' }
-      }
-    ], (err, doc) => {
-      assert.equal(null, err)
-      if (doc !== null) {
-        res.send(doc)
-        // console.log(doc, 'login server')
-      } else {
-        res.send({})
-        callback()
-      }
-    })
+    db.collection('user').aggregate(
+      [
+        {
+          totalTokens: { $sum: '$balance' }
+        }
+      ]
+      , (err, doc) => {
+        assert.equal(null, err)
+        if (doc !== null) {
+          // console.log(doc, 'YOLO')
+          res.send(doc)
+          // console.log(doc, 'login server')
+        } else {
+          res.send({})
+          callback()
+        }
+      })
   }
   MongoClient.connect(url, (err, client) => {
     assert.equal(null, err)
@@ -211,15 +216,17 @@ app.get('/api/totaltokens', (req, res) => {
 
 app.post('/api/mint', (req, res) => {
   const mintTokens = (db, callback) => {
+    console.log(parseInt(req.query.value))
     db.collection('user').update(
-      { address: req.address },
+      { address: req.query.address },
       {
-        $inc: { balance: req.value }
+        $inc: { 'balance': parseInt(req.query.value) }
       }
       , (err, result) => {
         assert.equal(err, null)
 
-        db.collection('user').findOne({'address': req.address}).then((user) => {
+        db.collection('user').findOne({}, {'address': req.query.address}).then((user) => {
+          console.log(user)
           res.send(user)
         })
         // doc.each((err, user) => {
@@ -227,7 +234,7 @@ app.post('/api/mint', (req, res) => {
         //   console.log(user)
         //   res.send(user)
         // })
-        console.log('Updated a document into the user collection.')
+        console.log('Updated a document in the user collection.')
         callback()
       })
   }
