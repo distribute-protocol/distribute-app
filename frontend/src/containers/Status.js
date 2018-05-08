@@ -72,7 +72,8 @@ class Status extends Component {
               'Content-Type': 'application/json'
             }
           }
-          await fetch(`/api/mint?address='2oviuJhgy5PmF5tK4pNzGjakdjamTqnBNkV'&value=${this.tokensToBuy.value}`, config)
+          let address = '2oviuJhgy5PmF5tK4pNzGjakdjamTqnBNkV'
+          await fetch(`/api/mint?address=${address}&value=${this.tokensToBuy.value}`, config)
           await this.getNetworkStatus()
           this.setState({
             tokensToBuy: ''
@@ -136,6 +137,7 @@ class Status extends Component {
   }
 
   render () {
+    console.log(this.props.general)
     return (
       <StatusComponent
         totalTokenSupply={this.props.general.totalTokens}
@@ -175,7 +177,7 @@ class Status extends Component {
 const mapStateToProps = (state) => {
   return {
     user: state.user.user,
-    general: state.general.generalDetails
+    general: state.general
   }
 }
 

@@ -1,8 +1,6 @@
 import { GET_TOTAL_TOKENS, TOTAL_TOKENS_RECEIVED } from '../constants/GeneralActionTypes'
 const initialState = {
-  generalDetails: {
-    totalTokens: 0
-  }
+  totalTokens: 0
 }
 
 // async function handlePromise (promise) {
@@ -11,7 +9,7 @@ const initialState = {
 // }
 
 export default function generalReducer (state = initialState, action) {
-  let totalTokens
+  let totalTok
   switch (action.type) {
     case GET_TOTAL_TOKENS:
       console.log('get total tokens')
@@ -23,12 +21,9 @@ export default function generalReducer (state = initialState, action) {
       // return updateAllUsers(state, user, poll)
     case TOTAL_TOKENS_RECEIVED:
       console.log('total tokens received')
-      // const prom = (x) => { y = Promise.resolve(x) }
-      console.log(action.responseDetails.value[0].balance)
-
-      return initialState
-      // state = Object.assign({}, state, totalTokens)
-      // console.log(state)
+      totalTok = action.responseDetails.value[0].balance
+      console.log(totalTok)
+      return Object.assign({}, state, {totalTokens: totalTok})
     default:
   }
   return state

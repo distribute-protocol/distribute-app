@@ -208,15 +208,16 @@ app.get('/api/totaltokens', (req, res) => {
 
 app.post('/api/mint', (req, res) => {
   const mintTokens = (db, callback) => {
+    console.log(req.query.address)
     db.collection('user').update(
-      { address: req.query.address },
+      { 'address': req.query.address },
       {
         $inc: { 'balance': parseInt(req.query.value) }
       }
       , (err, result) => {
         assert.equal(err, null)
 
-        db.collection('user').findOne({}, {'address': req.query.address}).then((user) => {
+        db.collection('user').findOne({}, { 'address': req.query.address }).then((user) => {
           console.log(user)
           res.send(user)
         })
