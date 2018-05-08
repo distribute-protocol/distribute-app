@@ -191,7 +191,9 @@ app.get('/api/totaltokens', (req, res) => {
       assert.equal(null, err)
       if (doc !== null) {
         // doc is an array of documents
-        res.send(doc)
+        console.log(typeof doc)
+        console.log(doc[0].balance)
+
       } else {
         res.send({})
         callback()

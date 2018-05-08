@@ -3,15 +3,17 @@
 import { GET_TOTAL_TOKENS } from '../constants/GeneralActionTypes'
 import { totalTokensReceived } from '../actions/generalActions'
 
+// import 'rxjs'
 import { combineEpics } from 'redux-observable'
-import 'rxjs'
-import { Observable } from 'rxjs/Observable'
+import Rx from 'rxjs/Rx'
 
 // import { projectStateEpic } from './project'
 
+let httpHeaders = { 'Content-Type': 'application/json' }
+
 let config = {
   method: 'GET',
-  headers: new Headers(),
+  headers: new Headers(httpHeaders),
   mode: 'cors',
   cache: 'default'
 }
@@ -21,7 +23,7 @@ const generalStateEpic = action$ =>
   // pull value from database
     .mergeMap(action =>
       // call database to see if user is already stored
-      Observable.fromPromise(fetch(`/api/totaltokens`, config))
+      Rx.Observable.fromPromise(fetch(`/api/totaltokens`, config))
         .map(response => totalTokensReceived(response))
     )
 

@@ -17,11 +17,19 @@ export default function generalReducer (state = initialState, action) {
       // poll = Object.assign({}, state.allUsers[user], {[pollID]: {salt: salt, status: status, numTokens: numTokens}})
       // return updateAllUsers(state, user, poll)
     case TOTAL_TOKENS_RECEIVED:
+      console.log('total tokens received')
       console.log(action.responseDetails)
-      // doc.reduce(function (cnt, o) { return cnt + o.balance }, 0)
-      // totalTokens = action.responseDetails.totalTokens
-      // console.log('total tokens received')
-      // return Object.assign({}, state, {totalTokens})
+      const chunks = [];
+
+      readStream.on('data', function (chunk) {
+        chunks.push(chunk)
+      })
+
+      // Send the buffer or you can put it into a var
+      readStream.on('end', function () {
+        res.send(Buffer.concat(chunks))
+      })
+
       return initialState
     default:
   }
