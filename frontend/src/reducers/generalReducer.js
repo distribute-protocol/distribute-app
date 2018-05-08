@@ -5,6 +5,11 @@ const initialState = {
   }
 }
 
+// async function handlePromise (promise) {
+//   let res = await Promise.resolve(promise)
+//   return res
+// }
+
 export default function generalReducer (state = initialState, action) {
   let totalTokens
   switch (action.type) {
@@ -18,19 +23,12 @@ export default function generalReducer (state = initialState, action) {
       // return updateAllUsers(state, user, poll)
     case TOTAL_TOKENS_RECEIVED:
       console.log('total tokens received')
-      console.log(action.responseDetails)
-      const chunks = [];
-
-      readStream.on('data', function (chunk) {
-        chunks.push(chunk)
-      })
-
-      // Send the buffer or you can put it into a var
-      readStream.on('end', function () {
-        res.send(Buffer.concat(chunks))
-      })
+      // const prom = (x) => { y = Promise.resolve(x) }
+      console.log(action.responseDetails.value[0].balance)
 
       return initialState
+      // state = Object.assign({}, state, totalTokens)
+      // console.log(state)
     default:
   }
   return state
