@@ -9,32 +9,12 @@ const Eth = require('ethjs')
 const eth = new Eth(new Eth.HttpProvider('http://localhost:8545'))
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
-const TR = require('../frontend/src/abi/TokenRegistry')
-// const RR = require('../frontend/src/abi/ReputationRegistry')
+const DT = require('../frontend/src/abi/DistributeToken')
+const fetch = require('node-fetch')
 
 eth.accounts().then(accountsArr => {
   console.log('accountsArr:', accountsArr)
 })
-
-// filter for minting events
-// const filter = web3.eth.filter({
-//   fromBlock: 0,
-//   toBlock: 'latest',
-//   address: TR.TokenHolderRegistryAddress,
-//   topics: [web3.sha3('LogMint(uint256,uint256,uint256)')]
-// })
-//
-// filter.watch((error, result) => {
-//   if (error) console.error(error)
-//   console.log(result)
-//   // let blockNumber = web3.eth.getTransaction(result.transactionHash).blockNumber
-//   let eventParams = result.data
-//   let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
-//   let eventParamArrDec = eventParamArr.map(x => web3.toDecimal('0x' + x))
-//   let userBalance = eventParamArrDec[2]
-//   // console.log(eventParamArrDec)
-//   postToDatabase(userBalance)
-// })
 
 const app = express()
 
@@ -45,6 +25,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 app.use(express.static(path.resolve(__dirname, '../frontend/build')))
 
+const serverUrl = 'http://localhost:3001'
 const url = process.env.MONGODB_URI || 'mongodb://localhost:27017/distribute'
 
 MongoClient.connect(url, (err, client) => {
@@ -73,6 +54,34 @@ MongoClient.connect(url, (err, client) => {
 //     })
 //   })
 // }
+
+
+// filter for minting events
+const filter = web3.eth.filter({
+  fromBlock: 0,
+  toBlock: 'latest',
+  address: DT.DistributeTokenAddress,
+  topics: [web3.sha3('LogMint(uint256,uint256)')]
+})
+
+filter.watch(async (error, result) => {
+  if (error) console.error(error)
+  console.log(result)
+  let eventParams = result.data
+  let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+  let tokensMinted = parseInt(eventParamArr[0])
+
+  let config = {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  }
+  let address = '2oviuJhgy5PmF5tK4pNzGjakdjamTqnBNkV'
+  await fetch(`${serverUrl}/api/mint?address=${address}&value=${tokensMinted}`, config)
+})
+
 
 // query db for most recent user token balance
 app.get('/api/userbalance', function (req, res) {

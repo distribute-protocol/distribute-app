@@ -1,11 +1,10 @@
 /* global Headers fetch */
 
-import { GET_TOTAL_TOKENS, TOTAL_TOKENS_RECEIVED } from '../constants/GeneralActionTypes'
+import { GET_TOTAL_TOKENS } from '../constants/GeneralActionTypes'
 import { totalTokensReceived } from '../actions/generalActions'
 
 // import 'rxjs'
 import { combineEpics } from 'redux-observable'
-import { of } from 'rxjs/observable/of'
 import Rx from 'rxjs/Rx'
 const { Observable } = Rx
 

@@ -65,15 +65,6 @@ class Status extends Component {
       if (!err) {
         if (accounts.length) {
           await dt.mint(this.tokensToBuy.value, {value: web3.toWei(Math.ceil(this.state.ethToSend * 100000) / 100000, 'ether'), from: accounts[0]})
-          let config = {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            }
-          }
-          let address = '2oviuJhgy5PmF5tK4pNzGjakdjamTqnBNkV'
-          await fetch(`/api/mint?address=${address}&value=${this.tokensToBuy.value}`, config)
           await this.getNetworkStatus()
           this.setState({
             tokensToBuy: ''
@@ -137,7 +128,6 @@ class Status extends Component {
   }
 
   render () {
-    console.log(this.props.general)
     return (
       <StatusComponent
         totalTokenSupply={this.props.general.totalTokens}
