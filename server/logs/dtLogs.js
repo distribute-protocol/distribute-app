@@ -17,17 +17,20 @@ module.exports = function () {
     fromBlock: 0,
     toBlock: 'latest',
     address: DT.DistributeTokenAddress,
-    topics: [web3.sha3('LogMint(uint256,uint256)')]
+    topics: [web3.sha3('LogMint(uint256,uint256,address)')]
   })
 
   filter.watch(async (error, result) => {
     if (error) console.error(error)
     let eventParams = result.data
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let account = eventParamArr[2]
+    account = '0x' + account.substr(account - 40)
+    // console.log(account)
     let tokensMinted = eventParamArr[0]
     // convert result from hex to decimal
     tokensMinted = parseInt(tokensMinted, 16)
-    console.log(tokensMinted)
+    // console.log(tokensMinted)
     let config = {
       method: 'POST',
       headers: {
@@ -35,7 +38,6 @@ module.exports = function () {
         'Content-Type': 'application/json'
       }
     }
-    let address = '2oviuJhgy5PmF5tK4pNzGjakdjamTqnBNkV'
-    await fetch(`${serverUrl}/api/mint?address=${address}&value=${tokensMinted}`, config)
+    await fetch(`${serverUrl}/api/mint?account=${account}&value=${tokensMinted}`, config)
   })
 }

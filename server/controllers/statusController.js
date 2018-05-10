@@ -58,7 +58,7 @@ module.exports = function (app, url) {
   // register user
   app.post('/api/register', (req, res) => {
     const registerUser = (db, callback) => {
-      let body = Object.assign({}, req.body, {balance: 0})
+      let body = Object.assign({}, req.body, {balance: 0, account: req.body.account})
       console.log(body, 'REGISTER')
       db.collection('user').insertOne(
         // 'address': req.body.address,
@@ -116,17 +116,16 @@ module.exports = function (app, url) {
   // mint tokens
   app.post('/api/mint', (req, res) => {
     console.log('api/mint post')
-    console.log(req.query.value)
     const mintTokens = (db, callback) => {
       db.collection('user').update(
-        { 'address': req.query.address },
+        { 'account': req.query.accounts },
         {
           $inc: { 'balance': parseInt(req.query.value) }
         }
         , (err, result) => {
           assert.equal(err, null)
 
-          db.collection('user').findOne({}, { 'address': req.query.address }).then((user) => {
+          db.collection('user').findOne({}, { 'account': req.query.account }).then((user) => {
             // console.log(user)
             res.send(user)
           })

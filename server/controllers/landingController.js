@@ -4,14 +4,13 @@ const assert = require('assert')
 module.exports = function (app, url) {
   app.get('/api/login', (req, res) => {
     console.log('api/login get')
-    const address = req.query.address
     // const pubKey = req.query.pubkey
     const fetchUser = (db, callback) => {
-      db.collection('user').findOne({'address': address}, (err, doc) => {
+      db.collection('user').findOne({'account': req.body.account}, (err, doc) => {
         assert.equal(null, err)
         if (doc !== null) {
           res.send(doc)
-          console.log('login', address, 'server')
+          console.log('login', req.body, 'server')
         } else {
           res.send({})
           callback()
