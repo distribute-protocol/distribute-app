@@ -6,7 +6,7 @@ module.exports = function (app, url) {
     console.log('api/login get')
     // const pubKey = req.query.pubkey
     const fetchUser = (db, callback) => {
-      db.collection('user').findOne({'account': req.body.account}, (err, doc) => {
+      db.collection('user').findOne({'account': req.query.account}, (err, doc) => {
         assert.equal(null, err)
         if (doc !== null) {
           res.send(doc)

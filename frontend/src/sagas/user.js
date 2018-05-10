@@ -26,15 +26,14 @@ function * loginUser (action) {
     cache: 'default'
   }
   let userObj = {}
+  let account = web3.eth.accounts[0]
   // call database to see if user is already stored
-  yield ethjs.accounts().then(async accounts => {
-    await fetch(`/api/login?account=${accounts[0]}`, config)
-      .then((response) => response.json())
-      .then((user) => {
-        userObj = user
-        console.log('userObj')
-      })
-  })
+  yield fetch(`/api/login?account=${account}`, config)
+    .then((response) => response.json())
+    .then((user) => {
+      userObj = user
+      console.log('userObj')
+    })
   yield _.isEmpty(userObj)
     // user is not already stored in the database -> store them!
     ? registerUser(credentials)
@@ -53,8 +52,9 @@ function * registerUser (credentials) {
     },
     body: JSON.stringify(credentials)
   }
+  let account = web3.eth.accounts[0]
   let registeredUser
-  fetch(`/api/register?account=${web3.eth.accounts[0]}`, config)
+  fetch(`/api/register?account=${account}`, config)
     .then((response) => response.json())
     .then((user) => {
       registeredUser = user

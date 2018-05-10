@@ -25,8 +25,9 @@ module.exports = function () {
     let eventParams = result.data
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
     let account = eventParamArr[2]
-    account = '0x' + account.substr(account - 40)
-    // console.log(account)
+    console.log(account, typeof account)
+    account = '0x' + account.substr(-40)
+    console.log(account)
     let tokensMinted = eventParamArr[0]
     // convert result from hex to decimal
     tokensMinted = parseInt(tokensMinted, 16)
