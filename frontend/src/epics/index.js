@@ -10,7 +10,6 @@ const { Observable } = Rx
 
 // import { projectStateEpic } from './project'
 
-
 let config = {
   method: 'GET',
   headers: new Headers(),
