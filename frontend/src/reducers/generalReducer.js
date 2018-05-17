@@ -16,7 +16,10 @@ export default function generalReducer (state = initialState, action) {
         console.log('something undefined')
         return initialState
       } else {
-        totalTok = action.responseDetails.value[0].balance
+        totalTok = 0
+        for (let i = 0; i < action.responseDetails.value.length; i++) {
+          totalTok += action.responseDetails.value[i].balance
+        }
         return Object.assign({}, state, {totalTokens: totalTok})
       }
     case GET_USER_TOKENS:
@@ -26,7 +29,7 @@ export default function generalReducer (state = initialState, action) {
       console.log('user tokens received')
       if (action.responseDetails.value === undefined) {
         console.log('something undefined')
-        return state
+        return initialState
       } else {
         let userBal = action.responseDetails.value.balance
         let userAccount = action.responseDetails.value.account

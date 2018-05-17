@@ -21,7 +21,6 @@ export function getUserTokens (userDetails) {
 }
 
 export function userTokensReceived (responseDetails) {
-  console.log('GOOBI', responseDetails)
   return {
     type: USER_TOKENS_RECEIVED,
     responseDetails

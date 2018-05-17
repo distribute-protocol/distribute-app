@@ -130,6 +130,7 @@ class Status extends Component {
   }
 
   render () {
+    console.log(this.props.general)
     return (
       <StatusComponent
         totalTokenSupply={this.props.general.totalTokens !== ''
