@@ -33,7 +33,7 @@ const getTotalTokensEpic = action$ =>
 const getUserTokensEpic = action$ =>
   action$.ofType(GET_USER_TOKENS)
   // pull value from database
-    .mergeMap(action => Observable.from(fetchService(`/api/userbalance`))
+    .mergeMap(({payload}) => Observable.from(fetchService(`/api/userbalance?account=`, payload))
       .map(res => Observable.of(res))
       .map(result => userTokensReceived(result))
     )

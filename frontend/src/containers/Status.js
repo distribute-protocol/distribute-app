@@ -132,8 +132,12 @@ class Status extends Component {
   render () {
     return (
       <StatusComponent
-        totalTokenSupply={this.props.general.totalTokens}
-        balance={this.props.general.userTokens[this.state.userAccount]}
+        totalTokenSupply={this.props.general.totalTokens !== ''
+          ? this.props.general.totalTokens
+          : 0}
+        balance={this.props.general.userTokens[this.state.userAccount] !== undefined
+          ? this.props.general.userTokens[this.state.userAccount]
+          : 0}
         marketPercentage={this.props.general.userTokens[this.state.userAccount]
           ? Math.round(this.props.general.userTokens[this.state.userAccount] / this.props.general.totalTokens * 10000) / 100
           : 0}

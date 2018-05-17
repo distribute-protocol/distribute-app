@@ -8,10 +8,10 @@ module.exports = function (app, url) {
     console.log('api/userbalance get')
     // console.log('databaseTest!')
     const fetchResponse = (db, callback) => {
-      db.collection('user').find().toArray((err, docs) => {
-        assert.equal(null, err)
+      db.collection('user').findOne({}, { 'account': req.query.account }).then((docs) => {
         // res.send()
         if (docs !== null) {
+          // console.log(docs)
           res.send(docs)
           callback()
         } else {
@@ -97,7 +97,7 @@ module.exports = function (app, url) {
       db.collection('user').find().toArray((err, doc) => {
         assert.equal(null, err)
         if (doc !== null) {
-          console.log(doc)
+          // console.log(doc)
           res.send(doc)
         } else {
           res.send({})
@@ -126,7 +126,7 @@ module.exports = function (app, url) {
           assert.equal(err, null)
 
           db.collection('user').findOne({}, { 'account': req.query.account }).then((user) => {
-            console.log(user)
+            // console.log(user)
             res.send(user)
           })
           console.log('Updated a document in the user collection.')
