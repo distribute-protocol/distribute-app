@@ -6,8 +6,7 @@ import { getEthPriceNow } from 'get-eth-price'
 import {eth, web3, rr, dt} from '../utilities/blockchain'
 import * as _ from 'lodash'
 import StatusComponent from '../components/Status'
-import { getTotalTokens } from '../actions/generalActions'
-
+import { getTotalTokens, getUserTokens } from '../actions/generalActions'
 
 class Status extends Component {
   constructor () {
@@ -34,9 +33,12 @@ class Status extends Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
+          this.setState({userAccount: accounts[0]})
+          // get user token balance
+          this.props.getUserTokens(accounts[0])
           let ethPrice = await getEthPriceNow()
           ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
-          let balance = (await dt.balanceOf(accounts[0])).toNumber()
+          // let balance = (await dt.balanceOf(accounts[0])).toNumber()
           // let totalTokenSupply = (await dt.totalSupply()).toNumber()
           let weiBal = (await dt.weiBal()).toNumber()
           let reputationBalance = (await rr.balances(accounts[0])).toNumber()
@@ -45,7 +47,7 @@ class Status extends Component {
           let currentPrice = (await dt.currentPrice()).toNumber()
           this.setState({
             // totalTokenSupply,
-            balance,
+            // balance,
             ethPrice,
             weiBal,
             totalReputationSupply,
@@ -131,9 +133,9 @@ class Status extends Component {
     return (
       <StatusComponent
         totalTokenSupply={this.props.general.totalTokens}
-        balance={this.state.balance}
-        marketPercentage={this.props.general.totalTokens
-          ? Math.round(this.state.balance / this.props.general.totalTokens * 10000) / 100
+        balance={this.props.general.userTokens[this.state.userAccount]}
+        marketPercentage={this.props.general.userTokens[this.state.userAccount]
+          ? Math.round(this.props.general.userTokens[this.state.userAccount] / this.props.general.totalTokens * 10000) / 100
           : 0}
         ethPool={web3.fromWei(this.state.weiBal, 'ether')}
         capitalEquivalent={this.state.ethPrice
@@ -174,7 +176,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
-    getTotalTokens: () => dispatch(getTotalTokens())
+    getTotalTokens: () => dispatch(getTotalTokens()),
+    getUserTokens: (userAccount) => dispatch(getUserTokens(userAccount))
   }
 }
 

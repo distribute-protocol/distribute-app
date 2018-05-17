@@ -1,32 +1,37 @@
-import { GET_TOTAL_TOKENS, TOTAL_TOKENS_RECEIVED } from '../constants/GeneralActionTypes'
+import { GET_TOTAL_TOKENS, TOTAL_TOKENS_RECEIVED, GET_USER_TOKENS, USER_TOKENS_RECEIVED } from '../constants/GeneralActionTypes'
 const initialState = {
-  totalTokens: 0
+  totalTokens: '',
+  userTokens: {}
 }
-
-// async function handlePromise (promise) {
-//   let res = await Promise.resolve(promise)
-//   return res
-// }
 
 export default function generalReducer (state = initialState, action) {
   let totalTok
   switch (action.type) {
     case GET_TOTAL_TOKENS:
       console.log('get total tokens')
-      // let totalTokenSupply = (await dt.totalSupply()).toNumber()
-
-      return initialState
-      // ({status, user, pollID, salt, numTokens} = action.voteDetails)
-      // poll = Object.assign({}, state.allUsers[user], {[pollID]: {salt: salt, status: status, numTokens: numTokens}})
-      // return updateAllUsers(state, user, poll)
+      return state
     case TOTAL_TOKENS_RECEIVED:
       console.log('total tokens received')
-      if (action.responseDetails.value[0].balance === undefined) {
-        return Object.assign({}, state, {totalTokens: 0})
+      if (action.responseDetails.value[0] === undefined) {
+        console.log('something undefined')
+        return initialState
       } else {
         totalTok = action.responseDetails.value[0].balance
-        // console.log(totalTok)
         return Object.assign({}, state, {totalTokens: totalTok})
+      }
+    case GET_USER_TOKENS:
+      console.log('get user tokens')
+      return state
+    case USER_TOKENS_RECEIVED:
+      console.log('user tokens received')
+      if (action.responseDetails.value[0] === undefined) {
+        console.log('something undefined')
+        return state
+      } else {
+        let userBal = action.responseDetails.value[0].balance
+        let userAccount = action.responseDetails.value[0].account
+        let newUserTokens = Object.assign({}, state.userTokens, {[userAccount]: userBal})
+        return Object.assign({}, state, {userTokens: newUserTokens})
       }
     default:
   }

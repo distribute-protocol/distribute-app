@@ -5,11 +5,11 @@ const assert = require('assert')
 module.exports = function (app, url) {
   // get user balance
   app.get('/api/userbalance', function (req, res) {
+    console.log('api/userbalance get')
     // console.log('databaseTest!')
     const fetchResponse = (db, callback) => {
       db.collection('user').find().toArray((err, docs) => {
         assert.equal(null, err)
-        console.log('get user balance')
         // res.send()
         if (docs !== null) {
           res.send(docs)
@@ -97,7 +97,7 @@ module.exports = function (app, url) {
       db.collection('user').find().toArray((err, doc) => {
         assert.equal(null, err)
         if (doc !== null) {
-          // doc is an array of documents
+          console.log(doc)
           res.send(doc)
         } else {
           res.send({})
