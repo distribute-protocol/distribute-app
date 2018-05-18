@@ -126,7 +126,7 @@ module.exports = function (app, url) {
           assert.equal(err, null)
 
           db.collection('user').findOne({}, { 'account': req.query.account }).then((user) => {
-            // console.log(user)
+            console.log(user)
             res.send(user)
           })
           console.log('Updated a document in the user collection.')
