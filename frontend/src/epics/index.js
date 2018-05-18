@@ -1,7 +1,7 @@
 /* global Headers fetch */
 
-import { GET_TOTAL_TOKENS, GET_USER_TOKENS } from '../constants/GeneralActionTypes'
-import { totalTokensReceived, userTokensReceived } from '../actions/generalActions'
+import { GET_TOTAL_TOKENS, GET_USER_TOKENS, GET_TOTAL_REPUTATION, GET_USER_REPUTATION } from '../constants/GeneralActionTypes'
+import { totalTokensReceived, userTokensReceived, totalReputationReceived, userReputationReceived } from '../actions/generalActions'
 
 // import 'rxjs'
 import { combineEpics } from 'redux-observable'
@@ -38,4 +38,20 @@ const getUserTokensEpic = action$ =>
       .map(result => userTokensReceived(result))
     )
 
-export default combineEpics(getTotalTokensEpic, getUserTokensEpic)
+const getTotalReputationEpic = action$ =>
+  action$.ofType(GET_TOTAL_REPUTATION)
+  // pull value from database
+    .mergeMap(action => Observable.from(fetchService(`/api/totalreputation`))
+      .map(res => Observable.of(res))
+      .map(result => totalReputationReceived(result))
+    )
+
+const getUserReputationEpic = action$ =>
+  action$.ofType(GET_USER_REPUTATION)
+  // pull value from database
+    .mergeMap(({payload}) => Observable.from(fetchService(`/api/userreputation?account=`, payload))
+      .map(res => Observable.of(res))
+      .map(result => userReputationReceived(result))
+    )
+
+export default combineEpics(getTotalTokensEpic, getUserTokensEpic, getTotalReputationEpic, getUserReputationEpic)
