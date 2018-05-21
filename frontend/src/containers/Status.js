@@ -6,6 +6,7 @@ import { getEthPriceNow } from 'get-eth-price'
 import {eth, web3, rr, dt} from '../utilities/blockchain'
 import * as _ from 'lodash'
 import StatusComponent from '../components/Status'
+import { getTotalTokens, getUserTokens, getTotalReputation, getUserReputation } from '../actions/generalActions'
 
 class Status extends Component {
   constructor () {
@@ -27,25 +28,31 @@ class Status extends Component {
   }
 
   async getNetworkStatus () {
+    this.props.getTotalTokens()
+    this.props.getTotalReputation()
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
+          this.setState({userAccount: accounts[0]})
+          // get user token balance
+          this.props.getUserTokens(accounts[0])
+          this.props.getUserReputation(accounts[0])
           let ethPrice = await getEthPriceNow()
           ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
-          let balance = (await dt.balanceOf(accounts[0])).toNumber()
-          let totalTokenSupply = (await dt.totalSupply()).toNumber()
+          // let balance = (await dt.balanceOf(accounts[0])).toNumber()
+          // let totalTokenSupply = (await dt.totalSupply()).toNumber()
           let weiBal = (await dt.weiBal()).toNumber()
-          let reputationBalance = (await rr.balances(accounts[0])).toNumber()
-          let totalReputationSupply = (await rr.totalSupply()).toNumber()
+          // let reputationBalance = (await rr.balances(accounts[0])).toNumber()
+          // let totalReputationSupply = (await rr.totalSupply()).toNumber()
           let first = (await rr.first(accounts[0]))
           let currentPrice = (await dt.currentPrice()).toNumber()
           this.setState({
-            totalTokenSupply,
-            balance,
+            // totalTokenSupply,
+            // balance,
             ethPrice,
             weiBal,
-            totalReputationSupply,
-            reputationBalance,
+            // totalReputationSupply,
+            // reputationBalance,
             first,
             currentPrice: web3.fromWei(currentPrice, 'ether')
           })
@@ -107,7 +114,8 @@ class Status extends Component {
         await dt.weiRequired(val).then(result => {
           ethRequired = web3.fromWei(result.toNumber(), 'ether')
         })
-        totalSupply = (await dt.totalSupply()).toNumber()
+        // totalSupply = (await dt.totalSupply()).toNumber()
+        totalSupply = this.props.totalSupply
         if (totalSupply === 0) {
           refund = ethRequired
         } else {
@@ -123,20 +131,25 @@ class Status extends Component {
   }
 
   render () {
+    console.log(this.props.general)
     return (
       <StatusComponent
-        totalTokenSupply={this.state.totalTokenSupply}
-        balance={this.state.balance}
-        marketPercentage={this.state.totalTokenSupply
-          ? Math.round(this.state.balance / this.state.totalTokenSupply * 10000) / 100
+        totalTokenSupply={this.props.general.totalTokens}
+        balance={this.props.general.userTokens[this.state.userAccount] !== undefined
+          ? this.props.general.userTokens[this.state.userAccount]
+          : 0}
+        marketPercentage={this.props.general.userTokens[this.state.userAccount]
+          ? Math.round(this.props.general.userTokens[this.state.userAccount] / this.props.general.totalTokens * 10000) / 100
           : 0}
         ethPool={web3.fromWei(this.state.weiBal, 'ether')}
         capitalEquivalent={this.state.ethPrice
           ? Math.round(this.state.ethPrice * web3.fromWei(this.state.weiBal, 'ether'))
           : 0}
         currentPrice={this.state.currentPrice}
-        totalReputationSupply={this.state.totalReputationSupply}
-        reputationBalance={this.state.reputationBalance}
+        totalReputationSupply={this.props.general.totalReputation}
+        reputationBalance={this.props.general.userReputation[this.state.userAccount] !== undefined
+          ? this.props.general.userReputation[this.state.userAccount]
+          : 0}
         ethToSend={typeof this.state.ethToSend === 'undefined'
           ? 'n/a'
           : Math.round(this.state.ethToSend * 100000) / 100000}
@@ -161,13 +174,18 @@ class Status extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user.user
+    user: state.user.user,
+    general: state.general
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    reroute: () => dispatch(push('/'))
+    reroute: () => dispatch(push('/')),
+    getTotalTokens: () => dispatch(getTotalTokens()),
+    getTotalReputation: () => dispatch(getTotalReputation()),
+    getUserTokens: (userAccount) => dispatch(getUserTokens(userAccount)),
+    getUserReputation: (userAccount) => dispatch(getUserReputation(userAccount))
   }
 }
 

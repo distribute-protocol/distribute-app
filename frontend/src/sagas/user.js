@@ -5,9 +5,10 @@ import { push } from 'react-router-redux'
 import { LOGIN_USER } from '../constants/UserActionTypes'
 import { loggedInUser } from '../actions/userActions'
 import * as _ from 'lodash'
-import { ethjs, rr } from '../utilities/blockchain'
+import { web3, ethjs, rr } from '../utilities/blockchain'
 
 function * loginUser (action) {
+  console.log('login user!')
   const credentials = action.credentials
   // if user is not yet registered, do that now
   yield ethjs.accounts().then(accounts => {
@@ -25,12 +26,12 @@ function * loginUser (action) {
     cache: 'default'
   }
   let userObj = {}
+  let account = web3.eth.accounts[0]
   // call database to see if user is already stored
-  yield fetch(`/api/login?address=${credentials.address}&pubkey=${credentials.publicKey}`, config)
+  yield fetch(`/api/login?account=${account}`, config)
     .then((response) => response.json())
     .then((user) => {
       userObj = user
-      console.log('userObj')
     })
   yield _.isEmpty(userObj)
     // user is not already stored in the database -> store them!
@@ -41,6 +42,7 @@ function * loginUser (action) {
 }
 
 function * registerUser (credentials) {
+  console.log('register user!')
   let config = {
     method: 'POST',
     headers: {
@@ -49,13 +51,14 @@ function * registerUser (credentials) {
     },
     body: JSON.stringify(credentials)
   }
+  let account = web3.eth.accounts[0]
   let registeredUser
-  yield fetch('/api/register', config)
+  fetch(`/api/register?account=${account}`, config)
     .then((response) => response.json())
     .then((user) => {
       registeredUser = user
     })
-  yield put(loggedInUser(registeredUser))
+  put(loggedInUser(registeredUser))
 }
 
 function * userSaga () {
