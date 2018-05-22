@@ -22,7 +22,7 @@ Distribute Protocol requires the following software to be downloaded:
   + [ipfs daemon](https://ipfs.io/docs/install/)
   + [MetaMask](metamask.io) (Google Chrome extension)
 
-For notes on how to install each of the above please refer to the section on Installing the Prerequisites for [Mac](###installing-the-prerequisites-for-mac) or [Linux](###installing-the-prerequisites-for-linux). If your system has all of the above, please visit the section [Installing the Distribute Protocol](###installing-the-distribute-- rotocol).
+For notes on how to install each of the above please refer to the section on Installing the Prerequisites for [Mac](###installing-the-prerequisites-for-mac) or [Linux](###installing-the-prerequisites-for-linux). If your system has all of the above, please visit the section [Installing the Distribute Protocol](###installing-the-distribute--protocol).
 
 ### Installing the Prerequisites (for Mac)
 Note that it is essential to have all of these softwares before proceeding with the installation of the Distribute Protocol.
