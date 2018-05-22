@@ -8,22 +8,21 @@ among network participants.
 
 These instructions will allow you to run Distribute on your local machine for development and testing purposes.
 
-### Please note that Distribute Protocol is still in production and is not ready for deployment on the mainnet.
+**PLEASE NOTE THAT THE DISTRIBUTE PROTOCOL IS STILL IN PRODUCTION AND IS NOT READY FOR DEPLOYMENT ON THE MAINNET.**
 
 ## Prerequisites
 
 Distribute has been tested for compatibility with Mac and Linux (Ubuntu 16.04).
 
 Distribute Protocol requires the following software to be downloaded:
-  + **yarn**
-  + **npm**
-  + **Node.js**
-  + **Truffle**
-  + **mongoDB**
-  + **ipfs daemon**
-  + **MetaMask** (Google Chrome extension)
+  + [yarn](https://yarnpkg.com/lang/en/docs/install/#mac-stable)
+  + [Node.js/npm](https://nodejs.org/en/)
+  + [Truffle Suite](http://truffleframework.com/docs/getting_started/installation) (Ethereum development framework)
+  + [mongoDB](https://docs.mongodb.com/manual/installation/)
+  + [ipfs daemon](https://ipfs.io/docs/install/)
+  + [MetaMask](metamask.io) (Google Chrome extension)
 
-For notes on how to install each of the abpve please refer to the section on Installing the Prerequisites for [Mac](###installing-the-prerequisites-for-mac) or [Linux](###installing-the-prerequisites-for-linux). If your system has all of the above, please visit the section [Installing the Distribute Protocol](###installing-the-distribute-- rotocol).
+For notes on how to install each of the above please refer to the section on Installing the Prerequisites for [Mac](###installing-the-prerequisites-for-mac) or [Linux](###installing-the-prerequisites-for-linux). If your system has all of the above, please visit the section [Installing the Distribute Protocol](###installing-the-distribute-- rotocol).
 
 ### Installing the Prerequisites (for Mac)
 Note that it is essential to have all of these softwares before proceeding with the installation of the Distribute Protocol.
@@ -54,7 +53,7 @@ npm -v
 ```
 You need at least `npm v5.3.0` and `node v8.3.0` to proceed.
 
-#### Installing truffle
+#### Installing Truffle
 ```
 npm install -g truffle
 ```
@@ -196,13 +195,16 @@ Go to [this](https://metamask.io/) site in your Google Chrome browser.
 Note that all of these steps _must_ be carried out before sending any transactions on distribute.
 
 *Step 1:*    
-Go to Distribute Protocol's frontend. Navigate to its [contracts folder](https://github.com/distribute-protocol/distribute-contracts.git) and clone it. To do this, navigate to a suitable directory in Terminal and type:
+Clone this repository to your machine and add the contracts repository as a submodule. This will give you access to all the frontend, server, and contract code you'll need from both repositories.
 ```
-git clone https://github.com/distribute-protocol/distribute-contracts.git
-cd contracts
+git clone https://github.com/distribute-protocol/distribute-frontend.git
+git submodule add https://github.com/distribute-protocol/distribute-contracts.git contracts
+git submodule update --init --recursive
 ```
+
 *Step 2:*    
-Run the Node.js modules and dependencies from the package.json file.
+In `distribute-frontend` (you shouldn't have to change folders), install the node modules and dependencies from the `package.json` file.
+
 ```
 yarn
 yarn start
@@ -218,11 +220,11 @@ This will deploy a local blockchain with 10 accounts, each preloaded with 100 et
 Open and sign in to MetaMask in your Google Chrome browser.
 From the dropdown menu at the top, select the `Localhost 8545` network. Click the three dots and select "Copy Address to Clipboard".
 
-**Remember to reset this account everytime you run `ganache-cli`.**  
-To reset the account, confirm that you are on Localhost 8545, then navigate to Settings from the three bars on the top right. Scroll down and select "Reset Account". This forces MetaMask to believe that this network ID is a clean network in a fresh state (ordinary users of MetaMask should never have to do this!).
+**Remember to reset this account every time you run `ganache-cli`.**  
+To reset the account, confirm that you are on Localhost 8545, then navigate to Settings from the three bars on the top right. Scroll down and select "Reset Account". This forces MetaMask to believe that this network ID is a clean network in a fresh state (**ordinary users of MetaMask should never have to do this!**).
 
 *Step 5:*   
-In a new Terminal window, navigate to the `contracts` folder you cloned from github in Step 1. Deploy it to the local blockchain running in ganache by typing:
+In a new Terminal window, navigate to the `contracts` folder you cloned from GitHub in Step 1. Deploy it to the local blockchain running in ganache by typing:
 ```
 truffle migrate
 ```
@@ -232,11 +234,11 @@ truffle console
 ```
 Send ether from your local blockchain to your account in MetaMask by typing the following in `truffle console`:
 ```
-web3.eth.sendTransaction({to:<MetaMask address>, from: web3.eth.accounts[<n>], value: web3.toWei(90, 'ether')})
+web3.eth.sendTransaction({to:'<MetaMask_address>', from: web3.eth.accounts[<i>], value: web3.toWei(90, 'ether')})
 ```
 NOTE:   
-For \<MetaMask address\>: Paste (Ctrl-Shift-V) the address you copied to clipboard in step 4.  
-For \<i\>: Type any number between 0 and 9. This is a reference to the 10 accounts in your locally running 10 accounts.
+For <MetaMask_address\>: Paste (Ctrl-Shift-V) the address you copied to clipboard in step 4.  
+For <i\>: Type any number between 0 and 9. This is a reference to the 10 accounts in your locally running 10 accounts.
 
 *Step 6:*
 Instantiate mongoDB in a new Terminal window.
@@ -262,40 +264,39 @@ Gateway server listening on /ip4/127.0.0.1/tcp/8080
 ```
 *Step 8:*   
 mongoDB must be running before this step.  
-Clone the server protocols onto your machine in a directory of your choosing.
+Cd into `distribute-protocol/server`, then install the necessary node modules and start up the server by typing:
 ```
-git clone https://github.com/distribute-protocol/distribute-frontend/tree/master/server
+npm install
 npm start
 ```
 The server should be running at localhost 3001.
 
 *Step 9:*  
 Your MetaMask account needs to be on localhost 8545, and reset (as described in Step 2 if it has been used before).
-First, clone the frontend onto your machine, then run it using `yarn`.
+Cd into `distribute-protocol/frontend`, then install the necessary node modules and start up the frontend by typing:
 ```
-git clone https://github.com/distribute-protocol/distribute-frontend/tree/master/frontend
 yarn
 yarn start
 ```
-The frontend should be running on localhost 3000.
+The frontend should open up in a browser tab and be running on localhost 3000.
 
 *Step 10:*  
-Navigate to where the the /frontend folder is located on your computer. Then, open "store.js".
+Navigate to where the the /frontend folder is located on your computer. Then, open `store.js` using your text editor. We like atom.
 ```
 cd src/store/
-open store.js
+atom store.js
 ```
 (Use `xdg-open store.js` if you are using Linux.)  
 Open store.js in a text editor.  
 Find the line the line `persistedStore.purge()`. Uncomment it by removing the slashes.  
 Save and close the file.
-Open store.js again and recomment the line (by adding two slashes at the fron of the line.)
+Open store.js again and recomment the line (by adding two slashes at the fron of the line.
 ```
 // persistedStore.purge()
 ```
 Save the file.
 
-This step is essential due to some issues with storing data in our databases.
+This step is temporary and will be deprecated when we finish migrating the data to mongoDB.
 
 ## Authors
 Ashoka Finley (ashoka [dot] finley [at] consensys [dot] net)
