@@ -1,6 +1,6 @@
 # Distribute Protocol
 
-The Distribute Protocol aims to create general purpose decentralized utility protocol that helps scale distributed infrastructure systems, in a
+The Distribute Protocol aims to create a general purpose decentralized utility protocol that helps scale distributed infrastructure systems, in a
 way that can be responsive and accountable to the needs of its users, while also creating broader value that can be shared
 among network participants.
 
@@ -43,7 +43,7 @@ node -v
 ```
 
 #### Installing npm
-npm is distributed with Node.js- which means that when you download Node.js, you automatically get npm installed on your computer. To update it, run
+npm is distributed with Node.js, which means that when you download Node.js, you automatically get npm installed on your computer. To update it, run
 ```
 npm install npm@latest -g
 ```
@@ -148,6 +148,7 @@ yarn --version
 Run:
 ```
 npm install -g truffle
+npm install -g ganache-cli
 ```
 #### Installing mongoDB
 Please remember to make sure that you are running `glibc 2.23`. To make sure, run `ldd --version` in terminal to check.
@@ -207,7 +208,6 @@ In `distribute-frontend` (you shouldn't have to change folders), install the nod
 
 ```
 yarn
-yarn start
 ```
 *Step 3*:   
 Open a new terminal window. Type
@@ -299,5 +299,5 @@ Save the file.
 This step is temporary and will be deprecated when we finish migrating the data to mongoDB.
 
 ## Authors
-Ashoka Finley (ashoka [dot] finley [at] consensys [dot] net)
+Ashoka Finley (ashoka [dot] finley [at] consensys [dot] net)  
 Jessica Marshall (jessica [dot] marshall [at] consensys [dot] net)
