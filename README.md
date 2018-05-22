@@ -241,7 +241,7 @@ For <MetaMask_address\>: Paste (Ctrl-Shift-V) the address you copied to clipboar
 For <i\>: Type any number between 0 and 9. This is a reference to the 10 accounts in your locally running 10 accounts.
 
 *Step 6:*
-Instantiate mongoDB in a new Terminal window.
+Initialize mongoDB in a new Terminal window.
 ```
 mongod
 ```
@@ -287,10 +287,10 @@ cd src/store/
 atom store.js
 ```
 (Use `xdg-open store.js` if you are using Linux.)  
-Open store.js in a text editor.  
+Open `store.js` in a text editor.  
 Find the line the line `persistedStore.purge()`. Uncomment it by removing the slashes.  
 Save and close the file.
-Open store.js again and recomment the line (by adding two slashes at the fron of the line.
+Open `store.js` again and recomment the line (by adding two slashes at the front of the line.
 ```
 // persistedStore.purge()
 ```
