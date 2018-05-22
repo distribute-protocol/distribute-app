@@ -232,18 +232,18 @@ truffle console
 ```
 Send ether from your local blockchain to your account in MetaMask by typing the following in `truffle console`:
 ```
-web3.eth.sendTransaction({to:<MetaMask address>, from: web3.eth.accounts[<i>], value: web3.toWei(90, 'ether')})
+web3.eth.sendTransaction({to:<MetaMask address>, from: web3.eth.accounts[<n>], value: web3.toWei(90, 'ether')})
 ```
 NOTE:   
-For <MetaMask address>: Paste (Ctrl-Shift-V) the address you copied to clipboard in step 4.  
-For <i>: Type any number between 0 and 9. This is a reference to the 10 accounts in your locally running 10 accounts.
+For \<MetaMask address\>: Paste (Ctrl-Shift-V) the address you copied to clipboard in step 4.  
+For \<i\>: Type any number between 0 and 9. This is a reference to the 10 accounts in your locally running 10 accounts.
 
 *Step 6:*
-Instatiate mongoDB in a new Terminal window.
+Instantiate mongoDB in a new Terminal window.
 ```
 mongod
 ```
-In (yet) another Terminal window, clear your database by typing:
+In another Terminal window, clear your database by typing:
 ```
 mongo
 use distribute
