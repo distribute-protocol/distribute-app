@@ -1,7 +1,7 @@
 /* global Headers fetch */
 
-import { GET_TOTAL_TOKENS, GET_USER_TOKENS, GET_TOTAL_REPUTATION, GET_USER_REPUTATION } from '../constants/GeneralActionTypes'
-import { totalTokensReceived, userTokensReceived, totalReputationReceived, userReputationReceived } from '../actions/generalActions'
+import { GET_TOTAL_TOKENS, GET_USER_TOKENS, GET_TOTAL_REPUTATION, GET_USER_REPUTATION } from '../constants/getters/StatusGetterActionTypes'
+import { totalTokensReceived, userTokensReceived, totalReputationReceived, userReputationReceived } from '../actions/getters/statusGetterActions'
 
 // import 'rxjs'
 import { combineEpics } from 'redux-observable'

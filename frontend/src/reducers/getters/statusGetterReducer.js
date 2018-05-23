@@ -1,4 +1,4 @@
-import { TOTAL_TOKENS_RECEIVED, USER_TOKENS_RECEIVED, TOTAL_REPUTATION_RECEIVED, USER_REPUTATION_RECEIVED } from '../constants/GeneralActionTypes'
+import { TOTAL_TOKENS_RECEIVED, USER_TOKENS_RECEIVED, TOTAL_REPUTATION_RECEIVED, USER_REPUTATION_RECEIVED } from '../../constants/getters/StatusGetterActionTypes'
 import * as _ from 'lodash'
 
 const initialState = {
