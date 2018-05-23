@@ -2,7 +2,7 @@ import NavigationReducer from './NavigationReducer'
 import userReducer from './userReducer'
 import projectReducer from './projectReducer'
 import pollReducer from './pollReducer'
-import generalReducer from './generalReducer'
+import statusGetterReducer from './getters/statusGetterReducer'
 import { routerReducer } from 'react-router-redux'
 import { combineReducers } from 'redux'
 
@@ -12,7 +12,7 @@ const Nemo = combineReducers({
   projects: projectReducer,
   polls: pollReducer,
   router: routerReducer,
-  general: generalReducer
+  status: statusGetterReducer
 })
 
 export default Nemo

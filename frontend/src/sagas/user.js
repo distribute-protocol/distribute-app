@@ -53,7 +53,7 @@ function * registerUser (credentials) {
   }
   let account = web3.eth.accounts[0]
   let registeredUser
-  fetch(`/api/register?account=${account}`, config)
+  yield fetch(`/api/register?account=${account}`, config)
     .then((response) => response.json())
     .then((user) => {
       registeredUser = user
