@@ -1,4 +1,4 @@
-# Distribute Protocol
+this.props.status# Distribute Protocol
 
 The Distribute Protocol aims to create a general purpose decentralized utility protocol that helps scale distributed infrastructure systems, in a
 way that can be responsive and accountable to the needs of its users, while also creating broader value that can be shared
@@ -87,12 +87,13 @@ To get the ipfs daemon running, type the following in Terminal
 ```
 go get -u -d github.com/ipfs/go-ipfs
 ```
-Then cd into the directory whre `go-ipfs` was downloaded.  
+Then cd into the directory where `go-ipfs` was downloaded.  
 Once you have done this, in Terminal, type
 ```
 make install
+brew install ipfs
 ```
-Initialise the daemon by entering
+Initialize the daemon by entering
 ```
 ipfs init
 ```

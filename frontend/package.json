@@ -38,7 +38,8 @@
     "truffle-hdwallet-provider": "0.0.3",
     "uport-connect": "^0.7.0",
     "web3": "^0.20.4",
-    "web3-utils": "^1.0.0-beta.30"
+    "web3-utils": "^1.0.0-beta.30",
+    "webcrypto": "^0.1.1"
   },
   "devDependencies": {
     "react-scripts": "1.0.11"
