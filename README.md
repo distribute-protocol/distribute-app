@@ -114,11 +114,6 @@ USAGE:
 ...
 ```
 If you see this, you have successfully installed the ipfs-daemon.
-To initialize the daemon, type
-```
-ipfs daemon
-```
-The next time you spin up the Distribute frontend, this will be the only step.
 #### Installing MetaMask
 Go to [this](https://metamask.io/) site in your Google Chrome browser.
 
