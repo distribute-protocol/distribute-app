@@ -114,6 +114,10 @@ USAGE:
 ...
 ```
 If you see this, you have successfully installing the ipfs-daemon.
+From now on, during set up it is only required to type
+```
+ipfs daemon
+```
 #### Installing MetaMask
 Go to [this](https://metamask.io/) site in your Google Chrome browser.
 
