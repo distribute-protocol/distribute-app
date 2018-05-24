@@ -22,6 +22,7 @@ class Status extends Component {
 
   componentWillMount () {
     if (_.isEmpty(this.props.user)) {
+      console.log('STATUS PAGE!')
       // this.props.reroute()
     } else {}
     this.getNetworkStatus()
@@ -38,6 +39,7 @@ class Status extends Component {
           this.props.getUserTokens(accounts[0])
           this.props.getUserReputation(accounts[0])
           let ethPrice = await getEthPriceNow()
+          console.log('eth price object', ethPrice)
           ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
           // let balance = (await dt.balanceOf(accounts[0])).toNumber()
           // let totalTokenSupply = (await dt.totalSupply()).toNumber()

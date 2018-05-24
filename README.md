@@ -264,7 +264,7 @@ Gateway server listening on /ip4/127.0.0.1/tcp/8080
 ```
 *Step 8:*   
 mongoDB must be running before this step.  
-Cd into `distribute-protocol/server`, then install the necessary node modules and start up the server by typing:
+Cd into `distribute-frontend/server`, then install the necessary node modules and start up the server by typing:
 ```
 npm install
 npm start
@@ -273,7 +273,7 @@ The server should be running at localhost 3001.
 
 *Step 9:*  
 Your MetaMask account needs to be on localhost 8545, and reset (as described in Step 2 if it has been used before).
-Cd into `distribute-protocol/frontend`, then install the necessary node modules and start up the frontend by typing:
+Cd into `distribute-frontend/frontend`, then install the necessary node modules and start up the frontend by typing:
 ```
 yarn
 yarn start
