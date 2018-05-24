@@ -76,21 +76,31 @@ We use IPFS (more information about this alternative to http found [here](https:
 
 Update your packages and make sure that you have a version of Go beyond 1.7.0
 ```
-sudo apt-get update
-sudo apt-get install golang-go -y
+brew update
+brew install golang
 ```
-
-Get the tarball from the web, then untar it.
+To check that the Go language has downloaded successfully, run
 ```
-wget https://dist.ipfs.io/go-ipfs/v0.4.10/go-ipfs_v0.4.10_linux-386.tar.gz
-tar xvfz go-ipfs_v0.4.10_linux-386.tar.gz
+go version
 ```
-
-Move the `ipfs` binary in your local path.
+To get the ipfs daemon running, type the following in Terminal
 ```
-sudo mv go-ipfs/ipfs /usr/local/bin/ipfs
+go get -u -d github.com/ipfs/go-ipfs
 ```
-
+Then cd into the directory whre `go-ipfs` was downloaded.  
+Once you have done this, in Terminal, type
+```
+make install
+```
+Initialise the daemon by entering
+```
+ipfs init
+```
+You will see a command asking you to enter a
+Enter the command they say starting with
+```
+ipfs cat /ipfs/
+```
 To test that it is working, type
 ```
 ipfs help
@@ -102,6 +112,7 @@ USAGE:
     ipfs - Global p2p merkle-dag filesystem.
 ...
 ```
+If you see this, you have successfully installing the ipfs-daemon.
 #### Installing MetaMask
 Go to [this](https://metamask.io/) site in your Google Chrome browser.
 
