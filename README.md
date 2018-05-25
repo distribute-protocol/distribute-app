@@ -211,6 +211,7 @@ Note that all of these steps _must_ be carried out before sending any transactio
 Clone this repository to your machine and add the contracts repository as a submodule. This will give you access to all the frontend, server, and contract code you'll need from both repositories.
 ```
 git clone https://github.com/distribute-protocol/distribute-frontend.git
+git rm .gitmodules contracts
 git submodule add https://github.com/distribute-protocol/distribute-contracts.git contracts
 git submodule update --init --recursive
 ```
