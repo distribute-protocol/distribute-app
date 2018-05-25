@@ -1,4 +1,4 @@
-this.props.status# Distribute Protocol
+# Distribute Protocol
 
 The Distribute Protocol aims to create a general purpose decentralized utility protocol that helps scale distributed infrastructure systems, in a
 way that can be responsive and accountable to the needs of its users, while also creating broader value that can be shared
