@@ -72,33 +72,6 @@ module.exports = function (app, url) {
     })
   })
 
-  // register user
-  app.post('/api/register', (req, res) => {
-    const registerUser = (db, callback) => {
-      let body = Object.assign({}, req.body, {balance: 0, reputation: 10000, account: req.query.account})
-      console.log(body, 'REGISTER')
-      db.collection('user').insertOne(
-        body
-        , (err, result) => {
-          assert.equal(err, null)
-          const objID = new ObjectId(result.insertedId)
-          db.collection('user').findOne({}, {'_id': objID}).then((user) => {
-            // console.log(user)
-            res.send(user)
-          })
-          console.log('Inserted a document into the user collection.')
-          callback()
-        })
-    }
-    MongoClient.connect(url, (err, client) => {
-      assert.equal(null, err)
-      var db = client.db('distribute')
-      registerUser(db, () => {
-        client.close()
-      })
-    })
-  })
-
   // get total tokens
   app.get('/api/totaltokens', (req, res) => {
     console.log('api/totaltokens get')
