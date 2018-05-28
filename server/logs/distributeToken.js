@@ -48,7 +48,6 @@ module.exports = function () {
     // update total balance (network)
     // update currentPrice
     // want a history of this (so user can have a log of mint/sell)
-    // await fetch(`${serverUrl}/api/mint?account=${account}&value=${tokensMinted}`, config)
     Network.findOne({}).exec((err, netStatus) => {
       if (err) throw Error
       netStatus.totalTokens += tokensMinted
@@ -84,20 +83,33 @@ module.exports = function () {
     let eventParams = result.data
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
     let account = eventParamArr[2]
-    // console.log(account, typeof account)
     account = '0x' + account.substr(-40)
-    // console.log(account)
     let tokensBurned = eventParamArr[0]
     // convert result from hex to decimal
     tokensBurned = -1 * parseInt(tokensBurned, 16)
-    // console.log(tokensMinted)
-    let config = {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }
-    await fetch(`${serverUrl}/api/mint?account=${account}&value=${tokensBurned}`, config)
+    // update user balance
+    // update total balance (network)
+    // update currentPrice
+    // want a history of this (so user can have a log of mint/sell)
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) throw Error
+      netStatus.totalTokens += tokensBurned
+      // netStatus.currentPrice
+      netStatus.save((err) => {
+        if (err) throw Error
+        console.log('netStatus updated')
+      })
+    })
+
+    User.findOne({account: account}).exec((err, userStatus) => {
+      if (err) throw Error
+      userStatus.tokenBalance += tokensBurned
+      // add time from filter block number
+      userStatus.mintEvents.push({quantity: tokensBurned})
+      userStatus.save((err) => {
+        if (err) throw Error
+        console.log('userStatus updated')
+      })
+    })
   })
 }
