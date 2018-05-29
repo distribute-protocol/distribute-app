@@ -8,7 +8,7 @@ const assert = require('assert')
 const dtLogs = require('./logs/distributeToken')
 
 const user = require('./routes/user')
-const status = require('./routes/statusController')
+const status = require('./routes/status')
 
 const app = express()
 
@@ -23,13 +23,6 @@ app.use(express.static(path.resolve(__dirname, '../frontend/public')))
 
 const url = process.env.MONGODB_URI || 'mongodb://localhost:27017/distribute'
 
-// connect to mongo
-// MongoClient.connect(url, (err, client) => {
-//   assert.equal(null, err)
-//   console.log('Connected correctly to server.')
-//   client.close()
-// })
-
 // connect to mongoose
 mongoose.connect(url, (err) => {
   assert.equal(null, err)
@@ -39,7 +32,7 @@ mongoose.connect(url, (err) => {
 // fire logs
 dtLogs()
 
-// fire controllers
+// fire routes
 user(app, url)
 status(app, url)
 

@@ -1,7 +1,7 @@
 /* global Headers fetch */
 
-import { GET_TOTAL_TOKENS, GET_USER_TOKENS, GET_TOTAL_REPUTATION, GET_USER_REPUTATION } from '../constants/getters/StatusGetterActionTypes'
-import { totalTokensReceived, userTokensReceived, totalReputationReceived, userReputationReceived } from '../actions/getters/statusGetterActions'
+import { GET_NETWORK_STATUS, GET_USER_STATUS } from '../constants/getters/StatusGetterActionTypes'
+import { networkStatusReceived, userStatusReceived } from '../actions/getters/statusGetterActions'
 
 // import 'rxjs'
 import { combineEpics } from 'redux-observable'
@@ -22,36 +22,20 @@ export async function fetchService (url) {
   return response.json()
 }
 
-const getTotalTokensEpic = action$ =>
-  action$.ofType(GET_TOTAL_TOKENS)
+const getNetworkStatusEpic = action$ =>
+  action$.ofType(GET_NETWORK_STATUS)
   // pull value from database
-    .mergeMap(action => Observable.from(fetchService(`/api/totaltokens`))
+    .mergeMap(action => Observable.from(fetchService(`/api/networkstatus`))
       .map(res => Observable.of(res))
-      .map(result => totalTokensReceived(result))
+      .map(result => networkStatusReceived(result))
     )
 
-const getUserTokensEpic = action$ =>
-  action$.ofType(GET_USER_TOKENS)
+const getUserStatusEpic = action$ =>
+  action$.ofType(GET_USER_STATUS)
   // pull value from database
-    .mergeMap(({payload}) => Observable.from(fetchService(`/api/userbalance?account=`, payload))
+    .mergeMap(({payload}) => Observable.from(fetchService(`/api/userstatus?account=`, payload))
       .map(res => Observable.of(res))
-      .map(result => userTokensReceived(result))
+      .map(result => userStatusReceived(result))
     )
 
-const getTotalReputationEpic = action$ =>
-  action$.ofType(GET_TOTAL_REPUTATION)
-  // pull value from database
-    .mergeMap(action => Observable.from(fetchService(`/api/totalreputation`))
-      .map(res => Observable.of(res))
-      .map(result => totalReputationReceived(result))
-    )
-
-const getUserReputationEpic = action$ =>
-  action$.ofType(GET_USER_REPUTATION)
-  // pull value from database
-    .mergeMap(({payload}) => Observable.from(fetchService(`/api/userreputation?account=`, payload))
-      .map(res => Observable.of(res))
-      .map(result => userReputationReceived(result))
-    )
-
-export default combineEpics(getTotalTokensEpic, getUserTokensEpic, getTotalReputationEpic, getUserReputationEpic)
+export default combineEpics(getNetworkStatusEpic, getUserStatusEpic)

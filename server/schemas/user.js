@@ -4,7 +4,7 @@ let userSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   tokenBalance: Number,
   reputationBalance: Number,
-  address: String,
+  account: String,
   credentials: mongoose.Schema.Types.Mixed,
   projects: {
     proposed: [mongoose.Schema.Types.Mixed],

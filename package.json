@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shkfnly/distributefront.git"
+    "url": "git+https://github.com/distribute-protocol/distribute-frontend.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/shkfnly/distributefront/issues"
+    "url": "https://github.com/distribute-protocol/distribute-frontend/issues"
   },
-  "homepage": "https://github.com/shkfnly/distributefront#readme",
+  "homepage": "https://github.com/distribute-protocol/distribute-frontend#readme",
   "dependencies": {
     "babel-preset-node6": "^11.0.0",
     "bluebird": "^3.5.1",
