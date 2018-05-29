@@ -117,11 +117,11 @@ class Status extends Component {
     return (
       <StatusComponent
         totalTokenSupply={this.props.status.totalTokens}
-        balance={this.props.status.userTokens[this.state.userAccount] !== undefined
-          ? this.props.status.userTokens[this.state.userAccount]
+        balance={this.props.status.userTokens !== undefined
+          ? this.props.status.userTokens
           : 0}
-        marketPercentage={this.props.status.userTokens[this.state.userAccount]
-          ? Math.round(this.props.status.userTokens[this.state.userAccount] / this.props.status.totalTokens * 10000) / 100
+        marketPercentage={this.props.status.userTokens
+          ? Math.round(this.props.status.userTokens / this.props.status.totalTokens * 10000) / 100
           : 0}
         ethPool={web3.fromWei(this.state.weiBal, 'ether')}
         capitalEquivalent={this.state.ethPrice
@@ -129,8 +129,8 @@ class Status extends Component {
           : 0}
         currentPrice={this.state.currentPrice}
         totalReputationSupply={this.props.status.totalReputation}
-        reputationBalance={this.props.status.userReputation[this.state.userAccount] !== undefined
-          ? this.props.status.userReputation[this.state.userAccount]
+        reputationBalance={this.props.status.userReputation !== undefined
+          ? this.props.status.userReputation
           : 0}
         ethToSend={typeof this.state.ethToSend === 'undefined'
           ? 'n/a'

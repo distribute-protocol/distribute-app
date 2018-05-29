@@ -3,12 +3,9 @@
 import { GET_NETWORK_STATUS, GET_USER_STATUS } from '../constants/getters/StatusGetterActionTypes'
 import { networkStatusReceived, userStatusReceived } from '../actions/getters/statusGetterActions'
 
-// import 'rxjs'
 import { combineEpics } from 'redux-observable'
 import Rx from 'rxjs/Rx'
 const { Observable } = Rx
-
-// import { projectStateEpic } from './project'
 
 let getConfig = {
   method: 'GET',
@@ -33,7 +30,7 @@ const getNetworkStatusEpic = action$ =>
 const getUserStatusEpic = action$ =>
   action$.ofType(GET_USER_STATUS)
   // pull value from database
-    .mergeMap(({payload}) => Observable.from(fetchService(`/api/userstatus?account=`, payload))
+    .mergeMap((action) => Observable.from(fetchService(`/api/userstatus?account=${action.payload}`))
       .map(res => Observable.of(res))
       .map(result => userStatusReceived(result))
     )

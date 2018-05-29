@@ -4,8 +4,8 @@ import * as _ from 'lodash'
 const initialState = {
   totalTokens: 0,
   totalReputation: 0,
-  userTokens: {},
-  userReputation: {}
+  userTokens: 0,
+  userReputation: 0
 }
 
 export default function generalReducer (state = initialState, action) {
@@ -27,11 +27,9 @@ export default function generalReducer (state = initialState, action) {
         return state
       } else {
         console.log(action.responseDetails.value)
-        return state
-        // let userBal = action.responseDetails.value.balance
-        // let userAccount = action.responseDetails.value.account
-        // let newUserTokens = Object.assign({}, state.userTokens, {[userAccount]: userBal})
-        // return Object.assign({}, state, {userTokens: newUserTokens})
+        let userTokens = action.responseDetails.value.tokenBalance
+        let userReputation = action.responseDetails.value.reputationBalance
+        return Object.assign({}, state, {userTokens: userTokens, userReputation: userReputation})
       }
     default:
   }

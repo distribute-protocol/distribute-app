@@ -13,9 +13,10 @@ export function networkStatusReceived (responseDetails) {
   }
 }
 
-export function getUserStatus () {
+export function getUserStatus (userDetails) {
   return {
-    type: GET_USER_STATUS
+    type: GET_USER_STATUS,
+    payload: userDetails
   }
 }
 
