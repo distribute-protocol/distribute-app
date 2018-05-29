@@ -14,25 +14,6 @@ module.exports = function (app, url) {
         res.send({})
       }
     })
-    //   const fetchUser = (db, callback) => {
-    //   db.collection('user').findOne({'account': req.query.account}, (err, doc) => {
-    //     assert.equal(null, err)
-    //     if (doc !== null) {
-    //       res.send(doc)
-    //       console.log('login', req.body, 'server')
-    //     } else {
-    //       res.send({})
-    //       callback()
-    //     }
-    //   })
-    // }
-    // MongoClient.connect(url, (err, client) => {
-    //   assert.equal(null, err)
-    //   var db = client.db('distribute')
-    //   fetchUser(db, () => {
-    //     client.close()
-    //   })
-    // })
   })
 
   // register user
@@ -41,7 +22,7 @@ module.exports = function (app, url) {
     let user = new User({
       _id: new mongoose.Types.ObjectId(),
       tokenBalance: 0,
-      reputationBalance: 0,
+      reputationBalance: 10000,
       address: req.query.account,
       credentials: req.body,
       projects: {proposed: [], staked: [], active: [], validating: [], voting: [], complete: [], failed: [], expired: []},
@@ -54,6 +35,16 @@ module.exports = function (app, url) {
       assert.equal(err, null)
       console.log('user inserted')
       res.send(user)
+    })
+
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) throw Error
+      netStatus.totalReputation += 10000
+      // netStatus.currentPrice
+      netStatus.save((err) => {
+        if (err) throw Error
+        console.log('netStatus updated')
+      })
     })
   })
 }
