@@ -5,7 +5,6 @@ let userSchema = mongoose.Schema({
   tokenBalance: Number,
   reputationBalance: Number,
   address: String,
-  account: String,
   credentials: mongoose.Schema.Types.Mixed,
   projects: {
     proposed: [mongoose.Schema.Types.Mixed],

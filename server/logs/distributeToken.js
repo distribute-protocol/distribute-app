@@ -3,18 +3,18 @@ const eth = new Eth(new Eth.HttpProvider('http://localhost:8545'))
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
 const DT = require('../../frontend/src/abi/DistributeToken')
-const fetch = require('node-fetch')
 const assert = require('assert')
 
-const Network = require('../models/Network')
-const User = require('../models/User')
+const Network = require('../models/network')
+const User = require('../models/user')
 
 module.exports = function () {
-  // setup
+  // setup --> check to make sure filter running appropriately by logging ganache accounts
   eth.accounts().then(accountsArr => {
     console.log('accountsArr:', accountsArr)
   })
 
+  // initialize network model
   let network = new Network({
     totalTokens: 0,
     totalReputation: 0,

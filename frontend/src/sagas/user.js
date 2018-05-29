@@ -10,15 +10,6 @@ import { web3, ethjs, rr } from '../utilities/blockchain'
 function * loginUser (action) {
   console.log('login user!')
   const credentials = action.credentials
-  // if user is not yet registered, do that now
-  yield ethjs.accounts().then(accounts => {
-    // console.log(accounts)
-    rr.first(accounts[0]).then(val => {
-      if (!val) {
-        rr.register({from: accounts[0]})
-      }
-    })
-  })
   let config = {
     method: 'GET',
     headers: new Headers(),
@@ -34,7 +25,7 @@ function * loginUser (action) {
       userObj = user
     })
   yield _.isEmpty(userObj)
-    // user is not already stored in the database -> store them!
+    // user is not already registered or stored in the database -> do that here!
     ? registerUser(credentials)
     // dispatch loggedInUser action
     : put(loggedInUser(userObj))
@@ -43,6 +34,15 @@ function * loginUser (action) {
 
 function * registerUser (credentials) {
   console.log('register user!')
+  // if user is not yet registered, do that now
+  yield ethjs.accounts().then(accounts => {
+    // console.log(accounts)
+    rr.first(accounts[0]).then(val => {
+      if (!val) {
+        rr.register({from: accounts[0]})
+      }
+    })
+  })
   let config = {
     method: 'POST',
     headers: {

@@ -33,7 +33,7 @@ const url = process.env.MONGODB_URI || 'mongodb://localhost:27017/distribute'
 // connect to mongoose
 mongoose.connect(url, (err) => {
   assert.equal(null, err)
-  console.log('connected to mongoose eep oop')
+  console.log('connected to mongoose')
 })
 
 // fire logs
