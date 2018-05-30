@@ -19,7 +19,7 @@ function * loginUser (action) {
   let userObj = {}
   let account = web3.eth.accounts[0]
   // call database to see if user is already stored
-  yield fetch(`/api/login?account=${account}`, config)
+  yield fetch(`/api/users?account=${account}`, config)
     .then((response) => response.json())
     .then((user) => {
       userObj = user
@@ -43,22 +43,6 @@ function * registerUser (credentials) {
       }
     })
   })
-  let config = {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(credentials)
-  }
-  let account = web3.eth.accounts[0]
-  let registeredUser
-  yield fetch(`/api/register?account=${account}`, config)
-    .then((response) => response.json())
-    .then((user) => {
-      registeredUser = user
-    })
-  put(loggedInUser(registeredUser))
 }
 
 function * userSaga () {

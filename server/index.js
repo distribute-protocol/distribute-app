@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 const assert = require('assert')
 
 const dtLogs = require('./logs/distributeToken')
+const rrLogs = require('./logs/ReputationRegistry')
 
 const user = require('./routes/user')
 const status = require('./routes/status')
@@ -31,6 +32,7 @@ mongoose.connect(url, (err) => {
 
 // fire logs
 dtLogs()
+rrLogs()
 
 // fire routes
 user(app, url)

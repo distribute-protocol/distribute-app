@@ -14,7 +14,7 @@ module.exports = function () {
     console.log('accountsArr:', accountsArr)
   })
 
-  // initialize network model
+  // initialize network model --> ONLY DO THIS ONCE
   let network = new Network({
     totalTokens: 0,
     totalReputation: 0,
@@ -54,7 +54,7 @@ module.exports = function () {
       // netStatus.currentPrice
       netStatus.save((err) => {
         if (err) throw Error
-        console.log('netStatus updated')
+        console.log('mintevent: netStatus updated')
       })
     })
 
@@ -65,7 +65,7 @@ module.exports = function () {
       userStatus.mintEvents.push({quantity: tokensMinted})
       userStatus.save((err) => {
         if (err) throw Error
-        console.log('userStatus updated')
+        console.log('mint event: userStatus updated')
       })
     })
   })
@@ -97,7 +97,7 @@ module.exports = function () {
       // netStatus.currentPrice
       netStatus.save((err) => {
         if (err) throw Error
-        console.log('netStatus updated')
+        console.log('sell event: netStatus updated')
       })
     })
 
@@ -108,7 +108,7 @@ module.exports = function () {
       userStatus.mintEvents.push({quantity: tokensBurned})
       userStatus.save((err) => {
         if (err) throw Error
-        console.log('userStatus updated')
+        console.log('sell event: userStatus updated')
       })
     })
   })
