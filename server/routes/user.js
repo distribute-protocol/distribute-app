@@ -18,7 +18,6 @@ module.exports = function (app, url) {
   })
 
   // register user
-  // make sure to add all uPort body elements --> inside credentials
   app.post('/api/register', (req, res) => {
     console.log('/api/register')
     let user = new User({
@@ -50,8 +49,8 @@ module.exports = function (app, url) {
     })
   })
 
-  app.get('/api/userstatus', (req, res) => {
-    console.log('api/userstatus')
+  app.get('/api/users', (req, res) => {
+    console.log('api/users')
     console.log(req.query)
     User.findOne({account: req.query.account}).exec((err, userStatus) => {
       assert.equal(err, null)

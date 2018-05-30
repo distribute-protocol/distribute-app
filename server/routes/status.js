@@ -4,8 +4,8 @@ const Network = require('../models/network')
 
 module.exports = function (app, url) {
   // get network status
-  app.get('/api/networkstatus', (req, res) => {
-    console.log('api/networkstatus')
+  app.get('/api/network', (req, res) => {
+    console.log('api/network')
     Network.findOne({}).exec((err, networkStatus) => {
       assert.equal(err, null)
       if (networkStatus !== null) {

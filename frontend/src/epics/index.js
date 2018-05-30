@@ -22,7 +22,7 @@ export async function fetchService (url) {
 const getNetworkStatusEpic = action$ =>
   action$.ofType(GET_NETWORK_STATUS)
   // pull value from database
-    .mergeMap(action => Observable.from(fetchService(`/api/networkstatus`))
+    .mergeMap(action => Observable.from(fetchService(`/api/network`))
       .map(res => Observable.of(res))
       .map(result => networkStatusReceived(result))
     )
@@ -30,7 +30,7 @@ const getNetworkStatusEpic = action$ =>
 const getUserStatusEpic = action$ =>
   action$.ofType(GET_USER_STATUS)
   // pull value from database
-    .mergeMap((action) => Observable.from(fetchService(`/api/userstatus?account=${action.payload}`))
+    .mergeMap((action) => Observable.from(fetchService(`/api/users?account=${action.payload}`))
       .map(res => Observable.of(res))
       .map(result => userStatusReceived(result))
     )
