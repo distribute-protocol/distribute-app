@@ -34,5 +34,5 @@ function configureStore () {
 
 const store = configureStore()
 let persistedStore = persistStore(store)
-persistedStore.purge()
+// persistedStore.purge()
 export default store
