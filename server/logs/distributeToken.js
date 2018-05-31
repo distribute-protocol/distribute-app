@@ -41,9 +41,9 @@ module.exports = function () {
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
     let account = eventParamArr[2]
     account = '0x' + account.substr(-40)
-    let tokensMinted = eventParamArr[0]
-    // convert result from hex to decimal
-    tokensMinted = parseInt(tokensMinted, 16)
+    // convert results from hex to decimal
+    let tokensMinted = parseInt(eventParamArr[0], 16)
+    let weiSpent = parseInt(eventParamArr[1], 16)
     // update user balance
     // update total balance (network)
     // update currentPrice
@@ -54,7 +54,7 @@ module.exports = function () {
       // netStatus.currentPrice
       netStatus.save((err) => {
         if (err) throw Error
-        console.log('mintevent: netStatus updated')
+        console.log('mint event: netStatus updated')
       })
     })
 
@@ -62,10 +62,11 @@ module.exports = function () {
       if (err) throw Error
       userStatus.tokenBalance += tokensMinted
       // add time from filter block number
-      userStatus.mintEvents.push({quantity: tokensMinted})
+      userStatus.mintEvents.push({quantity: tokensMinted, weiSpent: weiSpent})
       userStatus.save((err) => {
         if (err) throw Error
         console.log('mint event: userStatus updated')
+        console.log(userStatus)
       })
     })
   })

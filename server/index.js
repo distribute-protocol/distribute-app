@@ -1,13 +1,11 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const path = require('path')
-// const MongoClient = require('mongodb').MongoClient
 const mongoose = require('mongoose')
 const assert = require('assert')
 
 const dtLogs = require('./logs/distributeToken')
 const rrLogs = require('./logs/ReputationRegistry')
-
 const user = require('./routes/user')
 const status = require('./routes/status')
 
@@ -30,7 +28,7 @@ mongoose.connect(url, (err) => {
   console.log('connected to mongoose')
 })
 
-// fire logs
+// fire logs --> network model initalized in dtLog ONLY
 dtLogs()
 rrLogs()
 

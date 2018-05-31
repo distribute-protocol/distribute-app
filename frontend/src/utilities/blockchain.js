@@ -5,6 +5,7 @@ import { DistributeTokenABI, DistributeTokenAddress } from '../abi/DistributeTok
 import { ProjectABI } from '../abi/Project'
 import { TaskABI } from '../abi/Task'
 import { ProjectLibraryABI, ProjectLibraryAddress } from '../abi/ProjectLibrary'
+
 import Web3 from 'web3'
 import Eth from 'ethjs'
 import contract from 'truffle-contract'

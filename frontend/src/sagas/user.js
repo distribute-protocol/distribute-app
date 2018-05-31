@@ -5,7 +5,7 @@ import { push } from 'react-router-redux'
 import { LOGIN_USER } from '../constants/UserActionTypes'
 import { loggedInUser } from '../actions/userActions'
 import * as _ from 'lodash'
-import { web3, ethjs, rr } from '../utilities/blockchain'
+import { web3, rr } from '../utilities/blockchain'
 
 function * loginUser (action) {
   console.log('login user!')
@@ -24,25 +24,30 @@ function * loginUser (action) {
     .then((user) => {
       userObj = user
     })
-  yield _.isEmpty(userObj)
+  yield (_.isEmpty(userObj) || userObj.reputationBalance === 0)
     // user is not already registered or stored in the database -> do that here!
-    ? registerUser(credentials)
+    ? registerUser(credentials, account)
     // dispatch loggedInUser action
     : put(loggedInUser(userObj))
   yield put(push(`/status`))
 }
 
-function * registerUser (credentials) {
-  console.log('register user!')
+function * registerUser (credentials, account) {
   // if user is not yet registered, do that now
-  yield ethjs.accounts().then(accounts => {
-    // console.log(accounts)
-    rr.first(accounts[0]).then(val => {
-      if (!val) {
-        rr.register({from: accounts[0]})
-      }
-    })
-  })
+  let config = {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(credentials)
+  }
+  let val = yield rr.first(account)
+  if (!val) {
+    console.log('register user')
+    yield fetch(`/api/users?account=${account}`, config)
+    yield rr.register({from: account})
+  }
 }
 
 function * userSaga () {
