@@ -10,7 +10,7 @@ let projectSchema = mongoose.Schema({
   proposer: String,
   proposerType: String,
   nextDeadline: Date,
-  stakers: [{address: mongoose.Schema.Types.ObjectId, amount: Number, type: String, taskList: [{ }] }],
+  stakers: [{ address: mongoose.Schema.Types.ObjectId, amount: Number, type: String, taskList: [{}] }],
   taskIds: [mongoose.Schema.Types.ObjectId]
 })
 
