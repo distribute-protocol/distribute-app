@@ -58,7 +58,7 @@ class Propose extends Component {
       map.setCenter(ll)
       map.setZoom(12)
       map.addControl(new mapboxgl.NavigationControl())
-      map.on('click', function (e) {
+      map.on('click', (e) => {
         map.setCenter(e.lngLat)
         this.setState({coords: e.lngLat})
       })
