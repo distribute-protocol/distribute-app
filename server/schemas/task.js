@@ -5,12 +5,11 @@ let taskSchema = mongoose.Schema({
   weighting: Number,
   description: String,
   claimerId: mongoose.Schema.Types.ObjectId,
-  claimTime: Time,
+  claimTime: Date,
   claimed: Boolean,
   markedComplete: Boolean,
-  claimable: Boolean,
-  claimableByRep: Boolean,
-  nextDeadline: Date,
+  valRewardClaimable: Boolean,    // reward claimable by validator
+  workerRewardClaimable: Boolean,   // reward claimable by worker who completed the task
   validators: [{address: mongoose.Schema.Types.ObjectId, amount: Number, direction: Boolean}],
   voters: [{address: mongoose.Schema.Types.ObjectId, amount: Number, commit: Boolean, reveal: Boolean, direction: Boolean, pulled: Boolean}]
 })
