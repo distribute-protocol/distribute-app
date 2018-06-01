@@ -16,8 +16,8 @@ module.exports = function (app, url) {
       markedComplete: FALSE,
       valRewardClaimable: FALSE,
       workerRewardClaimable: FALSE,
-      validators: [{}],
-      voters: [{}]
+      validators: [],
+      voters: []
     })
   })
 }
