@@ -5,7 +5,7 @@ let taskSchema = mongoose.Schema({
   weighting: Number,
   description: String,
   claimerId: mongoose.Schema.Types.ObjectId,
-  claimTime: Time,
+  claimTime: Date,
   claimed: Boolean,
   markedComplete: Boolean,
   claimable: Boolean,
