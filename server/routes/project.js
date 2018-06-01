@@ -26,4 +26,43 @@ module.exports = function (app, url) {
     })
     res.end()   // should this be res.send()?
   })
+  
+  // independent code below, pllease review!
+  // getting one specific project
+  app.get('/api/project', (req, res) => {
+    console.log('/api/project')
+    if (req.query._id) {
+      Project.findOne({_id: req.query._id}).exec((err, projectStatus) => {
+        assert.equal(err, null)
+        if (projectStatus !== null) {
+          console.log(projectStatus)
+          res.send(projectStatus)
+        } else {
+          res.send({})
+        }
+      })
+    } else {    // populating entire project list
+      Project.find({}).exec((exec, allProjects) => {
+        assert.equal(err, null)
+        if (allProjects !== null) {
+          console.log(allProjects)
+          res.send(allUsers)
+        } else {
+          res.send({})
+        }
+      })
+    }
+  })
+
+
+
+
+
+
+
+
+
+
+
+  // get all projects
 }
