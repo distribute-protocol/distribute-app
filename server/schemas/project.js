@@ -10,11 +10,8 @@ let projectSchema = mongoose.Schema({
   proposer: String,
   proposerType: String,
   nextDeadline: Date,
-  tokenStakers: [{account: mongoose.Schema.Types.ObjectId, ref: 'User', value: Number}],
-  reputationStakers: [{account: mongoose.Schema.Types.ObjectId, ref: 'User', value: Number}],
-  validators: [{account: mongoose.Schema.Types.ObjectId, ref: 'User', value: Number, direction: Boolean}],
-  tokenVoters: [{account: mongoose.Schema.Types.ObjectId, ref: 'User', commit: Boolean, reveal: Boolean, value: Number}],
-  reputationVoters: [{account: mongoose.Schema.Types.ObjectId, ref: 'User', commit: Boolean, reveal: Boolean, value: Number}]
+  stakers: [{address: mongoose.Schema.Types.ObjectId, amount: Number, type: String, taskList: [{ }] }],
+  taskIds: [mongoose.Schema.Types.ObjectId]
 })
 
 module.exports = projectSchema
