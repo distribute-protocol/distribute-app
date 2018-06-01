@@ -4,6 +4,7 @@ const assert = require('assert')
 const User = require('../models/task')
 
 module.exports = function (app, url) {
+  // send task
   app.post('/api/task', (req, res) => {
     console.log('/api/task', req.query)
     let task = new Task({
@@ -19,5 +20,20 @@ module.exports = function (app, url) {
       validators: [],
       voters: []
     })
+    task.save((err, task) => {
+      assert.equal(err, null)
+      console.log('task instantiated')
+    })
+    res.end() // should this be res.send()
   })
+
+  // // get details on one task, based on task id
+  // app.get('/api/task', (req, res) => {
+  //   console.log('/api/task')
+  //   if (req.query.) {   //what goes here? should we use req.params instead of req.query?
+  //     Task.findOne({account: })
+  //   }
+  // })
+  // // get all tasks in a project
+
 }

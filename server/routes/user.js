@@ -20,7 +20,7 @@ module.exports = function (app, url) {
       assert.equal(err, null)
       console.log('user inserted')
     })
-    res.end()
+    res.end()   // should this be res.send() instead?
   })
 
   app.get('/api/user', (req, res) => {
@@ -32,7 +32,7 @@ module.exports = function (app, url) {
           console.log(userStatus)
           res.send(userStatus)
         } else {
-          res.send({})
+          res.send({})    // should this be res.end()?
         }
       })
     } else {
@@ -42,7 +42,7 @@ module.exports = function (app, url) {
           console.log(allUsers)
           res.send(allUsers)
         } else {
-          res.send({})
+          res.send({})    // should this be res.end()
         }
       })
     }
