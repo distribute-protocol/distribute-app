@@ -19,7 +19,7 @@ function * loginUser (action) {
   let userObj = {}
   let account = web3.eth.accounts[0]
   // call database to see if user is already stored
-  yield fetch(`/api/users?account=${account}`, config)
+  yield fetch(`/api/user?account=${account}`, config)
     .then((response) => response.json())
     .then((user) => {
       userObj = user
@@ -45,7 +45,7 @@ function * registerUser (credentials, account) {
   let val = yield rr.first(account)
   if (!val) {
     console.log('register user')
-    yield fetch(`/api/users?account=${account}`, config)
+    yield fetch(`/api/user?account=${account}`, config)
     yield rr.register({from: account})
   }
 }

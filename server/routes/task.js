@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const assert = require('assert')
 
-const User = require('../models/task')
+const Task = require('../models/task')
 
 module.exports = function (app, url) {
   // send task
@@ -13,10 +13,10 @@ module.exports = function (app, url) {
       description: req.query.description,
       claimerId: mongoose.Types.ObjectId(),
       claimTime: req.query.claimTime,
-      claimed: FALSE,
-      markedComplete: FALSE,
-      valRewardClaimable: FALSE,
-      workerRewardClaimable: FALSE,
+      claimed: false,
+      markedComplete: false,
+      valRewardClaimable: false,
+      workerRewardClaimable: false,
       validators: [],
       voters: []
     })
@@ -26,5 +26,4 @@ module.exports = function (app, url) {
     })
     res.end() // should this be res.send()
   })
-
 }

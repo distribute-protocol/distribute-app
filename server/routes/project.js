@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const assert = require('assert')
 
-const User = require('../models/project')
+const Project = require('../models/project')
 
 module.exports = function (app, url) {
   // send project to db (or store?)
@@ -16,17 +16,16 @@ module.exports = function (app, url) {
       reputationCost: 0,
       proposer: '',
       proposerType: '',
-      nextDeadline: Date.now,// how to instantiate date?? this is based on some googling.
-      stakers: [],
-      taskIds: [mongoose.Types.ObjectId()]
+      nextDeadline: '', // just for now
+      taskIds: [] // should be no tasks just yet
     })
     project.save((err, project) => {
       assert.equal(err, null)
       console.log('project started')
     })
-    res.end()   // should this be res.send()?
+    res.end()
   })
-  
+
   // independent code below, pllease review!
   // getting one specific project
   app.get('/api/project', (req, res) => {
@@ -41,12 +40,12 @@ module.exports = function (app, url) {
           res.send({})
         }
       })
-    } else {    // populating entire project list
-      Project.find({}).exec((exec, allProjects) => {
+    } else { // populating entire project list
+      Project.find({}).exec((err, allProjects) => {
         assert.equal(err, null)
         if (allProjects !== null) {
           console.log(allProjects)
-          res.send(allUsers)
+          res.send(allProjects)
         } else {
           res.send({})
         }

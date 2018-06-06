@@ -20,7 +20,7 @@ module.exports = function (app, url) {
       assert.equal(err, null)
       console.log('user inserted')
     })
-    res.end()   // should this be res.send() instead?
+    res.end()
   })
 
   app.get('/api/user', (req, res) => {
