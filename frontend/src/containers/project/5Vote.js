@@ -6,6 +6,7 @@ import {eth, pr, tr, rr, web3, P, T} from '../../utilities/blockchain'
 import { voteCommitted, voteRevealed } from '../../actions/pollActions'
 import moment from 'moment'
 import ipfsAPI from 'ipfs-api'
+import { utils } from 'ethers'
 let ipfs = ipfsAPI()
 
 class VoteTasks extends React.Component {
@@ -76,25 +77,43 @@ class VoteTasks extends React.Component {
 
   // Can Vote Commit...Vote Reveal is another beast, need to think about UI
   voteTask (i, type, status) {
-    let salt = Math.floor(Math.random() * Math.floor(10000)).toString()   // get random salt between 0 and 10000
+    // let salt = Math.floor(Math.random() * Math.floor(10000)).toString()   // get random salt between 0 and 10000
+    // convert status and salt to strings
+    let salt = 10000
+    // let salt = ethUtil.bufferToHex(ethUtil.setLengthLeft(10000, 32))
+    status
+      ? status = 1
+      : status = 0
+    // status = ethUtil.bufferToHex(ethUtil.setLengthLeft(status, 32))
+    // console.log(status + salt)
     // this.props.storeVote(i, status, salt)
     let vote = {key: i, status, salt, revealed: false, rescued: false}
     this.setState({votes: Object.assign({}, this.state.votes, {[i]: vote})})
-    let secretHash = web3.fromAscii(status + salt, 32)
+
+    let secretHash = utils.solidityKeccak256(['int', 'int'], [status, salt])
     // console.log(i, type, status, this.state['tokVal' + i], this.state['repVal' + i])
     // console.log(this.props.users)
     type === 'tokens'
       ? this.commitToken(i, secretHash, status, salt)
       : this.commitReputation(i, secretHash, status, salt)
   }
+
   revealTask (i, type, status) {
-    let salt = this.state.votes[i].salt
-    let hash = web3.fromAscii(this.state.votes[i].status + salt, 32)
-    if (hash === web3.fromAscii(status + salt, 32)) {
+    // let salt = this.state.votes[i].salt
+    // convert status and salt to strings
+    // let salt = ethUtil.bufferToHex(ethUtil.setLengthLeft(10000, 32))
+    let salt = 10000
+    status
+      ? status = 1
+      : status = 0
+    // status = ethUtil.bufferToHex(ethUtil.setLengthLeft(status, 32))
+    // let hash = web3.fromAscii(this.state.votes[i].status + salt, 32)
+    // let hash = utils.keccak256(status + salt)
+    // if (hash === utils.keccak256(status + salt)) {
       type === 'tokens'
-        ? this.revealToken(i, hash, status, salt)
-        : this.revealReputation(i, hash, status, salt)
-    }
+        ? this.revealToken(i, status, salt)
+        : this.revealReputation(i, status, salt)
+    // }
   }
 
   rescueVote (i, type) {
@@ -108,7 +127,6 @@ class VoteTasks extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         let prevPollID = this.getPrevPollID(numTokens, accounts[0])
-        console.log(prevPollID)
         let taskAddr = await P.at(this.props.address).tasks(i)
         // console.log(taskAddr)
         let pollID = await T.at(taskAddr).pollId()
@@ -118,7 +136,7 @@ class VoteTasks extends React.Component {
     })
   }
 
-  revealToken (i, hash, status, salt) {
+  revealToken (i, status, salt) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         await tr.voteReveal(this.props.address, i, status, salt, {from: accounts[0]})
@@ -153,21 +171,18 @@ class VoteTasks extends React.Component {
       if (!err) {
         let prevPollID = this.getPrevPollID(numRep, accounts[0])
         let taskAddr = await P.at(this.props.address).tasks(i)
-        console.log(taskAddr)
         let task = await T.at(taskAddr)
-        console.log(task)
         let pollID = await task.pollID()
-        console.log(pollID)
         await rr.voteCommit(this.props.address, i, numRep, hash, prevPollID, {from: accounts[0]})
         this.props.voteCommitted({status: status, salt: salt, pollID: pollID, user: accounts[0], numTokens: numRep})
       }
     })
   }
 
-  revealReputation (i, hash, status, salt) {
+  revealReputation (i, status, salt) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
-        await rr.reputationReveal(this.props.address, i, status, salt, {from: accounts[0]})
+        await rr.voteReveal(this.props.address, i, status, salt, {from: accounts[0]})
         this.props.voteRevealed({i, user: accounts[0]})
         this.setState({
           votes: Object.assign({}, this.state.votes,
@@ -194,10 +209,7 @@ class VoteTasks extends React.Component {
 
   getPrevPollID (numTokens, user) {
     let pollInfo = this.props.users[user]   // get object of poll data w/pollID's as keys
-    console.log(pollInfo)
-    if (pollInfo === undefined) {
-      return 0
-    }
+    if (typeof pollInfo === 'undefined') return 0
     let keys = Object.keys(pollInfo)
     let currPollID = 0
     let currNumTokens = 0
@@ -293,16 +305,7 @@ class VoteTasks extends React.Component {
                   type='danger' onClick={() => this.revealTask(i, 'tokens', false)}> Reveal Vote (TF)
                 </Button>
                 <Button
-                  type='danger' onClick={() => this.revealTask(i, 'reputation', true)}> Reveal Vote (R)
-                </Button>
-                <Button
-                  type='danger' onClick={() => this.revealTask(i, 'reputation', false)}> Reveal Vote (RF)
-                </Button>
-                <Button
                   type='danger' onClick={() => this.rescueVote(i, 'tokens')}> Rescue (T)
-                </Button>
-                <Button
-                  type='danger' onClick={() => this.rescueVote(i, 'reputation')}> Rescue (R)
                 </Button>
               </div>
               <div>
@@ -317,6 +320,15 @@ class VoteTasks extends React.Component {
                 </Button>
                 <Button
                   type='danger' onClick={() => this.voteTask(i, 'rep', false)}> No
+                </Button>
+                <Button
+                  type='danger' onClick={() => this.revealTask(i, 'reputation', true)}> Reveal Vote (R)
+                </Button>
+                <Button
+                  type='danger' onClick={() => this.revealTask(i, 'reputation', false)}> Reveal Vote (RF)
+                </Button>
+                <Button
+                  type='danger' onClick={() => this.rescueVote(i, 'reputation')}> Rescue (R)
                 </Button>
               </div>
             </div>

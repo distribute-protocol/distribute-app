@@ -18,13 +18,13 @@ const routeMiddleware = routerMiddleware(history)
 // Add the reducer to your store on the `router` key
 // Also apply our middleware for navigating
 function configureStore () {
-  const epicMiddleware = createEpicMiddleware(epics)
+  // const epicMiddleware = createEpicMiddleware(epics)
 
   const sagaMiddleware = createSagaMiddleware()
   const store = createStore(
     reducers,
     compose(
-      applyMiddleware(routeMiddleware, sagaMiddleware, epicMiddleware),
+      applyMiddleware(routeMiddleware, sagaMiddleware),
       autoRehydrate()
     )
   )

@@ -86,8 +86,9 @@ export default ({
               </ButtonGroup>
             </div>
           </div>
-          { (notRegistered)
-            ? <div style={{backgroundColor: '#F2A35E', padding: 30}}>
+          {/* { (notRegistered)
+            ?  */}
+            <div style={{backgroundColor: '#F2A35E', padding: 30}}>
               <div>
                 <h3>Reputation:</h3>
               </div>
@@ -99,8 +100,8 @@ export default ({
                 </ButtonGroup>
               </div>
             </div>
-            : null
-          }
+          {/* //   : null
+          // } */}
         </div>
       </div>
     </div>

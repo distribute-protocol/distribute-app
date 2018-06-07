@@ -113,6 +113,12 @@ USAGE:
     ipfs - Global p2p merkle-dag filesystem.
 ...
 ```
+Run the following lines to ensure everything will work properly:
+```
+ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["*"]'
+ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "GET", "POST"]'
+ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials '["true"]'
+```
 If you see this, you have successfully installed the ipfs-daemon.
 #### Installing MetaMask
 Go to [this](https://metamask.io/) site in your Google Chrome browser.
