@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shkfnly/distributefront.git"
+    "url": "git+https://github.com/distribute-protocol/distribute-frontend.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/shkfnly/distributefront/issues"
+    "url": "https://github.com/distribute-protocol/distribute-frontend/issues"
   },
-  "homepage": "https://github.com/shkfnly/distributefront#readme",
+  "homepage": "https://github.com/distribute-protocol/distribute-frontend#readme",
   "dependencies": {
     "babel-preset-node6": "^11.0.0",
     "bluebird": "^3.5.1",
@@ -33,6 +33,7 @@
     "ipfs-api": "^18.1.1",
     "lodash": "^4.17.4",
     "mongodb": "^3.0.0-rc0",
+    "mongoose": "^5.1.2",
     "node-fetch": "^2.1.2",
     "redux-observable": "^0.17.0",
     "solc": "^0.4.19",

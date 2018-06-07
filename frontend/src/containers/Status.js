@@ -6,7 +6,7 @@ import { getEthPriceNow } from 'get-eth-price'
 import {eth, web3, rr, dt} from '../utilities/blockchain'
 import * as _ from 'lodash'
 import StatusComponent from '../components/Status'
-import { getTotalTokens, getUserTokens, getTotalReputation, getUserReputation } from '../actions/getters/statusGetterActions'
+import { getNetworkStatus, getUserStatus } from '../actions/getters/statusGetterActions'
 
 class Status extends Component {
   constructor () {
@@ -22,39 +22,26 @@ class Status extends Component {
 
   componentWillMount () {
     if (_.isEmpty(this.props.user)) {
-      console.log('STATUS PAGE!')
-      // this.props.reroute()
     } else {}
     this.getNetworkStatus()
   }
 
   async getNetworkStatus () {
-    this.props.getTotalTokens()
-    this.props.getTotalReputation()
+    this.props.getNetworkStatus()
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
           this.setState({userAccount: accounts[0]})
           // get user token balance
-          this.props.getUserTokens(accounts[0])
-          this.props.getUserReputation(accounts[0])
+          this.props.getUserStatus(accounts[0])
           let ethPrice = await getEthPriceNow()
-          console.log('eth price object', ethPrice)
           ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
-          // let balance = (await dt.balanceOf(accounts[0])).toNumber()
-          // let totalTokenSupply = (await dt.totalSupply()).toNumber()
           let weiBal = (await dt.weiBal()).toNumber()
-          // let reputationBalance = (await rr.balances(accounts[0])).toNumber()
-          // let totalReputationSupply = (await rr.totalSupply()).toNumber()
           let first = (await rr.first(accounts[0]))
           let currentPrice = (await dt.currentPrice()).toNumber()
           this.setState({
-            // totalTokenSupply,
-            // balance,
             ethPrice,
             weiBal,
-            // totalReputationSupply,
-            // reputationBalance,
             first,
             currentPrice: web3.fromWei(currentPrice, 'ether')
           })
@@ -74,11 +61,6 @@ class Status extends Component {
           this.setState({
             tokensToBuy: ''
           })
-          // web3.eth.getTransactionReceipt(tx, async (err, res) => {
-          //   if (!err) {
-          //     // console.log('getting network status')
-          //   }
-          // })
         }
       }
     })
@@ -116,7 +98,6 @@ class Status extends Component {
         await dt.weiRequired(val).then(result => {
           ethRequired = web3.fromWei(result.toNumber(), 'ether')
         })
-        // totalSupply = (await dt.totalSupply()).toNumber()
         totalSupply = this.props.totalSupply
         if (totalSupply === 0) {
           refund = ethRequired
@@ -133,15 +114,14 @@ class Status extends Component {
   }
 
   render () {
-    console.log(this.props.status)
     return (
       <StatusComponent
         totalTokenSupply={this.props.status.totalTokens}
-        balance={this.props.status.userTokens[this.state.userAccount] !== undefined
-          ? this.props.status.userTokens[this.state.userAccount]
+        balance={this.props.status.userTokens !== undefined
+          ? this.props.status.userTokens
           : 0}
-        marketPercentage={this.props.status.userTokens[this.state.userAccount]
-          ? Math.round(this.props.status.userTokens[this.state.userAccount] / this.props.status.totalTokens * 10000) / 100
+        marketPercentage={this.props.status.userTokens
+          ? Math.round(this.props.status.userTokens / this.props.status.totalTokens * 10000) / 100
           : 0}
         ethPool={web3.fromWei(this.state.weiBal, 'ether')}
         capitalEquivalent={this.state.ethPrice
@@ -149,8 +129,8 @@ class Status extends Component {
           : 0}
         currentPrice={this.state.currentPrice}
         totalReputationSupply={this.props.status.totalReputation}
-        reputationBalance={this.props.status.userReputation[this.state.userAccount] !== undefined
-          ? this.props.status.userReputation[this.state.userAccount]
+        reputationBalance={this.props.status.userReputation !== undefined
+          ? this.props.status.userReputation
           : 0}
         ethToSend={typeof this.state.ethToSend === 'undefined'
           ? 'n/a'
@@ -184,10 +164,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
-    getTotalTokens: () => dispatch(getTotalTokens()),
-    getTotalReputation: () => dispatch(getTotalReputation()),
-    getUserTokens: (userAccount) => dispatch(getUserTokens(userAccount)),
-    getUserReputation: (userAccount) => dispatch(getUserReputation(userAccount))
+    getNetworkStatus: () => dispatch(getNetworkStatus()),
+    getUserStatus: (userAccount) => dispatch(getUserStatus(userAccount))
   }
 }
 

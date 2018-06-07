@@ -1,55 +1,28 @@
-import { GET_TOTAL_TOKENS, TOTAL_TOKENS_RECEIVED, GET_USER_TOKENS, USER_TOKENS_RECEIVED, GET_TOTAL_REPUTATION, TOTAL_REPUTATION_RECEIVED, GET_USER_REPUTATION, USER_REPUTATION_RECEIVED } from '../../constants/getters/StatusGetterActionTypes'
+import { GET_NETWORK_STATUS, NETWORK_STATUS_RECEIVED, GET_USER_STATUS, USER_STATUS_RECEIVED } from '../../constants/getters/StatusGetterActionTypes'
 
-export function getTotalTokens () {
+export function getNetworkStatus () {
   return {
-    type: GET_TOTAL_TOKENS
+    type: GET_NETWORK_STATUS
   }
 }
 
-export function totalTokensReceived (responseDetails) {
+export function networkStatusReceived (responseDetails) {
   return {
-    type: TOTAL_TOKENS_RECEIVED,
+    type: NETWORK_STATUS_RECEIVED,
     responseDetails
   }
 }
 
-export function getUserTokens (userDetails) {
+export function getUserStatus (userDetails) {
   return {
-    type: GET_USER_TOKENS,
-    userDetails
+    type: GET_USER_STATUS,
+    payload: userDetails
   }
 }
 
-export function userTokensReceived (responseDetails) {
+export function userStatusReceived (responseDetails) {
   return {
-    type: USER_TOKENS_RECEIVED,
-    responseDetails
-  }
-}
-
-export function getTotalReputation () {
-  return {
-    type: GET_TOTAL_REPUTATION
-  }
-}
-
-export function totalReputationReceived (responseDetails) {
-  return {
-    type: TOTAL_REPUTATION_RECEIVED,
-    responseDetails
-  }
-}
-
-export function getUserReputation (userDetails) {
-  return {
-    type: GET_USER_REPUTATION,
-    userDetails
-  }
-}
-
-export function userReputationReceived (responseDetails) {
-  return {
-    type: USER_REPUTATION_RECEIVED,
+    type: USER_STATUS_RECEIVED,
     responseDetails
   }
 }

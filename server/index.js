@@ -1,13 +1,13 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const path = require('path')
-const MongoClient = require('mongodb').MongoClient
+const mongoose = require('mongoose')
 const assert = require('assert')
 
-const dtLogs = require('./logs/dtLogs')
-
-const landingController = require('./controllers/landingController')
-const statusController = require('./controllers/statusController')
+const dtLogs = require('./logs/distributeToken')
+const rrLogs = require('./logs/ReputationRegistry')
+const user = require('./routes/user')
+const status = require('./routes/status')
 
 const app = express()
 
@@ -22,19 +22,19 @@ app.use(express.static(path.resolve(__dirname, '../frontend/public')))
 
 const url = process.env.MONGODB_URI || 'mongodb://localhost:27017/distribute'
 
-// connect to mongo
-MongoClient.connect(url, (err, client) => {
+// connect to mongoose
+mongoose.connect(url, (err) => {
   assert.equal(null, err)
-  console.log('Connected correctly to server.')
-  client.close()
+  console.log('connected to mongoose')
 })
 
-// fire logs
+// fire logs --> network model initalized in dtLog ONLY
 dtLogs()
+rrLogs()
 
-// fire controllers
-landingController(app, url)
-statusController(app, url)
+// fire routes
+user(app, url)
+status(app, url)
 
 app.listen(app.get('port'), () => {
   console.log(`app listening on port ${app.get('port')}`)
