@@ -9,7 +9,7 @@
     "bignumber.js": "^5.0.0",
     "dragula": "^3.7.2",
     "ethereumjs-abi": "^0.6.5",
-    "ethers": "^3.0.17",
+    "ethers": "^3.0.21",
     "get-eth-price": "^1.0.0",
     "history": "^4.7.2",
     "immutability-helper": "^2.6.5",
