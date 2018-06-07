@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import mapboxgl from 'mapbox-gl'
 import { proposeProject } from '../actions/projectActions'
-import ProposePage from '../components/Propose'
+import ProposeForm from '../components/Propose'
 import Sidebar from '../components/shared/Sidebar'
 import { push } from 'react-router-redux'
 import {eth, web3, tr, rr, dt} from '../utilities/blockchain'
@@ -103,9 +103,9 @@ class Propose extends Component {
       this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress, ipfsHash: `https://ipfs.io/ipfs/${multiHash}`}))
       this.setState({cost: 0, photo: false, imageUrl: false, coords: 0, location: ''})
     }
-
     await ipfs.object.put(obj, {enc: 'json'}, (err, node) => {
       if (err) {
+        console.log('errrrr')
         throw err
       }
       multiHash = node.toJSON().multihash
@@ -187,7 +187,7 @@ class Propose extends Component {
     return (
       <div>
         <Sidebar />
-        <ProposePage
+        <ProposeForm
           handleChange={this.handleChange}
           imageUrl={this.state.imageUrl}
           loading={this.state.loading}
