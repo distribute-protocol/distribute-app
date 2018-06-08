@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 const assert = require('assert')
 
 const dtLogs = require('./logs/distributeToken')
-const rrLogs = require('./logs/ReputationRegistry')
+const rrLogs = require('./logs/reputationRegistry')
 const user = require('./routes/user')
 const status = require('./routes/status')
 
