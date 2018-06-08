@@ -260,10 +260,6 @@ For <MetaMask_address\>: Paste (Ctrl-Shift-V) the address you copied to clipboar
 For <i\>: Type any number between 0 and 9. This is a reference to the 10 accounts in your locally running 10 accounts.
 
 *Step 6:*
-Initialize mongoDB in a new Terminal window.
-```
-mongod
-```
 In another Terminal window, clear your database by typing:
 ```
 mongo
