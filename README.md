@@ -67,7 +67,7 @@ Create a default "db" directory to store the Mongo data files by running
 ```
 mkdir -p /data/db
 ```
-To run the Mongo daemon, run `mongod`, and to run the shell, run `mongo`.  
+To run the Mongo shell, run `mongo`.  
 To exit the Mongo shell, run `quit()`.  
 
 #### Installing the IPFS daemon
