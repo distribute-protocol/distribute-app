@@ -9,6 +9,7 @@ let projectSchema = mongoose.Schema({
   reputationCost: Number,
   proposer: String,
   proposerType: String,
+  collateral: Number,
   nextDeadline: Date,
   stakers: [{ address: mongoose.Schema.Types.ObjectId, amount: Number, type: String, taskList: [{}] }],
   taskIds: [mongoose.Schema.Types.ObjectId]
