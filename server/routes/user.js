@@ -5,7 +5,7 @@ const User = require('../models/user')
 
 module.exports = function (app, url) {
   app.post('/api/user', (req, res) => {
-    console.log('/api/user', req.query)
+    //console.log('/api/user', req.query)
     let user = new User({
       _id: new mongoose.Types.ObjectId(),
       tokenBalance: 0,
@@ -18,18 +18,18 @@ module.exports = function (app, url) {
     })
     user.save((err, user) => {
       assert.equal(err, null)
-      console.log('user inserted')
+      //console.log('user inserted')
     })
     res.end()
   })
 
   app.get('/api/user', (req, res) => {
-    console.log('/api/user')
+    //console.log('/api/user')
     if (req.query.account) {
       User.findOne({account: req.query.account}).exec((err, userStatus) => {
         assert.equal(err, null)
         if (userStatus !== null) {
-          console.log(userStatus)
+          //console.log(userStatus)
           res.send(userStatus)
         } else {
           res.send({})    // should this be res.end()?
@@ -39,7 +39,7 @@ module.exports = function (app, url) {
       User.find({}).exec((err, allUsers) => {
         assert.equal(err, null)
         if (allUsers !== null) {
-          console.log(allUsers)
+          //console.log(allUsers)
           res.send(allUsers)
         } else {
           res.send({})    // should this be res.end()

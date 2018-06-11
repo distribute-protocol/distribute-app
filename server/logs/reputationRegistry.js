@@ -39,39 +39,45 @@ module.exports = function () {
     })
   })
 
-  const proposeProjectFilter = web3.eth.filter({
-    fromBlock: 0,
-    toBlock: 'latest',
-    address: RR.ReputationRegistryAddress,
-    topics: [web3.sha3]('ProjectCreated(address)')
-  })
-
-  proposeProjectFilter.watch(async (error, result) => {
-    if (error) console.error(error)
-    let eventParams = result.topics[1] // WHAT IS THIS DOOING
-    let account = '0x' + eventParams.substr(-40)
-
-    User.findOne({account: account}).exec((err, userStatus) => {
-      console.log(account)
-      if (err) throw Error
-      userStatus.reputationBalance -= 0.05 * reputationCost
-      userStatus.save(err => {
-        if (err) throw Error
-        console.log('project proposed by reputation holder')
-      })
-    })
-
-    Project.findOne({}).exec(err, projectStatus) => {   // where is projectStatus coming from?
-      if (err) throw Err
-      projectStatus.state = 1,
-      projectStatus.weiCost += projectCost,
-      projectStatus.proposer =  proposer,
-      projectStatus._id = projectAddress,
-      projectStatus.proposerStake = collateral,
-      projectStatus.proposerType = 'reputation'
-      projectStatus.save(err => {
-        if (err) throw Error
-        console.log('project details updated')
-    })
-  })
+  // const proposeProjectFilter = web3.eth.filter({
+  //   fromBlock: 0,
+  //   toBlock: 'latest',
+  //   address: RR.ReputationRegistryAddress,
+  //   topics: [web3.sha3('ProjectCreated(address,uint256,uint256,address)')]
+  // })
+  //
+  // proposeProjectFilter.watch(async (error, result) => {
+  //   if (error) console.error(error)
+  //   let eventParams = result.data
+  //   let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+  //   let projectAddress = result.topics[1]
+  //   let account = '0x' + eventParams.substr(-40)
+  //   console.log(eventParamArr)
+  //   let projectCost = parseInt(eventParamArr[2], 16)
+  //   let collateral = parseInt(eventParamArr[3], 16)
+  //
+  //   User.findOne({account: account}).exec((err, userStatus) => {
+  //     console.log(account)
+  //     if (err) throw Error
+  //     userStatus.reputationBalance -= 0.05 * proj
+  //     userStatus.save(err => {
+  //       if (err) throw Error
+  //       console.log('project proposed by reputation holder')
+  //     })
+  //   })
+  //   let project = new Project(
+  //     { // figure out how to get rid of padding
+  //       state: 1,
+  //       weiCost: projectCost,
+  //       proposer: account,
+  //       address: projectAddress,
+  //       proposerStake: collateral,
+  //       proposerType: 'reputation'
+  //     }
+  //   )
+  //   project.save(err => {
+  //     if (err) throw Error
+  //     console.log('project details updated')
+  //   })
+  // })
 }
