@@ -7,12 +7,37 @@ const User = require('../models/user')
 
 module.exports = function () {
   // filter for register events
-  const ProjectCreated = web3.eth.filter({
+  const projectCreatedFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
     address: PR.projectRegistryAddress,
     topics: [web3.sha3('LogProjectCreated(address,address,uint256,uint256)')]
   })
-  
+
+  proposeProjectFilter.watch(async (error, result) => {
+    if (error) console.error(error)
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let projectAddress = result.topics[1]
+    let account = eventParamArr[2]
+    let projectCost = parseInt(eventParamArr[3], 16)
+    let proposerStake = parseInt(eventParamArr[4])
+    let sender = eventParamArr[5]
+  })
+
+  let project = new Project(
+    {
+      state: 1,
+      weiCost: projectCost,
+      proposer: account,
+      address: projectAddress,
+      proposerStake: collateral,
+      proposerType: (proposerType ? 'token' : 'reputation')
+    }
+  )
+  project.save(err => {
+    if (err) throw Error
+    console.log('project details updated')
+  })
 
 }
