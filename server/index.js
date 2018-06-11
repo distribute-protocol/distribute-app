@@ -6,6 +6,7 @@ const assert = require('assert')
 
 const dtLogs = require('./logs/distributeToken')
 const rrLogs = require('./logs/reputationRegistry')
+const trLogs = require('./logs/tokenRegistry')
 const user = require('./routes/user')
 const status = require('./routes/status')
 
@@ -31,6 +32,7 @@ mongoose.connect(url, (err) => {
 // fire logs --> network model initalized in dtLog ONLY
 dtLogs()
 rrLogs()
+trLogs()
 
 // fire routes
 user(app, url)
