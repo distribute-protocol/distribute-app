@@ -82,7 +82,7 @@ class Propose extends Component {
   }
 
   async proposeProject (type, values) {
-    console.log(values)
+    // console.log(values)
     // stakingPeriod in Days changed to seconds -> blockchain understands seconds
     let projObj = {
       cost: this.state.cost,
@@ -99,7 +99,7 @@ class Propose extends Component {
     }
     let receiptHandler = (tx, multiHash) => {
       let txReceipt = tx.receipt
-      let projectAddress = '0x' + txReceipt.logs[1].topics[1].slice(txReceipt.logs[1].topics[1].length - 40, (txReceipt.logs[1].topics[1].length))
+      let projectAddress = txReceipt.logs[0].address
       this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress, ipfsHash: `https://ipfs.io/ipfs/${multiHash}`}))
       this.setState({cost: 0, photo: false, imageUrl: false, coords: 0, location: ''})
     }
