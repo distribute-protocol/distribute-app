@@ -39,12 +39,12 @@ module.exports = function () {
       let proposer = '0x' + eventParamArr[4].slice(eventParamArr[4].length - 40, eventParamArr[4].length)
       let proposerType = parseInt(eventParamArr[5], 16)
       let ipfsHash = web3.toAscii('0x' + eventParamArr[15] + eventParamArr[16].slice(0, 28))
-      let stakedStatePeriod = parseInt(eventParamArr[7], 16)
-      let activeStatePeriod = parseInt(eventParamArr[8], 16)
+      let stakedStatePeriod = parseInt(eventParamArr[7], 16) * 1000
+      let activeStatePeriod = parseInt(eventParamArr[8], 16) * 1000
       let turnoverTime = parseInt(eventParamArr[9], 16)
-      let validateStatePeriod = parseInt(eventParamArr[10], 16)
-      let voteCommitPeriod = parseInt(eventParamArr[11], 16)
-      let voteRevealPeriod = parseInt(eventParamArr[12], 16)
+      let validateStatePeriod = parseInt(eventParamArr[10], 16) * 1000
+      let voteCommitPeriod = parseInt(eventParamArr[11], 16) * 1000
+      let voteRevealPeriod = parseInt(eventParamArr[12], 16) * 1000
       let passThreshold = parseInt(eventParamArr[13], 16)
       Project.findOne({address: projectAddress}).exec((error, doc) => {
         if (error) console.error(error)
@@ -72,7 +72,9 @@ module.exports = function () {
           User.findOne({account: proposer}).exec((error, user) => {
             if (error) console.error(error)
             console.log('user', user)
-            user.proposedProjects.push(projectAddress)
+            if (user.proposedProjects) {
+              user.proposedProjects.push(projectAddress)
+            }
             doc.save(error => {
               if (error) throw Error
               console.log('project details updated')
