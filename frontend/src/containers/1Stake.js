@@ -5,7 +5,7 @@ import Project from './project/1Stake'
 import { push } from 'react-router-redux'
 import { eth, tr, rr, pr, P } from '../utilities/blockchain'
 import * as _ from 'lodash'
-import { getStakedProjects } from '../actions/getters/projectGetterActions'
+import { getProposedProjects } from '../actions/getters/projectGetterActions'
 
 class Stake extends React.Component {
   constructor () {
@@ -17,17 +17,17 @@ class Stake extends React.Component {
       tempProject: {},
       currPrice: 0
     }
-    this.getStakedProjects = this.getStakedProjects.bind(this)
+    this.getProposedProjects = this.getProposedProjects.bind(this)
     // window.projects = this.state.projects
     // window.pl = pl
   }
 
   componentWillMount () {
-    this.getStakedProjects()
+    this.getProposedProjects()
   }
 
-  async getStakedProjects () {
-    this.props.getStakedProjects()
+  async getProposedProjects () {
+    this.props.getProposedProjects()
   }
 
   async stakeTokens (address, val) {
@@ -71,37 +71,8 @@ class Stake extends React.Component {
     })
   }
 
-  // componentWillReceiveProps (np) {
-  //   let projectsArr
-  //
-  //   function projectState (address) {
-  //     return new Promise(async (resolve, reject) => {
-  //       let state = await P.at(address).state()
-  //       resolve(state)
-  //     })
-  //   }
-  //
-  //   let projects = Object.keys(np.projects).map((projAddr, i) => {
-  //     return projectState(projAddr)
-  //       .then(state => {
-  //         if (state.toNumber() === 1) {
-  //           return np.projects[projAddr]
-  //         }
-  //       })
-  //   })
-  //
-  //   Promise.all(projects)
-  //     .then(results => {
-  //       projectsArr = _.compact(results)
-  //       this.setState({projects: projectsArr})
-  //     })
-  //     .catch(e => {
-  //       console.error(e)
-  //     })
-  // }
-
   render () {
-    const projects = this.state.projects.map((proj, i) => {
+    const projects = this.props.projects.map((proj, i) => {
       return <Project
         key={i}
         index={i}
@@ -132,14 +103,14 @@ class Stake extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    projects: state.projects.allProjects
+    projects: state.projects.projects
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
-    getStakedProjects: () => dispatch(getStakedProjects())
+    getProposedProjects: () => dispatch(getProposedProjects())
   }
 }
 

@@ -9,6 +9,7 @@ const rrLogs = require('./logs/reputationRegistry')
 const prLogs = require('./logs/projectRegistry')
 const user = require('./routes/user')
 const status = require('./routes/status')
+const project = require('./routes/project')
 
 const app = express()
 
@@ -37,6 +38,7 @@ prLogs()
 // fire routes
 user(app, url)
 status(app, url)
+project(app, url)
 
 app.listen(app.get('port'), () => {
   console.log(`app listening on port ${app.get('port')}`)

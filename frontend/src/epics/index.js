@@ -2,6 +2,7 @@
 
 import { GET_NETWORK_STATUS, GET_USER_STATUS } from '../constants/getters/StatusGetterActionTypes'
 import { networkStatusReceived, userStatusReceived } from '../actions/getters/statusGetterActions'
+import { getProposedProjectsEpic } from './project'
 
 import { combineEpics } from 'redux-observable'
 import { Observable } from 'rxjs'
@@ -35,4 +36,4 @@ const getUserStatusEpic = action$ =>
     map(result => userStatusReceived(result))
   )
 
-export default combineEpics(getNetworkStatusEpic, getUserStatusEpic)
+export default combineEpics(getNetworkStatusEpic, getUserStatusEpic, getProposedProjectsEpic)

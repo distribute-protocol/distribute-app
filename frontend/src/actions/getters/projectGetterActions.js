@@ -1,14 +1,14 @@
-import { GET_STAKED_PROJECTS, STAKED_PROJECTS_RECEIVED } from '../../constants/getters/ProjectGetterActionTypes'
+import { GET_PROPOSED_PROJECTS, PROPOSED_PROJECTS_RECEIVED } from '../../constants/getters/ProjectGetterActionTypes'
 
-export function getStakedProjects () {
+export function getProposedProjects () {
   return {
-    type: GET_STAKED_PROJECTS
+    type: GET_PROPOSED_PROJECTS
   }
 }
 
-export function stakedProjectsReceived (responseDetails) {
+export function proposedProjectsReceived (responseDetails) {
   return {
-    type: STAKED_PROJECTS_RECEIVED,
+    type: PROPOSED_PROJECTS_RECEIVED,
     responseDetails
   }
 }

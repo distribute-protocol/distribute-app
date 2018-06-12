@@ -52,16 +52,18 @@ module.exports = function (app, url) {
       })
     }
   })
-
-
-
-
-
-
-
-
-
-
-
-  // get all projects
+  app.get('/api/projects/all', (req, res) => {
+    console.log('/api/projects/all')
+    if (req.query.state) {
+      Project.find({state: req.query.state}).exec((err, projects) => {
+        assert.equal(err, null)
+        if (projects !== null) {
+          console.log(projects)
+          res.send(projects)
+        } else {
+          res.send({})
+        }
+      })
+    }
+  })
 }
