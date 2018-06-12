@@ -100,7 +100,7 @@ class Propose extends Component {
     let receiptHandler = (tx, multiHash) => {
       let txReceipt = tx.receipt
       let projectAddress = txReceipt.logs[0].address
-      this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress, ipfsHash: `https://ipfs.io/ipfs/${multiHash}`}))
+      this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress, ipfsHash: `https://ipfs.io/ipfs/${multiHash}`}))  // this is calling the reducer
       this.setState({cost: 0, photo: false, imageUrl: false, coords: 0, location: ''})
     }
     await ipfs.object.put(obj, {enc: 'json'}, (err, node) => {
