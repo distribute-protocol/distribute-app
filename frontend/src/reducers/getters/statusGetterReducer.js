@@ -12,12 +12,12 @@ export default function generalReducer (state = initialState, action) {
   switch (action.type) {
     case NETWORK_STATUS_RECEIVED:
       console.log('total tokens received')
-      if (action.responseDetails.value === undefined) {
+      if (action.responseDetails.data.network === undefined) {
         console.log('something undefined')
         return state
       } else {
-        let totalTokens = action.responseDetails.value.totalTokens
-        let totalReputation = action.responseDetails.value.totalReputation
+        let totalTokens = action.responseDetails.data.network.totalTokens
+        let totalReputation = action.responseDetails.data.network.totalReputation
         return Object.assign({}, state, {totalTokens: totalTokens, totalReputation: totalReputation})
       }
     case USER_STATUS_RECEIVED:
