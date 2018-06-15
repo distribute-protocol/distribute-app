@@ -3,8 +3,9 @@ const bodyParser = require('body-parser')
 const path = require('path')
 const mongoose = require('mongoose')
 const assert = require('assert')
+const compression = require('compression')
 const { graphqlExpress, graphiqlExpress } = require('apollo-server-express')
-
+const { ApolloEngine } = require('apollo-engine')
 mongoose.Promise = global.Promise
 
 const dtLogs = require('./logs/distributeToken')
@@ -14,9 +15,15 @@ const user = require('./routes/user')
 const status = require('./routes/status')
 const project = require('./routes/project')
 const schema = require('./data/schema')
+
 const app = express()
 
 app.set('port', process.env.PORT || 3001)
+const ENGINE_API_KEY = 'service:distribute1000:kJ_c9KYFatDESVsmhHL-4w'
+
+const engine = new ApolloEngine({
+  apiKey: ENGINE_API_KEY
+})
 
 app.use(bodyParser.urlencoded({
   extended: true
@@ -27,8 +34,9 @@ app.use(express.static(path.resolve(__dirname, '../frontend/public')))
 
 const url = process.env.MONGODB_URI || 'mongodb://localhost:27017/distribute'
 
+app.use(compression())
 // The GraphQL endpoint
-app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }))
+app.use('/graphql', bodyParser.json(), graphqlExpress({ schema, tracing: true, cacheControl: true }))
 
 // GraphiQL, a visual editor for queries
 app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))
@@ -49,6 +57,10 @@ user(app, url)
 status(app, url)
 project(app, url)
 
-app.listen(app.get('port'), () => {
-  console.log(`app listening on port ${app.get('port')}`)
+engine.listen({
+  port: app.get('port'),
+  expressApp: app
 })
+// app.listen(app.get('port'), () => {
+//   console.log(`app listening on port ${app.get('port')}`)
+// })
