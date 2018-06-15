@@ -6,7 +6,7 @@ import { getEthPriceNow } from 'get-eth-price'
 import {eth, web3, rr, dt} from '../utilities/blockchain'
 import * as _ from 'lodash'
 import StatusComponent from '../components/Status'
-import { getNetworkStatus, getUserStatus } from '../actions/getters/statusGetterActions'
+import { getNetworkStatus, getUserStatus } from '../actions/statusActions'
 
 class Status extends Component {
   constructor () {

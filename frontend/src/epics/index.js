@@ -1,7 +1,7 @@
 /* global Headers fetch */
 
-import { GET_NETWORK_STATUS, GET_USER_STATUS } from '../constants/getters/StatusGetterActionTypes'
-import { networkStatusReceived, userStatusReceived } from '../actions/getters/statusGetterActions'
+import { GET_NETWORK_STATUS, GET_USER_STATUS } from '../constants/StatusActionTypes'
+import { networkStatusReceived, userStatusReceived } from '../actions/statusActions'
 import { getProposedProjectsEpic } from './project'
 
 import { combineEpics } from 'redux-observable'

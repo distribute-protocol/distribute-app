@@ -1,4 +1,4 @@
-import { GET_NETWORK_STATUS, NETWORK_STATUS_RECEIVED, GET_USER_STATUS, USER_STATUS_RECEIVED } from '../../constants/getters/StatusGetterActionTypes'
+import { GET_NETWORK_STATUS, NETWORK_STATUS_RECEIVED, GET_USER_STATUS, USER_STATUS_RECEIVED } from '../constants/StatusActionTypes'
 
 export function getNetworkStatus () {
   return {

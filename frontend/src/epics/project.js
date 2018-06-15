@@ -1,5 +1,5 @@
-import { GET_PROPOSED_PROJECTS } from '../constants/getters/ProjectGetterActionTypes'
-import { proposedProjectsReceived } from '../actions/getters/projectGetterActions'
+import { GET_PROPOSED_PROJECTS } from '../constants/ProjectActionTypes'
+import { proposedProjectsReceived } from '../actions/projectActions'
 
 import { combineEpics } from 'redux-observable'
 import { Observable } from 'rxjs'

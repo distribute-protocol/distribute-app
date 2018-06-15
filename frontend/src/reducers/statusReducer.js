@@ -1,4 +1,4 @@
-import { NETWORK_STATUS_RECEIVED, USER_STATUS_RECEIVED } from '../constants/getters/StatusGetterActionTypes'
+import { NETWORK_STATUS_RECEIVED, USER_STATUS_RECEIVED } from '../constants/StatusActionTypes'
 import * as _ from 'lodash'
 
 const initialState = {

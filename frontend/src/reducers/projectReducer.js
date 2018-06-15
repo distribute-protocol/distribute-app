@@ -1,4 +1,4 @@
-import { PROPOSED_PROJECTS_RECEIVED } from '../constants/getters/ProjectGetterActionTypes'
+import { PROPOSED_PROJECTS_RECEIVED } from '../constants/ProjectActionTypes'
 
 const initialState = {
   projects: []
