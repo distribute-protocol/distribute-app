@@ -1,8 +1,8 @@
 import NavigationReducer from './NavigationReducer'
 import userReducer from './userReducer'
 import pollReducer from './pollReducer'
-import statusGetterReducer from './getters/statusGetterReducer'
-import projectGetterReducer from './getters/projectGetterReducer'
+import statusGetterReducer from './statusReducer'
+import projectGetterReducer from './projectReducer'
 import { routerReducer } from 'react-router-redux'
 import { combineReducers } from 'redux'
 
