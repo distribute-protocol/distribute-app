@@ -4,6 +4,7 @@ const path = require('path')
 const mongoose = require('mongoose')
 const assert = require('assert')
 const compression = require('compression')
+const cors = require('cors')
 const { graphqlExpress, graphiqlExpress } = require('apollo-server-express')
 const { ApolloEngine } = require('apollo-engine')
 mongoose.Promise = global.Promise
@@ -36,7 +37,7 @@ const url = process.env.MONGODB_URI || 'mongodb://localhost:27017/distribute'
 
 app.use(compression())
 // The GraphQL endpoint
-app.use('/graphql', bodyParser.json(), graphqlExpress({ schema, tracing: true, cacheControl: true }))
+app.use('/graphql', cors(), bodyParser.json(), graphqlExpress({ schema, tracing: true, cacheControl: true }))
 
 // GraphiQL, a visual editor for queries
 app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))

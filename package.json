@@ -25,6 +25,7 @@
     "body-parser": "^1.18.2",
     "casual": "^1.5.19",
     "compression": "^1.7.2",
+    "cors": "^2.8.4",
     "delay": "^2.0.0",
     "eth-signer": "^0.3.4",
     "ethereumjs-abi": "^0.6.5",

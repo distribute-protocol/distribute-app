@@ -7,6 +7,32 @@ import {eth, web3, rr, dt} from '../utilities/blockchain'
 import * as _ from 'lodash'
 import StatusComponent from '../components/Status'
 import { getNetworkStatus, getUserStatus } from '../actions/getters/statusGetterActions'
+import ApolloClient from 'apollo-boost'
+import gql from 'graphql-tag'
+import 'rxjs/add/operator/map'
+const client = new ApolloClient({
+  uri: 'http://localhost:3001/graphql'
+})
+
+window.apollo = client
+const networkQuery = gql`
+  {
+    network {
+      totalTokens
+      totalReputation
+      currentPrice
+      ethPrice
+      weiBal
+    }
+  }
+`
+
+client.query({
+  query: networkQuery
+}).then(result => console.log(result))
+
+window.test = client.watchQuery({query: networkQuery})
+   // .valueChanges.map(({data}) => console.log('hi', data))
 
 class Status extends Component {
   constructor () {

@@ -8,6 +8,26 @@ import { Provider } from 'react-redux'
 
 import store, { history } from './store/store'
 import { ConnectedRouter } from 'react-router-redux'
+import ApolloClient from 'apollo-boost'
+import gql from 'graphql-tag'
+
+const client = new ApolloClient({
+  uri: 'http://localhost:3001/graphql'
+})
+
+client.query({
+  query: gql`
+    {
+      network {
+        totalTokens
+        totalReputation
+        currentPrice
+        ethPrice
+        weiBal
+      }
+    }
+  `
+}).then(result => console.log(result))
 
 ReactDOM.render(
   (<Provider store={store}>

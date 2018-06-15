@@ -31,11 +31,13 @@ module.exports = function () {
 
     Network.findOne({}).exec((err, netStatus) => {
       if (err) throw Error
-      netStatus.totalReputation += 10000
-      netStatus.save(err => {
-        if (err) throw Error
-        console.log('network updated w/user registered')
-      })
+      if (netStatus) {
+        netStatus.totalReputation += 10000
+        netStatus.save(err => {
+          if (err) throw Error
+          console.log('network updated w/user registered')
+        })
+      }
     })
   })
 
