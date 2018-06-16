@@ -16,9 +16,9 @@ class Landing extends React.Component {
       requested: ['name', 'avatar'],
       notifications: true
     }).then((credentials) => {
+      console.log(credentials)
       this.props.loginUser(credentials)
       // this.props.login()
-      // console.log(credentials)
     })
   }
   render () {

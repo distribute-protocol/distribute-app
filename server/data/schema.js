@@ -14,7 +14,22 @@ const typeDefs = `
   }
 
   type Credential {
-    account: String!
+    id: ID!
+    user: User!
+    context: String!
+    type: String!
+    address: String!
+    avatar: Avatar!
+    name: String!
+    networkAddress: String!
+    publicEncKey: String!
+    publicKey: String!
+    pushToken: String!
+  }
+
+  type Avatar {
+    credential: Credential!
+    uri: String!
   }
 
   type User {
