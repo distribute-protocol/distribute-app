@@ -1,5 +1,8 @@
-const { makeExecutableSchema, addMockFunctionsToSchema } = require('graphql-tools')
+const { makeExecutableSchema } = require('graphql-tools')
 const network = require('../models/network')
+const user = require('../models/user')
+const project = require('../models/project')
+const task = require('../models/task')
 // The GraphQL schema in string form
 const typeDefs = `
   type Network {
@@ -23,8 +26,10 @@ const typeDefs = `
     name: String!
     projects: [Project!]
     tasks: [Task!]
-    tokensChanges: [Token!]
+    tokenChanges: [Token!]
     repuationChanges: [Reputation!]
+    validations: [Validation!]
+    votes: [Votes!]
   }
 
   type Token {
@@ -121,12 +126,12 @@ const typeDefs = `
 const resolvers = {
   Query: {
     network: () => network.findOne({}).then(status => status),
-    user: (account) => {},
-    allUsers: () => {},
+    user: (account) => user.findOne({account}).then(user => user),
+    allUsers: () => user.find({}).then(users => users),
     token: (account) => [{}],
     reputation: (account) => [{}],
-    project: (address) => {},
-    allProjects: () => [{id: 1, address: 'hello'}, {id: 2, address: 'goodbye'}],
+    project: (address) => project.findOne({address}).then(project => project),
+    allProjects: () => project.find({}).then(projects => projects),
     userStakes: (account) => [{}],
     projectStakes: (address) => [{}],
     task: (address) => {},

@@ -1,5 +1,12 @@
 const mongoose = require('mongoose')
-const networkSchema = require('../schemas/network')
+
+let networkSchema = mongoose.Schema({
+  totalTokens: Number,
+  totalReputation: Number,
+  currentPrice: Number,
+  ethPrice: Number,
+  weiBal: Number
+})
 
 const Network = mongoose.model('Network', networkSchema)
 
