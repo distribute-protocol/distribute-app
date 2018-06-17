@@ -2,8 +2,6 @@ const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
 const PR = require('../../frontend/src/abi/ProjectRegistry')
 const mongoose = require('mongoose')
-
-const Network = require('../models/network')
 const User = require('../models/user')
 const Project = require('../models/project')
 
@@ -51,38 +49,39 @@ module.exports = function () {
         if (!doc) {
           doc = new Project({
             _id: new mongoose.Types.ObjectId(),
+            activeStatePeriod,
             address: projectAddress,
-            weiCost,
-            weiBal: 0,
-            reputationCost,
-            reputationBal: 0,
-            state,
+            ipfsHash,
             nextDeadline,
+            passThreshold,
             proposer,
             proposerType,
-            ipfsHash,
+            reputationBalance: 0,
+            reputationCost,
             stakedStatePeriod,
-            activeStatePeriod,
+            stakes: [],
+            state,
+            tasks: [],
             turnoverTime,
             validateStatePeriod,
             voteCommitPeriod,
             voteRevealPeriod,
-            passThreshold
+            weiBal: 0,
+            weiCost
           })
           User.findOne({account: proposer}).exec((error, user) => {
             if (error) console.error(error)
-            console.log('user', user)
-            if (user.proposedProjects) {
-              user.proposedProjects.push(projectAddress)
-            }
-            doc.save(error => {
+            doc.save((error, saved) => {
               if (error) throw Error
               console.log('project details updated')
+              if (user.projects) {
+                user.projects.push(saved.id)
+              }
+              user.save(error => {
+                if (error) console.error(error)
+                console.log('user updated')
+              })
               projectDetailsFilter.stopWatching()
-            })
-            user.save(error => {
-              if (error) console.error(error)
-              console.log('user updated')
             })
           })
         }
