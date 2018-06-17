@@ -8,9 +8,7 @@ let taskSchema = mongoose.Schema({
   complete: Boolean,
   description: String,
   projectId: mongoose.Schema.Types.ObjectId,
-  validations: [mongoose.Schema.Types.Mixed],
   validationRewardClaimable: Boolean,    // reward claimable by validator
-  votes: [mongoose.Schema.Types.Mixed],
   weighting: Number,
   workerRewardClaimable: Boolean   // reward claimable by worker who completed the task
 })

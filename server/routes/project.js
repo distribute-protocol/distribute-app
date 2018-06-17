@@ -25,45 +25,4 @@ module.exports = function (app, url) {
     })
     res.end()
   })
-
-  // independent code below, pllease review!
-  // getting one specific project
-  app.get('/api/project', (req, res) => {
-    console.log('/api/project')
-    if (req.query._id) {
-      Project.findOne({_id: req.query._id}).exec((err, projectStatus) => {
-        assert.equal(err, null)
-        if (projectStatus !== null) {
-          console.log(projectStatus)
-          res.send(projectStatus)
-        } else {
-          res.send({})
-        }
-      })
-    } else { // populating entire project list
-      Project.find({}).exec((err, allProjects) => {
-        assert.equal(err, null)
-        if (allProjects !== null) {
-          console.log(allProjects)
-          res.send(allProjects)
-        } else {
-          res.send({})
-        }
-      })
-    }
-  })
-  app.get('/api/projects/all', (req, res) => {
-    console.log('/api/projects/all')
-    if (req.query.state) {
-      Project.find({state: req.query.state}).exec((err, projects) => {
-        assert.equal(err, null)
-        if (projects !== null) {
-          console.log(projects)
-          res.send(projects)
-        } else {
-          res.send({})
-        }
-      })
-    }
-  })
 }

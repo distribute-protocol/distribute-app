@@ -55,7 +55,7 @@ prLogs()
 
 // fire routes
 user(app, url)
-status(app, url)
+// status(app, url)
 project(app, url)
 
 engine.listen({
