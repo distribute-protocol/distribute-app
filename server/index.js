@@ -13,7 +13,6 @@ const dtLogs = require('./logs/distributeToken')
 const rrLogs = require('./logs/reputationRegistry')
 const prLogs = require('./logs/projectRegistry')
 const user = require('./routes/user')
-const status = require('./routes/status')
 const project = require('./routes/project')
 const schema = require('./data/schema')
 
