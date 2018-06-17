@@ -2,25 +2,25 @@ const mongoose = require('mongoose')
 
 let projectSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
+  activeStatePeriod: Number,
   address: String,
-  weiCost: Number,
-  weiBal: Number,
-  reputationCost: Number,
-  reputationBal: Number,
-  state: Number,
+  ipfsHash: String,
   nextDeadline: Date,
+  passThreshold: Number,
   proposer: String,
   proposerType: Number,
-  ipfsHash: String,
+  reputationBalance: Number,
+  reputationCost: Number,
   stakedStatePeriod: Number,
-  activeStatePeriod: Number,
+  stakes: [mongoose.Schema.Types.ObjectId],
+  state: Number,
+  tasks: [mongoose.Schema.Types.ObjectId],
   turnoverTime: Number,
   validateStatePeriod: Number,
   voteCommitPeriod: Number,
   voteRevealPeriod: Number,
-  passThreshold: Number,
-  stakers: [{ address: mongoose.Schema.Types.ObjectId, amount: Number, type: String, taskList: [{}] }],
-  taskIds: [mongoose.Schema.Types.ObjectId]
+  weiBal: Number,
+  weiCost: Number
 })
 
 const Project = mongoose.model('Project', projectSchema)

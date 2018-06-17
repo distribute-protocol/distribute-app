@@ -1,50 +1,84 @@
 const { makeExecutableSchema } = require('graphql-tools')
-const network = require('../models/network')
-const user = require('../models/user')
-const project = require('../models/project')
-const task = require('../models/task')
+const resolvers = require('./resolvers')
+
 // The GraphQL schema in string form
 const typeDefs = `
-  type Network {
-    totalTokens: Int!
-    totalReputation: Int!
-    currentPrice: Int!
-    ethPrice: Int!
-    weiBal: Int!
-  }
-
-  type Credential {
-    id: ID!
-    user: User!
-    context: String!
-    type: String!
-    address: String!
-    avatar: Avatar!
-    name: String!
-    networkAddress: String!
-    publicEncKey: String!
-    publicKey: String!
-    pushToken: String!
-  }
-
   type Avatar {
     credential: Credential!
     uri: String!
   }
 
-  type User {
+  type Credential {
+    address: String!
+    avatar: Avatar!
+    context: String!
     id: ID!
-    tokenBalance: Int!
-    reputationBalance: Int!
-    account: String!
-    credentials: Credential!
     name: String!
-    projects: [Project!]
+    networkAddress: String!
+    publicEncKey: String!
+    publicKey: String!
+    pushToken: String!
+    type: String!
+    user: User!
+  }
+
+  type Network {
+    currentPrice: Int!
+    ethPrice: Int!
+    totalReputation: Int!
+    totalTokens: Int!
+    weiBal: Int!
+  }
+
+  type Project {
+    activeStatePeriod: Int!
+    address: String!
+    id: ID!
+    ipfsHash: String!
+    nextDeadline: String!
+    passThreshold: Int!
+    proposer: User!
+    proposerType: Int!
+    reputationBalance: Int!
+    reputationCost: Int!
+    stakedStatePeriod: Int!
+    stakes: [Stake!]
+    state: Int!
     tasks: [Task!]
-    tokenChanges: [Token!]
-    repuationChanges: [Reputation!]
+    turnoverTime: Int!
+    validateStatePeriod: Int!
+    voteCommitPeriod: Int!
+    voteRevealPeriod: Int!
+    weiBal: Int!,
+    weiCost: Int!,
+  }
+
+  type Reputation {
+    user: User!
+    amount: Int!
+  }
+
+  type Stake {
+    amount: Int!
+    id: ID!
+    project: Project!
+    type: String!
+    user: User!
+  }
+
+  type Task {
+    claimed: Boolean!
+    claimedAt: String!
+    claimer: User!
+    complete: Boolean!
+    description: String!
+    id: ID!
+    project: Project!
     validations: [Validation!]
-    votes: [Votes!]
+    validationRewardClaimable: Boolean!
+    votes: [Vote!]
+    weighting: Int!
+    workerRewardClaimable: Boolean!
   }
 
   type Token {
@@ -53,58 +87,25 @@ const typeDefs = `
     ether: Int!
   }
 
-  type Reputation {
-    user: User!
-    amount: Int!
-  }
-
-  type Project {
+  type User {
     id: ID!
-    address: String!
-    weiCost: Int!,
-    weiBal: Int!,
-    reputationCost: Int!
+    account: String!
+    credentials: Credential!
+    name: String!
+    projects: [Project!]
     reputationBalance: Int!
-    state: Int!
-    nextDeadline: String!
-    proposer: User!
-    proposerType: Int!
-    ipfsHash: String!
-    stakedStatePeriod: Int!
-    activeStatePeriod: Int!
-    turnoverTime: Int!
-    validateStatePeriod: Int!
-    voteCommitPeriod: Int!
-    voteRevealPeriod: Int!
-    passThreshold: Int!
+    repuationChanges: [Reputation!]
     stakes: [Stake!]
     tasks: [Task!]
-  }
-
-  type Stake {
-    id: ID!
-    project: Project!
-    type: String!
-    user: User!
-  }
-
-  type Task {
-    id: ID!
-    project: Project!
-    user: User!
-    weighting: Int!
-    description: String!
-    claimedAt: String!
-    claimed: Boolean!
-    complete: Boolean!
-    valiationRewardClaimable: Boolean!
-    workerRewardClaimable: Boolean!
+    tokenBalance: Int!
+    tokenChanges: [Token!]
     validations: [Validation!]
-    votes: [Vote!]
+    votes: [Votes!]
   }
 
   type Validation {
     id: ID!
+    amount: Int!
     task: Task!
     user: User!
     state: Boolean!
@@ -112,9 +113,14 @@ const typeDefs = `
 
   type Vote {
     id: ID!
+    amount: Int!
+    commit: Boolean!
+    reveal: Boolean!
+    pulled: Boolean!
+    state: Boolean!
     task: Task!
-    user: User!
     type: String!
+    user: User!
   }
 
   type Query {
@@ -137,49 +143,11 @@ const typeDefs = `
     taskVotes(address: String): [Task]
   }
 `
-// The resolvers
-const resolvers = {
-  Query: {
-    network: () => network.findOne({}).then(status => status),
-    user: (account) => user.findOne({account}).then(user => user),
-    allUsers: () => user.find({}).then(users => users),
-    token: (account) => [{}],
-    reputation: (account) => [{}],
-    project: (address) => project.findOne({address}).then(project => project),
-    allProjects: () => project.find({}).then(projects => projects),
-    userStakes: (account) => [{}],
-    projectStakes: (address) => [{}],
-    task: (address) => {},
-    allTasks: () => [{}],
-    userTasks: (account) => [{}],
-    projectTasks: (address) => [{}],
-    userValidations: (account) => [{}],
-    taskValidations: (address) => [{}],
-    userVotes: (account) => [{}],
-    taskVotes: (address) => [{}]
-  },
-  User: {
-    projects: (user) => [{}],
-    tasks: (user) => [{}],
-    tokensChanges: (user) => [{}],
-    repuationChanges: (user) => [{}]
-  },
-  Project: {
-    stakes: (project) => [{}],
-    tasks: (project) => [{}]
-  },
-  Task: {
-    validations: (task) => [{}],
-    votes: (task) => [{}]
-  }
-}
 
 // Put together a schema
 const schema = makeExecutableSchema({
   typeDefs,
   resolvers
 })
-
-// addMockFunctionsToSchema({ schema, mocks })
 
 module.exports = schema

@@ -1,12 +1,12 @@
 const mongoose = require('mongoose')
 
 let credentialSchema = mongoose.Schema({
+  _id: mongoose.Schema.Types.ObjectId,
+  userId: mongoose.Schema.Types.ObjectId,
   context: String,
   type: String,
   address: String,
-  avatar: {
-    uri: String
-  },
+  avatarId: mongoose.Schema.Types.ObjectId,
   name: String,
   networkAddress: String,
   publicEncKey: String,
