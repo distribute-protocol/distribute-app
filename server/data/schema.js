@@ -100,7 +100,7 @@ const typeDefs = `
     tokenBalance: Int!
     tokenChanges: [Token!]
     validations: [Validation!]
-    votes: [Votes!]
+    votes: [Vote!]
   }
 
   type Validation {
@@ -128,7 +128,9 @@ const typeDefs = `
     user(account: String): User
     allUsers: [User]
     token(account: String): [Token]
+    allTokens: [Token]
     reputation(account: String): [Reputation]
+    allReputations: [Reputation]
     project(address: String): Project
     allProjects: [Project]
     userStakes(account: String): [Stake]

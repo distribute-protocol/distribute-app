@@ -45,7 +45,7 @@ const resolvers = {
     repuationChanges: (user) => reputation.find({userId: user.id}).then(reputations => reputations),
     stakes: (user) => stake.find({userId: user.id}).then(stakes => stakes),
     tasks: (user) => task.find({claimer: user.id}).then(tasks => tasks),
-    tokensChanges: (user) => token.find({userId: user.id}).then(tokens => tokens),
+    tokenChanges: (user) => token.find({userId: user.id}).then(tokens => tokens),
     validations: (user) => validation.find({userId: user.id}).then(validations => validations),
     votes: (user) => vote.find({userId: user.id}).then(votes => votes)
   },
@@ -62,9 +62,9 @@ const resolvers = {
     user: (account) => user.findOne({account}).then(user => user),
     allUsers: () => user.find({}).then(users => users),
     token: (account) => [{}],
-    allToken: () => [{}],
+    allTokens: () => [{}],
     reputation: (account) => [{}],
-    allReputation: () => [{}],
+    allReputations: () => [{}],
     project: (address) => project.findOne({address}).then(project => project),
     allProjects: () => project.find({}).then(projects => projects),
     userStakes: (account) => [{}],
@@ -80,4 +80,4 @@ const resolvers = {
   }
 }
 
-export default resolvers
+module.exports = resolvers
