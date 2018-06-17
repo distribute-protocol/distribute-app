@@ -5,7 +5,7 @@ import Project from './project/1Stake'
 import { push } from 'react-router-redux'
 import { eth, tr, rr, pr, P } from '../utilities/blockchain'
 import * as _ from 'lodash'
-import { getProposedProjects } from '../actions/getters/projectGetterActions'
+import { getProposedProjects } from '../actions/projectActions'
 
 class Stake extends React.Component {
   constructor () {

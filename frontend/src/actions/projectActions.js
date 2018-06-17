@@ -1,4 +1,18 @@
 import { PROPOSE_PROJECT, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, TASK_CLAIMED, TASKLIST_SUBMITTED, TASK_COMPLETED, UPDATE_PROJECT, TASK_VALIDATED } from '../constants/ProjectActionTypes'
+import { GET_PROPOSED_PROJECTS, PROPOSED_PROJECTS_RECEIVED } from '../constants/ProjectActionTypes'
+
+export function getProposedProjects () {
+  return {
+    type: GET_PROPOSED_PROJECTS
+  }
+}
+
+export function proposedProjectsReceived (responseDetails) {
+  return {
+    type: PROPOSED_PROJECTS_RECEIVED,
+    responseDetails
+  }
+}
 
 export function proposeProject (projectDetails) {
   return {

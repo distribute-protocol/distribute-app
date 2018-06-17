@@ -1,5 +1,25 @@
 const mongoose = require('mongoose')
-const projectSchema = require('../schemas/project')
+
+let projectSchema = mongoose.Schema({
+  _id: mongoose.Schema.Types.ObjectId,
+  activeStatePeriod: Number,
+  address: String,
+  ipfsHash: String,
+  nextDeadline: Date,
+  passThreshold: Number,
+  proposer: String,
+  proposerType: Number,
+  reputationBalance: Number,
+  reputationCost: Number,
+  stakedStatePeriod: Number,
+  state: Number,
+  turnoverTime: Number,
+  validateStatePeriod: Number,
+  voteCommitPeriod: Number,
+  voteRevealPeriod: Number,
+  weiBal: Number,
+  weiCost: Number
+})
 
 const Project = mongoose.model('Project', projectSchema)
 

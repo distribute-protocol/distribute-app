@@ -4,9 +4,10 @@ const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
 const DT = require('../../frontend/src/abi/DistributeToken')
 const assert = require('assert')
-
+const mongoose = require('mongoose')
 const Network = require('../models/network')
 const User = require('../models/user')
+const Token = require('../models/token')
 
 module.exports = function () {
   // setup --> check to make sure filter running appropriately by logging ganache accounts
@@ -41,17 +42,12 @@ module.exports = function () {
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
     let account = eventParamArr[2]
     account = '0x' + account.substr(-40)
-    // convert results from hex to decimal
     let tokensMinted = parseInt(eventParamArr[0], 16)
     let weiSpent = parseInt(eventParamArr[1], 16)
-    // update user balance
-    // update total balance (network)
-    // update currentPrice
-    // want a history of this (so user can have a log of mint/sell)
     Network.findOne({}).exec((err, netStatus) => {
       if (err) throw Error
       netStatus.totalTokens += tokensMinted
-      // netStatus.currentPrice
+      netStatus.weiBal += weiSpent
       netStatus.save((err) => {
         if (err) throw Error
         console.log('mint event: netStatus updated')
@@ -61,12 +57,17 @@ module.exports = function () {
     User.findOne({account: account}).exec((err, userStatus) => {
       if (err) throw Error
       userStatus.tokenBalance += tokensMinted
-      // add time from filter block number
-      userStatus.mintEvents.push({quantity: tokensMinted, weiSpent: weiSpent})
-      userStatus.save((err) => {
+      userStatus.save(err => {
         if (err) throw Error
-        console.log('mint event: userStatus updated')
-        console.log(userStatus)
+      })
+      let TokenEvent = new Token({
+        _id: new mongoose.Types.ObjectId(),
+        userId: userStatus.id,
+        amount: tokensMinted,
+        ether: weiSpent
+      })
+      TokenEvent.save((err) => {
+        if (err) throw Error
       })
     })
   })
@@ -81,21 +82,16 @@ module.exports = function () {
 
   sellFilter.watch(async (error, result) => {
     if (error) console.error(error)
-    let eventParams = result.data
-    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
-    let account = eventParamArr[2]
-    account = '0x' + account.substr(-40)
+    let eventParamArr = result.data.slice(2).match(/.{1,64}/g)
+    let account = '0x' + eventParamArr[2].substr(-40)
     let tokensBurned = eventParamArr[0]
+    let weiWithdrawn = eventParamArr[1]
     // convert result from hex to decimal
     tokensBurned = -1 * parseInt(tokensBurned, 16)
-    // update user balance
-    // update total balance (network)
-    // update currentPrice
-    // want a history of this (so user can have a log of mint/sell)
     Network.findOne({}).exec((err, netStatus) => {
       if (err) throw Error
       netStatus.totalTokens += tokensBurned
-      // netStatus.currentPrice
+      netStatus.weiBal -= weiWithdrawn
       netStatus.save((err) => {
         if (err) throw Error
         console.log('sell event: netStatus updated')
@@ -104,12 +100,14 @@ module.exports = function () {
 
     User.findOne({account: account}).exec((err, userStatus) => {
       if (err) throw Error
-      userStatus.tokenBalance += tokensBurned
-      // add time from filter block number
-      userStatus.mintEvents.push({quantity: tokensBurned})
-      userStatus.save((err) => {
+      let TokenEvent = new Token({
+        _id: new mongoose.Types.ObjectId(),
+        userId: userStatus.id,
+        amount: tokensBurned,
+        ether: weiWithdrawn
+      })
+      TokenEvent.save((err) => {
         if (err) throw Error
-        console.log('sell event: userStatus updated')
       })
     })
   })
