@@ -3,11 +3,15 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
 import registerServiceWorker from './registerServiceWorker'
-// import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 
 import store, { history } from './store/store'
 import { ConnectedRouter } from 'react-router-redux'
+
+import ApolloClient from 'apollo-boost'
+export const client = new ApolloClient({
+  uri: 'http://localhost:3001/graphql'
+})
 
 ReactDOM.render(
   (<Provider store={store}>
@@ -19,5 +23,3 @@ ReactDOM.render(
   document.getElementById('root')
 )
 registerServiceWorker()
-// Now you can dispatch navigation actions from anywhere!
-// store.dispatch(push('/foo'))

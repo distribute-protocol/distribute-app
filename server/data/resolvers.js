@@ -67,6 +67,7 @@ const resolvers = {
     allReputations: () => [{}],
     project: (address) => project.findOne({address}).then(project => project),
     allProjects: () => project.find({}).then(projects => projects),
+    allProjectsinState: (state) => project.find({state}).then(projects => projects),
     userStakes: (account) => [{}],
     projectStakes: (address) => [{}],
     task: (address) => {},

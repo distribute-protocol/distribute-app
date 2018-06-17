@@ -133,6 +133,7 @@ const typeDefs = `
     allReputations: [Reputation]
     project(address: String): Project
     allProjects: [Project]
+    allProjectsinState(state: Int): [Project]
     userStakes(account: String): [Stake]
     projectStakes(address: String): [Stake]
     task(address: String): Task
