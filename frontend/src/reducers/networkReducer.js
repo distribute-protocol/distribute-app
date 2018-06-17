@@ -1,4 +1,4 @@
-import { NETWORK_STATUS_RECEIVED, USER_STATUS_RECEIVED } from '../constants/StatusActionTypes'
+import { NETWORK_STATUS_RECEIVED } from '../constants/NetworkActionTypes'
 import * as _ from 'lodash'
 
 const initialState = {
@@ -17,14 +17,6 @@ export default function generalReducer (state = initialState, action) {
         let totalTokens = action.responseDetails.data.network.totalTokens
         let totalReputation = action.responseDetails.data.network.totalReputation
         return Object.assign({}, state, {totalTokens: totalTokens, totalReputation: totalReputation})
-      }
-    case USER_STATUS_RECEIVED:
-      if (action.responseDetails.value === undefined) {
-        return state
-      } else {
-        let userTokens = action.responseDetails.value.tokenBalance
-        let userReputation = action.responseDetails.value.reputationBalance
-        return Object.assign({}, state, {userTokens: userTokens, userReputation: userReputation})
       }
     default:
   }

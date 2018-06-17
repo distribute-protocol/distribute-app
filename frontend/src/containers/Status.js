@@ -6,7 +6,8 @@ import { getEthPriceNow } from 'get-eth-price'
 import {eth, web3, rr, dt} from '../utilities/blockchain'
 import * as _ from 'lodash'
 import StatusComponent from '../components/Status'
-import { getNetworkStatus, getUserStatus } from '../actions/statusActions'
+import { getNetworkStatus } from '../actions/networkActions'
+import { getUserStatus } from '../actions/userActions'
 
 class Status extends Component {
   constructor () {
@@ -116,22 +117,18 @@ class Status extends Component {
   render () {
     return (
       <StatusComponent
-        totalTokenSupply={this.props.status.totalTokens}
-        balance={this.props.status.userTokens !== undefined
-          ? this.props.status.userTokens
-          : 0}
-        marketPercentage={this.props.status.userTokens
-          ? Math.round(this.props.status.userTokens / this.props.status.totalTokens * 10000) / 100
+        totalTokenSupply={this.props.network.totalTokens}
+        balance={this.props.user.userTokens}
+        marketPercentage={this.props.user.userTokens
+          ? Math.round(this.props.user.userTokens / this.props.network.totalTokens * 10000) / 100
           : 0}
         ethPool={web3.fromWei(this.state.weiBal, 'ether')}
         capitalEquivalent={this.state.ethPrice
           ? Math.round(this.state.ethPrice * web3.fromWei(this.state.weiBal, 'ether'))
           : 0}
         currentPrice={this.state.currentPrice}
-        totalReputationSupply={this.props.status.totalReputation}
-        reputationBalance={this.props.status.userReputation !== undefined
-          ? this.props.status.userReputation
-          : 0}
+        totalReputationSupply={this.props.network.totalReputation}
+        reputationBalance={this.props.user.userReputation}
         ethToSend={typeof this.state.ethToSend === 'undefined'
           ? 'n/a'
           : Math.round(this.state.ethToSend * 100000) / 100000}
@@ -156,8 +153,8 @@ class Status extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user.user,
-    status: state.status
+    user: state.user || {},
+    network: state.network
   }
 }
 

@@ -56,6 +56,10 @@ module.exports = function () {
 
     User.findOne({account: account}).exec((err, userStatus) => {
       if (err) throw Error
+      userStatus.tokenBalance += tokensMinted
+      userStatus.save(err => {
+        if (err) throw Error
+      })
       let TokenEvent = new Token({
         _id: new mongoose.Types.ObjectId(),
         userId: userStatus.id,

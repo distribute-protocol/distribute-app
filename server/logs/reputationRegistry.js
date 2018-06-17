@@ -21,20 +21,21 @@ module.exports = function () {
 
     User.findOne({account}).exec((err, userStatus) => {
       if (err) throw Error
-      userStatus.reputationBalance += 10000
-      userStatus.save(err => {
-        if (err) throw Error
-        console.log('user registerd')
-      })
-    })
-
-    Network.findOne({}).exec((err, netStatus) => {
-      if (err) throw Error
-      if (netStatus) {
-        netStatus.totalReputation += 10000
-        netStatus.save(err => {
+      if (userStatus && userStatus.reputationBalance === 0) {
+        userStatus.reputationBalance += 10000
+        userStatus.save(err => {
           if (err) throw Error
-          console.log('network updated w/user registered')
+          console.log('user registerd')
+        })
+        Network.findOne({}).exec((err, netStatus) => {
+          if (err) throw Error
+          if (netStatus) {
+            netStatus.totalReputation += 10000
+            netStatus.save(err => {
+              if (err) throw Error
+              console.log('network updated w/user registered')
+            })
+          }
         })
       }
     })

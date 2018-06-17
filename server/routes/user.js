@@ -29,4 +29,27 @@ module.exports = function (app, url) {
     })
     res.end()
   })
+
+// remove this
+  app.get('/api/user', (req, res) => {
+    if (req.query.account) {
+      User.findOne({account: req.query.account}).exec((err, userStatus) => {
+        assert.equal(err, null)
+        if (userStatus !== null) {
+          res.send(userStatus)
+        } else {
+          res.send({})    // should this be res.end()?
+        }
+      })
+    } else {
+      User.find({}).exec((err, allUsers) => {
+        assert.equal(err, null)
+        if (allUsers !== null) {
+          res.send(allUsers)
+        } else {
+          res.send({})    // should this be res.end()
+        }
+      })
+    }
+  })
 }
