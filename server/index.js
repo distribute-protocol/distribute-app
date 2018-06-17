@@ -13,7 +13,6 @@ const dtLogs = require('./logs/distributeToken')
 const rrLogs = require('./logs/reputationRegistry')
 const prLogs = require('./logs/projectRegistry')
 const user = require('./routes/user')
-const project = require('./routes/project')
 const schema = require('./data/schema')
 
 const app = express()
@@ -54,8 +53,6 @@ prLogs()
 
 // fire routes
 user(app, url)
-// status(app, url)
-project(app, url)
 
 engine.listen({
   port: app.get('port'),
