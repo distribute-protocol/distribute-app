@@ -4,6 +4,6 @@ import userSaga from './user'
 export default function * rootSaga () {
   yield all([
     // profileSaga(),
-    userSaga()
+    // userSaga()
   ])
 }
