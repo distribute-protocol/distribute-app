@@ -6,6 +6,12 @@ import gql from 'graphql-tag'
 
 export const getProposedProjectsEpic = action$ =>
   action$.ofType(GET_PROPOSED_PROJECTS).pipe(
-    mergeMap(action => client.query({query: gql`{ user(state: 1){}}`})),
+    mergeMap(action => client.query({query: gql`
+      { allProjectsinState(state: 1){
+          id
+          #add more features
+        }
+      }`}
+    )),
     map(result => proposedProjectsReceived(result))
   )

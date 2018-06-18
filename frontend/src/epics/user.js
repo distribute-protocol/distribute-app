@@ -21,7 +21,7 @@ const getUserEpic = action$ => {
           }
         }
       `
-      return client.query({query: query, variables: {account: web3.eth.accounts[0]}})
+      return client.query({query, variables: {account: web3.eth.accounts[0]}})
     }),
     flatMap(result =>
       Observable.if(

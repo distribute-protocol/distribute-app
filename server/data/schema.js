@@ -143,8 +143,9 @@ const typeDefs = `
     userValidations(account: String): [Validation]
     taskValidations(address: String): [Validation]
     userVotes(account: String): [Vote]
-    taskVotes(address: String): [Task]
+    taskVotes(address: String): [Vote]
   }
+
   input AvatarInput {
     uri: String
   }
