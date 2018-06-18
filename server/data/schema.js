@@ -145,8 +145,25 @@ const typeDefs = `
     userVotes(account: String): [Vote]
     taskVotes(address: String): [Task]
   }
-`
+  input AvatarInput {
+    uri: String
+  }
 
+  input CredentialInput {
+    address: String
+    avatar: AvatarInput
+    id: ID
+    name: String
+    networkAddress: String
+    publicEncKey: String
+    publicKey: String
+    pushToken: String
+  }
+
+  type Mutation {
+    addUser(input: CredentialInput, account: String): User
+  }
+`
 // Put together a schema
 const schema = makeExecutableSchema({
   typeDefs,

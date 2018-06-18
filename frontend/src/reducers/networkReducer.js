@@ -11,7 +11,7 @@ const initialState = {
 export default function generalReducer (state = initialState, action) {
   switch (action.type) {
     case NETWORK_STATUS_RECEIVED:
-      if (action.responseDetails.data.network === undefined) {
+      if (!action.responseDetails.data.network) {
         return state
       } else {
         let totalTokens = action.responseDetails.data.network.totalTokens

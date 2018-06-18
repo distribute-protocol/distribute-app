@@ -6,6 +6,7 @@ import { client } from '../index'
 import { web3, rr } from '../utilities/blockchain'
 import { push } from 'react-router-redux'
 import gql from 'graphql-tag'
+import * as _ from 'lodash'
 
 const getUserEpic = action$ => {
   let credentials
@@ -21,8 +22,8 @@ const getUserEpic = action$ => {
       `
       return client.query({query: query, variables: {account: web3.eth.accounts[0]}})
     }),
-    map(result => { if (result) { return loggedInUser(result) } return registerUser(credentials, web3.eth.accounts[0]) }),
-    map(_ => push('/status'))
+    map(result => !result.data.user ? registerUser(credentials, web3.eth.accounts[0]) : loggedInUser(result)),
+    // map(_ => push('/status'))
   )
 }
 
@@ -32,23 +33,22 @@ const registerUserEpic = action$ => {
     mergeMap(action => {
       account = action.account
       let mutation = gql`
-        mutation addUser($input: Credential!, $account: String!) {
+        mutation addUser($input: CredentialInput, $account: String!) {
           addUser(input: $input, account: $account) {
             id
-            type
           }
         }
       `
       return client.mutate({
         mutation: mutation,
         variables: {
-          input: action.credentials,
+          input: _.omit(action.credentials, ['@type', '@context']),
           account: action.account
         }
       })
     }),
-    mapTo(result => rr.register({from: account})),
-    mapTo(_ => push('/status'))
+    map(result => rr.register({from: account})),
+    map(_ => push('/status'))
   )
 }
 
@@ -59,6 +59,7 @@ const getUserStatusEpic = action$ =>
       let query = gql`
         query ($account: String!) {
           user(account: $account) {
+            id
             reputationBalance
             tokenBalance
           }
