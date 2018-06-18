@@ -1,8 +1,6 @@
 import { compose, createStore, applyMiddleware } from 'redux'
 import createHistory from 'history/createBrowserHistory'
-import createSagaMiddleware from 'redux-saga'
 import { createEpicMiddleware } from 'redux-observable'
-import rootSaga from '../sagas'
 import { routerMiddleware } from 'react-router-redux'
 import { autoRehydrate, persistStore } from 'redux-persist'
 
@@ -20,15 +18,13 @@ const routeMiddleware = routerMiddleware(history)
 function configureStore () {
   const epicMiddleware = createEpicMiddleware(epics)
 
-  const sagaMiddleware = createSagaMiddleware()
   const store = createStore(
     reducers,
     compose(
-      applyMiddleware(routeMiddleware, sagaMiddleware, epicMiddleware),
+      applyMiddleware(routeMiddleware, epicMiddleware),
       autoRehydrate()
     )
   )
-  sagaMiddleware.run(rootSaga)
   return store
 }
 

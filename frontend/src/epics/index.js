@@ -1,7 +1,7 @@
 import { getProposedProjectsEpic } from './project'
 import { getNetworkStatusEpic } from './network'
-import { getUserStatusEpic } from './user'
+import userEpics from './user'
 
 import { combineEpics } from 'redux-observable'
 
-export default combineEpics(getNetworkStatusEpic, getUserStatusEpic, getProposedProjectsEpic)
+export default combineEpics(getNetworkStatusEpic, userEpics, getProposedProjectsEpic)

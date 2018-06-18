@@ -1,73 +1,76 @@
-const avatar = require('../models/avatar')
-const credential = require('../models/credential')
-const network = require('../models/network')
-const project = require('../models/project')
-const reputation = require('../models/reputation')
-const stake = require('../models/stake')
-const task = require('../models/task')
-const token = require('../models/token')
-const user = require('../models/user')
-const validation = require('../models/validation')
-const vote = require('../models/vote')
+const mongoose = require('mongoose')
+const assert = require('assert')
+const Avatar = require('../models/avatar')
+const Credential = require('../models/credential')
+const Network = require('../models/network')
+const Project = require('../models/project')
+const Reputation = require('../models/reputation')
+const Stake = require('../models/stake')
+const Task = require('../models/task')
+const Token = require('../models/token')
+const User = require('../models/user')
+const Validation = require('../models/validation')
+const Vote = require('../models/vote')
+const _ = require('lodash')
 // The resolvers
 const resolvers = {
   Avatar: {
-    credential: (avatar) => credential.findOne({avatarId: avatar.id}).then(credential => credential)
+    credential: (avatar) => Credential.findOne({avatarId: avatar.id}).then(credential => credential)
   },
   Credential: {
-    avatar: (credential) => avatar.findOne({credentialId: credential.id}).then(avatar => avatar),
-    user: (credential) => user.findOne({credentialId: credential.id}).then(user => user)
+    avatar: (credential) => Avatar.findOne({credentialId: credential.id}).then(avatar => avatar),
+    user: (credential) => User.findOne({credentialId: credential.id}).then(user => user)
   },
   Project: {
-    proposer: (project) => user.findOne({account: project.proposer}).then(user => user),
-    stakes: (project) => stake.find({projectId: project.id}).then(stakes => stakes),
-    tasks: (project) => task.find({projectId: project.id}).then(tasks => tasks)
+    proposer: (project) => User.findOne({account: project.proposer}).then(user => user),
+    stakes: (project) => Stake.find({projectId: project.id}).then(stakes => stakes),
+    tasks: (project) => Task.find({projectId: project.id}).then(tasks => tasks)
   },
   Reputation: {
-    user: (reputation) => user.findById(reputation.userId).then(user => user)
+    user: (reputation) => User.findById(reputation.userId).then(user => user)
   },
   Stake: {
-    project: (stake) => project.findById(stake.projectId).then(project => project),
-    user: (stake) => user.findById(stake.userId).then(user => user)
+    project: (stake) => Project.findById(stake.projectId).then(project => project),
+    user: (stake) => User.findById(stake.userId).then(user => user)
   },
   Task: {
-    claimer: (task) => user.findById(task.claimer).then(user => user),
-    project: (task) => project.findById(task.projectId).then(project => project),
-    validations: (task) => validation.find({taskId: task.id}).then(validations => validations),
-    votes: (task) => vote.find({taskId: task.id}).then(votes => votes)
+    claimer: (task) => User.findById(task.claimer).then(user => user),
+    project: (task) => Project.findById(task.projectId).then(project => project),
+    validations: (task) => Validation.find({taskId: task.id}).then(validations => validations),
+    votes: (task) => Vote.find({taskId: task.id}).then(votes => votes)
   },
   Token: {
-    user: (token) => user.findById(token.userId).then(user => user)
+    user: (token) => User.findById(token.userId).then(user => user)
   },
   User: {
-    credentials: (user) => credential.findOne({userId: user.id}).then(cred => cred),
-    projects: (user) => project.find({proposer: user.account}).then(projects => projects),
-    repuationChanges: (user) => reputation.find({userId: user.id}).then(reputations => reputations),
-    stakes: (user) => stake.find({userId: user.id}).then(stakes => stakes),
-    tasks: (user) => task.find({claimer: user.id}).then(tasks => tasks),
-    tokenChanges: (user) => token.find({userId: user.id}).then(tokens => tokens),
-    validations: (user) => validation.find({userId: user.id}).then(validations => validations),
-    votes: (user) => vote.find({userId: user.id}).then(votes => votes)
+    credentials: (user) => Credential.findOne({userId: user.id}).then(cred => cred),
+    projects: (user) => Project.find({proposer: user.account}).then(projects => projects),
+    repuationChanges: (user) => Reputation.find({userId: user.id}).then(reputations => reputations),
+    stakes: (user) => Stake.find({userId: user.id}).then(stakes => stakes),
+    tasks: (user) => Task.find({claimer: user.id}).then(tasks => tasks),
+    tokenChanges: (user) => Token.find({userId: user.id}).then(tokens => tokens),
+    validations: (user) => Validation.find({userId: user.id}).then(validations => validations),
+    votes: (user) => Vote.find({userId: user.id}).then(votes => votes)
   },
   Validation: {
-    task: (validation) => task.findById(validation.taskId).then(task => task),
-    user: (validation) => user.findById(validation.userId).then(user => user)
+    task: (validation) => Task.findById(validation.taskId).then(task => task),
+    user: (validation) => User.findById(validation.userId).then(user => user)
   },
   Vote: {
-    task: (vote) => task.findById(vote.taskId).then(vote => vote),
-    user: (vote) => user.findById(vote.taskId).then(user => user)
+    task: (vote) => Task.findById(vote.taskId).then(vote => vote),
+    user: (vote) => User.findById(vote.taskId).then(user => user)
   },
   Query: {
-    network: () => network.findOne({}).then(status => status),
-    user: (_, args, context, info) => user.findOne({account: args.account}).then(user => user),
-    allUsers: () => user.find({}).then(users => users),
+    network: () => Network.findOne({}).then(status => status),
+    user: (_, args, context, info) => User.findOne({account: args.account}).then(user => user),
+    allUsers: () => User.find({}).then(users => users),
     token: (_, args) => [{}],
     allTokens: () => [{}],
     reputation: (_, args, account) => [{}],
     allReputations: () => [{}],
-    project: (_, args) => project.findOne({address: args.address}).then(project => project),
-    allProjects: () => project.find({}).then(projects => projects),
-    allProjectsinState: (_, args) => project.find({state: args.state}).then(projects => projects),
+    project: (_, args) => Project.findOne({address: args.address}).then(project => project),
+    allProjects: () => Project.find({}).then(projects => projects),
+    allProjectsinState: (_, args) => Project.find({state: args.state}).then(projects => projects),
     userStakes: (account) => [{}],
     projectStakes: (address) => [{}],
     task: (address) => {},
@@ -78,6 +81,31 @@ const resolvers = {
     taskValidations: (address) => [{}],
     userVotes: (account) => [{}],
     taskVotes: (address) => [{}]
+  },
+  Mutation: {
+    addUser: (obj, args) => {
+      let credentialObj = Object.assign({_id: new mongoose.Types.ObjectId()}, args.input)
+      credentialObj = _.omit(credentialObj, ['avatar'])
+      let userObj = new User({
+        _id: new mongoose.Types.ObjectId(),
+        account: args.account,
+        name: args.input.name,
+        tokenBalance: 0,
+        reputationBalance: 0
+      })
+      userObj.save((err, user) => {
+        assert.equal(err, null)
+        let credential = new Credential(Object.assign({userId: user.id}, credentialObj))
+        credential.save((err, credential) => {
+          assert.equal(err, null)
+          let avatar = new Avatar(Object.assign({_id: new mongoose.Types.ObjectId(), credentialId: credential.id}, args.input.avatar))
+          avatar.save((err, avatar) => {
+            assert.equal(err, null)
+          })
+        })
+        return user
+      })
+    }
   }
 }
 
