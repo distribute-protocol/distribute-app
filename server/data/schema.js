@@ -45,12 +45,13 @@ const typeDefs = `
     stakes: [Stake]
     state: Int
     tasks: [Task]
+    tokenBalance: Int
     turnoverTime: Int
     validateStatePeriod: Int
     voteCommitPeriod: Int
     voteRevealPeriod: Int
     weiBal: Int,
-    weiCost: Int,
+    weiCost: String,
   }
 
   type Reputation {

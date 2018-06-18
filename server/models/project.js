@@ -13,6 +13,7 @@ let projectSchema = mongoose.Schema({
   reputationCost: Number,
   stakedStatePeriod: Number,
   state: Number,
+  tokenBalance: Number,
   turnoverTime: Number,
   validateStatePeriod: Number,
   voteCommitPeriod: Number,

@@ -23,41 +23,39 @@ class StakeProject extends Component {
   }
 
   async getProjectStatus () {
-    let accounts
-    let p = P.at(this.props.address)
-    eth.getAccounts(async (err, result) => {
-      if (!err) {
-        accounts = result
-        if (accounts.length) {
-          let weiBal = (await p.weiBal()).toNumber()
-          let weiCost = (await p.weiCost()).toNumber()
-          let reputationCost = (await p.reputationCost()).toNumber()
-          let totalTokensStaked = (await p.tokensStaked()).toNumber()
-          let totalReputationStaked = (await p.reputationStaked()).toNumber()
-          let nextDeadline = (await p.nextDeadline()).toNumber() * 1000
-          let ipfsHash = web3.toAscii(await p.ipfsHash())
-          let currentPrice = (await dt.currentPrice()).toNumber()
-          let projObj = {
-            weiBal,
-            weiCost,
-            reputationCost,
-            totalTokensStaked,
-            totalReputationStaked,
-            ipfsHash,
-            currentPrice,
-            nextDeadline
-          }
-          ipfs.object.get(ipfsHash, (err, node) => {
-            if (err) {
-              throw err
-            }
-            let dataString = new TextDecoder('utf-8').decode(node.toJSON().data)
-            projObj = Object.assign({}, projObj, JSON.parse(dataString), {tokensLeft: Math.ceil((weiCost - weiBal) / currentPrice)})
-            this.props.updateProject(this.props.address, projObj)
-            this.setState({...projObj, project: p})
-          })
-        }
+    // let accounts
+    // let p = P.at(this.props.address)
+    // eth.getAccounts(async (err, result) => {
+    //   if (!err) {
+    //     accounts = result
+    //     if (accounts.length) {
+    //       let weiBal = (await p.weiBal()).toNumber()
+    //       let weiCost = (await p.weiCost()).toNumber()
+    //       let reputationCost = (await p.reputationCost()).toNumber()
+    //       let totalTokensStaked = (await p.tokensStaked()).toNumber()
+    //       let totalReputationStaked = (await p.reputationStaked()).toNumber()
+    //       let nextDeadline = (await p.nextDeadline()).toNumber() * 1000
+    //       let ipfsHash = web3.toAscii(await p.ipfsHash())
+    //       let currentPrice = (await dt.currentPrice()).toNumber()
+    //       let projObj = {
+    //         currentPrice,
+    //         ipfsHash,
+    //         nextDeadline,
+    //         reputationCost,
+    //         totalReputationStaked,
+    //         totalTokensStaked,
+    //         weiBal,
+    //         weiCost
+    //       }
+    ipfs.object.get(this.props.project.ipfsHash, (err, node) => {
+      if (err) {
+        throw err
       }
+      let dataString = new TextDecoder('utf-8').decode(node.toJSON().data)
+      let projObj = this.props.project
+      projObj = Object.assign({}, projObj, JSON.parse(dataString), {tokensLeft: Math.ceil((projObj.weiCost - projObj.weiBal) / projObj.currentPrice)})
+      this.props.updateProject(this.props.address, projObj)
+      this.setState({...projObj})
     })
   }
 
@@ -100,9 +98,9 @@ class StakeProject extends Component {
         summary={this.state.summary}
         location={this.state.location}
         cost={web3.fromWei(this.state.cost, 'ether')}
-        tokensLeft={this.state.tokensLeft}
+        tokensLeft={parseInt(this.state.weiCost) / this.props.currentPrice}
         reputationCost={this.state.reputationCost}
-        totalReputationStaked={this.state.totalReputationStaked}
+        totalReputationStaked={this.state.reputationBalance}
         date={moment(this.state.nextDeadline)}
         stakeInput={
           <input

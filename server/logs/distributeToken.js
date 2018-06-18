@@ -19,8 +19,6 @@ module.exports = function () {
   let network = new Network({
     totalTokens: 0,
     totalReputation: 0,
-    currentPrice: 0,
-    ethPrice: 0,
     weiBal: 0
   })
 
