@@ -6,8 +6,8 @@ export default function userReducer (state = initialState, action) {
   // For now, don't handle any actions
   // and just return the state given to us.
   switch (action.type) {
-    // case REGISTER_USER:
-    //   return state
+    case REGISTER_USER:
+      return state
     case LOGGED_IN_USER:
       return Object.assign({}, state, {user: action.userObj})
     case LOGOUT_USER:

@@ -1,6 +1,7 @@
 import { LOGIN_USER, REGISTER_USER, GET_USER_STATUS } from '../constants/UserActionTypes'
 import { userStatusReceived, loggedInUser, registerUser } from '../actions/userActions'
-import { map, mergeMap, mapTo } from 'rxjs/operators'
+import { map, mergeMap, mapTo, flatMap } from 'rxjs/operators'
+import { Observable } from 'rxjs'
 import { merge } from 'rxjs/observable/merge'
 import { client } from '../index'
 import { web3, rr } from '../utilities/blockchain'
@@ -22,8 +23,16 @@ const getUserEpic = action$ => {
       `
       return client.query({query: query, variables: {account: web3.eth.accounts[0]}})
     }),
-    map(result => !result.data.user ? registerUser(credentials, web3.eth.accounts[0]) : loggedInUser(result)),
-    // map(_ => push('/status'))
+    flatMap(result =>
+      Observable.if(
+        () => !result.data.user,
+        Observable.of(registerUser(credentials, web3.eth.accounts[0])),
+        Observable.concat(
+          Observable.of(loggedInUser(result)),
+          Observable.of(push('/status'))
+        )
+      )
+    )
   )
 }
 
