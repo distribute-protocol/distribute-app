@@ -17,14 +17,14 @@ export function proposedProjectsReceived (responseDetails) {
 
 export function getStakedProjects (price) {
   return {
-    type: GET_PROPOSED_PROJECTS,
+    type: GET_STAKED_PROJECTS,
     price
   }
 }
 
 export function stakedProjectsReceived (responseDetails) {
   return {
-    type: PROPOSED_PROJECTS_RECEIVED,
+    type: STAKED_PROJECTS_RECEIVED,
     responseDetails
   }
 }
