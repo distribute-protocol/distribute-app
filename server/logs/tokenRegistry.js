@@ -15,16 +15,13 @@ module.exports = function () {
     topics: [web3.sha3('LogStakedTokens(address,uint256,address)')]
   })
   stakedTokensFilter.watch(async (error, result) => {
-    console.log('hello')
     if (error) console.error(error)
     let projectAddress = result.topics[1]
     projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
     let eventParams = result.data
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
-    console.log(eventParams)
     let tokensStaked = parseInt(eventParamArr[0], 16)
     let account = eventParamArr[1]
-    console.log(account, tokensStaked, projectAddress)
     account = '0x' + account.substr(-40)
     User.findOne({account: account}).exec((err, userStatus) => {
       if (err) throw Error
@@ -32,22 +29,24 @@ module.exports = function () {
       userStatus.save(err => {
         if (err) throw Error
       })
-      Project.findOne({address: projectAddress}).exec((error, doc) => {
-        if (error) console.error(error)
-        if (!doc) {
-          doc = new Stake({
-            _id: new mongoose.Types.ObjectId(),
-            amount: tokensStaked,
-            projectId: projectAddress,
-            type: 'token',
-            userId: account
-          })
-          doc.tokenBalance += tokensStaked
-          doc.save((error, saved) => {
-            if (error) throw Error
-            console.log('tokens staked')
-          })
-        }
+    })
+    Project.findOne({address: projectAddress}).exec((error, doc) => {
+      if (error) console.error(error)
+      let StakeEvent = new Stake({
+        _id: new mongoose.Types.ObjectId(),
+        amount: tokensStaked,
+        projectId: projectAddress,
+        type: 'token',
+        userId: account
+      })
+      doc.tokenBalance += tokensStaked
+      doc.save((error, saved) => {
+        if (error) throw Error
+        console.log('tokens staked')
+      })
+      StakeEvent.save((error, saved) => {
+        if (error) throw Error
+        console.log('tokens staked')
       })
     })
   })
