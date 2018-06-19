@@ -44,7 +44,6 @@ module.exports = function () {
       }
     })
   })
-
   // filter for staked reputation
   const stakedReputationFilter = web3.eth.filter({
     fromBlock: 0,
@@ -83,6 +82,48 @@ module.exports = function () {
         StakeEvent.save((error, saved) => {
           if (error) console.error(error)
           console.log('reputation staked')
+        })
+      })
+    })
+  })
+  // filter for staked reputation
+  const unstakedReputationFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: RR.ReputationRegistryAddress,
+    topics: [web3.sha3('LogUnstakedReputation(address,uint256,address)')]
+  })
+  unstakedReputationFilter.watch(async (error, result) => {
+    if (error) console.error(error)
+    let projectAddress = result.topics[1]
+    projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let reputationStaked = parseInt(eventParamArr[0], 16)
+    let account = eventParamArr[1]
+    account = '0x' + account.substr(-40)
+    User.findOne({account: account}).exec((err, userStatus) => {
+      if (err) console.error(error)
+      userStatus.reputationBalance += reputationStaked
+      userStatus.save(err => {
+        if (err) console.error(error)
+      })
+      Project.findOne({address: projectAddress}).exec((error, projectStatus) => {
+        if (error) console.error(error)
+        let StakeEvent = new Stake({
+          _id: new mongoose.Types.ObjectId(),
+          amount: -1 * reputationStaked,
+          projectId: projectStatus.id,
+          type: 'reputation',
+          userId: userStatus.id
+        })
+        projectStatus.reputationBalance -= reputationStaked
+        projectStatus.save((error, saved) => {
+          if (error) console.error(error)
+        })
+        StakeEvent.save((error, saved) => {
+          if (error) console.error(error)
+          console.log('reputation unstaked')
         })
       })
     })
