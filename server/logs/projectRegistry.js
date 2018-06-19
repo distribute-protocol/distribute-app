@@ -69,7 +69,7 @@ module.exports = function () {
             weiCost
           })
           doc.save((error, saved) => {
-            if (error) throw Error
+            if (error) console.error(error)
             console.log('project details updated')
           })
         }

@@ -53,10 +53,10 @@ module.exports = function () {
     })
 
     User.findOne({account: account}).exec((err, userStatus) => {
-      if (err) throw Error
+      if (err) console.error(error)
       userStatus.tokenBalance += tokensMinted
       userStatus.save(err => {
-        if (err) throw Error
+        if (err) console.error(error)
       })
       let TokenEvent = new Token({
         _id: new mongoose.Types.ObjectId(),
@@ -65,7 +65,7 @@ module.exports = function () {
         ether: weiSpent
       })
       TokenEvent.save((err) => {
-        if (err) throw Error
+        if (err) console.error(error)
       })
     })
   })
@@ -87,17 +87,17 @@ module.exports = function () {
     // convert result from hex to decimal
     tokensBurned = -1 * parseInt(tokensBurned, 16)
     Network.findOne({}).exec((err, netStatus) => {
-      if (err) throw Error
+      if (err) console.error(error)
       netStatus.totalTokens += tokensBurned
       netStatus.weiBal -= weiWithdrawn
       netStatus.save((err) => {
-        if (err) throw Error
+        if (err) console.error(error)
         console.log('sell event: netStatus updated')
       })
     })
 
     User.findOne({account: account}).exec((err, userStatus) => {
-      if (err) throw Error
+      if (err) console.error(error)
       let TokenEvent = new Token({
         _id: new mongoose.Types.ObjectId(),
         userId: userStatus.id,
@@ -105,7 +105,7 @@ module.exports = function () {
         ether: weiWithdrawn
       })
       TokenEvent.save((err) => {
-        if (err) throw Error
+        if (err) console.error(error)
       })
     })
   })

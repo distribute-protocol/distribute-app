@@ -24,29 +24,29 @@ module.exports = function () {
     let account = eventParamArr[1]
     account = '0x' + account.substr(-40)
     User.findOne({account: account}).exec((err, userStatus) => {
-      if (err) throw Error
+      if (err) console.error(error)
       userStatus.tokenBalance -= tokensStaked
       userStatus.save(err => {
-        if (err) throw Error
+        if (err) console.error(error)
       })
-    })
-    Project.findOne({address: projectAddress}).exec((error, doc) => {
-      if (error) console.error(error)
-      let StakeEvent = new Stake({
-        _id: new mongoose.Types.ObjectId(),
-        amount: tokensStaked,
-        projectId: projectAddress,
-        type: 'token',
-        userId: account
-      })
-      doc.tokenBalance += tokensStaked
-      doc.save((error, saved) => {
-        if (error) throw Error
-        console.log('tokens staked')
-      })
-      StakeEvent.save((error, saved) => {
-        if (error) throw Error
-        console.log('tokens staked')
+      Project.findOne({address: projectAddress}).exec((error, doc) => {
+        if (error) console.error(error)
+        let StakeEvent = new Stake({
+          _id: new mongoose.Types.ObjectId(),
+          amount: tokensStaked,
+          projectId: doc.id,
+          type: 'token',
+          userId: userStatus.id
+        })
+        doc.tokenBalance += tokensStaked
+        doc.save((error, saved) => {
+          if (error) console.error(error)
+          console.log('tokens staked')
+        })
+        StakeEvent.save((error, saved) => {
+          if (error) console.error(error)
+          console.log('tokens staked')
+        })
       })
     })
   })
