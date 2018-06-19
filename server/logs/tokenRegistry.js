@@ -1,45 +1,54 @@
-// const Web3 = require('web3')
-// const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
-// const TR = require('../../frontend/src/abi/TokenRegistry')
-//
-// const User = require('../models/user')
-// const Project = require('../models/project')
-//
-// module.exports = function () {
-//   // filter for project created
-//   const proposeProjectFilter = web3.eth.filter({
-//     fromBlock: 0,
-//     toBlock: 'latest',
-//     address: TR.TokenRegistryAddress,
-//     topics: [web3.sha3('ProjectCreated(address)')]
-//   })
-//
-//   proposeProjectFilter.watch(async (error, result) => {
-//     if (error) console.error(error)
-//     let eventParams = result.topics[1] // WHAT IS THIS DOOING
-//     let account = '0x' + eventParams.substr(-40)
-//
-//   //   User.findOne({account: account}).exec((err, userStatus) => {
-//   //     console.log(account)
-//   //     if (err) throw Error
-//   //     userStatus.tokenBalance -= 0.05 * projectCost
-//   //     userStatus.save(err => {
-//   //       if (err) throw Error
-//   //       console.log('project proposed by token holder')
-//   //     })
-//   //   })
-//   //
-//   //   Project.findOne({}).exec(err, projectStatus) => {   // where is projectStatus coming from?
-//   //     if (err) throw Err
-//   //     projectStatus.state = 1,
-//   //     projectStatus.weiCost += projectCost,
-//   //     projectStatus.proposer =  proposer,
-//   //     projectStatus._id = projectAddress,
-//   //     projectStatus.proposerStake = collateral,
-//   //     projectStatus.proposerType = 'token'
-//   //     projectStatus.save(err => {
-//   //       if (err) throw Error
-//   //       console.log('project details updated')
-//   //   })
-//   })
-// }
+const Web3 = require('web3')
+const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
+const mongoose = require('mongoose')
+const TR = require('../../frontend/src/abi/TokenRegistry')
+const Stake = require('../models/stake')
+const Project = require('../models/project')
+const User = require('../models/user')
+
+module.exports = function () {
+  // filter for project created
+  const stakedTokensFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: TR.tokenRegistryAddress,
+    topics: [web3.sha3('LogStakedTokens(address,uint256,address)')]
+  })
+  stakedTokensFilter.watch(async (error, result) => {
+    console.log('hello')
+    if (error) console.error(error)
+    let projectAddress = result.topics[1]
+    projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    console.log(eventParams)
+    let tokensStaked = parseInt(eventParamArr[0], 16)
+    let account = eventParamArr[1]
+    console.log(account, tokensStaked, projectAddress)
+    account = '0x' + account.substr(-40)
+    User.findOne({account: account}).exec((err, userStatus) => {
+      if (err) throw Error
+      userStatus.tokenBalance -= tokensStaked
+      userStatus.save(err => {
+        if (err) throw Error
+      })
+      Project.findOne({address: projectAddress}).exec((error, doc) => {
+        if (error) console.error(error)
+        if (!doc) {
+          doc = new Stake({
+            _id: new mongoose.Types.ObjectId(),
+            amount: tokensStaked,
+            projectId: projectAddress,
+            type: 'token',
+            userId: account
+          })
+          doc.tokenBalance += tokensStaked
+          doc.save((error, saved) => {
+            if (error) throw Error
+            console.log('tokens staked')
+          })
+        }
+      })
+    })
+  })
+}

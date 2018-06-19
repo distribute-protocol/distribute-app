@@ -95,7 +95,7 @@ const typeDefs = `
     name: String
     projects: [Project]
     reputationBalance: Int
-    repuationChanges: [Reputation]
+    reputationChanges: [Reputation]
     stakes: [Stake]
     tasks: [Task]
     tokenBalance: Int
@@ -135,6 +135,7 @@ const typeDefs = `
     project(address: String): Project
     allProjects: [Project]
     allProjectsinState(state: Int): [Project]
+    allStakes: [Stake]
     userStakes(account: String): [Stake]
     projectStakes(address: String): [Stake]
     task(address: String): Task

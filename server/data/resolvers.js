@@ -45,7 +45,7 @@ const resolvers = {
   User: {
     credentials: (user) => Credential.findOne({userId: user.id}).then(cred => cred),
     projects: (user) => Project.find({proposer: user.account}).then(projects => projects),
-    repuationChanges: (user) => Reputation.find({userId: user.id}).then(reputations => reputations),
+    reputationChanges: (user) => Reputation.find({userId: user.id}).then(reputations => reputations),
     stakes: (user) => Stake.find({userId: user.id}).then(stakes => stakes),
     tasks: (user) => Task.find({claimer: user.id}).then(tasks => tasks),
     tokenChanges: (user) => Token.find({userId: user.id}).then(tokens => tokens),
@@ -71,6 +71,7 @@ const resolvers = {
     project: (_, args) => Project.findOne({address: args.address}).then(project => project),
     allProjects: () => Project.find({}).then(projects => projects),
     allProjectsinState: (_, args) => Project.find({state: args.state}).then(projects => projects),
+    allStakes: () => Stake.find({}).then(stakes => stakes),
     userStakes: (_, args) => Stake.find({userId: args.account}).then(stakes => stakes),
     projectStakes: (_, args) => Stake.find({projectId: args.address}).then(stakes => stakes),
     task: (_, args) => Task.find({address: args.address}).then(task => task),
