@@ -7,8 +7,6 @@ import { client } from '../index'
 import { Observable } from 'rxjs'
 import gql from 'graphql-tag'
 
-//define ipfs processing
-
 export const getProposedProjectsEpic = action$ => {
   let price
   return action$.ofType(GET_PROPOSED_PROJECTS).pipe(
