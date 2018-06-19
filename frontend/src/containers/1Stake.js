@@ -35,6 +35,7 @@ class Stake extends React.Component {
           let currentPrice = (await dt.currentPrice()).toNumber()
           this.props.getProposedProjects(currentPrice)
           this.setState({currentPrice})
+          console.log(currentPrice)
         }
       }
     })

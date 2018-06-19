@@ -50,8 +50,8 @@ const typeDefs = `
     validateStatePeriod: Int
     voteCommitPeriod: Int
     voteRevealPeriod: Int
-    weiBal: Int,
-    weiCost: String,
+    weiBal: Int
+    weiCost: String
   }
 
   type Reputation {

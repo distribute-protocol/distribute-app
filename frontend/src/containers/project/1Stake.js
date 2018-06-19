@@ -53,7 +53,7 @@ class StakeProject extends Component {
       }
       let dataString = new TextDecoder('utf-8').decode(node.toJSON().data)
       let projObj = this.props.project
-      projObj = Object.assign({}, projObj, JSON.parse(dataString), {tokensLeft: Math.ceil((projObj.weiCost - projObj.weiBal) / projObj.currentPrice)})
+      projObj = Object.assign({}, projObj, JSON.parse(dataString), {tokensLeft: Math.ceil((parseInt(projObj.weiCost) - projObj.weiBal) / this.props.currentPrice)})
       this.props.updateProject(this.props.address, projObj)
       this.setState({...projObj})
     })

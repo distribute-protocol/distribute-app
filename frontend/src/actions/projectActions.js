@@ -15,6 +15,13 @@ export function proposedProjectsReceived (responseDetails) {
   }
 }
 
+export function proposeProject (projectDetails) {
+  return {
+    type: PROPOSE_PROJECT,
+    projectDetails
+  }
+}
+
 export function getStakedProjects (price) {
   return {
     type: GET_STAKED_PROJECTS,
@@ -26,13 +33,6 @@ export function stakedProjectsReceived (responseDetails) {
   return {
     type: STAKED_PROJECTS_RECEIVED,
     responseDetails
-  }
-}
-
-export function proposeProject (projectDetails) {
-  return {
-    type: PROPOSE_PROJECT,
-    projectDetails
   }
 }
 
