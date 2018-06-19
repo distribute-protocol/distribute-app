@@ -11,7 +11,7 @@ module.exports = function () {
   const stakedTokensFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
-    address: TR.tokenRegistryAddress,
+    address: TR.TokenRegistryAddress,
     topics: [web3.sha3('LogStakedTokens(address,uint256,address)')]
   })
   stakedTokensFilter.watch(async (error, result) => {

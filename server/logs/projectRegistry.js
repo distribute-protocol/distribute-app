@@ -1,8 +1,6 @@
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
 const PR = require('../../frontend/src/abi/ProjectRegistry')
-const TR = require('../../frontend/src/abi/TokenRegistry')
-const RR = require('../../frontend/src/abi/ReputationRegistry')
 const mongoose = require('mongoose')
 const User = require('../models/user')
 const Project = require('../models/project')
