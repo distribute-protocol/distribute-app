@@ -1,5 +1,5 @@
 import { PROPOSE_PROJECT, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, TASK_CLAIMED, TASKLIST_SUBMITTED, TASK_COMPLETED, UPDATE_PROJECT, TASK_VALIDATED } from '../constants/ProjectActionTypes'
-import { GET_PROPOSED_PROJECTS, PROPOSED_PROJECTS_RECEIVED, GET_ACTIVE_PROJECTS, ACTIVE_PROJECTS_RECEIVED } from '../constants/ProjectActionTypes'
+import { GET_PROPOSED_PROJECTS, PROPOSED_PROJECTS_RECEIVED, GET_STAKED_PROJECTS, STAKED_PROJECTS_RECEIVED } from '../constants/ProjectActionTypes'
 
 export function getProposedProjects (price) {
   return {
@@ -22,16 +22,16 @@ export function proposeProject (projectDetails) {
   }
 }
 
-export function getActiveProjects (price) {
+export function getStakedProjects (price) {
   return {
-    type: GET_ACTIVE_PROJECTS,
+    type: GET_STAKED_PROJECTS,
     price
   }
 }
 
-export function activeProjectsReceived (responseDetails) {
+export function stakedProjectsReceived (responseDetails) {
   return {
-    type: ACTIVE_PROJECTS_RECEIVED,
+    type: STAKED_PROJECTS_RECEIVED,
     responseDetails
   }
 }
