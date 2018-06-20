@@ -14,8 +14,8 @@ export default ({
   ethToSend,
   ethToRefund,
   getNetworkStatus,
-  buyShares,
-  sellShares,
+  mintTokens,
+  sellTokens,
   input,
   notRegistered,
   register,
@@ -30,9 +30,6 @@ export default ({
         <header className='App-header'>
           <h3 className='App-title2'>Network Status</h3>
         </header>
-        {/* <Button onClick={this.login} style={{marginLeft: 20, backgroundColor: 'purple'}}>
-          Connect with uPort
-        </Button> */}
         <div style={{marginLeft: 20, marginTop: 40, display: 'flex', justifyContent: 'flex-start'}}>
           <div>
             <h3>Total Token Supply</h3>
@@ -77,30 +74,15 @@ export default ({
             </div>
             <div style={{marginTop: 20}}>
               <ButtonGroup>
-                <Button icon='plus-circle-o' color='primary' onClick={buyShares}>
+                <Button icon='plus-circle-o' color='primary' onClick={mintTokens}>
                   Buy
                 </Button>
-                <Button icon='minus-circle-o' color='warning' onClick={sellShares}>
+                <Button icon='minus-circle-o' color='warning' onClick={sellTokens}>
                   Sell
                 </Button>
               </ButtonGroup>
             </div>
           </div>
-          { (notRegistered)
-            ? <div style={{backgroundColor: '#F2A35E', padding: 30}}>
-              <div>
-                <h3>Reputation:</h3>
-              </div>
-              <div style={{marginTop: 20}}>
-                <ButtonGroup>
-                  <Button color='success' icon='user-add' onClick={register}>
-                    Register
-                  </Button>
-                </ButtonGroup>
-              </div>
-            </div>
-             : null
-           }
         </div>
       </div>
     </div>

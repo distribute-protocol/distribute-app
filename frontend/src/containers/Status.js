@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { getEthPriceNow } from 'get-eth-price'
-
-import {eth, web3, rr, dt} from '../utilities/blockchain'
+import {eth, web3, dt} from '../utilities/blockchain'
 import * as _ from 'lodash'
 import StatusComponent from '../components/Status'
 import { getNetworkStatus } from '../actions/networkActions'
 import { getUserStatus } from '../actions/userActions'
+import { mintTokens, sellTokens } from '../actions/tokenActions'
 
 class Status extends Component {
   constructor () {
@@ -16,9 +16,8 @@ class Status extends Component {
       tokensToBuy: ''
     }
     this.getNetworkStatus = this.getNetworkStatus.bind(this)
-    this.buyShares = this.buyShares.bind(this)
-    this.sellShares = this.sellShares.bind(this)
-    this.register = this.register.bind(this)
+    this.mintTokens = this.mintTokens.bind(this)
+    this.sellTokens = this.sellTokens.bind(this)
   }
 
   componentWillMount () {
@@ -38,12 +37,10 @@ class Status extends Component {
           let ethPrice = await getEthPriceNow()
           ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
           let weiBal = (await dt.weiBal()).toNumber()
-          let first = (await rr.first(accounts[0]))
           let currentPrice = (await dt.currentPrice()).toNumber()
           this.setState({
             ethPrice,
             weiBal,
-            first,
             currentPrice: web3.fromWei(currentPrice, 'ether')
           })
         } else {
@@ -53,12 +50,11 @@ class Status extends Component {
     })
   }
 
-  buyShares () {
+  mintTokens () {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
-          await dt.mint(this.tokensToBuy.value, {value: web3.toWei(Math.ceil(this.state.ethToSend * 100000) / 100000, 'ether'), from: accounts[0]})
-          await this.getNetworkStatus()
+          this.props.mintTokens(this.tokensToBuy.value, {value: web3.toWei(Math.ceil(this.state.ethToSend * 100000) / 100000, 'ether'), from: accounts[0]})
           this.setState({
             tokensToBuy: ''
           })
@@ -67,25 +63,14 @@ class Status extends Component {
     })
   }
 
-  sellShares () {
+  sellTokens () {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
-          await dt.sell(this.tokensToBuy.value, {from: accounts[0]})
-          await this.getNetworkStatus()
+          this.props.sellTokens(this.tokensToBuy.value, {from: accounts[0]})
           this.setState({
             tokensToBuy: ''
           })
-        }
-      }
-    })
-  }
-
-  register () {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        if (accounts.length) {
-          await rr.register({from: accounts[0]})
         }
       }
     })
@@ -136,16 +121,14 @@ class Status extends Component {
           ? 'n/a'
           : Math.round(this.state.ethToRefund * 100000) / 100000}
         getNetworkStatus={this.getNetworkStatus}
-        buyShares={this.buyShares}
-        sellShares={this.sellShares}
+        mintTokens={this.mintTokens}
+        sellTokens={this.sellTokens}
         input={
           <input ref={(input) => (this.tokensToBuy = input)}
             placeholder='Number of Tokens'
             onChange={(e) => this.onChange(this.tokensToBuy.value)}
             value={this.state.tokensToBuy} type='number'
           />}
-        notRegistered={(this.state.reputationBalance === 0 && !this.state.first)}
-        register={this.register}
       />
     )
   }
@@ -162,7 +145,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
     getNetworkStatus: () => dispatch(getNetworkStatus()),
-    getUserStatus: (userAccount) => dispatch(getUserStatus(userAccount))
+    getUserStatus: (userAccount) => dispatch(getUserStatus(userAccount)),
+    mintTokens: (amount, txObj) => dispatch(mintTokens(amount, txObj)),
+    sellTokens: (amount, txObj) => dispatch(sellTokens(amount, txObj))
   }
 }
 

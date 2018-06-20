@@ -1,13 +1,9 @@
-import { REGISTER_USER, LOGGED_IN_USER, LOGOUT_USER, USER_STATUS_RECEIVED } from '../constants/UserActionTypes'
-
+import { LOGGED_IN_USER, LOGOUT_USER, USER_STATUS_RECEIVED } from '../constants/UserActionTypes'
+import { TOKENS_MINTED, TOKENS_SOLD } from '../constants/TokenActionTypes'
 const initialState = {}
 
 export default function userReducer (state = initialState, action) {
-  // For now, don't handle any actions
-  // and just return the state given to us.
   switch (action.type) {
-    case REGISTER_USER:
-      return state
     case LOGGED_IN_USER:
       return Object.assign({}, state, {user: action.userObj})
     case LOGOUT_USER:
@@ -20,6 +16,10 @@ export default function userReducer (state = initialState, action) {
         let userReputation = action.responseDetails.data.user.reputationBalance
         return Object.assign({}, state, {userTokens: userTokens, userReputation: userReputation})
       }
+    case TOKENS_MINTED:
+      return Object.assign({}, state, {userTokens: state.userTokens + action.receipt.amountMinted.toNumber()})
+    case TOKENS_SOLD:
+      return Object.assign({}, state, {userTokens: state.userTokens - action.receipt.amountWithdrawn.toNumber()})
     default:
   }
   return state

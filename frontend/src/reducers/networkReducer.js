@@ -1,5 +1,5 @@
 import { NETWORK_STATUS_RECEIVED } from '../constants/NetworkActionTypes'
-import * as _ from 'lodash'
+import { TOKENS_MINTED, TOKENS_SOLD } from '../constants/TokenActionTypes'
 
 const initialState = {
   totalTokens: 0,
@@ -18,6 +18,10 @@ export default function generalReducer (state = initialState, action) {
         let totalReputation = action.responseDetails.data.network.totalReputation
         return Object.assign({}, state, {totalTokens: totalTokens, totalReputation: totalReputation})
       }
+    case TOKENS_MINTED:
+      return Object.assign({}, state, {totalTokens: state.totalTokens + action.receipt.amountMinted.toNumber()})
+    case TOKENS_SOLD:
+      return Object.assign({}, state, {totalTokens: state.totalTokens - action.receipt.amountWithdrawn.toNumber()})
     default:
   }
   return state
