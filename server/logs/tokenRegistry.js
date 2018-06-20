@@ -2,6 +2,7 @@ const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
 const mongoose = require('mongoose')
 const TR = require('../../frontend/src/abi/TokenRegistry')
+const Network = require('../models/network')
 const Stake = require('../models/stake')
 const Project = require('../models/project')
 const User = require('../models/user')
@@ -16,6 +17,7 @@ module.exports = function () {
   })
   stakedTokensFilter.watch(async (error, result) => {
     if (error) console.error(error)
+    let txHash = result.transactionHash
     let projectAddress = result.topics[1]
     projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
     let eventParams = result.data
@@ -23,30 +25,40 @@ module.exports = function () {
     let tokensStaked = parseInt(eventParamArr[0], 16)
     let account = eventParamArr[1]
     account = '0x' + account.substr(-40)
-    User.findOne({account: account}).exec((err, userStatus) => {
-      if (err) console.error(error)
-      userStatus.tokenBalance -= tokensStaked
-      userStatus.save(err => {
-        if (err) console.error(error)
-      })
-      Project.findOne({address: projectAddress}).exec((error, doc) => {
-        if (error) console.error(error)
-        let StakeEvent = new Stake({
-          _id: new mongoose.Types.ObjectId(),
-          amount: tokensStaked,
-          projectId: doc.id,
-          type: 'token',
-          userId: userStatus.id
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        User.findOne({account: account}).exec((err, userStatus) => {
+          if (err) console.error(error)
+          userStatus.tokenBalance -= tokensStaked
+          userStatus.save(err => {
+            if (err) console.error(error)
+          })
+          Project.findOne({address: projectAddress}).exec((error, doc) => {
+            if (error) console.error(error)
+            let StakeEvent = new Stake({
+              _id: new mongoose.Types.ObjectId(),
+              amount: tokensStaked,
+              projectId: doc.id,
+              type: 'token',
+              userId: userStatus.id
+            })
+            doc.tokenBalance += tokensStaked
+            doc.save((error, saved) => {
+              if (error) console.error(error)
+            })
+            StakeEvent.save((error, saved) => {
+              if (error) console.error(error)
+              console.log('tokens staked')
+            })
+          })
         })
-        doc.tokenBalance += tokensStaked
-        doc.save((error, saved) => {
-          if (error) console.error(error)
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        netStatus.save(err => {
+          if (err) console.log(err)
         })
-        StakeEvent.save((error, saved) => {
-          if (error) console.error(error)
-          console.log('tokens staked')
-        })
-      })
+      }
     })
   })
   // filter unstaked tokens
@@ -58,6 +70,7 @@ module.exports = function () {
   })
   unstakedTokensFilter.watch(async (error, result) => {
     if (error) console.error(error)
+    let txHash = result.transactionHash
     let projectAddress = result.topics[1]
     projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
     let eventParams = result.data
@@ -65,30 +78,40 @@ module.exports = function () {
     let tokensUnstaked = parseInt(eventParamArr[0], 16)
     let account = eventParamArr[1]
     account = '0x' + account.substr(-40)
-    User.findOne({account: account}).exec((err, userStatus) => {
-      if (err) console.error(error)
-      userStatus.tokenBalance += tokensUnstaked
-      userStatus.save(err => {
-        if (err) console.error(error)
-      })
-      Project.findOne({address: projectAddress}).exec((error, projectStatus) => {
-        if (error) console.error(error)
-        let StakeEvent = new Stake({
-          _id: new mongoose.Types.ObjectId(),
-          amount: -1 * tokensUnstaked,
-          projectId: projectStatus.id,
-          type: 'token',
-          userId: userStatus.id
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        User.findOne({account: account}).exec((err, userStatus) => {
+          if (err) console.error(error)
+          userStatus.tokenBalance += tokensUnstaked
+          userStatus.save(err => {
+            if (err) console.error(error)
+          })
+          Project.findOne({address: projectAddress}).exec((error, projectStatus) => {
+            if (error) console.error(error)
+            let StakeEvent = new Stake({
+              _id: new mongoose.Types.ObjectId(),
+              amount: -1 * tokensUnstaked,
+              projectId: projectStatus.id,
+              type: 'token',
+              userId: userStatus.id
+            })
+            projectStatus.tokenBalance -= tokensUnstaked
+            projectStatus.save((error, saved) => {
+              if (error) console.error(error)
+            })
+            StakeEvent.save((error, saved) => {
+              if (error) console.error(error)
+              console.log('tokens unstaked')
+            })
+          })
         })
-        projectStatus.tokenBalance -= tokensUnstaked
-        projectStatus.save((error, saved) => {
-          if (error) console.error(error)
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        netStatus.save(err => {
+          if (err) console.log(err)
         })
-        StakeEvent.save((error, saved) => {
-          if (error) console.error(error)
-          console.log('tokens unstaked')
-        })
-      })
+      }
     })
   })
 }

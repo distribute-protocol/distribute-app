@@ -20,8 +20,10 @@ module.exports = function () {
 
   registerFilter.watch(async (error, result) => {
     if (error) console.error(error)
+    let txHash = result.transactionHash
     let eventParams = result.topics[1]
     let account = '0x' + eventParams.substr(-40)
+<<<<<<< HEAD
 
     User.findOne({account}).exec((err, userStatus) => {
       if (err) throw Error
@@ -41,6 +43,33 @@ module.exports = function () {
             })
           }
         })
+=======
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      // console.log(txHash)
+      // console.log(netStatus.processedTxs[txHash])
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        if (netStatus) {
+          netStatus.totalReputation += 10000
+          netStatus.processedTxs[txHash] = true
+          netStatus.markModified('processedTxs')
+          netStatus.save((err, doc) => {
+            if (err) throw Error
+            // console.log(doc)
+            console.log('network updated w/user registered')
+          })
+          User.findOne({account}).exec((err, userStatus) => {
+            if (err) throw Error
+            if (userStatus && userStatus.reputationBalance === 0) {
+              userStatus.reputationBalance += 10000
+              userStatus.save(err => {
+                if (err) throw Error
+                console.log('user registerd')
+              })
+            }
+          })
+        }
+>>>>>>> fix no update issue; still an issue with network not updating
       }
     })
   })
@@ -53,6 +82,7 @@ module.exports = function () {
   })
   stakedReputationFilter.watch(async (error, result) => {
     if (error) console.error(error)
+    let txHash = result.transactionHash
     let projectAddress = result.topics[1]
     projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
     let eventParams = result.data
@@ -60,30 +90,40 @@ module.exports = function () {
     let reputationStaked = parseInt(eventParamArr[0], 16)
     let account = eventParamArr[1]
     account = '0x' + account.substr(-40)
-    User.findOne({account: account}).exec((err, userStatus) => {
-      if (err) console.error(error)
-      userStatus.reputationBalance -= reputationStaked
-      userStatus.save(err => {
-        if (err) console.error(error)
-      })
-      Project.findOne({address: projectAddress}).exec((error, projectStatus) => {
-        if (error) console.error(error)
-        let StakeEvent = new Stake({
-          _id: new mongoose.Types.ObjectId(),
-          amount: reputationStaked,
-          projectId: projectStatus.id,
-          type: 'reputation',
-          userId: userStatus.id
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        User.findOne({account: account}).exec((err, userStatus) => {
+          if (err) console.error(error)
+          userStatus.reputationBalance -= reputationStaked
+          userStatus.save(err => {
+            if (err) console.error(error)
+          })
+          Project.findOne({address: projectAddress}).exec((error, projectStatus) => {
+            if (error) console.error(error)
+            let StakeEvent = new Stake({
+              _id: new mongoose.Types.ObjectId(),
+              amount: reputationStaked,
+              projectId: projectStatus.id,
+              type: 'reputation',
+              userId: userStatus.id
+            })
+            projectStatus.reputationBalance += reputationStaked
+            projectStatus.save((error, saved) => {
+              if (error) console.error(error)
+            })
+            StakeEvent.save((error, saved) => {
+              if (error) console.error(error)
+              console.log('reputation staked')
+            })
+          })
         })
-        projectStatus.reputationBalance += reputationStaked
-        projectStatus.save((error, saved) => {
-          if (error) console.error(error)
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        netStatus.save(err => {
+          if (err) console.log(err)
         })
-        StakeEvent.save((error, saved) => {
-          if (error) console.error(error)
-          console.log('reputation staked')
-        })
-      })
+      }
     })
   })
   // filter for unstaked reputation
@@ -95,6 +135,7 @@ module.exports = function () {
   })
   unstakedReputationFilter.watch(async (error, result) => {
     if (error) console.error(error)
+    let txHash = result.transactionHash
     let projectAddress = result.topics[1]
     projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
     let eventParams = result.data
@@ -102,30 +143,40 @@ module.exports = function () {
     let reputationStaked = parseInt(eventParamArr[0], 16)
     let account = eventParamArr[1]
     account = '0x' + account.substr(-40)
-    User.findOne({account: account}).exec((err, userStatus) => {
-      if (err) console.error(error)
-      userStatus.reputationBalance += reputationStaked
-      userStatus.save(err => {
-        if (err) console.error(error)
-      })
-      Project.findOne({address: projectAddress}).exec((error, projectStatus) => {
-        if (error) console.error(error)
-        let StakeEvent = new Stake({
-          _id: new mongoose.Types.ObjectId(),
-          amount: -1 * reputationStaked,
-          projectId: projectStatus.id,
-          type: 'reputation',
-          userId: userStatus.id
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        User.findOne({account: account}).exec((err, userStatus) => {
+          if (err) console.error(error)
+          userStatus.reputationBalance += reputationStaked
+          userStatus.save(err => {
+            if (err) console.error(error)
+          })
+          Project.findOne({address: projectAddress}).exec((error, projectStatus) => {
+            if (error) console.error(error)
+            let StakeEvent = new Stake({
+              _id: new mongoose.Types.ObjectId(),
+              amount: -1 * reputationStaked,
+              projectId: projectStatus.id,
+              type: 'reputation',
+              userId: userStatus.id
+            })
+            projectStatus.reputationBalance -= reputationStaked
+            projectStatus.save((error, saved) => {
+              if (error) console.error(error)
+            })
+            StakeEvent.save((error, saved) => {
+              if (error) console.error(error)
+              console.log('reputation unstaked')
+            })
+          })
         })
-        projectStatus.reputationBalance -= reputationStaked
-        projectStatus.save((error, saved) => {
-          if (error) console.error(error)
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        netStatus.save(err => {
+          if (err) console.log(err)
         })
-        StakeEvent.save((error, saved) => {
-          if (error) console.error(error)
-          console.log('reputation unstaked')
-        })
-      })
+      }
     })
   })
 }

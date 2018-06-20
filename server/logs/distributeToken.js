@@ -54,7 +54,8 @@ module.exports = function () {
         netStatus.totalTokens += tokensMinted
         netStatus.weiBal += weiSpent
         netStatus.processedTxs[txHash] = true
-        netStatus.save((err) => {
+        netStatus.markModified('processedTxs')
+        netStatus.save((err, returned) => {
           if (err) throw Error
           console.log('mint event: netStatus updated')
         })
@@ -88,6 +89,7 @@ module.exports = function () {
 
   sellFilter.watch(async (err, result) => {
     if (err) console.error(err)
+    let txHash = result.transactionHash
     let eventParamArr = result.data.slice(2).match(/.{1,64}/g)
     let account = '0x' + eventParamArr[2].substr(-40)
     let tokensBurned = eventParamArr[0]
@@ -95,26 +97,29 @@ module.exports = function () {
     // convert result from hex to decimal
     tokensBurned = -1 * parseInt(tokensBurned, 16)
     Network.findOne({}).exec((err, netStatus) => {
-      if (err) console.error('heyyy', err)
-      netStatus.totalTokens += tokensBurned
-      netStatus.weiBal -= weiWithdrawn
-      netStatus.save((err) => {
-        if (err) console.error(err)
-        console.log('sell event: netStatus updated')
-      })
-    })
-
-    User.findOne({account: account}).exec((err, userStatus) => {
-      if (err) console.error(err)
-      let TokenEvent = new Token({
-        _id: new mongoose.Types.ObjectId(),
-        userId: userStatus.id,
-        amount: tokensBurned,
-        ether: weiWithdrawn
-      })
-      TokenEvent.save((err) => {
-        if (err) console.error(err)
-      })
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        if (err) console.error('heyyy', err)
+        netStatus.totalTokens += tokensBurned
+        netStatus.weiBal -= weiWithdrawn
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        netStatus.save((err) => {
+          if (err) console.error(err)
+          console.log('sell event: netStatus updated')
+        })
+        User.findOne({account: account}).exec((err, userStatus) => {
+          if (err) console.error(err)
+          let TokenEvent = new Token({
+            _id: new mongoose.Types.ObjectId(),
+            userId: userStatus.id,
+            amount: tokensBurned,
+            ether: weiWithdrawn
+          })
+          TokenEvent.save((err) => {
+            if (err) console.error(err)
+          })
+        })
+      }
     })
   })
 }
