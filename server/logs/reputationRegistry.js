@@ -29,7 +29,7 @@ module.exports = function () {
         userStatus.reputationBalance += 10000
         userStatus.save(err => {
           if (err) throw Error
-          console.log('user registerd')
+          console.log('user registered')
         })
         Network.findOne({}).exec((err, netStatus) => {
           if (err) throw Error
@@ -86,7 +86,7 @@ module.exports = function () {
       })
     })
   })
-  // filter for staked reputation
+  // filter for unstaked reputation
   const unstakedReputationFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
