@@ -1,9 +1,14 @@
-import { LOGGED_IN_USER, LOGOUT_USER, USER_STATUS_RECEIVED } from '../constants/UserActionTypes'
+import { LOGGED_IN_USER, LOGOUT_USER, USER_STATUS_RECEIVED, REGISTERED_USER } from '../constants/UserActionTypes'
 import { TOKENS_MINTED, TOKENS_SOLD } from '../constants/TokenActionTypes'
-const initialState = {}
+const initialState = {
+  userTokens: 0,
+  userReputation: 0
+}
 
 export default function userReducer (state = initialState, action) {
   switch (action.type) {
+    case REGISTERED_USER:
+      return Object.assign({}, state, {userReputation: 10000})
     case LOGGED_IN_USER:
       return Object.assign({}, state, {user: action.userObj})
     case LOGOUT_USER:
