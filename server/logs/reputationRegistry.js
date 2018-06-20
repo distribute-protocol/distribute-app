@@ -20,7 +20,9 @@ module.exports = function () {
 
   registerFilter.watch(async (error, result) => {
     if (error) console.error(error)
-    let txHash = result.transactionHash
+    console.log(result.transactionHash)
+    console.log(result.topics[1])
+    let txHash = result.blockHash
     let eventParams = result.topics[1]
     let account = '0x' + eventParams.substr(-40)
 <<<<<<< HEAD
@@ -46,18 +48,8 @@ module.exports = function () {
 =======
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
-      // console.log(txHash)
-      // console.log(netStatus.processedTxs[txHash])
-      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-        if (netStatus) {
-          netStatus.totalReputation += 10000
-          netStatus.processedTxs[txHash] = true
-          netStatus.markModified('processedTxs')
-          netStatus.save((err, doc) => {
-            if (err) throw Error
-            // console.log(doc)
-            console.log('network updated w/user registered')
-          })
+      if (netStatus) {
+        if (typeof netStatus.processedTxs[txHash] === 'undefined') {
           User.findOne({account}).exec((err, userStatus) => {
             if (err) throw Error
             if (userStatus && userStatus.reputationBalance === 0) {
@@ -67,6 +59,14 @@ module.exports = function () {
                 console.log('user registerd')
               })
             }
+          })
+          netStatus.totalReputation += 10000
+          netStatus.processedTxs[txHash] = true
+          netStatus.markModified('processedTxs')
+          netStatus.save((err, doc) => {
+            if (err) throw Error
+            // console.log(doc)
+            console.log('network updated w/user registered')
           })
         }
 >>>>>>> fix no update issue; still an issue with network not updating
@@ -82,7 +82,7 @@ module.exports = function () {
   })
   stakedReputationFilter.watch(async (error, result) => {
     if (error) console.error(error)
-    let txHash = result.transactionHash
+    let txHash = result.blockHash
     let projectAddress = result.topics[1]
     projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
     let eventParams = result.data
@@ -135,7 +135,7 @@ module.exports = function () {
   })
   unstakedReputationFilter.watch(async (error, result) => {
     if (error) console.error(error)
-    let txHash = result.transactionHash
+    let txHash = result.blockHash
     let projectAddress = result.topics[1]
     projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
     let eventParams = result.data

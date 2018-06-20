@@ -17,7 +17,7 @@ module.exports = function () {
   })
   stakedTokensFilter.watch(async (error, result) => {
     if (error) console.error(error)
-    let txHash = result.transactionHash
+    let txHash = result.blockHash
     let projectAddress = result.topics[1]
     projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
     let eventParams = result.data
@@ -70,7 +70,7 @@ module.exports = function () {
   })
   unstakedTokensFilter.watch(async (error, result) => {
     if (error) console.error(error)
-    let txHash = result.transactionHash
+    let txHash = result.blockHash
     let projectAddress = result.topics[1]
     projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
     let eventParams = result.data

@@ -41,7 +41,7 @@ module.exports = function () {
 
   mintFilter.watch(async (err, result) => {
     if (err) console.error(err)
-    let txHash = result.transactionHash
+    let txHash = result.blockHash
     let eventParams = result.data
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
     let account = eventParamArr[2]
@@ -89,7 +89,7 @@ module.exports = function () {
 
   sellFilter.watch(async (err, result) => {
     if (err) console.error(err)
-    let txHash = result.transactionHash
+    let txHash = result.blockHash
     let eventParamArr = result.data.slice(2).match(/.{1,64}/g)
     let account = '0x' + eventParamArr[2].substr(-40)
     let tokensBurned = eventParamArr[0]

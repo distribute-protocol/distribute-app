@@ -19,6 +19,7 @@ export default function userReducer (state = initialState, action) {
       } else {
         let userTokens = action.responseDetails.data.user.tokenBalance
         let userReputation = action.responseDetails.data.user.reputationBalance
+        // console.log(userReputation, 'hey')
         return Object.assign({}, state, {userTokens: userTokens, userReputation: userReputation})
       }
     case TOKENS_MINTED:
