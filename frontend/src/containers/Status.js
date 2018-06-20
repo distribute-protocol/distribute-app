@@ -16,6 +16,7 @@ class Status extends Component {
       tokensToBuy: ''
     }
     this.getNetworkStatus = this.getNetworkStatus.bind(this)
+    this.getPriceData = this.getPriceData.bind(this)
     this.mintTokens = this.mintTokens.bind(this)
     this.sellTokens = this.sellTokens.bind(this)
   }
@@ -26,23 +27,30 @@ class Status extends Component {
     this.getNetworkStatus()
   }
 
+  componentWillReceiveProps () {
+    this.getPriceData()
+  }
+
+  async getPriceData () {
+    let ethPrice = await getEthPriceNow()
+    ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
+    let weiBal = (await dt.weiBal()).toNumber()
+    let currentPrice = (await dt.currentPrice()).toNumber()
+    this.setState({
+      ethPrice,
+      weiBal,
+      currentPrice: web3.fromWei(currentPrice, 'ether')
+    })
+  }
+
   async getNetworkStatus () {
     this.props.getNetworkStatus()
+    this.getPriceData()
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
-          this.setState({userAccount: accounts[0]})
           // get user token balance
           this.props.getUserStatus(accounts[0])
-          let ethPrice = await getEthPriceNow()
-          ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
-          let weiBal = (await dt.weiBal()).toNumber()
-          let currentPrice = (await dt.currentPrice()).toNumber()
-          this.setState({
-            ethPrice,
-            weiBal,
-            currentPrice: web3.fromWei(currentPrice, 'ether')
-          })
         } else {
           console.error('Please Unlock MetaMask')
         }
