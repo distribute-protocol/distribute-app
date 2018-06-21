@@ -1,5 +1,18 @@
-import { PROPOSE_PROJECT, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, TASK_CLAIMED, TASKLIST_SUBMITTED, TASK_COMPLETED, UPDATE_PROJECT, TASK_VALIDATED } from '../constants/ProjectActionTypes'
-import { GET_PROPOSED_PROJECTS, PROPOSED_PROJECTS_RECEIVED, GET_STAKED_PROJECTS, STAKED_PROJECTS_RECEIVED } from '../constants/ProjectActionTypes'
+import {
+  PROPOSE_PROJECT,
+  SET_PROJECT_TASK_LIST,
+  SET_TASK_SUBMISSION,
+  TASK_CLAIMED,
+  TASKLIST_SUBMITTED,
+  TASK_COMPLETED,
+  UPDATE_PROJECT,
+  TASK_VALIDATED,
+  GET_PROPOSED_PROJECTS,
+  PROPOSED_PROJECTS_RECEIVED,
+  GET_STAKED_PROJECTS,
+  STAKED_PROJECTS_RECEIVED,
+  PROJECT_PROPOSED
+} from '../constants/ProjectActionTypes'
 
 export function getProposedProjects (price) {
   return {
@@ -15,10 +28,19 @@ export function proposedProjectsReceived (responseDetails) {
   }
 }
 
-export function proposeProject (projectDetails) {
+export function proposeProject (collateralType, projObj, txObj) {
   return {
     type: PROPOSE_PROJECT,
-    projectDetails
+    collateralType,
+    projObj,
+    txObj
+  }
+}
+
+export function projectProposed (receipt) {
+  return {
+    type: PROJECT_PROPOSED,
+    receipt
   }
 }
 

@@ -7,7 +7,7 @@ import { proposeProject } from '../actions/projectActions'
 import ProposeForm from '../components/Propose'
 import Sidebar from '../components/shared/Sidebar'
 import { push } from 'react-router-redux'
-import {eth, web3, tr, rr, dt} from '../utilities/blockchain'
+import {eth, web3, rr, dt} from '../utilities/blockchain'
 import * as _ from 'lodash'
 import moment from 'moment'
 import ipfsAPI from 'ipfs-api'
@@ -82,7 +82,6 @@ class Propose extends Component {
   }
 
   async proposeProject (type, values) {
-    // console.log(values)
     // stakingPeriod in Days changed to seconds -> blockchain understands seconds
     let projObj = {
       cost: this.state.cost,
@@ -97,25 +96,16 @@ class Propose extends Component {
       Data: JSON.stringify(projObj),
       Links: []
     }
-    let receiptHandler = (tx, multiHash) => {
-      let txReceipt = tx.receipt
-      let projectAddress = txReceipt.logs[0].address
-      this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress, ipfsHash: `https://ipfs.io/ipfs/${multiHash}`}))  // this is calling the reducer
-      this.setState({cost: 0, photo: false, imageUrl: false, coords: 0, location: ''})
-    }
     await ipfs.object.put(obj, {enc: 'json'}, (err, node) => {
       if (err) {
         console.log('errrrr')
         throw err
       }
       multiHash = node.toJSON().multihash
+      // this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress, ipfsHash: `https://ipfs.io/ipfs/${multiHash}`}))  // this is calling the reducer
       eth.getAccounts(async (err, accounts) => {
         if (!err) {
-          if (type === 'tokens') {
-            await tr.proposeProject(projObj.cost, projObj.stakingEndDate, multiHash, {from: accounts[0]}).then(tx => receiptHandler(tx, multiHash))
-          } else if (type === 'reputation') {
-            await rr.proposeProject(projObj.cost, projObj.stakingEndDate, multiHash, {from: accounts[0]}).then(tx => receiptHandler(tx, multiHash))
-          }
+          await this.props.proposeProject(type, {cost: projObj.cost, stakingEndDate: projObj.stakingEndDate, multiHash: multiHash}, {from: accounts[0]})
         }
       })
     })
@@ -215,7 +205,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    proposeProject: (projectDetails) => dispatch(proposeProject(projectDetails)),
+    proposeProject: (type, projObj, txObj) => dispatch(proposeProject(type, projObj, txObj)),
     reroute: () => dispatch(push('/'))
   }
 }

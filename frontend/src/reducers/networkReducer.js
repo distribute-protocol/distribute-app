@@ -20,9 +20,7 @@ export default function generalReducer (state = initialState, action) {
         return Object.assign({}, state, {totalTokens: totalTokens, totalReputation: totalReputation})
       }
     case REGISTERED_USER:
-      console.log('hi', state.totalReputation)
       let newState = Object.assign({}, state, {totalReputation: state.totalReputation + 10000})
-      console.log(newState)
       return newState
     case TOKENS_MINTED:
       return Object.assign({}, state, {totalTokens: state.totalTokens + action.receipt.amountMinted.toNumber()})
