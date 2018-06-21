@@ -47,16 +47,16 @@ class StakeProject extends Component {
     //         weiBal,
     //         weiCost
     //       }
-    ipfs.object.get(this.props.project.ipfsHash, (err, node) => {
-      if (err) {
-        throw err
-      }
-      let dataString = new TextDecoder('utf-8').decode(node.toJSON().data)
-      let projObj = this.props.project
-      projObj = Object.assign({}, projObj, JSON.parse(dataString), {tokensLeft: Math.ceil((parseInt(projObj.weiCost) - projObj.weiBal) / this.props.currentPrice)})
-      this.props.updateProject(this.props.address, projObj)
-      this.setState({...projObj})
-    })
+    // ipfs.object.get(this.props.project.ipfsHash, (err, node) => {
+    //   if (err) {
+    //     throw err
+    //   }
+      //let dataString = new TextDecoder('utf-8').decode(node.toJSON().data)
+    let projObj = this.props.project
+    projObj = Object.assign({}, projObj, {tokensLeft: Math.ceil((parseInt(projObj.weiCost) - projObj.weiBal) / this.props.currentPrice)})
+    this.props.updateProject(this.props.address, projObj)
+    this.setState({...projObj})
+    // })
   }
 
   componentWillMount () {

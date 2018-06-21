@@ -35,8 +35,11 @@ const typeDefs = `
     address: String
     id: ID
     ipfsHash: String
+    location: Location
+    name: String
     nextDeadline: String
     passThreshold: Int
+    photo: String
     proposer: User
     proposerType: Int
     reputationBalance: Int
@@ -44,6 +47,7 @@ const typeDefs = `
     stakedStatePeriod: Int
     stakes: [Stake]
     state: Int
+    summary: String
     tasks: [Task]
     tokenBalance: Int
     turnoverTime: Int
@@ -52,6 +56,11 @@ const typeDefs = `
     voteRevealPeriod: Int
     weiBal: Int
     weiCost: String
+  }
+
+  type Location{
+    lat: Int
+    lng: Int
   }
 
   type Reputation {

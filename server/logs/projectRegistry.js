@@ -1,9 +1,11 @@
+/* global TextDecoder */
+
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
 const PR = require('../../frontend/src/abi/ProjectRegistry')
 const mongoose = require('mongoose')
-const User = require('../models/user')
 const Project = require('../models/project')
+const ipfs = require('../ipfs-api')
 
 module.exports = function () {
   // filter for register events
@@ -14,8 +16,6 @@ module.exports = function () {
     topics: [web3.sha3('LogProjectCreated(address)')]
   })
 
-  // Because you were defining the variables in the context of the below closure they aren't defined in the new Project that you were calling.
-  // We define them before and then they are available everywhere. DELETE THIS MESSAGE WHEN YOU READ IT
   let projectAddress
   projectCreatedFilter.watch(async (error, result) => {
     if (error) console.error(error)
@@ -44,35 +44,50 @@ module.exports = function () {
       let voteCommitPeriod = parseInt(eventParamArr[11], 16) * 1000
       let voteRevealPeriod = parseInt(eventParamArr[12], 16) * 1000
       let passThreshold = parseInt(eventParamArr[13], 16)
-      Project.findOne({address: projectAddress}).exec((error, doc) => {
-        if (error) console.error(error)
-        if (!doc) {
-          doc = new Project({
-            _id: new mongoose.Types.ObjectId(),
-            activeStatePeriod,
-            address: projectAddress,
-            ipfsHash,
-            nextDeadline,
-            passThreshold,
-            proposer,
-            proposerType,
-            reputationBalance: 0,
-            reputationCost,
-            stakedStatePeriod,
-            state,
-            turnoverTime,
-            tokenBalance: 0,
-            validateStatePeriod,
-            voteCommitPeriod,
-            voteRevealPeriod,
-            weiBal: 0,
-            weiCost
-          })
-          doc.save((error, saved) => {
-            if (error) console.error(error)
-            console.log('project details updated')
-          })
+      ipfs.object.get(ipfsHash, (err, node) => {
+        if (err) {
+          throw err
         }
+        let dataString = JSON.parse(new TextDecoder('utf-8').decode(node.toJSON().data))
+        console.log(dataString)
+        let summary
+        let name
+        let photo
+        let location
+        Project.findOne({address: projectAddress}).exec((error, doc) => {
+          if (error) console.error(error)
+          if (!doc) {
+            doc = new Project({
+              _id: new mongoose.Types.ObjectId(),
+              activeStatePeriod,
+              address: projectAddress,
+              ipfsHash,
+              location,
+              name,
+              nextDeadline,
+              passThreshold,
+              photo,
+              proposer,
+              proposerType,
+              reputationBalance: 0,
+              reputationCost,
+              stakedStatePeriod,
+              state,
+              summary,
+              turnoverTime,
+              tokenBalance: 0,
+              validateStatePeriod,
+              voteCommitPeriod,
+              voteRevealPeriod,
+              weiBal: 0,
+              weiCost
+            })
+            doc.save((error, saved) => {
+              if (error) console.error(error)
+              console.log('project details updated')
+            })
+          }
+        })
       })
     })
   })
