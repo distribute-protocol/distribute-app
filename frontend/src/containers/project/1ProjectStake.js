@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import StakeComponent from '../../components/project/1Stake'
 import moment from 'moment'
-import {eth, web3, dt, P} from '../../utilities/blockchain'
+import { web3 } from '../../utilities/blockchain'
 import { updateProject } from '../../actions/projectActions'
 import ipfsAPI from 'ipfs-api'
 let ipfs = ipfsAPI()
@@ -23,40 +23,9 @@ class StakeProject extends Component {
   }
 
   async getProjectStatus () {
-    // let accounts
-    // let p = P.at(this.props.address)
-    // eth.getAccounts(async (err, result) => {
-    //   if (!err) {
-    //     accounts = result
-    //     if (accounts.length) {
-    //       let weiBal = (await p.weiBal()).toNumber()
-    //       let weiCost = (await p.weiCost()).toNumber()
-    //       let reputationCost = (await p.reputationCost()).toNumber()
-    //       let totalTokensStaked = (await p.tokensStaked()).toNumber()
-    //       let totalReputationStaked = (await p.reputationStaked()).toNumber()
-    //       let nextDeadline = (await p.nextDeadline()).toNumber() * 1000
-    //       let ipfsHash = web3.toAscii(await p.ipfsHash())
-    //       let currentPrice = (await dt.currentPrice()).toNumber()
-    //       let projObj = {
-    //         currentPrice,
-    //         ipfsHash,
-    //         nextDeadline,
-    //         reputationCost,
-    //         totalReputationStaked,
-    //         totalTokensStaked,
-    //         weiBal,
-    //         weiCost
-    //       }
-    // ipfs.object.get(this.props.project.ipfsHash, (err, node) => {
-    //   if (err) {
-    //     throw err
-    //   }
-      //let dataString = new TextDecoder('utf-8').decode(node.toJSON().data)
     let projObj = this.props.project
     projObj = Object.assign({}, projObj, {tokensLeft: Math.ceil((parseInt(projObj.weiCost) - projObj.weiBal) / this.props.currentPrice)})
-    this.props.updateProject(this.props.address, projObj)
     this.setState({...projObj})
-    // })
   }
 
   componentWillMount () {
@@ -73,20 +42,20 @@ class StakeProject extends Component {
 
   tokens (bool) {
     bool
-      ? this.props.stakeTokens(this.state.stake)
-      : this.props.unstakeTokens(this.state.stake)
+      ? this.props.stakeProject('tokens', this.state.stake)
+      : this.props.unstakeProject('tokens', this.state.stake)
     this.setState({stake: ''})
   }
 
   reputation (bool) {
     bool
-      ? this.props.stakeReputation(this.state.stake)
-      : this.props.unstakeReputation(this.state.stake)
+      ? this.props.stakeProject('reputation', this.state.stake)
+      : this.props.unstakeProject('reputation', this.state.stake)
     this.setState({stake: ''})
   }
 
   checkStaked () {
-    this.props.checkStaked()
+    this.props.checkStakedStatus()
   }
 
   render () {
@@ -114,8 +83,7 @@ class StakeProject extends Component {
         }
         tokens={this.tokens}
         reputation={this.reputation}
-        checkStaked={this.checkStaked}
-        getProjectStatus={this.getProjectStatus}
+        checkStaked={this.checkStakedStatus}
       />
     )
   }

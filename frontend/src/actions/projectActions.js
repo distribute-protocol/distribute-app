@@ -1,5 +1,13 @@
 import {
   PROPOSE_PROJECT,
+  PROJECT_PROPOSED,
+  GET_PROPOSED_PROJECTS,
+  PROPOSED_PROJECTS_RECEIVED,
+  STAKE_PROJECT,
+  PROJECT_STAKED,
+  UNSTAKE_PROJECT,
+  PROJECT_UNSTAKED,
+  CHECK_STAKED_STATUS,
   SET_PROJECT_TASK_LIST,
   SET_TASK_SUBMISSION,
   TASK_CLAIMED,
@@ -7,12 +15,26 @@ import {
   TASK_COMPLETED,
   UPDATE_PROJECT,
   TASK_VALIDATED,
-  GET_PROPOSED_PROJECTS,
-  PROPOSED_PROJECTS_RECEIVED,
   GET_STAKED_PROJECTS,
-  STAKED_PROJECTS_RECEIVED,
-  PROJECT_PROPOSED
+  STAKED_PROJECTS_RECEIVED
+
 } from '../constants/ProjectActionTypes'
+
+export function proposeProject (collateralType, projObj, txObj) {
+  return {
+    type: PROPOSE_PROJECT,
+    collateralType,
+    projObj,
+    txObj
+  }
+}
+
+export function projectProposed (receipt) {
+  return {
+    type: PROJECT_PROPOSED,
+    receipt
+  }
+}
 
 export function getProposedProjects (price) {
   return {
@@ -28,19 +50,47 @@ export function proposedProjectsReceived (responseDetails) {
   }
 }
 
-export function proposeProject (collateralType, projObj, txObj) {
+export function stakeProject (collateralType, projectAddress, value, txObj) {
   return {
-    type: PROPOSE_PROJECT,
+    type: STAKE_PROJECT,
     collateralType,
-    projObj,
+    projectAddress,
+    value,
     txObj
   }
 }
 
-export function projectProposed (receipt) {
+export function projectStaked (collateralType, receipt) {
   return {
-    type: PROJECT_PROPOSED,
+    type: PROJECT_STAKED,
+    collateralType,
     receipt
+  }
+}
+
+export function unstakeProject (collateralType, projectAddress, value, txObj) {
+  return {
+    type: UNSTAKE_PROJECT,
+    collateralType,
+    projectAddress,
+    value,
+    txObj
+  }
+}
+
+export function projectUnstaked (collateralType, receipt) {
+  return {
+    type: PROJECT_UNSTAKED,
+    collateralType,
+    receipt
+  }
+}
+
+export function checkStakedStatus (projectAddress, txObj) {
+  return {
+    type: CHECK_STAKED_STATUS,
+    projectAddress,
+    txObj
   }
 }
 

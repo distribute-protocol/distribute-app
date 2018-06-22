@@ -1,11 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Sidebar from '../components/shared/Sidebar'
-import Project from './project/1Stake'
+import Project from './project/1ProjectStake'
 import { push } from 'react-router-redux'
-import { eth, dt, tr, rr, pr, P } from '../utilities/blockchain'
-import * as _ from 'lodash'
-import { getProposedProjects } from '../actions/projectActions'
+import { eth, dt } from '../utilities/blockchain'
+import { getProposedProjects, stakeProject, unstakeProject, checkStakedStatus } from '../actions/projectActions'
 
 class Stake extends React.Component {
   constructor () {
@@ -18,8 +17,9 @@ class Stake extends React.Component {
       currPrice: 0
     }
     this.getProposedProjects = this.getProposedProjects.bind(this)
-    // window.projects = this.state.projects
-    // window.pl = pl
+    this.stakeProject = this.stakeProject.bind(this)
+    this.unstakeProject = this.unstakeProject.bind(this)
+    this.checkStakedStatus = this.checkStakedStatus.bind(this)
   }
 
   componentWillMount () {
@@ -27,57 +27,39 @@ class Stake extends React.Component {
   }
 
   async getProposedProjects () {
-    let accounts
     eth.getAccounts(async (err, result) => {
       if (!err) {
-        accounts = result
-        if (accounts.length) {
+        if (result.length) {
           let currentPrice = (await dt.currentPrice()).toNumber()
           this.props.getProposedProjects(currentPrice)
           this.setState({currentPrice})
-          // console.log(currentPrice)
+        } else {
+          console.log('Please Unlock MetaMask')
         }
       }
     })
   }
 
-  async stakeTokens (address, val) {
-    eth.getAccounts(async (err, accounts) => {
+  stakeProject (type, address, val) {
+    eth.getAccounts((err, accounts) => {
       if (!err) {
-        await tr.stakeTokens(address, val, {from: accounts[0]})
+        this.props.stakeProject(type, address, val, {from: accounts[0]})
       }
     })
   }
 
-  async unstakeTokens (address, val) {
-    eth.getAccounts(async (err, accounts) => {
+  unstakeProject (type, address, val) {
+    eth.getAccounts((err, accounts) => {
       if (!err) {
-        await tr.unstakeTokens(address, val, {from: accounts[0]})
+        this.props.unstakeProject(type, address, val, {from: accounts[0]})
       }
     })
   }
 
-  async stakeReputation (address, val) {
+  checkStakedStatus (address) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
-        await rr.stakeReputation(address, val, {from: accounts[0]})
-      }
-    })
-  }
-
-  async unstakeReputation (address, val) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        await rr.stakeReputation(address, val, {from: accounts[0]})
-      }
-    })
-  }
-
-  async checkStaked (address) {
-    eth.getAccounts(async (err, accounts) => {
-      // console.log(address, accounts[0])
-      if (!err) {
-        await pr.checkStaked(address, {from: accounts[0]})
+        this.props.checkStakedStatus(address, {from: accounts[0]})
       }
     })
   }
@@ -91,12 +73,9 @@ class Stake extends React.Component {
           address={proj.address}
           currentPrice={this.state.currentPrice}
           project={proj}
-          stakeTokens={(val) => this.stakeTokens(proj.address, val)}
-          unstakeTokens={(val) => this.unstakeTokens(proj.address, val)}
-          stakeReputation={(val) => this.stakeReputation(proj.address, val)}
-          unstakeReputation={(val) => this.unstakeReputation(proj.address, val)}
-          checkStaked={() => this.checkStaked(proj.address)}
-          getProjectStatus={() => this.getProjectStatus(proj.address)}
+          stakeProject={(type, val) => this.stakeProject(type, proj.address, val)}
+          unstakeProject={(type, val) => this.unstakeProject(type, proj.address, val)}
+          checkStaked={() => this.checkStakedStatus(proj.address)}
         />
       })
       : []
@@ -125,7 +104,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
-    getProposedProjects: () => dispatch(getProposedProjects())
+    getProposedProjects: () => dispatch(getProposedProjects()),
+    stakeProject: (collateralType, projectAddress, value, txObj) => dispatch(stakeProject(collateralType, projectAddress, value, txObj)),
+    unstakeProject: (collateralType, projectAddress, value, txObj) => dispatch(unstakeProject(collateralType, projectAddress, value, txObj)),
+    checkStakedStatus: (projectAddress, txObj) => dispatch(checkStakedStatus(projectAddress, txObj))
   }
 }
 

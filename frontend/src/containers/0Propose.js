@@ -8,14 +8,11 @@ import ProposeForm from '../components/Propose'
 import Sidebar from '../components/shared/Sidebar'
 import { push } from 'react-router-redux'
 import {eth, web3, rr, dt} from '../utilities/blockchain'
-import * as _ from 'lodash'
-import moment from 'moment'
 import ipfsAPI from 'ipfs-api'
 import MapboxClient from 'mapbox/lib/services/geocoding'
 const client = new MapboxClient('pk.eyJ1IjoiY29uc2Vuc3lzIiwiYSI6ImNqOHBmY2w0NjBmcmYyd3F1NHNmOXJwMWgifQ.8-GlTlTTUHLL8bJSnK2xIA')
 mapboxgl.accessToken = 'pk.eyJ1IjoiY29uc2Vuc3lzIiwiYSI6ImNqOHBmY2w0NjBmcmYyd3F1NHNmOXJwMWgifQ.8-GlTlTTUHLL8bJSnK2xIA'
 let ipfs = ipfsAPI()
-window.moment = moment
 
 const WAIT_INTERVAL = 1500
 
@@ -181,7 +178,7 @@ class Propose extends Component {
           handlePriceChange={this.handlePriceChange}
           handleLocationChange={this.handleLocationChange}
           proposeProject={this.proposeProject}
-          map={<div id='map' style={{width: 400, height: 400}} ref={el => { this.mapContainer = el; return }} />}
+          map={<div id='map' style={{width: 400, height: 400}} ref={el => { this.mapContainer = el }} />}
         />
       </div>
     )
