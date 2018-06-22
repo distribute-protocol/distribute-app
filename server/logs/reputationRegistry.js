@@ -20,36 +20,23 @@ module.exports = function () {
 
   registerFilter.watch(async (error, result) => {
     if (error) console.error(error)
-    console.log(result.transactionHash)
-    console.log(result.topics[1])
     let txHash = result.transactionHash
     let eventParams = result.topics[1]
     let account = '0x' + eventParams.substr(-40)
-<<<<<<< HEAD
-
-    User.findOne({account}).exec((err, userStatus) => {
-      if (err) throw Error
-      if (userStatus && userStatus.reputationBalance === 0) {
-        userStatus.reputationBalance += 10000
-        userStatus.save(err => {
-          if (err) throw Error
-          console.log('user registered')
-        })
-        Network.findOne({}).exec((err, netStatus) => {
-          if (err) throw Error
-          if (netStatus) {
-            netStatus.totalReputation += 10000
-            netStatus.save(err => {
-              if (err) throw Error
-              console.log('network updated w/user registered')
-            })
-          }
-        })
-=======
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
-      if (netStatus) {
-        if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+      // console.log(txHash)
+      // console.log(netStatus.processedTxs[txHash])
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        if (netStatus) {
+          netStatus.totalReputation += 10000
+          netStatus.processedTxs[txHash] = true
+          netStatus.markModified('processedTxs')
+          netStatus.save((err, doc) => {
+            if (err) throw Error
+            // console.log(doc)
+            console.log('network updated w/user registered')
+          })
           User.findOne({account}).exec((err, userStatus) => {
             if (err) throw Error
             if (userStatus && userStatus.reputationBalance === 0) {
@@ -60,16 +47,7 @@ module.exports = function () {
               })
             }
           })
-          netStatus.totalReputation += 10000
-          netStatus.processedTxs[txHash] = true
-          netStatus.markModified('processedTxs')
-          netStatus.save((err, doc) => {
-            if (err) throw Error
-            // console.log(doc)
-            console.log('network updated w/user registered')
-          })
         }
->>>>>>> fix no update issue; still an issue with network not updating
       }
     })
   })

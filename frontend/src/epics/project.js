@@ -18,9 +18,13 @@ const getProposedProjectsEpic = action$ => {
           address,
           id,
           ipfsHash,
+          location,
+          name
           nextDeadline,
+          photo,
           reputationBalance,
           reputationCost,
+          summary,
           tokenBalance,
           weiBal,
           weiCost

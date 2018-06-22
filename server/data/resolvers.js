@@ -24,7 +24,8 @@ const resolvers = {
   Project: {
     proposer: (project) => User.findOne({account: project.proposer}).then(user => user),
     stakes: (project) => Stake.find({projectId: project.id}).then(stakes => stakes),
-    tasks: (project) => Task.find({projectId: project.id}).then(tasks => tasks)
+    tasks: (project) => Task.find({projectId: project.id}).then(tasks => tasks),
+    location: (project) => Project.findById(project.id, 'location').then(project => project.location)
   },
   Reputation: {
     user: (reputation) => User.findById(reputation.userId).then(user => user)
