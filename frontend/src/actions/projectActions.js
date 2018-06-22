@@ -36,10 +36,9 @@ export function projectProposed (receipt) {
   }
 }
 
-export function getProposedProjects (price) {
+export function getProposedProjects () {
   return {
-    type: GET_PROPOSED_PROJECTS,
-    price
+    type: GET_PROPOSED_PROJECTS
   }
 }
 

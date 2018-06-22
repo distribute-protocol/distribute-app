@@ -23,21 +23,7 @@ class Stake extends React.Component {
   }
 
   componentWillMount () {
-    this.getProposedProjects()
-  }
-
-  async getProposedProjects () {
-    eth.getAccounts(async (err, result) => {
-      if (!err) {
-        if (result.length) {
-          let currentPrice = (await dt.currentPrice()).toNumber()
-          this.props.getProposedProjects(currentPrice)
-          this.setState({currentPrice})
-        } else {
-          console.log('Please Unlock MetaMask')
-        }
-      }
-    })
+    this.props.getProposedProjects()
   }
 
   stakeProject (type, address, val) {
