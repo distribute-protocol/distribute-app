@@ -6,7 +6,6 @@ import {eth, pr, tr, rr, web3, P, T} from '../../utilities/blockchain'
 import { voteCommitted, voteRevealed } from '../../actions/pollActions'
 import moment from 'moment'
 import { utils } from 'ethers'
-import ipfs from '../../utilities/ipfs'
 
 class VoteTasks extends React.Component {
   constructor () {
@@ -36,37 +35,7 @@ class VoteTasks extends React.Component {
 
   // let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
   async getProjectStatus () {
-    let accounts
-    let p = P.at(this.props.address)
-    eth.getAccounts(async (err, result) => {
-      if (!err) {
-        accounts = result
-        if (accounts.length) {
-          let weiCost = (await p.weiCost()).toNumber()
-          let reputationCost = (await p.reputationCost()).toNumber()
-          let ipfsHash = web3.toAscii(await p.ipfsHash())
-          let nextDeadline = (await p.nextDeadline()) * 1000
-          let projectState = (await p.state())
-          let projObj = {
-            weiCost,
-            reputationCost,
-            ipfsHash,
-            nextDeadline,
-            state: projectState,
-            project: p,
-            taskList: this.props.project.taskList
-          }
-          ipfs.object.get(ipfsHash, (err, node) => {
-            if (err) {
-              throw err
-            }
-            let dataString = new TextDecoder('utf-8').decode(node.toJSON().data)
-            projObj = Object.assign({}, projObj, JSON.parse(dataString))
-            this.setState(projObj)
-          })
-        }
-      }
-    })
+    this.setState(this.props.project)
   }
 
   onChange (e) {
@@ -109,9 +78,9 @@ class VoteTasks extends React.Component {
     // let hash = web3.fromAscii(this.state.votes[i].status + salt, 32)
     // let hash = utils.keccak256(status + salt)
     // if (hash === utils.keccak256(status + salt)) {
-      type === 'tokens'
-        ? this.revealToken(i, status, salt)
-        : this.revealReputation(i, status, salt)
+    type === 'tokens'
+      ? this.revealToken(i, status, salt)
+      : this.revealReputation(i, status, salt)
     // }
   }
 
