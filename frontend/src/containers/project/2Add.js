@@ -100,6 +100,7 @@ class AddProject extends React.Component {
   }
 
   handleTaskInput () {
+    // this.props.setProjectTaskList()
     let task = this.state.tempTask.description
     let percentage = parseInt(this.state.tempTask.percentage, 10)
     let tempTaskList = this.state.taskList
