@@ -1,3 +1,4 @@
+/* global alert */
 import React from 'react'
 import { connect } from 'react-redux'
 import { Button } from 'antd'
@@ -8,7 +9,6 @@ import update from 'immutability-helper'
 import { setProjectTaskList, setTaskSubmission } from '../../actions/projectActions'
 import moment from 'moment'
 import * as _ from 'lodash'
-import ipfs from '../../utilities/ipfs'
 
 class AddProject extends React.Component {
   constructor () {
@@ -63,36 +63,9 @@ class AddProject extends React.Component {
     this.setState({taskList: np.taskList})
   }
   // let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
-  async getProjectStatus () {
-    let accounts
-    let p = P.at(this.props.address)
-    eth.getAccounts(async (err, result) => {
-      if (!err) {
-        accounts = result
-        if (accounts.length) {
-          let weiCost = (await p.weiCost()).toNumber()
-          let reputationCost = (await p.reputationCost()).toNumber()
-          let ipfsHash = web3.toAscii(await p.ipfsHash())
-          let nextDeadline = (await p.nextDeadline()) * 1000
-          let projObj = {
-            weiCost,
-            reputationCost,
-            ipfsHash,
-            nextDeadline,
-            project: p,
-            taskList: this.props.taskList
-          }
-          ipfs.object.get(ipfsHash, (err, node) => {
-            if (err) {
-              throw err
-            }
-            let dataString = new TextDecoder('utf-8').decode(node.toJSON().data)
-            projObj = Object.assign({}, projObj, JSON.parse(dataString))
-            this.setState(projObj)
-          })
-        }
-      }
-    })
+  getProjectStatus () {
+    let projectObj = Object.assign({}, this.props.project, {taskList: this.props.taskList})
+    this.setState(projectObj)
   }
 
   onChange (type, val) {
@@ -228,8 +201,8 @@ class AddProject extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    taskList: state.projects.allProjects[ownProps.address].taskList,
-    submissions: state.projects.allProjects[ownProps.address].submittedTasks
+    taskList: state.projects[2][ownProps.address].taskList,
+    submissions: state.projects[2][ownProps.address].submittedTasks
   }
 }
 

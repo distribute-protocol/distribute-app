@@ -15,7 +15,8 @@ export default function projectReducer (state = initialState, action) {
       if (!action.projects.length) {
         return state
       } else {
-        return Object.assign({}, state, {[action.state]: action.projects})
+        var object = action.projects.reduce((obj, item) => (obj[item.address] = item, obj), {})
+        return Object.assign({}, state, {[action.state]: object})
       }
     case PROJECT_PROPOSED:
       console.log(action.receipt)

@@ -87,16 +87,16 @@ class Stake extends React.Component {
 
   render () {
     const projects = typeof this.props.projects !== `undefined`
-      ? this.props.projects.map((proj, i) => {
+      ? Object.keys(this.props.projects).map((address, i) => {
         return <Project
           key={i}
           index={i}
-          address={proj.address}
+          address={address}
           currentPrice={this.state.currentPrice}
-          project={proj}
-          stakeProject={(type, val) => this.stakeProject(type, proj.address, val)}
-          unstakeProject={(type, val) => this.unstakeProject(type, proj.address, val)}
-          checkStaked={() => this.checkStakedStatus(proj.address)}
+          project={this.props.projects[address]}
+          stakeProject={(type, val) => this.stakeProject(type, address, val)}
+          unstakeProject={(type, val) => this.unstakeProject(type, address, val)}
+          checkStaked={() => this.checkStakedStatus(address)}
         />
       })
       : []

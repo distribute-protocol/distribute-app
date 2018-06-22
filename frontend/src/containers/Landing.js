@@ -7,7 +7,6 @@ import { Button } from 'antd'
 import { loginUser } from '../actions/userActions'
 import { getNetworkStatus } from '../actions/networkActions'
 
-
 class Landing extends React.Component {
   constructor () {
     super()
