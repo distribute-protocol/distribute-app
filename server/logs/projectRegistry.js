@@ -48,12 +48,7 @@ module.exports = function () {
         if (err) {
           throw err
         }
-        let dataString = JSON.parse(new TextDecoder('utf-8').decode(node.toJSON().data))
-        console.log(dataString)
-        let summary
-        let name
-        let photo
-        let location
+        let dataObj = JSON.parse(new TextDecoder('utf-8').decode(node.toJSON().data))
         Project.findOne({address: projectAddress}).exec((error, doc) => {
           if (error) console.error(error)
           if (!doc) {
@@ -62,18 +57,18 @@ module.exports = function () {
               activeStatePeriod,
               address: projectAddress,
               ipfsHash,
-              location,
-              name,
+              location: dataObj.location,
+              name: dataObj.name,
               nextDeadline,
               passThreshold,
-              photo,
+              photo: dataObj.photo,
               proposer,
               proposerType,
               reputationBalance: 0,
               reputationCost,
               stakedStatePeriod,
               state,
-              summary,
+              summary: dataObj.summary,
               turnoverTime,
               tokenBalance: 0,
               validateStatePeriod,
