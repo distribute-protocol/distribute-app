@@ -5,7 +5,7 @@ const FormItem = Form.Item
 
 const ProposeForm = (props) => {
   let {
-    handleChange,
+    handlePhotoChange,
     imageUrl,
     cost,
     reputationCost,
@@ -50,7 +50,7 @@ const ProposeForm = (props) => {
                 showUploadList={false}
                 // action='//jsonplaceholder.typicode.com/posts/'
                 // beforeUpload={beforeUpload}
-                onChange={handleChange}
+                onChange={handlePhotoChange}
               >
                 {imageUrl
                   ? <img style={{width: 200, height: 200}} src={imageUrl} alt='' />
