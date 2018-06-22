@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import Sidebar from '../components/shared/Sidebar'
 import Project from './project/1ProjectStake'
 import { push } from 'react-router-redux'
-import { eth, dt } from '../utilities/blockchain'
+import { eth } from '../utilities/blockchain'
 import { getProposedProjects, stakeProject, unstakeProject, checkStakedStatus } from '../actions/projectActions'
 
 class Stake extends React.Component {
@@ -23,7 +23,15 @@ class Stake extends React.Component {
   }
 
   componentWillMount () {
-    this.props.getProposedProjects()
+    eth.getAccounts((err, result) => {
+      if (!err) {
+        if (result.length) {
+          this.props.getProposedProjects()
+        } else {
+          console.log('Please Unlock MetaMask')
+        }
+      }
+    })
   }
 
   stakeProject (type, address, val) {
