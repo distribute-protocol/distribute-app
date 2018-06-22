@@ -6,7 +6,7 @@ import { push } from 'react-router-redux'
 import { eth } from '../utilities/blockchain'
 import Project from './project/2Add'
 import fastforward from '../utilities/fastforward'
-import { getProjects, checkActiveStatus } from '../actions/projectActions'
+import { getProjects, checkActiveStatus, setTaskSubmission } from '../actions/projectActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -56,7 +56,7 @@ class Add extends React.Component {
     })
   }
 
-  checkActiveStatus (address) {
+  async checkActiveStatus (address) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         this.props.checkActiveStatus(address, {from: accounts[0]})
@@ -64,7 +64,7 @@ class Add extends React.Component {
     })
   }
 
-  setTaskSubmission () {
+  async setTaskSubmission () {
     // let tasks = this.props.taskList
     // let sumTotal = tasks.map(el => el.percentage).reduce((prev, curr) => {
     //   return prev + curr
@@ -133,7 +133,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
-    getProjects: () => dispatch(getProjects(2, projQuery))
+    getProjects: () => dispatch(getProjects(2, projQuery)),
+    checkActiveStatus: (projectAddress, txObj) => dispatch(checkActiveStatus(projectAddress, txObj)),
+    setTaskSubmission: (submissionDetails) => dispatch(setTaskSubmission(submissionDetails))
   }
 }
 

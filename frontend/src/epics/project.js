@@ -1,5 +1,5 @@
-import { GET_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS, CHECK_ACTIVE_STATUS, SET_TASK_SUBMISSION } from '../constants/ProjectActionTypes'
-import { projectsReceived, projectProposed, projectStaked, projectUnstaked, setTaskSubmission } from '../actions/projectActions'
+import { GET_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS, CHECK_ACTIVE_STATUS, SET_TASK_SUBMISSION, SET_PROJECT_TASK_LIST } from '../constants/ProjectActionTypes'
+import { projectsReceived, projectProposed, projectStaked, projectUnstaked, setTaskSubmission, setProjectTaskList } from '../actions/projectActions'
 import { map, mergeMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
@@ -77,10 +77,15 @@ const getStakedProjectsEpic = action$ => {
   )
 }
 
-// const setProjectTaskList = action$ => {
-// }
+const setProjectTaskList = action$ => {
+  action$.ofType(SET_PROJECT_TASK_LIST).pipe(
+    mergeMap(action => {
 
-const setTaskSubmission = action$ => {
+    })
+  )
+}
+
+const taskSubmissionSet = action$ => {
   action$.ofType(SET_TASK_SUBMISSION).pipe(
     mergeMap(action => {
 
@@ -101,5 +106,6 @@ export default (action$, store) => merge(
   stakeProject(action$, store),
   unstakeProject(action$, store),
   checkStakedStatus(action$, store),
-  checkActiveStatus(action$, store)
+  checkActiveStatus(action$, store),
+  taskSubmissionSet(action$, store)
 )
