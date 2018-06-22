@@ -1,4 +1,3 @@
-/* global TextDecoder */
 
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
@@ -6,6 +5,7 @@ const PR = require('../../frontend/src/abi/ProjectRegistry')
 const mongoose = require('mongoose')
 const Project = require('../models/project')
 const ipfs = require('../ipfs-api')
+const { TextDecoder } = require('text-encoding')
 
 module.exports = function () {
   // filter for register events
