@@ -6,7 +6,7 @@ import {eth, pr, tr, rr, web3, P, T} from '../../utilities/blockchain'
 import { voteCommitted, voteRevealed } from '../../actions/pollActions'
 import moment from 'moment'
 import { utils } from 'ethers'
-import ipfs from '../utilities/ipfs'
+import ipfs from '../../utilities/ipfs'
 
 class VoteTasks extends React.Component {
   constructor () {

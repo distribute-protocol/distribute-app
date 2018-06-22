@@ -8,7 +8,7 @@ import update from 'immutability-helper'
 import { setProjectTaskList, setTaskSubmission } from '../../actions/projectActions'
 import moment from 'moment'
 import * as _ from 'lodash'
-import ipfs from '../utilities/ipfs'
+import ipfs from '../../utilities/ipfs'
 
 class AddProject extends React.Component {
   constructor () {

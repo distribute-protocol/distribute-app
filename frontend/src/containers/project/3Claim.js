@@ -6,7 +6,7 @@ import {eth, web3, rr, pr, P} from '../../utilities/blockchain'
 import { hashTasksArray, hashTasks } from '../../utilities/hashing'
 import { taskClaimed, taskListSubmitted, taskCompleted } from '../../actions/projectActions'
 import moment from 'moment'
-import ipfs from '../utilities/ipfs'
+import ipfs from '../../utilities/ipfs'
 const ButtonGroup = Button.Group
 
 class ClaimProject extends React.Component {
