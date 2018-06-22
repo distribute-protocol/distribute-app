@@ -6,7 +6,7 @@ import { push } from 'react-router-redux'
 import { eth } from '../utilities/blockchain'
 import Project from './project/2Add'
 import fastforward from '../utilities/fastforward'
-import { getProjects } from '../actions/projectActions'
+import { getProjects, checkActiveStatus } from '../actions/projectActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -37,6 +37,7 @@ class Add extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
+    this.checkStakedStatus = this.checkStakedStatus.bind(this)
   }
 
   componentWillMount () {
@@ -55,7 +56,40 @@ class Add extends React.Component {
     })
   }
 
-// fast forward Ganache 1 week
+  checkActiveStatus (address) {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        this.props.checkActiveStatus(address, {from: accounts[0]})
+      }
+    })
+  }
+
+  setTaskSubmission () {
+    // let tasks = this.props.taskList
+    // let sumTotal = tasks.map(el => el.percentage).reduce((prev, curr) => {
+    //   return prev + curr
+    // }, 0)
+    // if (sumTotal !== 100) {
+    //   alert('percentages must add up to 100!')
+    // } else {
+    //   let taskArray = tasks.map(task => ({
+    //     description: task.description,
+    //     weiReward: task.percentage * this.state.weiCost / 100
+    //   }))
+    //   let taskHash = hashTasksArray(taskArray, this.state.weiCost)
+    //   eth.getAccounts(async (err, accounts) => {
+    //     if (!err) {
+    //       await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => { // change to epic
+    //         this.props.setTaskSubmission({
+    //           address: this.props.address,
+    //           submitter: accounts[0],
+    //           taskSubmission: taskArray
+    //         })
+    //       })
+    //     }
+    //   })
+  }
+  // fast forward Ganache 1 week
   async fastForward () {
     await fastforward(7 * 24 * 60 * 60)
   }
