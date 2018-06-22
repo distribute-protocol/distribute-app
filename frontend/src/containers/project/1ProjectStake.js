@@ -7,8 +7,6 @@ import StakeComponent from '../../components/project/1Stake'
 import moment from 'moment'
 import { web3 } from '../../utilities/blockchain'
 import { updateProject } from '../../actions/projectActions'
-import ipfsAPI from 'ipfs-api'
-let ipfs = ipfsAPI()
 
 class StakeProject extends Component {
   constructor () {

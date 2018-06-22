@@ -5,8 +5,7 @@ import { Button } from 'antd'
 import {eth, pr, tr, web3, P} from '../../utilities/blockchain'
 import { taskValidated } from '../../actions/projectActions'
 import moment from 'moment'
-import ipfsAPI from 'ipfs-api'
-let ipfs = ipfsAPI()
+import ipfs from '../utilities/ipfs'
 
 class ValidateTasks extends React.Component {
   constructor () {

@@ -2,8 +2,7 @@ import React from 'react'
 import FinishedComponent from '../../components/project/Finished'
 import {eth, web3, P} from '../../utilities/blockchain'
 import moment from 'moment'
-import ipfsAPI from 'ipfs-api'
-let ipfs = ipfsAPI()
+import ipfs from '../utilities/ipfs'
 
 class FinishedProject extends React.Component {
   constructor () {

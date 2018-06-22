@@ -5,9 +5,8 @@ import { Button } from 'antd'
 import {eth, pr, tr, rr, web3, P, T} from '../../utilities/blockchain'
 import { voteCommitted, voteRevealed } from '../../actions/pollActions'
 import moment from 'moment'
-import ipfsAPI from 'ipfs-api'
 import { utils } from 'ethers'
-let ipfs = ipfsAPI()
+import ipfs from '../utilities/ipfs'
 
 class VoteTasks extends React.Component {
   constructor () {

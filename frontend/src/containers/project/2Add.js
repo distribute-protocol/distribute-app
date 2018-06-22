@@ -7,9 +7,8 @@ import { hashTasksArray } from '../../utilities/hashing'
 import update from 'immutability-helper'
 import { setProjectTaskList, setTaskSubmission } from '../../actions/projectActions'
 import moment from 'moment'
-import ipfsAPI from 'ipfs-api'
 import * as _ from 'lodash'
-let ipfs = ipfsAPI()
+import ipfs from '../utilities/ipfs'
 
 class AddProject extends React.Component {
   constructor () {
