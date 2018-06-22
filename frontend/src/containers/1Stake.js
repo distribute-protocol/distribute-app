@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import Sidebar from '../components/shared/Sidebar'
 import Project from './project/1ProjectStake'
 import { push } from 'react-router-redux'
-import { eth } from '../utilities/blockchain'
+import { eth, dt } from '../utilities/blockchain'
 import { getProjects, stakeProject, unstakeProject, checkStakedStatus } from '../actions/projectActions'
 import gql from 'graphql-tag'
 
@@ -44,10 +44,16 @@ class Stake extends React.Component {
   }
 
   componentWillMount () {
-    eth.getAccounts((err, result) => {
+    this.getProjects()
+  }
+
+  async getProjects () {
+    eth.getAccounts(async (err, result) => {
       if (!err) {
         if (result.length) {
+          let currentPrice = (await dt.currentPrice()).toNumber()
           this.props.getProjects()
+          this.setState({currentPrice})
         } else {
           console.log('Please Unlock MetaMask')
         }
