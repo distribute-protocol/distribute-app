@@ -3,7 +3,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Button } from 'antd'
 import AddComponent from '../../components/project/2Add'
-import {eth, web3, pr, pl} from '../../utilities/blockchain'
+import {eth, web3, pl} from '../../utilities/blockchain'
 import { hashTasksArray } from '../../utilities/hashing'
 import update from 'immutability-helper'
 import { setProjectTaskList, setTaskSubmission } from '../../actions/projectActions'
@@ -109,38 +109,35 @@ class AddProject extends React.Component {
   }
 
   submitTaskList () {
-    let tasks = this.props.taskList
-    let sumTotal = tasks.map(el => el.percentage).reduce((prev, curr) => {
-      return prev + curr
-    }, 0)
-    if (sumTotal !== 100) {
-      alert('percentages must add up to 100!')
-    } else {
-      let taskArray = tasks.map(task => ({
-        description: task.description,
-        weiReward: task.percentage * this.state.weiCost / 100
-      }))
-      let taskHash = hashTasksArray(taskArray, this.state.weiCost)
-      eth.getAccounts(async (err, accounts) => {
-        if (!err) {
-          await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => {
-            this.props.setTaskSubmission({
-              address: this.props.address,
-              submitter: accounts[0],
-              taskSubmission: taskArray
-            })
-          })
-        }
-      })
-    }
+    this.props.setTaskSubmission()
+    // let tasks = this.props.taskList
+    // let sumTotal = tasks.map(el => el.percentage).reduce((prev, curr) => {
+    //   return prev + curr
+    // }, 0)
+    // if (sumTotal !== 100) {
+    //   alert('percentages must add up to 100!')
+    // } else {
+    //   let taskArray = tasks.map(task => ({
+    //     description: task.description,
+    //     weiReward: task.percentage * this.state.weiCost / 100
+    //   }))
+    //   let taskHash = hashTasksArray(taskArray, this.state.weiCost)
+    //   eth.getAccounts(async (err, accounts) => {
+    //     if (!err) {
+    //       await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => { // change to epic
+    //         this.props.setTaskSubmission({
+    //           address: this.props.address,
+    //           submitter: accounts[0],
+    //           taskSubmission: taskArray
+    //         })
+    //       })
+    //     }
+    //   })
+    // }
   }
 
   checkActive () {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        await pr.checkActive(this.props.address, {from: accounts[0]})
-      }
-    })
+    this.props.checkActiveStatus()
   }
 
   render () {
