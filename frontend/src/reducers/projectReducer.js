@@ -12,7 +12,6 @@ const initialState = {
 export default function projectReducer (state = initialState, action) {
   switch (action.type) {
     case PROPOSED_PROJECTS_RECEIVED:
-      console.log(action.responseDetails)
       if (!action.responseDetails.length) {
         return state
       } else {
