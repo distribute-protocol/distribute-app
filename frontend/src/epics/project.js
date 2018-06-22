@@ -18,7 +18,10 @@ const getProposedProjectsEpic = action$ => {
           address,
           id,
           ipfsHash,
-          location,
+          location {
+            lat,
+            lng
+          },
           name
           nextDeadline,
           photo,
