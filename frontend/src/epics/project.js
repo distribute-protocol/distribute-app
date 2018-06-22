@@ -1,41 +1,22 @@
-import { GET_PROPOSED_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS } from '../constants/ProjectActionTypes'
-import { proposedProjectsReceived, projectProposed, projectStaked, projectUnstaked } from '../actions/projectActions'
-import Operators, { map, mergeMap, flatMap } from 'rxjs/operators'
+import { GET_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS } from '../constants/ProjectActionTypes'
+import { projectsReceived, projectProposed, projectStaked, projectUnstaked } from '../actions/projectActions'
+import { map, mergeMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
 import { client } from '../index'
 import { merge } from 'rxjs/observable/merge'
 import { rr, tr, pr } from '../utilities/blockchain'
+// import gql from 'graphql-tag'
 
-import gql from 'graphql-tag'
-window.Operators = Operators
-window.Observable = Observable
 const getProposedProjectsEpic = action$ => {
-  return action$.ofType(GET_PROPOSED_PROJECTS).pipe(
+  let state
+  return action$.ofType(GET_PROJECTS).pipe(
     mergeMap(action => {
-      return client.query({query: gql`
-      { allProjectsinState(state: 1){
-          address,
-          id,
-          ipfsHash,
-          location {
-            lat,
-            lng
-          },
-          name
-          nextDeadline,
-          photo,
-          reputationBalance,
-          reputationCost,
-          summary,
-          tokenBalance,
-          weiBal,
-          weiCost
-        }
-      }`}
+      state = action.state
+      return client.query({query: action.query}
       )
     }),
-    map(result => proposedProjectsReceived(result.data.allProjectsinState))
+    map(result => projectsReceived(state, result.data.allProjectsinState))
   )
 }
 

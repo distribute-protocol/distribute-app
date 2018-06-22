@@ -4,7 +4,29 @@ import Sidebar from '../components/shared/Sidebar'
 import Project from './project/1ProjectStake'
 import { push } from 'react-router-redux'
 import { eth } from '../utilities/blockchain'
-import { getProposedProjects, stakeProject, unstakeProject, checkStakedStatus } from '../actions/projectActions'
+import { getProjects, stakeProject, unstakeProject, checkStakedStatus } from '../actions/projectActions'
+import gql from 'graphql-tag'
+
+let projQuery = gql`
+  { allProjectsinState(state: 1){
+      address,
+      id,
+      ipfsHash,
+      location {
+        lat,
+        lng
+      },
+      name
+      nextDeadline,
+      photo,
+      reputationBalance,
+      reputationCost,
+      summary,
+      tokenBalance,
+      weiBal,
+      weiCost
+    }
+  }`
 
 class Stake extends React.Component {
   constructor () {
@@ -16,7 +38,6 @@ class Stake extends React.Component {
       tempProject: {},
       currPrice: 0
     }
-    this.getProposedProjects = this.getProposedProjects.bind(this)
     this.stakeProject = this.stakeProject.bind(this)
     this.unstakeProject = this.unstakeProject.bind(this)
     this.checkStakedStatus = this.checkStakedStatus.bind(this)
@@ -26,7 +47,7 @@ class Stake extends React.Component {
     eth.getAccounts((err, result) => {
       if (!err) {
         if (result.length) {
-          this.props.getProposedProjects()
+          this.props.getProjects()
         } else {
           console.log('Please Unlock MetaMask')
         }
@@ -91,14 +112,14 @@ class Stake extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    projects: state.projects.proposedProjects
+    projects: state.projects[1]
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
-    getProposedProjects: () => dispatch(getProposedProjects()),
+    getProjects: () => dispatch(getProjects(1, projQuery)),
     stakeProject: (collateralType, projectAddress, value, txObj) => dispatch(stakeProject(collateralType, projectAddress, value, txObj)),
     unstakeProject: (collateralType, projectAddress, value, txObj) => dispatch(unstakeProject(collateralType, projectAddress, value, txObj)),
     checkStakedStatus: (projectAddress, txObj) => dispatch(checkStakedStatus(projectAddress, txObj))

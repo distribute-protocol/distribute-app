@@ -1,12 +1,7 @@
-/* global TextDecoder */
-
 import React, { Component } from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
 import StakeComponent from '../../components/project/1Stake'
 import moment from 'moment'
 import { web3 } from '../../utilities/blockchain'
-import { updateProject } from '../../actions/projectActions'
 
 class StakeProject extends Component {
   constructor () {
@@ -87,10 +82,10 @@ class StakeProject extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({
-    updateProject
-  }, dispatch)
-}
+// const mapDispatchToProps = (dispatch) => {
+//   return bindActionCreators({
+//     updateProject
+//   }, dispatch)
+// }
 
-export default connect(null, mapDispatchToProps)(StakeProject)
+export default StakeProject

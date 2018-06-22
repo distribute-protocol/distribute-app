@@ -1,4 +1,4 @@
-import { PROJECT_PROPOSED, PROPOSED_PROJECTS_RECEIVED } from '../constants/ProjectActionTypes'
+import { PROJECT_PROPOSED, PROJECTS_RECEIVED } from '../constants/ProjectActionTypes'
 
 const initialState = {
   projects: []
@@ -11,11 +11,11 @@ const initialState = {
 // }
 export default function projectReducer (state = initialState, action) {
   switch (action.type) {
-    case PROPOSED_PROJECTS_RECEIVED:
-      if (!action.responseDetails.length) {
+    case PROJECTS_RECEIVED:
+      if (!action.projects.length) {
         return state
       } else {
-        return Object.assign({}, state, {proposedProjects: action.responseDetails})
+        return Object.assign({}, state, {[action.state]: action.projects})
       }
     case PROJECT_PROPOSED:
       console.log(action.receipt)

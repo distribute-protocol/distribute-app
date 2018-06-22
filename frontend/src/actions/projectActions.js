@@ -13,10 +13,12 @@ import {
   TASK_CLAIMED,
   TASKLIST_SUBMITTED,
   TASK_COMPLETED,
-  UPDATE_PROJECT,
+  // UPDATE_PROJECT,
   TASK_VALIDATED,
   GET_STAKED_PROJECTS,
-  STAKED_PROJECTS_RECEIVED
+  STAKED_PROJECTS_RECEIVED,
+  GET_PROJECTS,
+  PROJECTS_RECEIVED
 
 } from '../constants/ProjectActionTypes'
 
@@ -33,6 +35,22 @@ export function projectProposed (receipt) {
   return {
     type: PROJECT_PROPOSED,
     receipt
+  }
+}
+
+export function getProjects (state, query) {
+  return {
+    type: GET_PROJECTS,
+    state,
+    query
+  }
+}
+
+export function projectsReceived (state, projects) {
+  return {
+    type: PROJECTS_RECEIVED,
+    state,
+    projects
   }
 }
 
@@ -142,13 +160,13 @@ export function taskCompleted (taskDetails) {
   }
 }
 
-export function updateProject (address, projObj) {
-  return {
-    type: UPDATE_PROJECT,
-    address,
-    projObj
-  }
-}
+// export function updateProject (address, projObj) {
+//   return {
+//     type: UPDATE_PROJECT,
+//     address,
+//     projObj
+//   }
+// }
 
 export function taskValidated (validationDetails) {
   return {
