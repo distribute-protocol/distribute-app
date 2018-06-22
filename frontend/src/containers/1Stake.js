@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import Sidebar from '../components/shared/Sidebar'
 import Project from './project/1Stake'
 import { push } from 'react-router-redux'
-import { eth, tr, rr, pr, P } from '../utilities/blockchain'
+import { eth, dt, tr, rr, pr, P } from '../utilities/blockchain'
 import * as _ from 'lodash'
 import { getProposedProjects } from '../actions/projectActions'
 
@@ -27,7 +27,18 @@ class Stake extends React.Component {
   }
 
   async getProposedProjects () {
-    this.props.getProposedProjects()
+    let accounts
+    eth.getAccounts(async (err, result) => {
+      if (!err) {
+        accounts = result
+        if (accounts.length) {
+          let currentPrice = (await dt.currentPrice()).toNumber()
+          this.props.getProposedProjects(currentPrice)
+          this.setState({currentPrice})
+          console.log(currentPrice)
+        }
+      }
+    })
   }
 
   async stakeTokens (address, val) {
@@ -72,19 +83,23 @@ class Stake extends React.Component {
   }
 
   render () {
-    const projects = this.props.projects.map((proj, i) => {
-      return <Project
-        key={i}
-        index={i}
-        address={proj.address}
-        stakeTokens={(val) => this.stakeTokens(proj.address, val)}
-        unstakeTokens={(val) => this.unstakeTokens(proj.address, val)}
-        stakeReputation={(val) => this.stakeReputation(proj.address, val)}
-        unstakeReputation={(val) => this.unstakeReputation(proj.address, val)}
-        checkStaked={() => this.checkStaked(proj.address)}
-        getProjectStatus={() => this.getProjectStatus(proj.address)}
-      />
-    })
+    const projects = typeof this.props.projects !== `undefined`
+      ? this.props.projects.map((proj, i) => {
+        return <Project
+          key={i}
+          index={i}
+          address={proj.address}
+          currentPrice={this.state.currentPrice}
+          project={proj}
+          stakeTokens={(val) => this.stakeTokens(proj.address, val)}
+          unstakeTokens={(val) => this.unstakeTokens(proj.address, val)}
+          stakeReputation={(val) => this.stakeReputation(proj.address, val)}
+          unstakeReputation={(val) => this.unstakeReputation(proj.address, val)}
+          checkStaked={() => this.checkStaked(proj.address)}
+          getProjectStatus={() => this.getProjectStatus(proj.address)}
+        />
+      })
+      : []
     return (
       <div>
         <Sidebar />
@@ -103,7 +118,7 @@ class Stake extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    projects: state.projects.projects
+    projects: state.projects.proposedProjects
   }
 }
 

@@ -1,45 +1,94 @@
-// const Web3 = require('web3')
-// const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
-// const TR = require('../../frontend/src/abi/TokenRegistry')
-//
-// const User = require('../models/user')
-// const Project = require('../models/project')
-//
-// module.exports = function () {
-//   // filter for project created
-//   const proposeProjectFilter = web3.eth.filter({
-//     fromBlock: 0,
-//     toBlock: 'latest',
-//     address: TR.TokenRegistryAddress,
-//     topics: [web3.sha3('ProjectCreated(address)')]
-//   })
-//
-//   proposeProjectFilter.watch(async (error, result) => {
-//     if (error) console.error(error)
-//     let eventParams = result.topics[1] // WHAT IS THIS DOOING
-//     let account = '0x' + eventParams.substr(-40)
-//
-//   //   User.findOne({account: account}).exec((err, userStatus) => {
-//   //     console.log(account)
-//   //     if (err) throw Error
-//   //     userStatus.tokenBalance -= 0.05 * projectCost
-//   //     userStatus.save(err => {
-//   //       if (err) throw Error
-//   //       console.log('project proposed by token holder')
-//   //     })
-//   //   })
-//   //
-//   //   Project.findOne({}).exec(err, projectStatus) => {   // where is projectStatus coming from?
-//   //     if (err) throw Err
-//   //     projectStatus.state = 1,
-//   //     projectStatus.weiCost += projectCost,
-//   //     projectStatus.proposer =  proposer,
-//   //     projectStatus._id = projectAddress,
-//   //     projectStatus.proposerStake = collateral,
-//   //     projectStatus.proposerType = 'token'
-//   //     projectStatus.save(err => {
-//   //       if (err) throw Error
-//   //       console.log('project details updated')
-//   //   })
-//   })
-// }
+const Web3 = require('web3')
+const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
+const mongoose = require('mongoose')
+const TR = require('../../frontend/src/abi/TokenRegistry')
+const Stake = require('../models/stake')
+const Project = require('../models/project')
+const User = require('../models/user')
+
+module.exports = function () {
+  // filter staked tokens
+  const stakedTokensFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: TR.TokenRegistryAddress,
+    topics: [web3.sha3('LogStakedTokens(address,uint256,address)')]
+  })
+  stakedTokensFilter.watch(async (error, result) => {
+    if (error) console.error(error)
+    let projectAddress = result.topics[1]
+    projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let tokensStaked = parseInt(eventParamArr[0], 16)
+    let account = eventParamArr[1]
+    account = '0x' + account.substr(-40)
+    User.findOne({account: account}).exec((err, userStatus) => {
+      if (err) console.error(error)
+      userStatus.tokenBalance -= tokensStaked
+      userStatus.save(err => {
+        if (err) console.error(error)
+      })
+      Project.findOne({address: projectAddress}).exec((error, doc) => {
+        if (error) console.error(error)
+        let StakeEvent = new Stake({
+          _id: new mongoose.Types.ObjectId(),
+          amount: tokensStaked,
+          projectId: doc.id,
+          type: 'token',
+          userId: userStatus.id
+        })
+        doc.tokenBalance += tokensStaked
+        doc.save((error, saved) => {
+          if (error) console.error(error)
+        })
+        StakeEvent.save((error, saved) => {
+          if (error) console.error(error)
+          console.log('tokens staked')
+        })
+      })
+    })
+  })
+  // filter unstaked tokens
+  const unstakedTokensFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: TR.TokenRegistryAddress,
+    topics: [web3.sha3('LogUnstakedTokens(address,uint256,address)')]
+  })
+  unstakedTokensFilter.watch(async (error, result) => {
+    if (error) console.error(error)
+    let projectAddress = result.topics[1]
+    projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let tokensUnstaked = parseInt(eventParamArr[0], 16)
+    let account = eventParamArr[1]
+    account = '0x' + account.substr(-40)
+    User.findOne({account: account}).exec((err, userStatus) => {
+      if (err) console.error(error)
+      userStatus.tokenBalance += tokensUnstaked
+      userStatus.save(err => {
+        if (err) console.error(error)
+      })
+      Project.findOne({address: projectAddress}).exec((error, projectStatus) => {
+        if (error) console.error(error)
+        let StakeEvent = new Stake({
+          _id: new mongoose.Types.ObjectId(),
+          amount: -1 * tokensUnstaked,
+          projectId: projectStatus.id,
+          type: 'token',
+          userId: userStatus.id
+        })
+        projectStatus.tokenBalance -= tokensUnstaked
+        projectStatus.save((error, saved) => {
+          if (error) console.error(error)
+        })
+        StakeEvent.save((error, saved) => {
+          if (error) console.error(error)
+          console.log('tokens unstaked')
+        })
+      })
+    })
+  })
+}

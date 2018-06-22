@@ -35,8 +35,11 @@ const typeDefs = `
     address: String
     id: ID
     ipfsHash: String
+    location: Location
+    name: String
     nextDeadline: String
     passThreshold: Int
+    photo: String
     proposer: User
     proposerType: Int
     reputationBalance: Int
@@ -44,13 +47,20 @@ const typeDefs = `
     stakedStatePeriod: Int
     stakes: [Stake]
     state: Int
+    summary: String
     tasks: [Task]
+    tokenBalance: Int
     turnoverTime: Int
     validateStatePeriod: Int
     voteCommitPeriod: Int
     voteRevealPeriod: Int
-    weiBal: Int,
-    weiCost: Int,
+    weiBal: Int
+    weiCost: String
+  }
+
+  type Location{
+    lat: Int
+    lng: Int
   }
 
   type Reputation {
@@ -94,7 +104,7 @@ const typeDefs = `
     name: String
     projects: [Project]
     reputationBalance: Int
-    repuationChanges: [Reputation]
+    reputationChanges: [Reputation]
     stakes: [Stake]
     tasks: [Task]
     tokenBalance: Int
@@ -134,6 +144,7 @@ const typeDefs = `
     project(address: String): Project
     allProjects: [Project]
     allProjectsinState(state: Int): [Project]
+    allStakes: [Stake]
     userStakes(account: String): [Stake]
     projectStakes(address: String): [Stake]
     task(address: String): Task
@@ -143,8 +154,9 @@ const typeDefs = `
     userValidations(account: String): [Validation]
     taskValidations(address: String): [Validation]
     userVotes(account: String): [Vote]
-    taskVotes(address: String): [Task]
+    taskVotes(address: String): [Vote]
   }
+
   input AvatarInput {
     uri: String
   }

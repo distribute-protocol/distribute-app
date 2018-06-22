@@ -7,10 +7,11 @@ const initialState = {
 export default function projectReducer (state = initialState, action) {
   switch (action.type) {
     case PROPOSED_PROJECTS_RECEIVED:
-      if (action.responseDetails.value === undefined) {
+      console.log(action.responseDetails)
+      if (!action.responseDetails.length) {
         return state
       } else {
-        return Object.assign({}, state, {projects: action.responseDetails.value})
+        return Object.assign({}, state, {proposedProjects: action.responseDetails})
       }
     default:
   }

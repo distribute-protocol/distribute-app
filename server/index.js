@@ -12,7 +12,7 @@ mongoose.Promise = global.Promise
 const dtLogs = require('./logs/distributeToken')
 const rrLogs = require('./logs/reputationRegistry')
 const prLogs = require('./logs/projectRegistry')
-const user = require('./routes/user')
+const trLogs = require('./logs/tokenRegistry')
 const schema = require('./data/schema')
 
 const app = express()
@@ -50,14 +50,12 @@ mongoose.connect(url, (err) => {
 dtLogs()
 rrLogs()
 prLogs()
+trLogs()
 
-// fire routes
-user(app, url)
-
-engine.listen({
-  port: app.get('port'),
-  expressApp: app
-})
-// app.listen(app.get('port'), () => {
-//   console.log(`app listening on port ${app.get('port')}`)
+// engine.listen({
+//   port: app.get('port'),
+//   expressApp: app
 // })
+app.listen(app.get('port'), () => {
+  console.log(`app listening on port ${app.get('port')}`)
+})
