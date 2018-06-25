@@ -132,10 +132,11 @@ export function setProjectTaskList (taskDetails) {
   }
 }
 
-export function setTaskSubmission (submissionDetails) {
+export function setTaskSubmission (submissionDetails, projectAddress) {
   return {
     type: SET_TASK_SUBMISSION,
-    submissionDetails
+    submissionDetails,
+    projectAddress
   }
 }
 
