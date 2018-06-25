@@ -64,30 +64,15 @@ class Add extends React.Component {
     })
   }
 
-  async setTaskSubmission () {
-    // let tasks = this.props.taskList
-    // let sumTotal = tasks.map(el => el.percentage).reduce((prev, curr) => {
-    //   return prev + curr
-    // }, 0)
-    // if (sumTotal !== 100) {
-    //   alert('percentages must add up to 100!')
-    // } else {
-    //   let taskArray = tasks.map(task => ({
-    //     description: task.description,
-    //     weiReward: task.percentage * this.state.weiCost / 100
-    //   }))
-    //   let taskHash = hashTasksArray(taskArray, this.state.weiCost)
-    //   eth.getAccounts(async (err, accounts) => {
-    //     if (!err) {
-    //       await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => { // change to epic
-    //         this.props.setTaskSubmission({
-    //           address: this.props.address,
-    //           submitter: accounts[0],
-    //           taskSubmission: taskArray
-    //         })
-    //       })
-    //     }
-    //   })
+  async setProjectTaskList () {
+
+  }
+  async setTaskSubmission (taskHash, address) {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        this.props.setTaskSubmission(taskHash, address, {from: accounts[0]})
+      }
+    })
   }
   // fast forward Ganache 1 week
   async fastForward () {
