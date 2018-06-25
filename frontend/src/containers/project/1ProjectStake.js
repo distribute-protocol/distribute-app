@@ -52,6 +52,7 @@ class StakeProject extends Component {
   }
 
   render () {
+    console.log(this.state.weiCost, this.props.currentPrice)
     return (
       <StakeComponent
         name={this.state.name}
@@ -59,8 +60,8 @@ class StakeProject extends Component {
         photo={this.state.photo}
         summary={this.state.summary}
         location={this.state.location}
-        cost={web3.fromWei(this.state.cost, 'ether')}
-        tokensLeft={parseInt(this.state.weiCost) / this.props.currentPrice}
+        cost={web3.fromWei(this.state.weiCost, 'ether')}
+        tokensLeft={(parseInt(this.state.weiCost) - parseInt(this.state.weiBal)) / this.props.currentPrice}
         reputationCost={this.state.reputationCost}
         totalReputationStaked={this.state.reputationBalance}
         date={moment(this.state.nextDeadline)}

@@ -1,7 +1,7 @@
 import { PROJECT_PROPOSED, PROJECTS_RECEIVED } from '../constants/ProjectActionTypes'
 
 const initialState = {
-  projects: []
+  projects: {}
 }
 // let receiptHandler = (tx, multiHash) => {
 //   let txReceipt = tx.receipt
