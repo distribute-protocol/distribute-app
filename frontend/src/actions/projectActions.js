@@ -125,10 +125,11 @@ export function stakedProjectsReceived (responseDetails) {
   }
 }
 
-export function setProjectTaskList (taskDetails) {
+export function setProjectTaskList (taskDetails, projectAddress) {
   return {
     type: SET_PROJECT_TASK_LIST,
-    taskDetails
+    taskDetails,
+    projectAddress
   }
 }
 
