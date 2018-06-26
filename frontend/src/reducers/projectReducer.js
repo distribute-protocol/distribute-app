@@ -19,7 +19,7 @@ export default function projectReducer (state = initialState, action) {
         return Object.assign({}, state, {[action.state]: object})
       }
     case PROJECT_PROPOSED:
-      console.log(action.receipt)
+      // console.log(action.receipt)
       return state
     default:
   }

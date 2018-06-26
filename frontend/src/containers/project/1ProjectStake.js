@@ -52,7 +52,6 @@ class StakeProject extends Component {
   }
 
   render () {
-    console.log(this.state.weiCost, this.props.currentPrice)
     return (
       <StakeComponent
         name={this.state.name}

@@ -80,6 +80,7 @@ module.exports = function () {
             doc.save((error, saved) => {
               if (error) console.error(error)
               console.log('project details updated')
+              projectDetailsFilter.stopWatching()
             })
           }
         })

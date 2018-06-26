@@ -25,6 +25,7 @@ class Status extends Component {
     if (_.isEmpty(this.props.user)) {
     } else {}
     this.getNetworkStatus()
+    this.getPriceData()
   }
 
   componentWillReceiveProps () {
