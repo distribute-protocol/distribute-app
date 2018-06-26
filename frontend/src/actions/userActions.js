@@ -1,10 +1,16 @@
-import { LOGIN_USER, LOGGED_IN_USER, LOGOUT_USER, REGISTER_USER, GET_USER_STATUS, USER_STATUS_RECEIVED } from '../constants/UserActionTypes'
+import { LOGIN_USER, LOGGED_IN_USER, LOGOUT_USER, REGISTER_USER, REGISTERED_USER, GET_USER_STATUS, USER_STATUS_RECEIVED } from '../constants/UserActionTypes'
 
 export function registerUser (credentials, account) {
   return {
     type: REGISTER_USER,
     credentials,
     account
+  }
+}
+
+export function registeredUser (credentials, account) {
+  return {
+    type: REGISTERED_USER
   }
 }
 

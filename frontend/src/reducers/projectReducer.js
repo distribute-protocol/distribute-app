@@ -1,18 +1,26 @@
-import { PROPOSED_PROJECTS_RECEIVED } from '../constants/ProjectActionTypes'
+import { PROJECT_PROPOSED, PROJECTS_RECEIVED } from '../constants/ProjectActionTypes'
 
 const initialState = {
   projects: []
 }
-
+// let receiptHandler = (tx, multiHash) => {
+//   let txReceipt = tx.receipt
+//   let projectAddress = txReceipt.logs[0].address
+//   this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress, ipfsHash: `https://ipfs.io/ipfs/${multiHash}`}))  // this is calling the reducer
+//   this.setState({cost: 0, photo: false, imageUrl: false, coords: 0, location: ''})
+// }
 export default function projectReducer (state = initialState, action) {
   switch (action.type) {
-    case PROPOSED_PROJECTS_RECEIVED:
-      console.log(action.responseDetails)
-      if (!action.responseDetails.length) {
+    case PROJECTS_RECEIVED:
+      if (!action.projects.length) {
         return state
       } else {
-        return Object.assign({}, state, {proposedProjects: action.responseDetails})
+        var object = action.projects.reduce((obj, item) => (obj[item.address] = item, obj), {})
+        return Object.assign({}, state, {[action.state]: object})
       }
+    case PROJECT_PROPOSED:
+      console.log(action.receipt)
+      return state
     default:
   }
   return state

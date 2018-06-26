@@ -1,46 +1,74 @@
-/* global TextDecoder */
-
-import { GET_PROPOSED_PROJECTS } from '../constants/ProjectActionTypes'
-import { proposedProjectsReceived } from '../actions/projectActions'
-import { map, mergeMap, concatMap } from 'rxjs/operators'
-import { client } from '../index'
+import { GET_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS } from '../constants/ProjectActionTypes'
+import { projectsReceived, projectProposed, projectStaked, projectUnstaked } from '../actions/projectActions'
+import { map, mergeMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
-import gql from 'graphql-tag'
+import { push } from 'react-router-redux'
+import { client } from '../index'
+import { merge } from 'rxjs/observable/merge'
+import { rr, tr, pr } from '../utilities/blockchain'
+// import gql from 'graphql-tag'
 
-export const getProposedProjectsEpic = action$ => {
-  let price
-  return action$.ofType(GET_PROPOSED_PROJECTS).pipe(
+const getProposedProjectsEpic = action$ => {
+  let state
+  return action$.ofType(GET_PROJECTS).pipe(
     mergeMap(action => {
-      price = action.price
-      return client.query({query: gql`
-      { allProjectsinState(state: 1){
-          address,
-          id,
-          ipfsHash,
-          nextDeadline,
-          reputationBalance,
-          reputationCost,
-          tokenBalance,
-          weiBal,
-          weiCost
-        }
-      }`}
+      state = action.state
+      return client.query({query: action.query}
       )
     }),
-    map(result => proposedProjectsReceived(result.data.allProjectsinState))
-    // map(proj =>
-    //   ipfs.object.get(proj.ipfsHash, (err, node) => {
-    //     if (err) {
-    //       throw err
-    //     }
-    //     let dataString = new TextDecoder('utf-8').decode(node.toJSON().data)
-    //     proj = Object.assign({}, proj, JSON.parse(dataString), {tokensLeft: Math.ceil((proj.weiCost - proj.weiBal) / price)})
-    //     return proj
-    //   })
-    // ),
-    // map(results => console.log('Hi', results))
+    map(result => projectsReceived(state, result.data.allProjectsinState))
   )
 }
 
-// getproposedProjectReceivedEpic
-// process the ipfshash (right now happening in containers/project/1Stake)
+const proposeProject = action$ =>
+  action$.ofType(PROPOSE_PROJECT).pipe(
+    mergeMap(action =>
+      action.collateralType === 'tokens'
+      ? Observable.from(tr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
+      : Observable.from(rr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
+    ),
+    mergeMap(result => Observable.concat(
+      Observable.of(projectProposed(result)),
+      Observable.of(push('/stake'))
+    ))
+  )
+
+const stakeProject = action$ => {
+  let collateralType
+  return action$.ofType(STAKE_PROJECT).pipe(
+    mergeMap(action => {
+      collateralType = action.collateralType
+      return action.collateralType === 'tokens'
+      ? Observable.from(tr.stakeTokens(action.projectAddress, action.value, action.txObj))
+      : Observable.from(rr.stakeReputation(action.projectAddress, action.value, action.txObj))
+    }),
+    map(result => projectStaked(collateralType, result))
+  )
+}
+
+const unstakeProject = action$ => {
+  let collateralType
+  return action$.ofType(UNSTAKE_PROJECT).pipe(
+    mergeMap(action => {
+      collateralType = action.collateralType
+      return action.collateralType === 'tokens'
+      ? Observable.from(tr.unstakeTokens(action.projectAddress, action.value, action.txObj))
+      : Observable.from(rr.unstakeReputation(action.projectAddress, action.value, action.txObj))
+    }),
+    map(result => projectUnstaked(collateralType, result))
+  )
+}
+
+const checkStakedStatus = action$ =>
+  action$.ofType(CHECK_STAKED_STATUS).pipe(
+    mergeMap(action => pr.checkStaked(action.projectAddress, action.txObj)),
+    // map(result =>
+  )
+
+export default (action$, store) => merge(
+  getProposedProjectsEpic(action$, store),
+  proposeProject(action$, store),
+  stakeProject(action$, store),
+  unstakeProject(action$, store),
+  checkStakedStatus(action$, store)
+)

@@ -2,12 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import ClaimComponent from '../../components/project/3Claim'
 import { Button } from 'antd'
-import {eth, web3, rr, pr, P} from '../../utilities/blockchain'
+import {eth, web3, rr, pr} from '../../utilities/blockchain'
 import { hashTasksArray, hashTasks } from '../../utilities/hashing'
 import { taskClaimed, taskListSubmitted, taskCompleted } from '../../actions/projectActions'
 import moment from 'moment'
-import ipfsAPI from 'ipfs-api'
-let ipfs = ipfsAPI()
 const ButtonGroup = Button.Group
 
 class ClaimProject extends React.Component {
@@ -24,37 +22,7 @@ class ClaimProject extends React.Component {
   }
 // let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
   async getProjectStatus () {
-    let accounts
-    let p = P.at(this.props.address)
-    eth.getAccounts(async (err, result) => {
-      if (!err) {
-        accounts = result
-        if (accounts.length) {
-          let weiCost = (await p.weiCost()).toNumber()
-          let reputationCost = (await p.reputationCost()).toNumber()
-          let ipfsHash = web3.toAscii(await p.ipfsHash())
-          let nextDeadline = (await p.nextDeadline()) * 1000
-          let projectState = (await p.state())
-          let projObj = {
-            weiCost,
-            reputationCost,
-            ipfsHash,
-            nextDeadline,
-            state: projectState,
-            project: p,
-            taskList: this.props.project.taskList
-          }
-          ipfs.object.get(ipfsHash, (err, node) => {
-            if (err) {
-              throw err
-            }
-            let dataString = new TextDecoder('utf-8').decode(node.toJSON().data)
-            projObj = Object.assign({}, projObj, JSON.parse(dataString))
-            this.setState(projObj)
-          })
-        }
-      }
-    })
+    this.setState(this.props.project)
   }
 
   async submitWinningHashList () {
