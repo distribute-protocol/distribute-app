@@ -8,6 +8,7 @@ import {
   UNSTAKE_PROJECT,
   PROJECT_UNSTAKED,
   CHECK_STAKED_STATUS,
+  CHECK_ACTIVE_STATUS,
   SET_PROJECT_TASK_LIST,
   SET_TASK_SUBMISSION,
   TASK_CLAIMED,
@@ -18,7 +19,8 @@ import {
   GET_STAKED_PROJECTS,
   STAKED_PROJECTS_RECEIVED,
   GET_PROJECTS,
-  PROJECTS_RECEIVED
+  PROJECTS_RECEIVED,
+  STATUS_CHECKED
 
 } from '../constants/ProjectActionTypes'
 
@@ -111,6 +113,13 @@ export function checkStakedStatus (projectAddress, txObj) {
   }
 }
 
+export function statusChecked (state, receipt) {
+  return {
+    type: STATUS_CHECKED,
+    receipt
+  }
+}
+
 export function getStakedProjects (price) {
   return {
     type: GET_STAKED_PROJECTS,
@@ -122,6 +131,14 @@ export function stakedProjectsReceived (responseDetails) {
   return {
     type: STAKED_PROJECTS_RECEIVED,
     responseDetails
+  }
+}
+
+export function checkActiveStatus (projectAddress, txObj) {
+  return {
+    type: CHECK_ACTIVE_STATUS,
+    projectAddress,
+    txObj
   }
 }
 

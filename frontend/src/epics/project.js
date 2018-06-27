@@ -1,5 +1,5 @@
 import { GET_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS, CHECK_ACTIVE_STATUS, SET_TASK_SUBMISSION, SET_PROJECT_TASK_LIST } from '../constants/ProjectActionTypes'
-import { projectsReceived, projectProposed, projectStaked, projectUnstaked } from '../actions/projectActions'
+import { projectsReceived, projectProposed, projectStaked, projectUnstaked, taskListSubmitted, statusChecked } from '../actions/projectActions'
 import { map, mergeMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
@@ -24,8 +24,8 @@ const proposeProject = action$ =>
   action$.ofType(PROPOSE_PROJECT).pipe(
     mergeMap(action =>
       action.collateralType === 'tokens'
-      ? Observable.from(tr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
-      : Observable.from(rr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
+        ? Observable.from(tr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
+        : Observable.from(rr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
     ),
     mergeMap(result => Observable.concat(
       Observable.of(projectProposed(result)),
@@ -62,7 +62,7 @@ const unstakeProject = action$ => {
 const checkStakedStatus = action$ =>
   action$.ofType(CHECK_STAKED_STATUS).pipe(
     mergeMap(action => pr.checkStaked(action.projectAddress, action.txObj)),
-    // map(result =>
+    map(result => statusChecked(result))
   )
 
 const getStakedProjectsEpic = action$ => {
@@ -86,15 +86,20 @@ const setTaskList = action$ => {
 }
 
 const setTaskSubmission = action$ => {
+  let taskDetails
   action$.ofType(SET_TASK_SUBMISSION).pipe(
-    mergeMap(action => { pr.addTaskHash(action.submissionDetails, action.projectAddress) }),
-    map(result => setTaskSubmission(result.projectAddress, result.taskArray))
+    mergeMap(action => {
+      taskDetails = action.submissionDetails
+      Observable.from(pr.addTaskHash(action.submissionDetails, action.projectAddress))
+    }),
+    map(result => taskListSubmitted(taskDetails))
   )
 }
 
 const checkActiveStatus = action$ =>
   action$.ofType(CHECK_ACTIVE_STATUS).pipe(
     mergeMap(action => pr.checkActive(action.projectAddress, action.txObj)),
+    map(result => statusChecked(result))
   )
 
 export default (action$, store) => merge(

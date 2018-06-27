@@ -6,7 +6,7 @@ import { push } from 'react-router-redux'
 import { eth } from '../utilities/blockchain'
 import Project from './project/2Add'
 import fastforward from '../utilities/fastforward'
-import { getProjects, checkActiveStatus, setTaskSubmission } from '../actions/projectActions'
+import { getProjects, checkActiveStatus, setTaskSubmission, setProjectTaskList } from '../actions/projectActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -64,9 +64,14 @@ class Add extends React.Component {
     })
   }
 
-  async setProjectTaskList () {
-
+  async setProjectTaskList (taskList, address) {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        this.props.setTaskSubmission(taskList, address, {from: accounts[0]})
+      }
+    })
   }
+
   async setTaskSubmission (taskHash, address) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
@@ -120,8 +125,10 @@ const mapDispatchToProps = (dispatch) => {
     reroute: () => dispatch(push('/')),
     getProjects: () => dispatch(getProjects(2, projQuery)),
     checkActiveStatus: (projectAddress, txObj) => dispatch(checkActiveStatus(projectAddress, txObj)),
-    setTaskSubmission: (submissionDetails) => dispatch(setTaskSubmission(submissionDetails))
+    setTaskSubmission: (submissionDetails, projectAddress) => dispatch(setTaskSubmission(submissionDetails, projectAddress)),
+    setProjectTaskList: (taskDetails, projectAddress) => dispatch(setProjectTaskList(taskDetails, projectAddress))
   }
 }
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(Add)
