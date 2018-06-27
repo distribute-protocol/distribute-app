@@ -6,7 +6,7 @@ import AddComponent from '../../components/project/2Add'
 import {eth, web3, pl} from '../../utilities/blockchain'
 import { hashTasksArray } from '../../utilities/hashing'
 import update from 'immutability-helper'
-import { setProjectTaskList, setTaskSubmission, checkActive } from '../../actions/projectActions'
+import { setProjectTaskList, setTaskSubmission, checkActiveStatus } from '../../actions/projectActions'
 import moment from 'moment'
 import * as _ from 'lodash'
 
@@ -123,6 +123,7 @@ class AddProject extends React.Component {
       }))
       let taskHash = hashTasksArray(taskArray, this.state.weiCost)
       this.props.setTaskSubmission(taskHash, this.props.address)
+    }
   }
 
   checkActive () {
@@ -194,8 +195,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setProjectTaskList: (taskDetails) => dispatch(setProjectTaskList(taskDetails)),
-    setTaskSubmission: (submissionDetails) => dispatch(setTaskSubmission(submissionDetails, projectAddress)),
+    setProjectTaskList: (taskDetails, projectAddress) => dispatch(setProjectTaskList(taskDetails, projectAddress)),
+    setTaskSubmission: (submissionDetails, projectAddress) => dispatch(setTaskSubmission(submissionDetails, projectAddress)),
     checkActiveStatus: (projectAddress, txObj) => dispatch(checkActiveStatus(projectAddress, txObj))
   }
 }
