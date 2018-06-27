@@ -20,7 +20,8 @@ import {
   STAKED_PROJECTS_RECEIVED,
   GET_PROJECTS,
   PROJECTS_RECEIVED,
-  STATUS_CHECKED
+  STATUS_CHECKED,
+  HASH_SUBMITTED
 
 } from '../constants/ProjectActionTypes'
 
@@ -179,6 +180,12 @@ export function taskCompleted (taskDetails) {
   }
 }
 
+export function taskHashSubmitted (submissionDetails) {
+  return {
+    type: HASH_SUBMITTED,
+    submissionDetails
+  }
+}
 // export function updateProject (address, projObj) {
 //   return {
 //     type: UPDATE_PROJECT,
