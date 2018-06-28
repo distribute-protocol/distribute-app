@@ -78,6 +78,7 @@ class Stake extends React.Component {
   }
 
   checkStakedStatus (address) {
+    console.log('here')
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         this.props.checkStakedStatus(address, {from: accounts[0]})

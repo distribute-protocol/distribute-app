@@ -48,7 +48,8 @@ class StakeProject extends Component {
   }
 
   checkStaked () {
-    this.props.checkStakedStatus()
+        console.log('goob')
+    this.props.checkStaked()
   }
 
   render () {
@@ -76,7 +77,7 @@ class StakeProject extends Component {
         }
         tokens={this.tokens}
         reputation={this.reputation}
-        checkStaked={this.checkStakedStatus}
+        checkStaked={this.checkStaked}
       />
     )
   }

@@ -173,7 +173,8 @@ const typeDefs = `
   }
 
   input TaskInput {
-    description: string
+    description: String
+    address: String
   }
 
   type Mutation {
