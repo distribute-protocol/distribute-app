@@ -12,7 +12,6 @@ mongoose.Promise = global.Promise
 const dtLogs = require('./logs/distributeToken')
 const rrLogs = require('./logs/reputationRegistry')
 const prLogs = require('./logs/projectRegistry')
-const plLogs = require('./logs/projectLibrary')
 const trLogs = require('./logs/tokenRegistry')
 const schema = require('./data/schema')
 
@@ -51,7 +50,6 @@ mongoose.connect(url, (err) => {
 dtLogs()
 rrLogs()
 prLogs()
-plLogs()
 trLogs()
 
 engine.listen({
