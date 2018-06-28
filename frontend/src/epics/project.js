@@ -78,24 +78,29 @@ const getStakedProjectsEpic = action$ => {
 }
 
 const setTaskList = action$ => {
+  let taskDetails
   return action$.ofType(SET_PROJECT_TASK_LIST).pipe(
-    mergeMap(action =>
-      console.log(action)
+    mergeMap(action => {
+      taskDetails = action.taskDetails
+      client.mutate({ ... })
+    }
+
       // run a mutation
       // client.mutation
       // graphql data is result.data
     )
+    map(result => taskListSubmitted(taskDetails))
   )
 }
 
 const setTaskSubmission = action$ => {
-  let taskDetails
+  let submissionDetails
   return action$.ofType(SET_TASK_SUBMISSION).pipe(
     mergeMap(action => {
       taskDetails = action.submissionDetails
       return Observable.from(pr.addTaskHash(action.submissionDetails, action.projectAddress))
     }),
-    map(result => taskHashSubmitted(taskDetails))
+    map(result => taskHashSubmitted(submissionDetails))
   )
 }
 
