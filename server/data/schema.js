@@ -172,8 +172,13 @@ const typeDefs = `
     pushToken: String
   }
 
+  input TaskInput {
+    description: string
+  }
+
   type Mutation {
     addUser(input: CredentialInput, account: String): User
+    addTask(input: TaskInput): Task
   }
 `
 // Put together a schema

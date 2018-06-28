@@ -1,5 +1,5 @@
 import { GET_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS, CHECK_ACTIVE_STATUS, SET_TASK_SUBMISSION, SET_PROJECT_TASK_LIST } from '../constants/ProjectActionTypes'
-import { projectsReceived, projectProposed, projectStaked, projectUnstaked, taskHashSubmitted, statusChecked } from '../actions/projectActions'
+import { projectsReceived, projectProposed, projectStaked, projectUnstaked, taskHashSubmitted, statusChecked, taskListSubmitted } from '../actions/projectActions'
 import { map, mergeMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
@@ -82,14 +82,9 @@ const setTaskList = action$ => {
   return action$.ofType(SET_PROJECT_TASK_LIST).pipe(
     mergeMap(action => {
       taskDetails = action.taskDetails
-      client.mutate({ ... })
-    }
-
-      // run a mutation
-      // client.mutation
-      // graphql data is result.data
-    )
-    map(result => taskListSubmitted(taskDetails))
+      return client.mutate({mutation: action.mutate})
+    }),
+    map(result => taskListSubmitted(result.data.taskDetails))
   )
 }
 
@@ -97,7 +92,7 @@ const setTaskSubmission = action$ => {
   let submissionDetails
   return action$.ofType(SET_TASK_SUBMISSION).pipe(
     mergeMap(action => {
-      taskDetails = action.submissionDetails
+      submissionDetails = action.submissionDetails
       return Observable.from(pr.addTaskHash(action.submissionDetails, action.projectAddress))
     }),
     map(result => taskHashSubmitted(submissionDetails))
