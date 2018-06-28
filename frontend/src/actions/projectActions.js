@@ -20,7 +20,7 @@ import {
   STAKED_PROJECTS_RECEIVED,
   GET_PROJECTS,
   PROJECTS_RECEIVED,
-  STATUS_CHECKED,
+  STAKED_STATUS_CHECKED,
   HASH_SUBMITTED
 
 } from '../constants/ProjectActionTypes'
@@ -114,9 +114,9 @@ export function checkStakedStatus (projectAddress, txObj) {
   }
 }
 
-export function statusChecked (state, receipt) {
+export function stakedStatusChecked (receipt) {
   return {
-    type: STATUS_CHECKED,
+    type: STAKED_STATUS_CHECKED,
     receipt
   }
 }

@@ -196,7 +196,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     setProjectTaskList: (taskDetails, projectAddress) => dispatch(setProjectTaskList(taskDetails, projectAddress)),
-    setTaskSubmission: (submissionDetails, projectAddress) => dispatch(setTaskSubmission(submissionDetails, projectAddress)),
+    setTaskSubmission: (submissionDetails, projectAddress) => dispatch(setTaskSubmission(submissionDetails)),
     checkActiveStatus: (projectAddress, txObj) => dispatch(checkActiveStatus(projectAddress, txObj))
   }
 }
