@@ -48,7 +48,6 @@ class StakeProject extends Component {
   }
 
   checkStaked () {
-        console.log('goob')
     this.props.checkStaked()
   }
 

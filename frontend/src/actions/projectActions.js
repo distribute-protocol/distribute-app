@@ -21,6 +21,7 @@ import {
   GET_PROJECTS,
   PROJECTS_RECEIVED,
   STAKED_STATUS_CHECKED,
+  ACTIVE_STATUS_CHECKED,
   HASH_SUBMITTED
 
 } from '../constants/ProjectActionTypes'
@@ -140,6 +141,13 @@ export function checkActiveStatus (projectAddress, txObj) {
     type: CHECK_ACTIVE_STATUS,
     projectAddress,
     txObj
+  }
+}
+
+export function activeStatusChecked (receipt) {
+  return {
+    type: ACTIVE_STATUS_CHECKED,
+    receipt
   }
 }
 

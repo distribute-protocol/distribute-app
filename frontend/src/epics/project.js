@@ -1,12 +1,12 @@
 import { GET_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS, CHECK_ACTIVE_STATUS, SET_TASK_SUBMISSION, SET_PROJECT_TASK_LIST } from '../constants/ProjectActionTypes'
-import { projectsReceived, projectProposed, projectStaked, projectUnstaked, taskHashSubmitted, stakedStatusChecked, taskListSubmitted } from '../actions/projectActions'
+import { projectsReceived, projectProposed, projectStaked, projectUnstaked, taskHashSubmitted, stakedStatusChecked, activeStatusChecked, taskListSubmitted } from '../actions/projectActions'
 import { map, mergeMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
 import { client } from '../index'
 import { merge } from 'rxjs/observable/merge'
 import { rr, tr, pr } from '../utilities/blockchain'
-import gql from 'graphql-tag'
+// import gql from 'graphql-tag'
 
 const getProposedProjectsEpic = action$ => {
   let state
@@ -78,42 +78,18 @@ const getStakedProjectsEpic = action$ => {
 }
 
 const setTaskList = action$ => {
-  // let address
+  let taskDetails
+  let address
   return action$.ofType(SET_PROJECT_TASK_LIST).pipe(
     mergeMap(action => {
-      return console.log('hi')
-    }
-      // add to project through proj id, add task list key to model to update
-      // any new object is only created through logs
-//       let mutation = gql`
-//
-//         mutation addTaskList($input: TaskInput, $address: String!) {
-//           addTask(input: $input, address: $address) {
-//             id
-//           }
-//         }
-//       `
-//       return client.mutate({
-//         mutation: mutation,
-//         variables: {
-//           input: action.taskInput,
-//           address: action.address
-//         }
-//       })
-//     }),
-//     map(result => Observable.concat(
-//       Observable.of(taskHashSubmitted(result)),
-//       Observable.of(push('/add'))
-//     ))
-    ))
+      address = action.projectAddress
+      taskDetails = action.taskDetails
+      return client.query({query: action.query}
+      )
+    }),
+    map(result => taskListSubmitted(taskDetails, address, result.data))
+  )
 }
-// //       taskDetails = action.taskDetails
-// //       return client.mutate({mutation: action.mutate}
-// //       )
-// //     }),
-// //     map(result => taskListSubmitted(taskDetails, result))
-// //   )
-// // }
 
 const setTaskSubmission = action$ => {
   let submissionDetails
@@ -129,7 +105,7 @@ const setTaskSubmission = action$ => {
 const checkActiveStatus = action$ =>
   action$.ofType(CHECK_ACTIVE_STATUS).pipe(
     mergeMap(action => pr.checkActive(action.projectAddress, action.txObj)),
-    map(result => stakedStatusChecked(result))
+    map(result => activeStatusChecked(result))
   )
 
 export default (action$, store) => merge(
@@ -143,3 +119,14 @@ export default (action$, store) => merge(
   setTaskSubmission(action$, store),
   setTaskList(action$, store)
 )
+
+// address = action.projectAddress
+// taskDetails = action.taskDetails
+// return Project.findOne({address: address}).exec((error, projectStatus) => {
+//   if (error) console.error(error)
+//   projectStatus.taskList.push(taskDetails) // make sure this isn't rxjs push
+//   console.log(projectStatus.taskList)
+//   return projectStatus.save(error => {
+//     if (error) console.error(error)
+//   })
+// })
