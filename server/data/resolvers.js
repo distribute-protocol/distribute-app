@@ -107,25 +107,28 @@ const resolvers = {
         })
         return user
       })
-    },
-    addTask: (obj, args) =>{
-      // individual tasks added by the logs
-      //let taskInputObj = Object.assign({_id: new mongoose.Types.ObjectId()}, args.input)
-      // project.findOne -- use address to find proj id
-      let taskObj = new Task(Object.assign({}, {
-        _id: new mongoose.Types.ObjectId(),
-        description: args.input.description,
-        address:
-      })
-      taskObj.save((err, task) => {
-        assert.equal(err, null)
-        let taskInput = new TaskInput(Object.assign({taskId: task.id}, taskInputObj))
-        taskInput.save((err, taskInput) => {
-            assert.equal(err,null)
-        })
-      })
-      return task
-    })
+    }
+    //   addTask: (obj, args) => {
+    //     // individual tasks added by the logs
+    //     // let taskInputObj = Object.assign({_id: new mongoose.Types.ObjectId()}, args.input)
+    //     // project.findOne -- use address to find proj id
+    //     Project.findOne({address: projectAddress}).exec((error, projectStatus) => {
+    //       if (error) console.error(error)
+    //     //   let taskObj = new Task(Object.assign({}, {
+    //     //   _id: new mongoose.Types.ObjectId(),
+    //     //   description: args.input.description,
+    //     //   project:
+    //     //   })
+    //     })
+    //     // taskObj.save((err, task) => {
+    //     //   assert.equal(err, null)
+    //     //   let taskInput = new TaskInput(Object.assign({taskId: task.id}, taskInputObj))
+    //     //   taskInput.save((err, taskInput) => {
+    //     //       assert.equal(err,null)
+    //     //   })
+    //     // })
+    //     return task
+    //   }
   }
 }
 
