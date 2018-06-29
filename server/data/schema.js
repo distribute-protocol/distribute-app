@@ -156,7 +156,7 @@ const typeDefs = `
     taskValidations(address: String): [Validation]
     userVotes(account: String): [Vote]
     taskVotes(address: String): [Vote]
-    taskListInput(address: String): [Project]
+    taskListInput(address: String): Project
   }
 
   input AvatarInput {
