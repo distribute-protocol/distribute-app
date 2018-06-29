@@ -54,13 +54,13 @@ const typeDefs = `
     validateStatePeriod: Int
     voteCommitPeriod: Int
     voteRevealPeriod: Int
-    weiBal: Int
+    weiBal: String
     weiCost: String
   }
 
   type Location{
-    lat: Int
-    lng: Int
+    lat: Float
+    lng: Float
   }
 
   type Reputation {

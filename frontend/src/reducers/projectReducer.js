@@ -1,7 +1,7 @@
 import { PROJECT_PROPOSED, PROJECTS_RECEIVED } from '../constants/ProjectActionTypes'
 
 const initialState = {
-  projects: []
+  projects: {}
 }
 // let receiptHandler = (tx, multiHash) => {
 //   let txReceipt = tx.receipt
@@ -19,7 +19,7 @@ export default function projectReducer (state = initialState, action) {
         return Object.assign({}, state, {[action.state]: object})
       }
     case PROJECT_PROPOSED:
-      console.log(action.receipt)
+      // console.log(action.receipt)
       return state
     default:
   }
