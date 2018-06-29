@@ -59,8 +59,8 @@ const typeDefs = `
   }
 
   type Location{
-    lat: Int
-    lng: Int
+    lat: Float
+    lng: Float
   }
 
   type Reputation {
