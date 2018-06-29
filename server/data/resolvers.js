@@ -82,7 +82,8 @@ const resolvers = {
     userValidations: (account) => [{}],
     taskValidations: (address) => [{}],
     userVotes: (account) => [{}],
-    taskVotes: (address) => [{}]
+    taskVotes: (address) => [{}],
+    taskListInput: (_, args) => Project.findOne({address: args.address}).then(project => Object.assign({taskList: args.taskDetails}))
   },
   Mutation: {
     addUser: (obj, args) => {

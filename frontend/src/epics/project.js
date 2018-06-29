@@ -1,16 +1,12 @@
 import { GET_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS, CHECK_ACTIVE_STATUS, SET_TASK_SUBMISSION, SET_PROJECT_TASK_LIST } from '../constants/ProjectActionTypes'
-<<<<<<< HEAD
 import { projectsReceived, projectProposed, projectStaked, projectUnstaked, taskHashSubmitted, stakedStatusChecked, activeStatusChecked, taskListSubmitted } from '../actions/projectActions'
-=======
-import { projectsReceived, projectProposed, projectStaked, projectUnstaked, taskHashSubmitted, stakedStatusChecked, taskListSubmitted } from '../actions/projectActions'
->>>>>>> e361c2b66739b00a45507e6b97a4505976449d22
 import { map, mergeMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
 import { client } from '../index'
 import { merge } from 'rxjs/observable/merge'
 import { rr, tr, pr } from '../utilities/blockchain'
-import gql from 'graphql-tag'
+//import gql from 'graphql-tag'
 
 const getProposedProjectsEpic = action$ => {
   let state
