@@ -49,6 +49,7 @@ const typeDefs = `
     state: Int
     summary: String
     tasks: [Task]
+    taskList: [String]
     tokenBalance: Int
     turnoverTime: Int
     validateStatePeriod: Int
