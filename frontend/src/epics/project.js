@@ -82,7 +82,6 @@ const getStakedProjectsEpic = action$ => {
 }
 
 const setTaskList = action$ => {
-<<<<<<< HEAD
   let taskDetails
   let address
   return action$.ofType(SET_PROJECT_TASK_LIST).pipe(
@@ -95,44 +94,6 @@ const setTaskList = action$ => {
     map(result => taskListSubmitted(taskDetails, address, result.data))
   )
 }
-=======
-  // let address
-  return action$.ofType(SET_PROJECT_TASK_LIST).pipe(
-    mergeMap(action => {
-      return console.log('hi')
-    }
-      // add to project through proj id, add task list key to model to update
-      // any new object is only created through logs
-//       let mutation = gql`
-//
-//         mutation addTaskList($input: TaskInput, $address: String!) {
-//           addTask(input: $input, address: $address) {
-//             id
-//           }
-//         }
-//       `
-//       return client.mutate({
-//         mutation: mutation,
-//         variables: {
-//           input: action.taskInput,
-//           address: action.address
-//         }
-//       })
-//     }),
-//     map(result => Observable.concat(
-//       Observable.of(taskHashSubmitted(result)),
-//       Observable.of(push('/add'))
-//     ))
-    ))
-}
-// //       taskDetails = action.taskDetails
-// //       return client.mutate({mutation: action.mutate}
-// //       )
-// //     }),
-// //     map(result => taskListSubmitted(taskDetails, result))
-// //   )
-// // }
->>>>>>> e361c2b66739b00a45507e6b97a4505976449d22
 
 const setTaskSubmission = action$ => {
   let submissionDetails
@@ -148,11 +109,7 @@ const setTaskSubmission = action$ => {
 const checkActiveStatus = action$ =>
   action$.ofType(CHECK_ACTIVE_STATUS).pipe(
     mergeMap(action => pr.checkActive(action.projectAddress, action.txObj)),
-<<<<<<< HEAD
     map(result => activeStatusChecked(result))
-=======
-    map(result => stakedStatusChecked(result))
->>>>>>> e361c2b66739b00a45507e6b97a4505976449d22
   )
 
 export default (action$, store) => merge(
