@@ -64,10 +64,10 @@ class Add extends React.Component {
     })
   }
 
-  async setProjectTaskList (taskList, address) {
+  async setProjectTaskList (taskDetails, address) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
-        this.props.setProjectTaskList(taskList, address, {from: accounts[0]})
+        this.props.setProjectTaskList(taskDetails, address, {from: accounts[0]})
       }
     })
   }
