@@ -82,8 +82,7 @@ const resolvers = {
     userValidations: (account) => [{}],
     taskValidations: (address) => [{}],
     userVotes: (account) => [{}],
-    taskVotes: (address) => [{}],
-    taskListInput: (_, args) => Project.findOne({address: args.address}).then(project => Object.assign({taskList: args.taskDetails}))
+    taskVotes: (address) => [{}]
   },
   Mutation: {
     addUser: (obj, args) => {
@@ -108,7 +107,21 @@ const resolvers = {
         })
         return user
       })
+    },
+    taskListInput: (obj, args) => {
+      Project.findOne({address: args.address}).exec((error, projectStatus) => {
+        if (error) console.error(error)
+        if (typeof projectStatus !== 'undefined') {
+          projectStatus.taskList = args.taskList // parse and unparse on frontend
+          projectStatus.save((error, doc) => {
+            if (error) console.error(error)
+            return projectStatus
+          })
+        }
+      })
     }
+    // taskListInput: (_, args) => Project.findOne({address: args.address}).then(project => Object.assign({taskList: args.taskDetails}))
+    // need to save it
     //   addTask: (obj, args) => {
     //     // individual tasks added by the logs
     //     // let taskInputObj = Object.assign({_id: new mongoose.Types.ObjectId()}, args.input)
