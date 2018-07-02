@@ -143,6 +143,15 @@ const resolvers = {
     //     // })
     //     return task
     //   }
+    addProject: (obj, args) => {
+      let userObj = new User({
+        _id: new mongoose.Types.ObjectId(),
+        account: args.account,
+        name: args.input.name,
+        tokenBalance: 0,
+        reputationBalance: 0
+      })
+    }
   }
 }
 

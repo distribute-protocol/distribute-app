@@ -55,7 +55,7 @@ const typeDefs = `
     validateStatePeriod: Int
     voteCommitPeriod: Int
     voteRevealPeriod: Int
-    weiBal: Int
+    weiBal: String
     weiCost: String
   }
 

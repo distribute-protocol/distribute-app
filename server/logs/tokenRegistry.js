@@ -13,7 +13,7 @@ module.exports = function () {
     fromBlock: 0,
     toBlock: 'latest',
     address: TR.TokenRegistryAddress,
-    topics: [web3.sha3('LogStakedTokens(address,uint256,address)')]
+    topics: [web3.sha3('LogStakedTokens(address,uint256,uint256,address)')]
   })
   stakedTokensFilter.watch(async (error, result) => {
     if (error) console.error(error)
@@ -23,7 +23,8 @@ module.exports = function () {
     let eventParams = result.data
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
     let tokensStaked = parseInt(eventParamArr[0], 16)
-    let account = eventParamArr[1]
+    let weiChange = parseInt(eventParamArr[1], 16)
+    let account = eventParamArr[2]
     account = '0x' + account.substr(-40)
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
@@ -44,6 +45,7 @@ module.exports = function () {
               userId: userStatus.id
             })
             doc.tokenBalance += tokensStaked
+            doc.weiBal += weiChange
             doc.save((error, saved) => {
               if (error) console.error(error)
             })
