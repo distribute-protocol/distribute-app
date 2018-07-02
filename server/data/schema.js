@@ -174,13 +174,12 @@ const typeDefs = `
   }
 
   input TaskInput {
-    description: String
-    address: String
+    taskList: String
   }
 
   type Mutation {
     addUser(input: CredentialInput, account: String): User
-    taskListInput(input: TaskInput): Project
+    addTaskList(input: TaskInput, address: String): Project
   }
 `
 // Put together a schema

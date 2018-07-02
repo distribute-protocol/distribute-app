@@ -108,7 +108,7 @@ const resolvers = {
         return user
       })
     },
-    taskListInput: (obj, args) => {
+    addTaskList: (obj, args) => {
       Project.findOne({address: args.address}).exec((error, projectStatus) => {
         if (error) console.error(error)
         if (typeof projectStatus !== 'undefined') {

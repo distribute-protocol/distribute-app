@@ -85,8 +85,8 @@ const setTaskList = action$ => {
       address = action.projectAddress
       taskDetails = action.taskDetails
       let mutation = gql`
-        mutation taskListInput($input: TaskInput) {
-          taskListInput(input: $input) {
+        mutation addTaskList($input: TaskInput, $address: String!) {
+          addTaskList(input: $input, address: $address) {
             id
           }
         }
@@ -94,11 +94,12 @@ const setTaskList = action$ => {
       return client.mutate({
         mutation: mutation,
         variables: {
-          input: action.taskDetails
+          input: action.taskDetails,
+          address: action.projectAddress
         }
       })
     }),
-    map(result => taskListSubmitted(taskDetails, address, result.data.taskListInput))
+    map(result => taskListSubmitted(taskDetails, address, result.data.addTaskList))
   )
 }
 
@@ -130,14 +131,3 @@ export default (action$, store) => merge(
   setTaskSubmission(action$, store),
   setTaskList(action$, store)
 )
-
-// address = action.projectAddress
-// taskDetails = action.taskDetails
-// return Project.findOne({address: address}).exec((error, projectStatus) => {
-//   if (error) console.error(error)
-//   projectStatus.taskList.push(taskDetails) // make sure this isn't rxjs push
-//   console.log(projectStatus.taskList)
-//   return projectStatus.save(error => {
-//     if (error) console.error(error)
-//   })
-// })
