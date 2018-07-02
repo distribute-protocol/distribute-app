@@ -49,7 +49,7 @@ const typeDefs = `
     state: Int
     summary: String
     tasks: [Task]
-    taskList: [String]
+    taskList: String
     tokenBalance: Int
     turnoverTime: Int
     validateStatePeriod: Int
@@ -156,7 +156,6 @@ const typeDefs = `
     taskValidations(address: String): [Validation]
     userVotes(account: String): [Vote]
     taskVotes(address: String): [Vote]
-    taskListInput(address: String): Project
   }
 
   input AvatarInput {
@@ -181,7 +180,7 @@ const typeDefs = `
 
   type Mutation {
     addUser(input: CredentialInput, account: String): User
-    addTask(input: TaskInput): Task
+    taskListInput(input: TaskInput): Project
   }
 `
 // Put together a schema
