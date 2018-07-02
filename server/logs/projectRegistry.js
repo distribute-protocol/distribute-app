@@ -111,4 +111,26 @@ module.exports = function () {
       })
     })
   })
+  // filter for task hash submissions
+  const taskHashSubmittedFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: PR.projectRegistryAddress,
+    topics: [web3.sha3('LogTaskHashSubmitted(address,bytes32)')]
+  })
+  taskHashSubmittedFilter.watch(async (err, result) => {
+    if (err) console.error(err)
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let projectAddress = eventParamArr[0]
+    projectAddress = '0x' + projectAddress.substr(-40)
+    let taskHash = eventParamArr[1]
+    Project.findOne({address: projectAddress}).exec((error, doc) => {
+      if (error) console.error(error)
+      doc.taskHash.push(taskHash)
+      doc.save(err => {
+        if (err) console.error(error)
+      })
+    })
+  })
 }

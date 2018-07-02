@@ -18,6 +18,7 @@ let projectSchema = mongoose.Schema({
   state: Number,
   summary: String,
   taskList: String,
+  taskHash: [String],
   tokenBalance: Number,
   turnoverTime: Number,
   validateStatePeriod: Number,
