@@ -6,7 +6,7 @@ import { push } from 'react-router-redux'
 import { client } from '../index'
 import { merge } from 'rxjs/observable/merge'
 import { rr, tr, pr } from '../utilities/blockchain'
-//import gql from 'graphql-tag'
+import gql from 'graphql-tag'
 
 const getProposedProjectsEpic = action$ => {
   let state
@@ -84,10 +84,22 @@ const setTaskList = action$ => {
     mergeMap(action => {
       address = action.projectAddress
       taskDetails = action.taskDetails
-      return client.query({query: action.query}
-      )
+      let mutation = gql`
+        mutation taskListInput($input: taskDetails, $address: String!) {
+          taskListInput(input: $input, address: $address) {
+            id
+          }
+        }
+      `
+      return client.mutate({
+        mutation: mutation,
+        variables: {
+          input: action.taskDetails,
+          adress: action.address
+        }
+      })
     }),
-    map(result => taskListSubmitted(taskDetails, address, result.data))
+    map(result => taskListSubmitted(taskDetails, address, result.data.taskListInput))
   )
 }
 
