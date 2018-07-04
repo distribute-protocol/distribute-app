@@ -1,8 +1,6 @@
 import {
   PROPOSE_PROJECT,
   PROJECT_PROPOSED,
-  GET_PROPOSED_PROJECTS,
-  PROPOSED_PROJECTS_RECEIVED,
   STAKE_PROJECT,
   PROJECT_STAKED,
   UNSTAKE_PROJECT,
@@ -16,8 +14,6 @@ import {
   TASK_COMPLETED,
   // UPDATE_PROJECT,
   TASK_VALIDATED,
-  GET_STAKED_PROJECTS,
-  STAKED_PROJECTS_RECEIVED,
   GET_PROJECTS,
   PROJECTS_RECEIVED,
   STAKED_STATUS_CHECKED,
@@ -55,19 +51,6 @@ export function projectsReceived (state, projects) {
     type: PROJECTS_RECEIVED,
     state,
     projects
-  }
-}
-
-export function getProposedProjects () {
-  return {
-    type: GET_PROPOSED_PROJECTS
-  }
-}
-
-export function proposedProjectsReceived (responseDetails) {
-  return {
-    type: PROPOSED_PROJECTS_RECEIVED,
-    responseDetails
   }
 }
 
@@ -119,20 +102,6 @@ export function stakedStatusChecked (receipt) {
   return {
     type: STAKED_STATUS_CHECKED,
     receipt
-  }
-}
-
-export function getStakedProjects (price) {
-  return {
-    type: GET_STAKED_PROJECTS,
-    price
-  }
-}
-
-export function stakedProjectsReceived (responseDetails) {
-  return {
-    type: STAKED_PROJECTS_RECEIVED,
-    responseDetails
   }
 }
 

@@ -23,6 +23,7 @@ module.exports = function () {
     let eventParams = result.data
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
     let tokensStaked = parseInt(eventParamArr[0], 16)
+    console.log(tokensStaked)
     let weiChange = parseInt(eventParamArr[1], 16)
     let account = eventParamArr[2]
     account = '0x' + account.substr(-40)
