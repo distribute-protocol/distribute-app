@@ -1,4 +1,3 @@
-
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
 const PR = require('../../frontend/src/abi/ProjectRegistry')
@@ -8,7 +7,7 @@ const ipfs = require('../ipfs-api')
 const { TextDecoder } = require('text-encoding')
 
 module.exports = function () {
-  // filter for register events
+  // filter for project created events
   const projectCreatedFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
@@ -92,24 +91,27 @@ module.exports = function () {
     fromBlock: 0,
     toBlock: 'latest',
     address: PR.projectRegistryAddress,
-    topics: [web3.sha3('LogProjectFullyStaked(bool,address)')]
+    topics: [web3.sha3('LogProjectFullyStaked(address,bool)')]
   })
   projectFullyStakedFilter.watch(async (err, result) => {
     if (err) console.error(err)
     let eventParams = result.data
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
-    let projectAddress = eventParamArr[1]
+    let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
-    let flag = eventParamArr[0]
-    Project.findOne({address: projectAddress}).exec((error, doc) => {
-      if (error) console.error(error)
-      if (flag === true) {
-        doc.state = 2
-      }
-      doc.save(err => {
-        if (err) console.error(error)
+    let flag = eventParamArr[1]
+    console.log(flag)
+    if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
+      Project.findOne({address: projectAddress}).exec((error, doc) => {
+        if (error) console.error(error)
+        if (doc) {
+          doc.state = 2
+          doc.save(err => {
+            if (err) console.error(error)
+          })
+        }
       })
-    })
+    }
   })
   // filter for task hash submissions
   const taskHashSubmittedFilter = web3.eth.filter({

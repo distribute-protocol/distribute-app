@@ -37,7 +37,6 @@ class Add extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
-    this.checkStakedStatus = this.checkStakedStatus.bind(this)
   }
 
   componentWillMount () {
@@ -129,6 +128,5 @@ const mapDispatchToProps = (dispatch) => {
     setProjectTaskList: (taskDetails, projectAddress) => dispatch(setProjectTaskList(taskDetails, projectAddress))
   }
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(Add)
