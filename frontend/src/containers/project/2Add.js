@@ -6,7 +6,7 @@ import AddComponent from '../../components/project/2Add'
 import {eth, web3, pl} from '../../utilities/blockchain'
 import { hashTasksArray } from '../../utilities/hashing'
 import update from 'immutability-helper'
-import { setProjectTaskList, setTaskSubmission, checkActiveStatus } from '../../actions/projectActions'
+import { setTaskSubmission, checkActiveStatus } from '../../actions/projectActions'
 import moment from 'moment'
 import * as _ from 'lodash'
 
@@ -100,12 +100,11 @@ class AddProject extends React.Component {
   }
 
   handleTaskInput () {
-    // this.props.setProjectTaskList()
     let task = this.state.tempTask.description
     let percentage = parseInt(this.state.tempTask.percentage, 10)
-    let tempTaskList = this.state.taskList
-    tempTaskList.push({description: task, percentage: percentage})
-    this.props.setProjectTaskList({taskList: tempTaskList, address: this.props.address})
+    // let tempTaskList = this.props.taskList
+    // tempTaskList.push('hi')
+    this.props.setProjectTaskList(JSON.stringify({taskList: task, percentage: percentage}), this.props.address)
     this.setState({tempTask: {}})
   }
 
@@ -195,7 +194,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setProjectTaskList: (taskDetails, projectAddress) => dispatch(setProjectTaskList(taskDetails, projectAddress)),
     setTaskSubmission: (submissionDetails, projectAddress) => dispatch(setTaskSubmission(submissionDetails)),
     checkActiveStatus: (projectAddress, txObj) => dispatch(checkActiveStatus(projectAddress, txObj))
   }

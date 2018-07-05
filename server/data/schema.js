@@ -49,7 +49,7 @@ const typeDefs = `
     state: Int
     summary: String
     tasks: [Task]
-    taskList: String
+    taskList: [String]
     taskHash:[String]
     tokenBalance: Int
     turnoverTime: Int
@@ -174,13 +174,9 @@ const typeDefs = `
     pushToken: String
   }
 
-  input TaskInput {
-    taskList: String
-  }
-
   type Mutation {
     addUser(input: CredentialInput, account: String): User
-    addTaskList(input: TaskInput, address: String): Project
+    addTaskList(input: String, address: String): Project
   }
 `
 // Put together a schema

@@ -85,7 +85,7 @@ const setTaskList = action$ => {
       address = action.projectAddress
       taskDetails = action.taskDetails
       let mutation = gql`
-        mutation addTaskList($input: TaskInput, $address: String!) {
+        mutation addTaskList($input: String!, $address: String!) {
           addTaskList(input: $input, address: $address) {
             id
           }

@@ -124,8 +124,7 @@ export function setProjectTaskList (taskDetails, projectAddress, query) {
   return {
     type: SET_PROJECT_TASK_LIST,
     taskDetails,
-    projectAddress,
-    query
+    projectAddress
   }
 }
 

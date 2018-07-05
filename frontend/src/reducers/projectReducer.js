@@ -1,4 +1,4 @@
-import { PROJECT_PROPOSED, PROJECTS_RECEIVED, STAKED_STATUS_CHECKED } from '../constants/ProjectActionTypes'
+import { PROJECT_PROPOSED, PROJECTS_RECEIVED, STAKED_STATUS_CHECKED, TASKLIST_SUBMITTED } from '../constants/ProjectActionTypes'
 
 const initialState = {
   projects: {}
@@ -30,7 +30,8 @@ export default function projectReducer (state = initialState, action) {
       // overwrite the key that is the proj former state (object that no longer contains that proj)
       // update the new state -- google how to delete, lodash
       // make sure you dont overwrite any other projects
-      return
+      return state
+
     default:
   }
   return state

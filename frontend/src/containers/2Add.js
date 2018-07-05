@@ -25,6 +25,8 @@ let projQuery = gql`
       reputationCost,
       summary,
       tokenBalance,
+      taskList,
+      taskHash,
       weiBal,
       weiCost
     }
@@ -37,6 +39,7 @@ class Add extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
+    this.setProjectTaskList = this.setProjectTaskList.bind(this)
   }
 
   componentWillMount () {
@@ -64,11 +67,7 @@ class Add extends React.Component {
   }
 
   async setProjectTaskList (taskDetails, address) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        this.props.setProjectTaskList(taskDetails, address, {from: accounts[0]})
-      }
-    })
+    this.props.setProjectTaskList(taskDetails, address)
   }
 
   async setTaskSubmission (taskHash, address) {
@@ -91,6 +90,7 @@ class Add extends React.Component {
           index={i}
           address={address}
           project={this.props.projects[address]}
+          setProjectTaskList={(taskDetails, address) => this.setProjectTaskList(taskDetails, address)}
         />
       })
       : []

@@ -68,6 +68,7 @@ module.exports = function () {
               stakedStatePeriod,
               state,
               summary: dataObj.summary,
+              taskList: [],
               turnoverTime,
               tokenBalance: 0,
               validateStatePeriod,
@@ -100,7 +101,7 @@ module.exports = function () {
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
     let flag = eventParamArr[1]
-    console.log(flag)
+    // console.log(flag)
     if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
       Project.findOne({address: projectAddress}).exec((error, doc) => {
         if (error) console.error(error)
@@ -108,6 +109,7 @@ module.exports = function () {
           doc.state = 2
           doc.save(err => {
             if (err) console.error(error)
+            console.log('project fully staked')
           })
         }
       })
@@ -132,6 +134,7 @@ module.exports = function () {
       doc.taskHash.push(taskHash)
       doc.save(err => {
         if (err) console.error(error)
+        console.log('task hash submitted')
       })
     })
   })

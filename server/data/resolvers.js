@@ -112,7 +112,7 @@ const resolvers = {
       Project.findOne({address: args.address}).exec((error, projectStatus) => {
         if (error) console.error(error)
         if (typeof projectStatus !== 'undefined') {
-          projectStatus.taskList = args.taskList // parse and unparse on frontend
+          projectStatus.taskList = args.input // parse and unparse on frontend
           projectStatus.save((error, doc) => {
             if (error) console.error(error)
             return projectStatus
