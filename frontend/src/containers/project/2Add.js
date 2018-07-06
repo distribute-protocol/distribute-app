@@ -100,11 +100,13 @@ class AddProject extends React.Component {
   }
 
   handleTaskInput () {
-    let task = this.state.tempTask.description
+    let description = this.state.tempTask.description
     let percentage = parseInt(this.state.tempTask.percentage, 10)
-    // let tempTaskList = this.props.taskList
-    // tempTaskList.push('hi')
-    this.props.setProjectTaskList(JSON.stringify({taskList: task, percentage: percentage}), this.props.address)
+    console.log(this.props.taskList)
+    let tempTaskList = this.props.taskList.length === 0 ? [] : JSON.parse(this.props.taskList)
+    tempTaskList.push({description, percentage})
+    console.log(tempTaskList)
+    this.props.setProjectTaskList({taskList: tempTaskList}, this.props.address)
     this.setState({tempTask: {}})
   }
 
@@ -131,8 +133,11 @@ class AddProject extends React.Component {
 
   render () {
     let tasks
-    if (typeof this.props.taskList !== 'undefined') {
-      tasks = this.props.taskList.map((task, i) => {
+    console.log(this.props.project)
+    console.log(this.props.taskList)
+    window.taskList = this.props.taskList
+    if (typeof this.props.taskList !== 'undefined' && this.props.taskList.length !== 0) {
+      tasks = JSON.parse(this.props.taskList).map((task, i) => {
         return {
           key: i,
           description: task.description,

@@ -49,7 +49,7 @@ const typeDefs = `
     state: Int
     summary: String
     tasks: [Task]
-    taskList: [String]
+    taskList: String
     taskHash:[String]
     tokenBalance: Int
     turnoverTime: Int

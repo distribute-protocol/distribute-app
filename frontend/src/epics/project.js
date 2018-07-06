@@ -83,7 +83,8 @@ const setTaskList = action$ => {
   return action$.ofType(SET_PROJECT_TASK_LIST).pipe(
     mergeMap(action => {
       address = action.projectAddress
-      taskDetails = action.taskDetails
+      taskDetails = JSON.stringify(action.taskDetails.taskList)
+      console.log(taskDetails, 'hey')
       let mutation = gql`
         mutation addTaskList($input: String!, $address: String!) {
           addTaskList(input: $input, address: $address) {
@@ -94,7 +95,7 @@ const setTaskList = action$ => {
       return client.mutate({
         mutation: mutation,
         variables: {
-          input: action.taskDetails,
+          input: taskDetails,
           address: action.projectAddress
         }
       })
