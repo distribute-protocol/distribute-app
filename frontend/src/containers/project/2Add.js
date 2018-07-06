@@ -91,9 +91,11 @@ class AddProject extends React.Component {
 
   deleteElement (i) {
     try {
-      let newTaskList = this.props.taskList
+      let newTaskList = JSON.parse(this.props.taskList)
       newTaskList.splice(i, 1)
-      this.props.setProjectTaskList({taskList: newTaskList, address: this.props.address})
+      this.props.setProjectTaskList({taskList: newTaskList}, this.props.address)
+      console.log('wazzaap', newTaskList)
+      console.log(i)
     } catch (error) {
       throw new Error(error)
     }

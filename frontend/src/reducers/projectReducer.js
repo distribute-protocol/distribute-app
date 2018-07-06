@@ -1,7 +1,9 @@
-import { PROJECT_PROPOSED, PROJECTS_RECEIVED, STAKED_STATUS_CHECKED, TASKLIST_SUBMITTED } from '../constants/ProjectActionTypes'
+import { PROJECT_PROPOSED, PROJECTS_RECEIVED } from '../constants/ProjectActionTypes'
 
 const initialState = {
   projects: {}
+  // weiCost: 0
+  // weiBal: 0
 }
 // let receiptHandler = (tx, multiHash) => {
 //   let txReceipt = tx.receipt
@@ -20,18 +22,29 @@ export default function projectReducer (state = initialState, action) {
       }
     case PROJECT_PROPOSED:
       console.log(action.receipt)
+      // return Object.assign({}, state, {weiCost: action.receipt.weiCost})
       return state
-    case STAKED_STATUS_CHECKED:
-      console.log(action.receipt)
-      console.log(state)
-      // update the project in the state and return the new state with that updated project
-      // if the project in the log is no longer in state 1, then attach it to projObj at the correct state using the proper format
-      // new obj [action.state] = project object, assign the whole new thing to the states
-      // overwrite the key that is the proj former state (object that no longer contains that proj)
-      // update the new state -- google how to delete, lodash
-      // make sure you dont overwrite any other projects
-      return state
-
+    // case PROJECT_STAKED:
+    //   console.log(action.receipt)
+    //   console.log(action.collateralType)
+    //   // Object.assign({}, state, {userTokens: state.userTokens - action.receipt.amountStaked.toNumber()})
+    //   return state
+    // case PROJECT_UNSTAKED
+    //   console.log(action.receipt)
+    //   console.log(action.collateralType)
+    //   // Object.assign({}, state, {userTokens: state.userTokens + action.receipt.amountStaked.toNumber()})
+    //   return state
+    // // case STAKED_STATUS_CHECKED
+    //   // no longer necessary????
+    // // case ACTIVE_STATUS_CHECKED
+    //   // no longer necessary????
+    // // case TASK_CLAIMED
+    // //   console.log(action.taskDetails)
+    // // case TASKLIST_SUBMITTED
+    // //   console.log(action.taskDetails)
+    // // case TASK_COMPLETED
+    // //     console.log(taskDetails)
+    // // case TASK_VALIDATED
     default:
   }
   return state
