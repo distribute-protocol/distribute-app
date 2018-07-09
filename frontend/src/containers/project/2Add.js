@@ -34,8 +34,8 @@ class AddProject extends React.Component {
       })
     }
     if (this.props.submissions) {
+      console.log(this.props.submissions, 'goobi')
       let submissions = Object.keys(this.props.submissions).map((address, i) => {
-        console.log(submissions)
         return submissionWeighting(address)
           .then(async (weighting) => {
             return {
@@ -121,8 +121,7 @@ class AddProject extends React.Component {
         weiReward: task.percentage * this.state.weiCost / 100
       }))
       let taskHash = hashTasksArray(taskArray, this.state.weiCost)
-      console.log(taskHash)
-      this.props.setTaskSubmission(taskHash, this.props.address)
+      this.props.setTaskSubmission(tasks, taskHash, this.props.address)
     }
   }
 
@@ -133,6 +132,7 @@ class AddProject extends React.Component {
   render () {
     let tasks
     window.taskList = this.props.taskList
+    window.submissions = this.props.submissions
     if (typeof this.props.taskList !== 'undefined' && this.props.taskList.length !== 0) {
       tasks = JSON.parse(this.props.taskList).map((task, i) => {
         return {
