@@ -73,6 +73,7 @@ class Add extends React.Component {
   async setTaskSubmission (taskHash, address) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
+        console.log(address, accounts[0])
         this.props.setTaskSubmission(taskHash, address, {from: accounts[0]})
       }
     })
@@ -91,6 +92,7 @@ class Add extends React.Component {
           address={address}
           project={this.props.projects[address]}
           setProjectTaskList={(taskDetails, address) => this.setProjectTaskList(taskDetails, address)}
+          setTaskSubmission={(taskHash, address) => this.setTaskSubmission(taskHash, address)}
         />
       })
       : []
@@ -124,7 +126,7 @@ const mapDispatchToProps = (dispatch) => {
     reroute: () => dispatch(push('/')),
     getProjects: () => dispatch(getProjects(2, projQuery)),
     checkActiveStatus: (projectAddress, txObj) => dispatch(checkActiveStatus(projectAddress, txObj)),
-    setTaskSubmission: (submissionDetails, projectAddress) => dispatch(setTaskSubmission(submissionDetails, projectAddress)),
+    setTaskSubmission: (submissionDetails, projectAddress, txObj) => dispatch(setTaskSubmission(submissionDetails, projectAddress, txObj)),
     setProjectTaskList: (taskDetails, projectAddress) => dispatch(setProjectTaskList(taskDetails, projectAddress))
   }
 }

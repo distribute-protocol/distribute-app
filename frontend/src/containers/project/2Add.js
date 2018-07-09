@@ -6,7 +6,6 @@ import AddComponent from '../../components/project/2Add'
 import {eth, web3, pl} from '../../utilities/blockchain'
 import { hashTasksArray } from '../../utilities/hashing'
 import update from 'immutability-helper'
-import { setTaskSubmission, checkActiveStatus } from '../../actions/projectActions'
 import moment from 'moment'
 import * as _ from 'lodash'
 
@@ -94,8 +93,6 @@ class AddProject extends React.Component {
       let newTaskList = JSON.parse(this.props.taskList)
       newTaskList.splice(i, 1)
       this.props.setProjectTaskList({taskList: newTaskList}, this.props.address)
-      console.log('wazzaap', newTaskList)
-      console.log(i)
     } catch (error) {
       throw new Error(error)
     }
@@ -104,16 +101,14 @@ class AddProject extends React.Component {
   handleTaskInput () {
     let description = this.state.tempTask.description
     let percentage = parseInt(this.state.tempTask.percentage, 10)
-    console.log(this.props.taskList)
     let tempTaskList = this.props.taskList.length === 0 ? [] : JSON.parse(this.props.taskList)
     tempTaskList.push({description, percentage})
-    console.log(tempTaskList)
     this.props.setProjectTaskList({taskList: tempTaskList}, this.props.address)
     this.setState({tempTask: {}})
   }
 
   submitTaskList () {
-    let tasks = this.props.taskList
+    let tasks = JSON.parse(this.props.taskList)
     let sumTotal = tasks.map(el => el.percentage).reduce((prev, curr) => {
       return prev + curr
     }, 0)
@@ -125,6 +120,7 @@ class AddProject extends React.Component {
         weiReward: task.percentage * this.state.weiCost / 100
       }))
       let taskHash = hashTasksArray(taskArray, this.state.weiCost)
+      console.log(taskHash)
       this.props.setTaskSubmission(taskHash, this.props.address)
     }
   }
@@ -135,8 +131,6 @@ class AddProject extends React.Component {
 
   render () {
     let tasks
-    console.log(this.props.project)
-    console.log(this.props.taskList)
     window.taskList = this.props.taskList
     if (typeof this.props.taskList !== 'undefined' && this.props.taskList.length !== 0) {
       tasks = JSON.parse(this.props.taskList).map((task, i) => {
@@ -199,11 +193,4 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setTaskSubmission: (submissionDetails, projectAddress) => dispatch(setTaskSubmission(submissionDetails)),
-    checkActiveStatus: (projectAddress, txObj) => dispatch(checkActiveStatus(projectAddress, txObj))
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddProject)
+export default connect(mapStateToProps)(AddProject)

@@ -128,11 +128,12 @@ export function setProjectTaskList (taskDetails, projectAddress, query) {
   }
 }
 
-export function setTaskSubmission (submissionDetails, projectAddress) {
+export function setTaskSubmission (taskListHash, projectAddress, txObj) {
   return {
     type: SET_TASK_SUBMISSION,
-    submissionDetails,
-    projectAddress
+    taskListHash,
+    projectAddress,
+    txObj
   }
 }
 

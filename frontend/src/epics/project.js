@@ -105,13 +105,14 @@ const setTaskList = action$ => {
 }
 
 const setTaskSubmission = action$ => {
-  let submissionDetails
+  let taskListHash
   return action$.ofType(SET_TASK_SUBMISSION).pipe(
     mergeMap(action => {
-      submissionDetails = action.submissionDetails
-      return Observable.from(pr.addTaskHash(action.submissionDetails, action.projectAddress))
+      taskListHash = action.taskListHash
+      console.log(action)
+      return Observable.from(pr.addTaskHash(action.projectAddress, action.taskListHash, action.txObj))
     }),
-    map(result => taskHashSubmitted(submissionDetails, result))
+    map(result => taskHashSubmitted(taskListHash, result))
   )
 }
 

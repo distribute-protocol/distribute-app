@@ -128,7 +128,7 @@ module.exports = function () {
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
-    let taskHash = eventParamArr[1]
+    let taskHash = '0x' + eventParamArr[1]
     Project.findOne({address: projectAddress}).exec((error, doc) => {
       if (error) console.error(error)
       doc.taskHash.push(taskHash)

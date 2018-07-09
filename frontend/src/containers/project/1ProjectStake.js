@@ -11,7 +11,6 @@ class StakeProject extends Component {
     }
     this.tokens = this.tokens.bind(this)
     this.reputation = this.reputation.bind(this)
-    this.checkStaked = this.checkStaked.bind(this)
     this.getProjectStatus = this.getProjectStatus.bind(this)
   }
 
@@ -47,10 +46,6 @@ class StakeProject extends Component {
     this.setState({stake: ''})
   }
 
-  checkStaked () {
-    this.props.checkStaked()
-  }
-
   render () {
     return (
       <StakeComponent
@@ -76,16 +71,9 @@ class StakeProject extends Component {
         }
         tokens={this.tokens}
         reputation={this.reputation}
-        checkStaked={this.checkStaked}
       />
     )
   }
 }
-
-// const mapDispatchToProps = (dispatch) => {
-//   return bindActionCreators({
-//     updateProject
-//   }, dispatch)
-// }
 
 export default StakeProject
