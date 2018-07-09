@@ -35,6 +35,7 @@ class AddProject extends React.Component {
     }
     if (this.props.submissions) {
       let submissions = Object.keys(this.props.submissions).map((address, i) => {
+        console.log(submissions)
         return submissionWeighting(address)
           .then(async (weighting) => {
             return {
@@ -132,6 +133,7 @@ class AddProject extends React.Component {
   render () {
     let tasks
     window.taskList = this.props.taskList
+    console.log(this.props.test)
     if (typeof this.props.taskList !== 'undefined' && this.props.taskList.length !== 0) {
       tasks = JSON.parse(this.props.taskList).map((task, i) => {
         return {
@@ -188,6 +190,7 @@ class AddProject extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    test: state.projects[2],
     taskList: state.projects[2][ownProps.address].taskList,
     submissions: state.projects[2][ownProps.address].submittedTasks
   }

@@ -144,10 +144,11 @@ export function taskClaimed (taskDetails) {
   }
 }
 
-export function taskListSubmitted (taskDetails) {
+export function taskListSubmitted (taskDetails, projectAddress) {
   return {
     type: TASKLIST_SUBMITTED,
-    taskDetails
+    taskDetails,
+    projectAddress
   }
 }
 

@@ -84,7 +84,6 @@ const setTaskList = action$ => {
     mergeMap(action => {
       address = action.projectAddress
       taskDetails = JSON.stringify(action.taskDetails.taskList)
-      console.log(taskDetails, 'hey')
       let mutation = gql`
         mutation addTaskList($input: String!, $address: String!) {
           addTaskList(input: $input, address: $address) {
@@ -109,7 +108,6 @@ const setTaskSubmission = action$ => {
   return action$.ofType(SET_TASK_SUBMISSION).pipe(
     mergeMap(action => {
       taskListHash = action.taskListHash
-      console.log(action)
       return Observable.from(pr.addTaskHash(action.projectAddress, action.taskListHash, action.txObj))
     }),
     map(result => taskHashSubmitted(taskListHash, result))
