@@ -131,11 +131,13 @@ module.exports = function () {
     let taskHash = '0x' + eventParamArr[1]
     Project.findOne({address: projectAddress}).exec((error, doc) => {
       if (error) console.error(error)
-      doc.taskHash.push(taskHash)
-      doc.save(err => {
-        if (err) console.error(error)
-        console.log('task hash submitted')
-      })
+      if (doc) {
+        doc.taskHash.push(taskHash)
+        doc.save(err => {
+          if (err) console.error(error)
+          console.log('task hash submitted')
+        })
+      }
     })
   })
 }
