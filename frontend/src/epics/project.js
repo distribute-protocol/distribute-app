@@ -35,14 +35,20 @@ const proposeProject = action$ =>
 
 const stakeProject = action$ => {
   let collateralType
+  let projectAddress
+  let value
+  let txObj
   return action$.ofType(STAKE_PROJECT).pipe(
     mergeMap(action => {
       collateralType = action.collateralType
+      projectAddress = action.projectAddress
+      value  = action.value
+      txObj = action.txObj
       return action.collateralType === 'tokens'
         ? Observable.from(tr.stakeTokens(action.projectAddress, parseInt(action.value), action.txObj))
         : Observable.from(rr.stakeReputation(action.projectAddress, parseInt(action.value), action.txObj))
     }),
-    map(result => projectStaked(collateralType, result))
+    map(result => projectStaked(collateralType, projectAddress, value, txObj))
   )
 }
 

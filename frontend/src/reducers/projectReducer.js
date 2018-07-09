@@ -1,4 +1,4 @@
-import { PROJECT_PROPOSED, PROJECTS_RECEIVED, TASKLIST_SUBMITTED } from '../constants/ProjectActionTypes'
+import { PROJECT_PROPOSED, PROJECTS_RECEIVED, TASKLIST_SUBMITTED, PROJECT_STAKED } from '../constants/ProjectActionTypes'
 
 const initialState = {
 }
@@ -21,15 +21,22 @@ export default function projectReducer (state = initialState, action) {
       }
     case PROJECT_PROPOSED:
       console.log(action.receipt)
-      // return Object.assign({}, state, {weiCost: action.receipt.weiCost})
       return state
     case TASKLIST_SUBMITTED:
       let project = Object.assign({}, state[2][action.projectAddress], {taskList: action.taskDetails})
       return Object.assign({}, state, {2: {[action.projectAddress]: project}})
     // case TASK_HASH_SUBMITTED:
     //   return Object.assign({}, state, submitter: {action.userObj})
-    // // case PROJECT_STAKED:
-    //   console.log(action.receipt)
+    // case PROJECT_STAKED:
+    //   console.log(action)
+    //   console.log(action.value)
+    //   let reputationStaked = action.value
+    //   let reputationBalance = state[1][action.projectAddress].reputationBalance.toNumber()
+    //   console.log(reputationBalance)
+    //   let totalReputationStaked = reputationBalance + reputationStaked
+    //   console.log(totalReputationStaked)
+    //   return Object.assign({}, state, {1: {[action.projectAddress]: totalReputationStaked}})
+    //   return Object.assign({}, state, {userTokens: state.userTokens + action.receipt.amountMinted.toNumber()})
     //   console.log(action.collateralType)
     //   // Object.assign({}, state, {userTokens: state.userTokens - action.receipt.amountStaked.toNumber()})
     //   return state
@@ -37,18 +44,16 @@ export default function projectReducer (state = initialState, action) {
     //   console.log(action.receipt)
     //   console.log(action.collateralType)
     //   // Object.assign({}, state, {userTokens: state.userTokens + action.receipt.amountStaked.toNumber()})
-    //   return state
-    // // case STAKED_STATUS_CHECKED
-    //   // no longer necessary????
-    // // case ACTIVE_STATUS_CHECKED
-    //   // no longer necessary????
-    // // case TASK_CLAIMED
-    // //   console.log(action.taskDetails)
-    // // case TASKLIST_SUBMITTED
-    // //   console.log(action.taskDetails)
-    // // case TASK_COMPLETED
-    // //     console.log(taskDetails)
-    // // case TASK_VALIDATED
+      // return state
+    // case STAKED_STATUS_CHECKED
+      // no longer necessary????
+    // case ACTIVE_STATUS_CHECKED
+      // no longer necessary????
+    // case TASK_CLAIMED
+    //   console.log(action.taskDetails)
+    // case TASK_COMPLETED
+    //     console.log(taskDetails)
+    // case TASK_VALIDATED
     default:
   }
   return state
