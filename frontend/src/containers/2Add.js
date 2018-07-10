@@ -6,7 +6,7 @@ import { push } from 'react-router-redux'
 import { eth } from '../utilities/blockchain'
 import Project from './project/2Add'
 import fastforward from '../utilities/fastforward'
-import { getProjects, checkActiveStatus, submitHashedTaskList, setTaskList } from '../actions/projectActions'
+import { getProjects, checkActiveStatus, submitHashedTaskList, setTaskList, getVerifiedTaskLists } from '../actions/projectActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -30,6 +30,14 @@ let projQuery = gql`
       weiCost
     }
   }`
+
+let taskListQuery = gql`
+  { verifiedPrelimTaskLists {
+    project,
+    submitter,
+    content
+  }}
+`
 
 // let projQuery2 = gql`
 // {
@@ -81,13 +89,17 @@ class Add extends React.Component {
       }
     })
   }
+
+  async getVerifiedTaskLists (address) {
+    this.props.getVerifiedTaskLists(address)
+    console.log('goobi', address)
+  }
   // fast forward Ganache 1 week
   async fastForward () {
     await fastforward(7 * 24 * 60 * 60)
   }
 
   render () {
-    console.log(this.props.projects)
     const projects = typeof this.props.projects !== `undefined`
       ? Object.keys(this.props.projects).map((address, i) => {
         return <Project
@@ -96,6 +108,7 @@ class Add extends React.Component {
           address={address}
           project={this.props.projects[address]}
           setTaskList={(taskDetails, address) => this.setTaskList(taskDetails, address)}
+          getVerifiedTaskLists={(address) => this.getVerifiedTaskLists(address)}
           submitHashedTaskList={(tasks, taskHash, address) => this.submitHashedTaskList(tasks, taskHash, address)}
         />
       })
@@ -129,6 +142,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
     getProjects: () => dispatch(getProjects(2, projQuery)),
+    getVerifiedTaskLists: (projectAddress) => dispatch(getVerifiedTaskLists(projectAddress, taskListQuery)),
     checkActiveStatus: (projectAddress, txObj) => dispatch(checkActiveStatus(projectAddress, txObj)),
     submitHashedTaskList: (tasks, taskHash, projectAddress, txObj) => dispatch(submitHashedTaskList(tasks, taskHash, projectAddress, txObj)),
     setTaskList: (taskDetails, projectAddress) => dispatch(setTaskList(taskDetails, projectAddress))

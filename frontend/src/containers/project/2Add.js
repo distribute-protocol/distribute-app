@@ -16,7 +16,7 @@ class AddProject extends React.Component {
       tempTask: {},
       taskList: []
     }
-    this.getProjectStatus = this.getProjectStatus.bind(this)
+    // this.getProjectStatus = this.getProjectStatus.bind(this)
     this.handleTaskInput = this.handleTaskInput.bind(this)
     this.submitTaskList = this.submitHashedTaskList.bind(this)
     this.moveRow = this.moveRow.bind(this)
@@ -24,7 +24,8 @@ class AddProject extends React.Component {
   }
 
   componentWillMount () {
-    this.getProjectStatus()
+    // this.getProjectStatus()
+    this.props.getVerifiedTaskLists(this.props.address)
     let submissionTasks
     const projAddr = this.props.address
     function submissionWeighting (address) {
@@ -33,6 +34,7 @@ class AddProject extends React.Component {
         resolve(weighting)
       })
     }
+    console.log(this.props.submissions, 'goobachev')
     if (this.props.submissions) {
       console.log(this.props.submissions, 'goobi')
       let submissions = Object.keys(this.props.submissions).map((address, i) => {
@@ -63,10 +65,10 @@ class AddProject extends React.Component {
     this.setState({taskList: np.taskList})
   }
   // let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
-  getProjectStatus () {
-    let projectObj = Object.assign({}, this.props.project, {taskList: this.props.taskList})
-    this.setState(projectObj)
-  }
+  // getProjectStatus () {
+  //   let projectObj = Object.assign({}, this.props.project, {taskList: this.props.taskList})
+  //   this.setState(projectObj)
+  // }
 
   onChange (type, val) {
     try {
@@ -131,6 +133,7 @@ class AddProject extends React.Component {
 
   render () {
     let tasks
+    console.log(this.props.tests)
     window.taskList = this.props.taskList
     window.submissions = this.props.submissions
     if (typeof this.props.taskList !== 'undefined' && this.props.taskList.length !== 0) {
@@ -189,6 +192,7 @@ class AddProject extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    tests: state.projects[2][ownProps.address],
     taskList: state.projects[2][ownProps.address].taskList,
     submissions: state.projects[2][ownProps.address].submittedTasks
   }

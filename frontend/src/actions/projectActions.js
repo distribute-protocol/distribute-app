@@ -20,7 +20,9 @@ import {
   ACTIVE_STATUS_CHECKED,
   HASHED_TASK_LIST_SUBMITTED,
   FINAL_TASK_LIST_SUBMITTED,
-  SUBMIT_FINAL_TASK_LIST
+  SUBMIT_FINAL_TASK_LIST,
+  GET_VERIFIED_TASK_LISTS,
+  VERIFIED_TASK_LISTS_RECEIVED
 } from '../constants/ProjectActionTypes'
 
 export function proposeProject (collateralType, projObj, txObj) {
@@ -168,6 +170,22 @@ export function hashedTaskListSubmitted (tasks, submitterAddress, projectAddress
     tasks,
     submitterAddress,
     projectAddress
+  }
+}
+
+export function getVerifiedTaskLists (address, query) {
+  return {
+    type: GET_VERIFIED_TASK_LISTS,
+    address,
+    query
+  }
+}
+
+export function verifiedTaskListsReceived (address, result) {
+  return {
+    type: VERIFIED_TASK_LISTS_RECEIVED,
+    address,
+    result
   }
 }
 

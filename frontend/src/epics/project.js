@@ -1,5 +1,5 @@
-import { GET_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS, CHECK_ACTIVE_STATUS, SUBMIT_HASHED_TASK_LIST, SET_TASK_LIST } from '../constants/ProjectActionTypes'
-import { projectsReceived, projectProposed, projectStaked, projectUnstaked, hashedTaskListSubmitted, stakedStatusChecked, activeStatusChecked, taskListSet } from '../actions/projectActions'
+import { GET_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS, CHECK_ACTIVE_STATUS, SUBMIT_HASHED_TASK_LIST, SET_TASK_LIST, GET_VERIFIED_TASK_LISTS } from '../constants/ProjectActionTypes'
+import { projectsReceived, projectProposed, projectStaked, projectUnstaked, hashedTaskListSubmitted, stakedStatusChecked, activeStatusChecked, taskListSet, verifiedTaskListsReceived } from '../actions/projectActions'
 import { map, mergeMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
@@ -116,21 +116,11 @@ const submitHashedTaskList = action$ => {
   let projectAddress
   let taskHash
   return action$.ofType(SUBMIT_HASHED_TASK_LIST).pipe(
-    // mutation to create new table
-
-    // let prelimTaskListSubmitted = new PrelimTaskList({
-    //   _id: new mongoose.Types.ObjectId(),
-    //   hash: taskHash,
-    //   projectId: doc.id,
-    //   submitter,
-    //   verified: true
-    // })
     mergeMap(action => {
       tasks = JSON.stringify(action.tasks)
       txObj = action.txObj
       projectAddress = action.projectAddress
       taskHash = action.taskListHash
-
       let mutation = gql`
         mutation addPrelimTaskList($address: String!, $taskHash: String!, $submitter: String!) {
           addPrelimTaskList(address: $address, taskHash: $taskHash, submitter: $submitter) {
@@ -156,6 +146,18 @@ const submitHashedTaskList = action$ => {
   )
 }
 
+const getVerifiedTaskListsEpic = action$ => {
+  let address
+  return action$.ofType(GET_VERIFIED_TASK_LISTS).pipe(
+    mergeMap(action => {
+      address = action.address
+      return client.query({query: action.query}
+      )
+    }),
+    map(result => verifiedTaskListsReceived(address, result.data))
+  )
+}
+
 // submitFinalTaskList epic
 
 const checkActiveStatus = action$ =>
@@ -173,5 +175,6 @@ export default (action$, store) => merge(
   checkStakedStatus(action$, store),
   checkActiveStatus(action$, store),
   submitHashedTaskList(action$, store),
-  setTaskList(action$, store)
+  setTaskList(action$, store),
+  getVerifiedTaskListsEpic(action$, store)
 )
