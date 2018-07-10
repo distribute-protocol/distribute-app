@@ -135,19 +135,18 @@ module.exports = function () {
     submitter = '0x' + submitter.substr(-40)
     Project.findOne({address: projectAddress}).exec((error, doc) => {
       if (error) console.error(error)
-      console.log('goobi', doc)
-      // let prelimTaskListSubmitted = new PrelimTaskList({
-      //   _id: new mongoose.Types.ObjectId(),
-      //   hash: taskHash,
-      //   projectId: doc.id,
-      //   submitter,
-      //   verified: true
-      // })
-      // prelimTaskListSubmitted.save(err => {
-      //   if (err) console.error(error)
-      //   console.log('prelim task list submitted')
-      //   console.log(prelimTaskListSubmitted)
-      // })
+      console.log('goobi')
+      PrelimTaskList.findOne({submitter: submitter}).exec((error, prelimTaskList) => {
+        if (error) console.error(error)
+        if (prelimTaskList !== null && prelimTaskList.hash === taskHash) {
+          prelimTaskList.verified = true
+          prelimTaskList.save(error => {
+            if (error) console.error(error)
+            console.log('prelim task list submitted')
+            console.log(prelimTaskList)
+          })
+        }
+      })
     })
   })
 }

@@ -169,6 +169,7 @@ const typeDefs = `
     userVotes(account: String): [Vote]
     taskVotes(address: String): [Vote]
     verifiedPrelimTaskLists(address: String): [PrelimTaskList]
+    userPrelimTaskLists(address: String): [PrelimTaskList]
   }
 
   input AvatarInput {

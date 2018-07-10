@@ -23,6 +23,7 @@ const resolvers = {
     user: (credential) => User.findOne({credentialId: credential.id}).then(user => user)
   },
   Project: {
+    prelimTaskLists: (project) => PrelimTaskList.findOne({project: project.id}).then(prelimTaskLists => prelimTaskLists),
     proposer: (project) => User.findOne({account: project.proposer}).then(user => user),
     stakes: (project) => Stake.find({projectId: project.id}).then(stakes => stakes),
     tasks: (project) => Task.find({projectId: project.id}).then(tasks => tasks),
@@ -81,6 +82,7 @@ const resolvers = {
     userTasks: (_, args) => User.findOne({account: args.account}).then(user => Task.find({claimer: user.id})).then(tasks => tasks),
     projectTasks: (_, args) => Project.findOne({address: args.address}).then(project => Task.find({projectId: project.id})).then(tasks => tasks),
     verifiedPrelimTaskLists: (_, args) => PrelimTaskList.find({projectId: args.address}).then(prelimTaskList => PrelimTaskList.find({verified: true})).then(prelimTaskLists => prelimTaskLists),
+    userPrelimTaskLists: (_, args) => PrelimTaskList.findOne({submitter: args.account}).then(prelimTaskLists => prelimTaskLists),
     taskValidations: (address) => [{}],
     userVotes: (account) => [{}],
     taskVotes: (address) => [{}]
@@ -122,20 +124,36 @@ const resolvers = {
       })
     },
     addPrelimTaskList: (obj, args) => {
-      Project.findOne({address: args.address}).exec((error, doc) => {
+      Project.findOne({address: args.address}).exec((error, project) => {
         if (error) console.error(error)
-        if (typeof doc !== 'undefined') {
-          console.log('goobachev', doc)
-          doc.prelimTaskLists = doc.prelimTaskLists.push(new PrelimTaskList({
-            _id: new mongoose.Types.ObjectId(),
-            hash: args.taskHash,
-            projectId: doc.id,
-            submitter: args.submitter,
-            verified: false
-          }))
-          doc.save(err => {
-            if (err) console.error(error)
-            return doc
+        if (typeof project !== 'undefined') {
+          PrelimTaskList.findOne({submitter: args.submitter}).exec((error, doc) => {
+            if (error) console.error(error)
+            if (typeof doc !== 'undefined') {
+              doc.content = project.taskList
+              doc.hash = args.taskHash
+              doc.verified = false
+              doc.save(err => {
+                if (err) console.error(err)
+                console.log('prelim task list updated')
+                return doc
+              })
+            } else {
+              let prelimTaskList = new PrelimTaskList({
+                _id: new mongoose.Types.ObjectId(),
+                hash: args.taskHash,
+                projectId: project.id,
+                submitter: args.submitter,
+                content: project.taskList,
+                verified: false
+              })
+              prelimTaskList.save(err => {
+                console.log(prelimTaskList)
+                if (err) console.error(error)
+                console.log('prelim task list saved')
+                return prelimTaskList
+              })
+            }
           })
         }
       })

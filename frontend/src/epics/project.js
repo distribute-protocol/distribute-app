@@ -143,7 +143,8 @@ const submitHashedTaskList = action$ => {
         variables: {
           address: projectAddress,
           taskHash: taskHash,
-          submitter: txObj.from
+          submitter: txObj.from,
+          content: tasks
         }
       })
     }),

@@ -32,10 +32,12 @@ module.exports = function () {
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
         User.findOne({account: account}).exec((err, userStatus) => {
           if (err) console.error(error)
-          userStatus.tokenBalance -= tokensStaked
-          userStatus.save(err => {
-            if (err) console.error(error)
-          })
+          if (userStatus !== null) {
+            userStatus.tokenBalance -= tokensStaked
+            userStatus.save(err => {
+              if (err) console.error(error)
+            })
+          }
           Project.findOne({address: projectAddress}).exec((error, doc) => {
             if (error) console.error(error)
             let StakeEvent = new Stake({
