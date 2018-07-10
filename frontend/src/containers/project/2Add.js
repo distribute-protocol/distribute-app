@@ -18,47 +18,48 @@ class AddProject extends React.Component {
     }
     // this.getProjectStatus = this.getProjectStatus.bind(this)
     this.handleTaskInput = this.handleTaskInput.bind(this)
-    this.submitTaskList = this.submitHashedTaskList.bind(this)
+    this.submitTaskList = this.submitTaskList.bind(this)
     this.moveRow = this.moveRow.bind(this)
     this.checkActive = this.checkActive.bind(this)
   }
 
   componentWillMount () {
     // this.getProjectStatus()
-    this.props.getVerifiedTaskLists(this.props.address)
-    let submissionTasks
-    const projAddr = this.props.address
-    function submissionWeighting (address) {
-      return new Promise(async (resolve, reject) => {
-        let weighting = await pl.calculateWeightOfAddress(projAddr, address)
-        resolve(weighting)
-      })
-    }
-    console.log(this.props.submissions, 'goobachev')
-    if (this.props.submissions) {
-      console.log(this.props.submissions, 'goobi')
-      let submissions = Object.keys(this.props.submissions).map((address, i) => {
-        return submissionWeighting(address)
-          .then(async (weighting) => {
-            return {
-              key: i,
-              submitter: address,
-              submission: JSON.stringify(this.props.submissions[address]),
-              weighting: (<div style={{minWidth: 70}}>{weighting.toNumber()}</div>)
-            }
-          })
-      })
+    this.props.getVerifiedTaskLists(this.props.address).then(() => {
+      let submissionTasks
+      const projAddr = this.props.address
+      function submissionWeighting (address) {
+        return new Promise(async (resolve, reject) => {
+          let weighting = await pl.calculateWeightOfAddress(projAddr, address)
+          resolve(weighting)
+        })
+      }
+      console.log(this.props.submissions, 'goobachev')
+      if (this.props.submissions) {
+        console.log(this.props.submissions, 'goobi')
+        let submissions = Object.keys(this.props.submissions).map((address, i) => {
+          return submissionWeighting(address)
+            .then(async (weighting) => {
+              return {
+                key: i,
+                submitter: address,
+                submission: JSON.stringify(this.props.submissions[address]),
+                weighting: (<div style={{minWidth: 70}}>{weighting.toNumber()}</div>)
+              }
+            })
+        })
 
-      Promise.all(submissions)
-        .then(results => {
-          submissionTasks = _.compact(results)
-          this.setState({taskList: this.props.taskList, submissionTasks: submissionTasks})
-        })
-        .catch(e => {
-          console.error(e)
-        })
-    }
-    this.setState({submissionTasks})
+        Promise.all(submissions)
+          .then(results => {
+            submissionTasks = _.compact(results)
+            this.setState({taskList: this.props.taskList, submissionTasks: submissionTasks})
+          })
+          .catch(e => {
+            console.error(e)
+          })
+      }
+      this.setState({submissionTasks})
+    })
   }
 
   componentWillReceiveProps (np) {
@@ -110,7 +111,7 @@ class AddProject extends React.Component {
     this.setState({tempTask: {}})
   }
 
-  submitHashedTaskList () {
+  submitTaskList () {
     let tasks = JSON.parse(this.props.taskList)
     let sumTotal = tasks.map(el => el.percentage).reduce((prev, curr) => {
       return prev + curr
@@ -133,7 +134,7 @@ class AddProject extends React.Component {
 
   render () {
     let tasks
-    console.log(this.props.tests)
+    window.tests = this.props.tests
     window.taskList = this.props.taskList
     window.submissions = this.props.submissions
     if (typeof this.props.taskList !== 'undefined' && this.props.taskList.length !== 0) {

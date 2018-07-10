@@ -154,7 +154,7 @@ const getVerifiedTaskListsEpic = action$ => {
       return client.query({query: action.query}
       )
     }),
-    map(result => verifiedTaskListsReceived(address, result.data))
+    map(result => verifiedTaskListsReceived(address, result.data.verifiedPrelimTaskLists))
   )
 }
 

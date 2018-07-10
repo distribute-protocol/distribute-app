@@ -33,7 +33,6 @@ let projQuery = gql`
 
 let taskListQuery = gql`
   { verifiedPrelimTaskLists {
-    project,
     submitter,
     content
   }}
@@ -52,6 +51,8 @@ class Add extends React.Component {
     }
     this.fastForward = this.fastForward.bind(this)
     this.setTaskList = this.setTaskList.bind(this)
+    this.submitHashedTaskList = this.submitHashedTaskList.bind(this)
+    this.getVerifiedTaskLists = this.getVerifiedTaskLists.bind(this)
   }
 
   componentWillMount () {
@@ -90,9 +91,8 @@ class Add extends React.Component {
     })
   }
 
-  async getVerifiedTaskLists (address) {
+  getVerifiedTaskLists (address) {
     this.props.getVerifiedTaskLists(address)
-    console.log('goobi', address)
   }
   // fast forward Ganache 1 week
   async fastForward () {

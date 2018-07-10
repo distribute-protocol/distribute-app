@@ -38,8 +38,9 @@ export default function projectReducer (state = initialState, action) {
       // return Object.assign({}, state, {1: {[action.projectAddress]: updateRepBal}})
       return state
     case VERIFIED_TASK_LISTS_RECEIVED:
+      project = Object.assign({}, state[2][action.address], {submittedTasks: action.result})
       console.log(action)
-      return state
+      return Object.assign({}, state, {2: {[action.address]: project}})
     // case PROJECT_STAKED:
     //   console.log(action)
     //   console.log(action.value)

@@ -135,7 +135,6 @@ module.exports = function () {
     submitter = '0x' + submitter.substr(-40)
     Project.findOne({address: projectAddress}).exec((error, doc) => {
       if (error) console.error(error)
-      console.log('goobi')
       PrelimTaskList.findOne({submitter: submitter}).exec((error, prelimTaskList) => {
         if (error) console.error(error)
         if (prelimTaskList !== null && prelimTaskList.hash === taskHash) {
