@@ -18,14 +18,9 @@ import {
   PROJECTS_RECEIVED,
   STAKED_STATUS_CHECKED,
   ACTIVE_STATUS_CHECKED,
-<<<<<<< HEAD
-  HASH_SUBMITTED
-
-=======
   HASHED_TASK_LIST_SUBMITTED,
   FINAL_TASK_LIST_SUBMITTED,
   SUBMIT_FINAL_TASK_LIST
->>>>>>> 43667ad5ed0277d01afbc9bf2f944df7ac12b66f
 } from '../constants/ProjectActionTypes'
 
 export function proposeProject (collateralType, projObj, txObj) {
@@ -135,16 +130,10 @@ export function setTaskList (taskDetails, projectAddress, query) {
   }
 }
 
-<<<<<<< HEAD
-export function setTaskSubmission (taskListHash, projectAddress, txObj) {
-  return {
-    type: SET_TASK_SUBMISSION,
-=======
 export function submitHashedTaskList (tasks, taskListHash, projectAddress, txObj) {
   return {
     type: SUBMIT_HASHED_TASK_LIST,
     tasks,
->>>>>>> 43667ad5ed0277d01afbc9bf2f944df7ac12b66f
     taskListHash,
     projectAddress,
     txObj
@@ -173,19 +162,12 @@ export function taskCompleted (taskDetails) {
   }
 }
 
-<<<<<<< HEAD
-export function taskHashSubmitted (submissionDetails) {
-  return {
-    type: HASH_SUBMITTED,
-    submissionDetails
-=======
 export function hashedTaskListSubmitted (tasks, submitterAddress, projectAddress) {
   return {
     type: HASHED_TASK_LIST_SUBMITTED,
     tasks,
     submitterAddress,
     projectAddress
->>>>>>> 43667ad5ed0277d01afbc9bf2f944df7ac12b66f
   }
 }
 
