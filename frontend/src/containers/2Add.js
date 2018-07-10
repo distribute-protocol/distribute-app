@@ -6,7 +6,7 @@ import { push } from 'react-router-redux'
 import { eth } from '../utilities/blockchain'
 import Project from './project/2Add'
 import fastforward from '../utilities/fastforward'
-import { getProjects, checkActiveStatus, setTaskSubmission, setProjectTaskList } from '../actions/projectActions'
+import { getProjects, checkActiveStatus, submitHashedTaskList, setTaskList } from '../actions/projectActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -26,7 +26,12 @@ let projQuery = gql`
       summary,
       tokenBalance,
       taskList,
-      taskHash,
+      verifiedPrelimTaskLists(verified: true) {
+        hash,
+        submitter,
+        weighting,
+        content
+      }
       weiBal,
       weiCost
     }
@@ -39,7 +44,7 @@ class Add extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
-    this.setProjectTaskList = this.setProjectTaskList.bind(this)
+    this.setTaskList = this.setTaskList.bind(this)
   }
 
   componentWillMount () {
@@ -66,14 +71,14 @@ class Add extends React.Component {
     })
   }
 
-  async setProjectTaskList (taskDetails, address) {
-    this.props.setProjectTaskList(taskDetails, address)
+  async setTaskList (taskDetails, address) {
+    this.props.setTaskList(taskDetails, address)
   }
 
-  async setTaskSubmission (tasks, taskHash, address) {
+  async submitHashedTaskList (tasks, taskHash, address) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
-        this.props.setTaskSubmission(tasks, taskHash, address, {from: accounts[0]})
+        this.props.submitHashedTaskList(tasks, taskHash, address, {from: accounts[0]})
       }
     })
   }
@@ -91,8 +96,8 @@ class Add extends React.Component {
           index={i}
           address={address}
           project={this.props.projects[address]}
-          setProjectTaskList={(taskDetails, address) => this.setProjectTaskList(taskDetails, address)}
-          setTaskSubmission={(tasks, taskHash, address) => this.setTaskSubmission(tasks, taskHash, address)}
+          setTaskList={(taskDetails, address) => this.setTaskList(taskDetails, address)}
+          submitHashedTaskList={(tasks, taskHash, address) => this.submitHashedTaskList(tasks, taskHash, address)}
         />
       })
       : []
@@ -126,8 +131,8 @@ const mapDispatchToProps = (dispatch) => {
     reroute: () => dispatch(push('/')),
     getProjects: () => dispatch(getProjects(2, projQuery)),
     checkActiveStatus: (projectAddress, txObj) => dispatch(checkActiveStatus(projectAddress, txObj)),
-    setTaskSubmission: (tasks, taskHash, projectAddress, txObj) => dispatch(setTaskSubmission(tasks, taskHash, projectAddress, txObj)),
-    setProjectTaskList: (taskDetails, projectAddress) => dispatch(setProjectTaskList(taskDetails, projectAddress))
+    submitHashedTaskList: (tasks, taskHash, projectAddress, txObj) => dispatch(submitHashedTaskList(tasks, taskHash, projectAddress, txObj)),
+    setTaskList: (taskDetails, projectAddress) => dispatch(setTaskList(taskDetails, projectAddress))
   }
 }
 

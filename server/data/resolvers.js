@@ -11,6 +11,7 @@ const Token = require('../models/token')
 const User = require('../models/user')
 const Validation = require('../models/validation')
 const Vote = require('../models/vote')
+const PrelimTaskList = require('../models/prelimTaskList')
 const _ = require('lodash')
 // The resolvers
 const resolvers = {
@@ -79,7 +80,7 @@ const resolvers = {
     allTasks: () => Task.find({}).then(tasks => tasks),
     userTasks: (_, args) => User.findOne({account: args.account}).then(user => Task.find({claimer: user.id})).then(tasks => tasks),
     projectTasks: (_, args) => Project.findOne({address: args.address}).then(project => Task.find({projectId: project.id})).then(tasks => tasks),
-    userValidations: (account) => [{}],
+    verifiedPrelimTaskLists: (_, args) => PrelimTaskList.find({projectId: args.address}).then(prelimTaskList => PrelimTaskList.find({verified: true})).then(prelimTaskLists => prelimTaskLists),
     taskValidations: (address) => [{}],
     userVotes: (account) => [{}],
     taskVotes: (address) => [{}]

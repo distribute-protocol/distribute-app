@@ -1,5 +1,5 @@
-import { GET_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS, CHECK_ACTIVE_STATUS, SET_TASK_SUBMISSION, SET_PROJECT_TASK_LIST } from '../constants/ProjectActionTypes'
-import { projectsReceived, projectProposed, projectStaked, projectUnstaked, taskHashSubmitted, stakedStatusChecked, activeStatusChecked, taskListSubmitted } from '../actions/projectActions'
+import { GET_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS, CHECK_ACTIVE_STATUS, SUBMIT_HASHED_TASK_LIST, SET_TASK_LIST } from '../constants/ProjectActionTypes'
+import { projectsReceived, projectProposed, projectStaked, projectUnstaked, hashedTaskListSubmitted, stakedStatusChecked, activeStatusChecked, taskListSet } from '../actions/projectActions'
 import { map, mergeMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
@@ -42,7 +42,7 @@ const stakeProject = action$ => {
     mergeMap(action => {
       collateralType = action.collateralType
       projectAddress = action.projectAddress
-      value  = action.value
+      value = action.value
       txObj = action.txObj
       return action.collateralType === 'tokens'
         ? Observable.from(tr.stakeTokens(action.projectAddress, parseInt(action.value), action.txObj))
@@ -83,10 +83,11 @@ const getStakedProjectsEpic = action$ => {
   )
 }
 
+// set task list on the frontend
 const setTaskList = action$ => {
   let taskDetails
   let address
-  return action$.ofType(SET_PROJECT_TASK_LIST).pipe(
+  return action$.ofType(SET_TASK_LIST).pipe(
     mergeMap(action => {
       address = action.projectAddress
       taskDetails = JSON.stringify(action.taskDetails.taskList)
@@ -105,24 +106,28 @@ const setTaskList = action$ => {
         }
       })
     }),
-    map(result => taskListSubmitted(taskDetails, address, result.data.addTaskList))
+    map(result => taskListSet(taskDetails, address, result.data.addTaskList))
   )
 }
 
-const setTaskSubmission = action$ => {
+const submitHashedTaskList = action$ => {
   let tasks
   let submitter
   let projectAddress
-  return action$.ofType(SET_TASK_SUBMISSION).pipe(
+  return action$.ofType(SUBMIT_HASHED_TASK_LIST).pipe(
+    // mutation to create new table
     mergeMap(action => {
       tasks = JSON.stringify(action.tasks)
       submitter = action.txObj.from
       projectAddress = action.projectAddress
       return Observable.from(pr.addTaskHash(action.projectAddress, action.taskListHash, action.txObj))
     }),
-    map(result => taskHashSubmitted(tasks, submitter, projectAddress))
+    map(result => hashedTaskListSubmitted(tasks, submitter, projectAddress))
+    // add weighting in here
   )
 }
+
+// submitFinalTaskList epic
 
 const checkActiveStatus = action$ =>
   action$.ofType(CHECK_ACTIVE_STATUS).pipe(
@@ -138,6 +143,6 @@ export default (action$, store) => merge(
   unstakeProject(action$, store),
   checkStakedStatus(action$, store),
   checkActiveStatus(action$, store),
-  setTaskSubmission(action$, store),
+  submitHashedTaskList(action$, store),
   setTaskList(action$, store)
 )

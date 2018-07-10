@@ -3,6 +3,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
 const PR = require('../../frontend/src/abi/ProjectRegistry')
 const mongoose = require('mongoose')
 const Project = require('../models/project')
+const PrelimTaskList = require('../models/prelimTaskList')
 const ipfs = require('../ipfs-api')
 const { TextDecoder } = require('text-encoding')
 
@@ -120,7 +121,7 @@ module.exports = function () {
     fromBlock: 0,
     toBlock: 'latest',
     address: PR.projectRegistryAddress,
-    topics: [web3.sha3('LogTaskHashSubmitted(address,bytes32)')]
+    topics: [web3.sha3('LogTaskHashSubmitted(address,bytes32,address)')]
   })
   taskHashSubmittedFilter.watch(async (err, result) => {
     if (err) console.error(err)
@@ -129,15 +130,22 @@ module.exports = function () {
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
     let taskHash = '0x' + eventParamArr[1]
+    let submitter = eventParamArr[2]
+    submitter = '0x' + submitter.substr(-40)
     Project.findOne({address: projectAddress}).exec((error, doc) => {
       if (error) console.error(error)
-      if (doc) {
-        doc.taskHash.push(taskHash)
-        doc.save(err => {
-          if (err) console.error(error)
-          console.log('task hash submitted')
-        })
-      }
+      let prelimTaskListSubmitted = new PrelimTaskList({
+        _id: new mongoose.Types.ObjectId(),
+        hash: taskHash,
+        projectId: doc.id,
+        submitter,
+        verified: true
+      })
+      prelimTaskListSubmitted.save(err => {
+        if (err) console.error(error)
+        console.log('prelim task list submitted')
+        console.log(prelimTaskListSubmitted)
+      })
     })
   })
 }
