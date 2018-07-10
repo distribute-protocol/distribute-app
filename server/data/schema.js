@@ -51,7 +51,7 @@ const typeDefs = `
     summary: String
     tasks: [Task]
     taskList: String
-    prelimTaskLists:[PrelimTaskList]
+    prelimTaskLists: [PrelimTaskList]
     tokenBalance: Int
     turnoverTime: Int
     validateStatePeriod: Int
@@ -189,6 +189,7 @@ const typeDefs = `
   type Mutation {
     addUser(input: CredentialInput, account: String): User
     addTaskList(input: String, address: String): Project
+    addPrelimTaskList(address: String, taskHash: String, submitter: String): Project
   }
 `
 // Put together a schema

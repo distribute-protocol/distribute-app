@@ -112,17 +112,45 @@ const setTaskList = action$ => {
 
 const submitHashedTaskList = action$ => {
   let tasks
-  let submitter
+  let txObj
   let projectAddress
+  let taskHash
   return action$.ofType(SUBMIT_HASHED_TASK_LIST).pipe(
     // mutation to create new table
+
+    // let prelimTaskListSubmitted = new PrelimTaskList({
+    //   _id: new mongoose.Types.ObjectId(),
+    //   hash: taskHash,
+    //   projectId: doc.id,
+    //   submitter,
+    //   verified: true
+    // })
     mergeMap(action => {
       tasks = JSON.stringify(action.tasks)
-      submitter = action.txObj.from
+      txObj = action.txObj
       projectAddress = action.projectAddress
-      return Observable.from(pr.addTaskHash(action.projectAddress, action.taskListHash, action.txObj))
+      taskHash = action.taskListHash
+
+      let mutation = gql`
+        mutation addPrelimTaskList($address: String!, $taskHash: String!, $submitter: String!) {
+          addPrelimTaskList(address: $address, taskHash: $taskHash, submitter: $submitter) {
+            id
+          }
+        }
+      `
+      return client.mutate({
+        mutation: mutation,
+        variables: {
+          address: projectAddress,
+          taskHash: taskHash,
+          submitter: txObj.from
+        }
+      })
     }),
-    map(result => hashedTaskListSubmitted(tasks, submitter, projectAddress))
+    mergeMap(result => {
+      return Observable.from(pr.addTaskHash(projectAddress, taskHash, txObj))
+    }),
+    map(result => hashedTaskListSubmitted(tasks, txObj.from, projectAddress))
     // add weighting in here
   )
 }

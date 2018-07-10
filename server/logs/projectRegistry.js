@@ -62,6 +62,7 @@ module.exports = function () {
               nextDeadline,
               passThreshold,
               photo: dataObj.photo,
+              prelimTaskLists: [],
               proposer,
               proposerType,
               reputationBalance: 0,
@@ -134,18 +135,19 @@ module.exports = function () {
     submitter = '0x' + submitter.substr(-40)
     Project.findOne({address: projectAddress}).exec((error, doc) => {
       if (error) console.error(error)
-      let prelimTaskListSubmitted = new PrelimTaskList({
-        _id: new mongoose.Types.ObjectId(),
-        hash: taskHash,
-        projectId: doc.id,
-        submitter,
-        verified: true
-      })
-      prelimTaskListSubmitted.save(err => {
-        if (err) console.error(error)
-        console.log('prelim task list submitted')
-        console.log(prelimTaskListSubmitted)
-      })
+      console.log('goobi', doc)
+      // let prelimTaskListSubmitted = new PrelimTaskList({
+      //   _id: new mongoose.Types.ObjectId(),
+      //   hash: taskHash,
+      //   projectId: doc.id,
+      //   submitter,
+      //   verified: true
+      // })
+      // prelimTaskListSubmitted.save(err => {
+      //   if (err) console.error(error)
+      //   console.log('prelim task list submitted')
+      //   console.log(prelimTaskListSubmitted)
+      // })
     })
   })
 }

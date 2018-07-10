@@ -26,16 +26,15 @@ let projQuery = gql`
       summary,
       tokenBalance,
       taskList,
-      verifiedPrelimTaskLists(verified: true) {
-        hash,
-        submitter,
-        weighting,
-        content
-      }
       weiBal,
       weiCost
     }
   }`
+
+// let projQuery2 = gql`
+// {
+//   verifiedPrelimTaskLists(state: 2, address: )
+// }`
 
 class Add extends React.Component {
   constructor () {
