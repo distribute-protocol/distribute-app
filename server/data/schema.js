@@ -2,6 +2,7 @@ const { makeExecutableSchema } = require('graphql-tools')
 const resolvers = require('./resolvers')
 
 // The GraphQL schema in string form
+// change taskList to currentTaskList
 const typeDefs = `
   type Avatar {
     credential: Credential
@@ -50,7 +51,7 @@ const typeDefs = `
     summary: String
     tasks: [Task]
     taskList: String
-    taskHash:[String]
+    prelimTaskLists: [PrelimTaskList]
     tokenBalance: Int
     turnoverTime: Int
     validateStatePeriod: Int
@@ -58,6 +59,16 @@ const typeDefs = `
     voteRevealPeriod: Int
     weiBal: String
     weiCost: String
+  }
+
+  type PrelimTaskList {
+    id: ID
+    verified: Boolean
+    project: Project
+    hash: String
+    submitter: String
+    weighting: Int
+    content: String
   }
 
   type Location{
@@ -157,6 +168,7 @@ const typeDefs = `
     taskValidations(address: String): [Validation]
     userVotes(account: String): [Vote]
     taskVotes(address: String): [Vote]
+    verifiedPrelimTaskLists(address: String): [PrelimTaskList]
   }
 
   input AvatarInput {
@@ -177,6 +189,7 @@ const typeDefs = `
   type Mutation {
     addUser(input: CredentialInput, account: String): User
     addTaskList(input: String, address: String): Project
+    addPrelimTaskList(address: String, taskHash: String, submitter: String): Project
   }
 `
 // Put together a schema

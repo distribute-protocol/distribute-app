@@ -1,4 +1,4 @@
-import { PROJECT_PROPOSED, PROJECTS_RECEIVED, TASKLIST_SUBMITTED, PROJECT_STAKED } from '../constants/ProjectActionTypes'
+import { PROJECT_PROPOSED, PROJECTS_RECEIVED, TASK_LIST_SET, HASHED_TASK_LIST_SUBMITTED } from '../constants/ProjectActionTypes'
 
 const initialState = {
 }
@@ -15,18 +15,19 @@ export default function projectReducer (state = initialState, action) {
       if (!action.projects.length) {
         return state
       } else {
-        var object = action.projects.reduce((obj, item) => (obj[item.address] = item, obj), {})
-        // object = Object.assign({}, object, {submittedTasks: []})
+        let object = action.projects.reduce((obj, item) => (obj[item.address] = item, obj), {})
         return Object.assign({}, state, {[action.state]: object})
       }
     case PROJECT_PROPOSED:
       console.log(action.receipt)
       return state
-    case TASKLIST_SUBMITTED:
+    case TASK_LIST_SET:
       let project = Object.assign({}, state[2][action.projectAddress], {taskList: action.taskDetails})
       return Object.assign({}, state, {2: {[action.projectAddress]: project}})
-    // case TASK_HASH_SUBMITTED:
-    //   return Object.assign({}, state, submitter: {action.userObj})
+    case HASHED_TASK_LIST_SUBMITTED:
+      console.log(action)
+      project = Object.assign({}, state[2][action.projectAddress], {submittedTasks: {[action.submitterAddress]: action.tasks}})
+      return Object.assign({}, state, {2: {[action.projectAddress]: project}})
     case PROJECT_STAKED:
       console.log(action)
       // let repStaked = parseInt(action.value)
@@ -35,7 +36,19 @@ export default function projectReducer (state = initialState, action) {
       console.log(totalRepStaked)
       let updateRepBal = Object.assign({}, state[1][action.projectAddress], {reputation: totalRepStaked})
       return Object.assign({}, state, {1: {[action.projectAddress]: updateRepBal}})
-      // return state
+    // case PROJECT_STAKED:
+    //   console.log(action)
+    //   console.log(action.value)
+    //   let reputationStaked = action.value
+    //   let reputationBalance = state[1][action.projectAddress].reputationBalance.toNumber()
+    //   console.log(reputationBalance)
+    //   let totalReputationStaked = reputationBalance + reputationStaked
+    //   console.log(totalReputationStaked)
+    //   return Object.assign({}, state, {1: {[action.projectAddress]: totalReputationStaked}})
+    //   return Object.assign({}, state, {userTokens: state.userTokens + action.receipt.amountMinted.toNumber()})
+    //   console.log(action.collateralType)
+    //   // Object.assign({}, state, {userTokens: state.userTokens - action.receipt.amountStaked.toNumber()})
+    //   return state
     // case PROJECT_UNSTAKED
     //   console.log(action.receipt)
     //   console.log(action.collateralType)
@@ -52,5 +65,5 @@ export default function projectReducer (state = initialState, action) {
     // case TASK_VALIDATED
     default:
   }
-  return state
+return state
 }

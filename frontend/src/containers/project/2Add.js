@@ -18,7 +18,7 @@ class AddProject extends React.Component {
     }
     this.getProjectStatus = this.getProjectStatus.bind(this)
     this.handleTaskInput = this.handleTaskInput.bind(this)
-    this.submitTaskList = this.submitTaskList.bind(this)
+    this.submitTaskList = this.submitHashedTaskList.bind(this)
     this.moveRow = this.moveRow.bind(this)
     this.checkActive = this.checkActive.bind(this)
   }
@@ -85,7 +85,7 @@ class AddProject extends React.Component {
         $splice: [[dragIndex, 1], [hoverIndex, 0, dragRow]]
       }
     })
-    this.props.setProjectTaskList({taskList: newState.taskList, address: this.props.address})
+    this.props.setTaskList({taskList: newState.taskList, address: this.props.address})
     this.setState(newState)
   }
 
@@ -93,7 +93,7 @@ class AddProject extends React.Component {
     try {
       let newTaskList = JSON.parse(this.props.taskList)
       newTaskList.splice(i, 1)
-      this.props.setProjectTaskList({taskList: newTaskList}, this.props.address)
+      this.props.setTaskList({taskList: newTaskList}, this.props.address)
     } catch (error) {
       throw new Error(error)
     }
@@ -104,11 +104,11 @@ class AddProject extends React.Component {
     let percentage = parseInt(this.state.tempTask.percentage, 10)
     let tempTaskList = this.props.taskList.length === 0 ? [] : JSON.parse(this.props.taskList)
     tempTaskList.push({description, percentage})
-    this.props.setProjectTaskList({taskList: tempTaskList}, this.props.address)
+    this.props.setTaskList({taskList: tempTaskList}, this.props.address)
     this.setState({tempTask: {}})
   }
 
-  submitTaskList () {
+  submitHashedTaskList () {
     let tasks = JSON.parse(this.props.taskList)
     let sumTotal = tasks.map(el => el.percentage).reduce((prev, curr) => {
       return prev + curr
@@ -121,7 +121,7 @@ class AddProject extends React.Component {
         weiReward: task.percentage * this.state.weiCost / 100
       }))
       let taskHash = hashTasksArray(taskArray, this.state.weiCost)
-      this.props.setTaskSubmission(tasks, taskHash, this.props.address)
+      this.props.submitHashedTaskList(tasks, taskHash, this.props.address)
     }
   }
 

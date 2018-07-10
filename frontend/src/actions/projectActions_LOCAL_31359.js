@@ -7,10 +7,10 @@ import {
   PROJECT_UNSTAKED,
   CHECK_STAKED_STATUS,
   CHECK_ACTIVE_STATUS,
-  SET_TASK_LIST,
-  SUBMIT_HASHED_TASK_LIST,
+  SET_PROJECT_TASK_LIST,
+  SET_TASK_SUBMISSION,
   TASK_CLAIMED,
-  TASK_LIST_SET,
+  TASKLIST_SUBMITTED,
   TASK_COMPLETED,
   // UPDATE_PROJECT,
   TASK_VALIDATED,
@@ -18,14 +18,8 @@ import {
   PROJECTS_RECEIVED,
   STAKED_STATUS_CHECKED,
   ACTIVE_STATUS_CHECKED,
-<<<<<<< HEAD
   HASH_SUBMITTED
 
-=======
-  HASHED_TASK_LIST_SUBMITTED,
-  FINAL_TASK_LIST_SUBMITTED,
-  SUBMIT_FINAL_TASK_LIST
->>>>>>> 43667ad5ed0277d01afbc9bf2f944df7ac12b66f
 } from '../constants/ProjectActionTypes'
 
 export function proposeProject (collateralType, projObj, txObj) {
@@ -127,24 +121,17 @@ export function activeStatusChecked (receipt) {
   }
 }
 
-export function setTaskList (taskDetails, projectAddress, query) {
+export function setProjectTaskList (taskDetails, projectAddress, query) {
   return {
-    type: SET_TASK_LIST,
+    type: SET_PROJECT_TASK_LIST,
     taskDetails,
     projectAddress
   }
 }
 
-<<<<<<< HEAD
 export function setTaskSubmission (taskListHash, projectAddress, txObj) {
   return {
     type: SET_TASK_SUBMISSION,
-=======
-export function submitHashedTaskList (tasks, taskListHash, projectAddress, txObj) {
-  return {
-    type: SUBMIT_HASHED_TASK_LIST,
-    tasks,
->>>>>>> 43667ad5ed0277d01afbc9bf2f944df7ac12b66f
     taskListHash,
     projectAddress,
     txObj
@@ -158,9 +145,9 @@ export function taskClaimed (taskDetails) {
   }
 }
 
-export function taskListSet (taskDetails, projectAddress) {
+export function taskListSubmitted (taskDetails, projectAddress) {
   return {
-    type: TASK_LIST_SET,
+    type: TASKLIST_SUBMITTED,
     taskDetails,
     projectAddress
   }
@@ -173,31 +160,10 @@ export function taskCompleted (taskDetails) {
   }
 }
 
-<<<<<<< HEAD
 export function taskHashSubmitted (submissionDetails) {
   return {
     type: HASH_SUBMITTED,
     submissionDetails
-=======
-export function hashedTaskListSubmitted (tasks, submitterAddress, projectAddress) {
-  return {
-    type: HASHED_TASK_LIST_SUBMITTED,
-    tasks,
-    submitterAddress,
-    projectAddress
->>>>>>> 43667ad5ed0277d01afbc9bf2f944df7ac12b66f
-  }
-}
-
-export function submitFinalTaskList () {
-  return {
-    type: SUBMIT_FINAL_TASK_LIST
-  }
-}
-
-export function finalTaskListSubmitted () {
-  return {
-    type: FINAL_TASK_LIST_SUBMITTED
   }
 }
 // export function updateProject (address, projObj) {
