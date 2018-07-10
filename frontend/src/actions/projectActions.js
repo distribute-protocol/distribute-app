@@ -19,6 +19,7 @@ import {
   STAKED_STATUS_CHECKED,
   ACTIVE_STATUS_CHECKED,
   HASH_SUBMITTED
+
 } from '../constants/ProjectActionTypes'
 
 export function proposeProject (collateralType, projObj, txObj) {
@@ -73,7 +74,7 @@ export function projectStaked (collateralType, projectAddress, value, txObj) {
   }
 }
 
-export function unstakeProject (collateralType, projectAddress,receipt) {
+export function unstakeProject (collateralType, projectAddress, receipt) {
   return {
     type: UNSTAKE_PROJECT,
     collateralType,
@@ -128,10 +129,9 @@ export function setProjectTaskList (taskDetails, projectAddress, query) {
   }
 }
 
-export function setTaskSubmission (tasks, taskListHash, projectAddress, txObj) {
+export function setTaskSubmission (taskListHash, projectAddress, txObj) {
   return {
     type: SET_TASK_SUBMISSION,
-    tasks,
     taskListHash,
     projectAddress,
     txObj
@@ -160,12 +160,10 @@ export function taskCompleted (taskDetails) {
   }
 }
 
-export function taskHashSubmitted (tasks, submitterAddress, projectAddress) {
+export function taskHashSubmitted (submissionDetails) {
   return {
     type: HASH_SUBMITTED,
-    tasks,
-    submitterAddress,
-    projectAddress
+    submissionDetails
   }
 }
 // export function updateProject (address, projObj) {

@@ -1,4 +1,4 @@
-import { PROJECT_PROPOSED, PROJECTS_RECEIVED, TASKLIST_SUBMITTED, HASH_SUBMITTED } from '../constants/ProjectActionTypes'
+import { PROJECT_PROPOSED, PROJECTS_RECEIVED, TASKLIST_SUBMITTED, PROJECT_STAKED } from '../constants/ProjectActionTypes'
 
 const initialState = {
 }
@@ -15,7 +15,8 @@ export default function projectReducer (state = initialState, action) {
       if (!action.projects.length) {
         return state
       } else {
-        let object = action.projects.reduce((obj, item) => (obj[item.address] = item, obj), {})
+        var object = action.projects.reduce((obj, item) => (obj[item.address] = item, obj), {})
+        // object = Object.assign({}, object, {submittedTasks: []})
         return Object.assign({}, state, {[action.state]: object})
       }
     case PROJECT_PROPOSED:
@@ -24,23 +25,17 @@ export default function projectReducer (state = initialState, action) {
     case TASKLIST_SUBMITTED:
       let project = Object.assign({}, state[2][action.projectAddress], {taskList: action.taskDetails})
       return Object.assign({}, state, {2: {[action.projectAddress]: project}})
-    case HASH_SUBMITTED:
+    // case TASK_HASH_SUBMITTED:
+    //   return Object.assign({}, state, submitter: {action.userObj})
+    case PROJECT_STAKED:
       console.log(action)
-      project = Object.assign({}, state[2][action.projectAddress], {submittedTasks: {[action.submitterAddress]: action.tasks}})
-      return Object.assign({}, state, {2: {[action.projectAddress]: project}})
-    // case PROJECT_STAKED:
-    //   console.log(action)
-    //   console.log(action.value)
-    //   let reputationStaked = action.value
-    //   let reputationBalance = state[1][action.projectAddress].reputationBalance.toNumber()
-    //   console.log(reputationBalance)
-    //   let totalReputationStaked = reputationBalance + reputationStaked
-    //   console.log(totalReputationStaked)
-    //   return Object.assign({}, state, {1: {[action.projectAddress]: totalReputationStaked}})
-    //   return Object.assign({}, state, {userTokens: state.userTokens + action.receipt.amountMinted.toNumber()})
-    //   console.log(action.collateralType)
-    //   // Object.assign({}, state, {userTokens: state.userTokens - action.receipt.amountStaked.toNumber()})
-    //   return state
+      // let repStaked = parseInt(action.value)
+      // let repBal = parseInt(state[1][action.projectAddress].reputationBalance)
+      let totalRepStaked = parseInt(action.value) + parseInt(state[1][action.projectAddress].reputationBalance)
+      console.log(totalRepStaked)
+      let updateRepBal = Object.assign({}, state[1][action.projectAddress], {reputation: totalRepStaked})
+      return Object.assign({}, state, {1: {[action.projectAddress]: updateRepBal}})
+      // return state
     // case PROJECT_UNSTAKED
     //   console.log(action.receipt)
     //   console.log(action.collateralType)
