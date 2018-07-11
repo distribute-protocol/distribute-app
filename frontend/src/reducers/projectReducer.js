@@ -24,10 +24,17 @@ export default function projectReducer (state = initialState, action) {
     case TASK_LIST_SET:
       let project = Object.assign({}, state[2][action.projectAddress], {taskList: action.taskDetails})
       return Object.assign({}, state, {2: {[action.projectAddress]: project}})
-    // case HASHED_TASK_LIST_SUBMITTED:
-    //   console.log(action)
-    //   project = Object.assign({}, state[2][action.projectAddress], {submittedTasks: {[action.submitterAddress]: action.tasks}})
-    //   return Object.assign({}, state, {2: {[action.projectAddress]: project}})
+    case HASHED_TASK_LIST_SUBMITTED:
+      let oldSubmissions = state[2][action.projectAddress].submittedTasks
+      let newSubmissions = oldSubmissions
+      let overwrite = oldSubmissions.findIndex(function (element) { return element.submitter === action.submitterAddress })
+      if (overwrite === -1) {
+        newSubmissions.push({content: action.tasks, submitter: action.submitterAddress, weighting: action.receipt.weighting.toNumber()})
+      } else {
+        newSubmissions = Object.assign([], newSubmissions, {[overwrite]: {content: action.tasks, submitter: action.submitterAddress, weighting: action.receipt.weighting.toNumber()}})
+      }
+      project = Object.assign({}, state[2][action.projectAddress], {submittedTasks: newSubmissions})
+      return Object.assign({}, state, {2: {[action.projectAddress]: project}})
     case PROJECT_STAKED:
       console.log(action)
       // let repStaked = parseInt(action.value)

@@ -94,6 +94,7 @@ class AddProject extends React.Component {
   }
 
   render () {
+    console.log(this.props.submissions)
     let tasks, verifiedSubmissions
     window.taskList = this.props.taskList
     window.submissions = this.props.submissions
@@ -131,13 +132,12 @@ class AddProject extends React.Component {
       </div>
 
     if (typeof this.props.submissions !== 'undefined') {
-      verifiedSubmissions = (this.props.submissions).map((submission, i) => {
+      verifiedSubmissions = this.props.submissions.map((submission, i) => {
         return {
           key: i,
           submitter: submission.submitter,
           submission: submission.content,
           weighting: submission.weighting
-          // weighting: (<div style={{minWidth: 70}}>TBD</div>)
         }
       })
     }
