@@ -164,12 +164,13 @@ export function taskCompleted (taskDetails) {
   }
 }
 
-export function hashedTaskListSubmitted (tasks, submitterAddress, projectAddress) {
+export function hashedTaskListSubmitted (tasks, submitterAddress, projectAddress, receipt) {
   return {
     type: HASHED_TASK_LIST_SUBMITTED,
     tasks,
     submitterAddress,
-    projectAddress
+    projectAddress,
+    receipt
   }
 }
 

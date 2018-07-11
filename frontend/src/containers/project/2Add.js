@@ -134,7 +134,8 @@ class AddProject extends React.Component {
           key: i,
           submitter: submission.submitter,
           submission: submission.content,
-          weighting: (<div style={{minWidth: 70}}>TBD</div>)
+          weighting: submission.weighting
+          // weighting: (<div style={{minWidth: 70}}>TBD</div>)
         }
       })
     }

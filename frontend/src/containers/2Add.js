@@ -34,7 +34,8 @@ let projQuery = gql`
 let taskListQuery = gql`
   { verifiedPrelimTaskLists {
     submitter,
-    content
+    content,
+    weighting
   }}
 `
 

@@ -122,7 +122,7 @@ module.exports = function () {
     fromBlock: 0,
     toBlock: 'latest',
     address: PR.projectRegistryAddress,
-    topics: [web3.sha3('LogTaskHashSubmitted(address,bytes32,address)')]
+    topics: [web3.sha3('LogTaskHashSubmitted(address,bytes32,address,uint256)')]
   })
   taskHashSubmittedFilter.watch(async (err, result) => {
     if (err) console.error(err)
@@ -133,12 +133,14 @@ module.exports = function () {
     let taskHash = '0x' + eventParamArr[1]
     let submitter = eventParamArr[2]
     submitter = '0x' + submitter.substr(-40)
+    let weighting = parseInt(eventParamArr[3], 16)
     Project.findOne({address: projectAddress}).exec((error, doc) => {
       if (error) console.error(error)
       PrelimTaskList.findOne({submitter: submitter}).exec((error, prelimTaskList) => {
         if (error) console.error(error)
         if (prelimTaskList !== null && prelimTaskList.hash === taskHash) {
           prelimTaskList.verified = true
+          prelimTaskList.weighting = weighting
           prelimTaskList.save(error => {
             if (error) console.error(error)
             console.log('prelim task list submitted')

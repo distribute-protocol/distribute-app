@@ -141,11 +141,7 @@ const submitHashedTaskList = action$ => {
     mergeMap(result => {
       return Observable.from(pr.addTaskHash(projectAddress, taskHash, txObj))
     }),
-    mergeMap(result => {
-      return Observable.from(pl.calculateWeightOfAddress(projectAddress, txObj.from))
-    }),
-    map(result => hashedTaskListSubmitted(tasks, txObj.from, projectAddress))
-    // add weighting in here
+    map(result => hashedTaskListSubmitted(tasks, txObj.from, projectAddress, result.logs[0].args))
   )
 
   // map(result => rr.register({from: account})),
