@@ -27,7 +27,7 @@ class AddProject extends React.Component {
   }
 
   componentWillReceiveProps (np) {
-    this.setState({taskList: np.taskList})
+    this.setState({taskList: JSON.parse(np.taskList)})
   }
 
   onChange (type, val) {
@@ -47,7 +47,7 @@ class AddProject extends React.Component {
         $splice: [[dragIndex, 1], [hoverIndex, 0, dragRow]]
       }
     })
-    this.props.setTaskList({taskList: newState.taskList, address: this.props.address})
+    this.props.setTaskList({taskList: newState.taskList}, this.props.address)
     this.setState(newState)
   }
 
