@@ -5,7 +5,7 @@ import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
 import { client } from '../index'
 import { merge } from 'rxjs/observable/merge'
-import { rr, tr, pr } from '../utilities/blockchain'
+import { rr, tr, pr, pl } from '../utilities/blockchain'
 import gql from 'graphql-tag'
 
 const getProposedProjectsEpic = action$ => {
@@ -141,9 +141,18 @@ const submitHashedTaskList = action$ => {
     mergeMap(result => {
       return Observable.from(pr.addTaskHash(projectAddress, taskHash, txObj))
     }),
+    mergeMap(result => {
+      return Observable.from(pl.calculateWeightOfAddress(projectAddress, txObj.from))
+    }),
     map(result => hashedTaskListSubmitted(tasks, txObj.from, projectAddress))
     // add weighting in here
   )
+
+  // map(result => rr.register({from: account})),
+  // flatMap(result => Observable.concat(
+  //   Observable.of(registeredUser(result)),
+  //   Observable.of(push('/status'))
+  // ))
 }
 
 const getVerifiedTaskListsEpic = action$ => {
