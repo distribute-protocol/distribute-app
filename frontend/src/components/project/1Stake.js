@@ -30,7 +30,7 @@ export default ({
         reputationCost={reputationCost}
       />
       <div style={{padding: 10, paddingTop: 0}}>
-        <div>{`Tokens Remaining: ${tokensLeft}`}</div>
+        <div>{`Tokens Remaining: ${Math.ceil(tokensLeft)}`}</div>
         <div>Reputation Remaining: {`${reputationCost - totalReputationStaked}`}</div>
         <div>Expiration: {typeof date !== 'undefined' ? `${date.fromNow()}` : 'N/A'}</div>
         <div style={{display: 'flex', flexDirection: 'row', marginTop: 10}}>

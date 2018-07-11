@@ -16,7 +16,7 @@ class StakeProject extends Component {
 
   async getProjectStatus () {
     let projObj = this.props.project
-    projObj = Object.assign({}, projObj, {tokensLeft: Math.ceil((parseInt(projObj.weiCost) - projObj.weiBal) / this.props.currentPrice)})
+    projObj = Object.assign({}, projObj, {tokensLeft: Math.ceil((parseFloat(projObj.weiCost) - parseFloat(projObj.weiBal)) / parseFloat(this.props.currentPrice))})
     this.setState({...projObj})
   }
 
