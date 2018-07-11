@@ -129,7 +129,7 @@ const resolvers = {
         if (typeof project !== 'undefined') {
           PrelimTaskList.findOne({submitter: args.submitter}).exec((error, doc) => {
             if (error) console.error(error)
-            if (typeof doc !== 'undefined') {
+            if (doc !== null) {
               doc.content = project.taskList
               doc.hash = args.taskHash
               doc.verified = false

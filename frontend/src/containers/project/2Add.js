@@ -3,7 +3,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Button } from 'antd'
 import AddComponent from '../../components/project/2Add'
-import {eth, web3, pl} from '../../utilities/blockchain'
+import {eth, web3} from '../../utilities/blockchain'
 import { hashTasksArray } from '../../utilities/hashing'
 import update from 'immutability-helper'
 import moment from 'moment'
@@ -16,7 +16,6 @@ class AddProject extends React.Component {
       tempTask: {},
       taskList: []
     }
-    // this.getProjectStatus = this.getProjectStatus.bind(this)
     this.handleTaskInput = this.handleTaskInput.bind(this)
     this.submitTaskList = this.submitTaskList.bind(this)
     this.moveRow = this.moveRow.bind(this)
@@ -24,52 +23,12 @@ class AddProject extends React.Component {
   }
 
   componentWillMount () {
-    // this.getProjectStatus()
-    this.props.getVerifiedTaskLists(this.props.address).then(() => {
-      let submissionTasks
-      const projAddr = this.props.address
-      function submissionWeighting (address) {
-        return new Promise(async (resolve, reject) => {
-          let weighting = await pl.calculateWeightOfAddress(projAddr, address)
-          resolve(weighting)
-        })
-      }
-      console.log(this.props.submissions, 'goobachev')
-      if (this.props.submissions) {
-        console.log(this.props.submissions, 'goobi')
-        let submissions = Object.keys(this.props.submissions).map((address, i) => {
-          return submissionWeighting(address)
-            .then(async (weighting) => {
-              return {
-                key: i,
-                submitter: address,
-                submission: JSON.stringify(this.props.submissions[address]),
-                weighting: (<div style={{minWidth: 70}}>{weighting.toNumber()}</div>)
-              }
-            })
-        })
-
-        Promise.all(submissions)
-          .then(results => {
-            submissionTasks = _.compact(results)
-            this.setState({taskList: this.props.taskList, submissionTasks: submissionTasks})
-          })
-          .catch(e => {
-            console.error(e)
-          })
-      }
-      this.setState({submissionTasks})
-    })
+    this.props.getVerifiedTaskLists(this.props.address)
   }
 
   componentWillReceiveProps (np) {
     this.setState({taskList: np.taskList})
   }
-  // let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
-  // getProjectStatus () {
-  //   let projectObj = Object.assign({}, this.props.project, {taskList: this.props.taskList})
-  //   this.setState(projectObj)
-  // }
 
   onChange (type, val) {
     try {
@@ -133,8 +92,7 @@ class AddProject extends React.Component {
   }
 
   render () {
-    let tasks
-    window.tests = this.props.tests
+    let tasks, verifiedSubmissions
     window.taskList = this.props.taskList
     window.submissions = this.props.submissions
     if (typeof this.props.taskList !== 'undefined' && this.props.taskList.length !== 0) {
@@ -170,6 +128,16 @@ class AddProject extends React.Component {
         </Button>
       </div>
 
+    if (typeof this.props.submissions !== 'undefined') {
+      verifiedSubmissions = (this.props.submissions).map((submission, i) => {
+        return {
+          key: i,
+          submitter: submission.submitter,
+          submission: submission.content,
+          weighting: (<div style={{minWidth: 70}}>TBD</div>)
+        }
+      })
+    }
     return (
       <AddComponent
         name={this.state.name}
@@ -184,7 +152,7 @@ class AddProject extends React.Component {
         submitTaskList={this.submitTaskList}
         checkActive={this.checkActive}
         submission={submission}
-        submissionTasks={this.state.submissionTasks}
+        submissionTasks={verifiedSubmissions}
         moveRow={this.moveRow}
       />
     )
@@ -193,7 +161,6 @@ class AddProject extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    tests: state.projects[2][ownProps.address],
     taskList: state.projects[2][ownProps.address].taskList,
     submissions: state.projects[2][ownProps.address].submittedTasks
   }

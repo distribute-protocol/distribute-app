@@ -93,6 +93,7 @@ class Add extends React.Component {
 
   getVerifiedTaskLists (address) {
     this.props.getVerifiedTaskLists(address)
+    return 0
   }
   // fast forward Ganache 1 week
   async fastForward () {
