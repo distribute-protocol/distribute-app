@@ -16,6 +16,7 @@ class AddProject extends React.Component {
       tempTask: {},
       taskList: []
     }
+    this.getProjectStatus = this.getProjectStatus.bind(this)
     this.handleTaskInput = this.handleTaskInput.bind(this)
     this.submitTaskList = this.submitTaskList.bind(this)
     this.moveRow = this.moveRow.bind(this)
@@ -23,7 +24,13 @@ class AddProject extends React.Component {
   }
 
   componentWillMount () {
+    this.getProjectStatus()
     this.props.getVerifiedTaskLists(this.props.address)
+  }
+
+  getProjectStatus () {
+    let projectObj = Object.assign({}, this.props.project)
+    this.setState(projectObj)
   }
 
   componentWillReceiveProps (np) {
