@@ -27,7 +27,9 @@ class AddProject extends React.Component {
   }
 
   componentWillReceiveProps (np) {
-    this.setState({taskList: JSON.parse(np.taskList)})
+    if (np.taskList.length) {
+      this.setState({taskList: JSON.parse(np.taskList)})
+    }
   }
 
   onChange (type, val) {
