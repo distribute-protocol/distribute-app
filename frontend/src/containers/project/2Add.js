@@ -16,7 +16,7 @@ class AddProject extends React.Component {
       tempTask: {},
       taskList: []
     }
-    this.getProjectStatus = this.getProjectStatus.bind(this)
+    // this.getProjectStatus = this.getProjectStatus.bind(this)
     this.handleTaskInput = this.handleTaskInput.bind(this)
     this.submitTaskList = this.submitTaskList.bind(this)
     this.moveRow = this.moveRow.bind(this)
@@ -24,14 +24,14 @@ class AddProject extends React.Component {
   }
 
   componentWillMount () {
-    this.getProjectStatus()
+    // this.getProjectStatus()
     this.props.getVerifiedTaskLists(this.props.address)
   }
 
-  getProjectStatus () {
-    let projectObj = Object.assign({}, this.props.project)
-    this.setState(projectObj)
-  }
+  // getProjectStatus () {
+  //   let projectObj = Object.assign({}, this.props.project)
+  //   this.setState(...projectObj)
+  // }
 
   componentWillReceiveProps (np) {
     if (np.taskList.length) {
@@ -101,7 +101,6 @@ class AddProject extends React.Component {
   }
 
   render () {
-    // console.log(this.props.submissions)
     let tasks, verifiedSubmissions
     window.taskList = this.props.taskList
     window.submissions = this.props.submissions
@@ -150,14 +149,14 @@ class AddProject extends React.Component {
     }
     return (
       <AddComponent
-        name={this.state.name}
+        name={this.props.project.name}
         address={this.props.address}
-        photo={this.state.photo}
-        summary={this.state.summary}
-        location={this.state.location}
-        cost={web3.fromWei(this.state.cost, 'ether')}
-        reputationCost={this.state.reputationCost}
-        date={moment(this.state.nextDeadline)}
+        photo={this.props.project.photo}
+        summary={this.props.project.summary}
+        location={this.props.project.location}
+        cost={web3.fromWei(this.props.project.weiCost, 'ether')}
+        reputationCost={this.props.project.reputationCost}
+        date={moment(this.props.project.nextDeadline)}
         tasks={tasks}
         submitTaskList={this.submitTaskList}
         checkActive={this.checkActive}

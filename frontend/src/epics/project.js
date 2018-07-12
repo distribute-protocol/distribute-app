@@ -115,12 +115,17 @@ const submitHashedTaskList = action$ => {
   let txObj
   let projectAddress
   let taskHash
+  let txReceipt
   return action$.ofType(SUBMIT_HASHED_TASK_LIST).pipe(
     mergeMap(action => {
       tasks = JSON.stringify(action.tasks)
       txObj = action.txObj
       projectAddress = action.projectAddress
       taskHash = action.taskListHash
+      return Observable.from(pr.addTaskHash(projectAddress, taskHash, txObj))
+    }),
+    mergeMap(result => {
+      txReceipt = result
       let mutation = gql`
         mutation addPrelimTaskList($address: String!, $taskHash: String!, $submitter: String!) {
           addPrelimTaskList(address: $address, taskHash: $taskHash, submitter: $submitter) {
@@ -138,18 +143,9 @@ const submitHashedTaskList = action$ => {
         }
       })
     }),
-    mergeMap(result => {
-      return Observable.from(pr.addTaskHash(projectAddress, taskHash, txObj))
-    }),
     map(result =>
-      hashedTaskListSubmitted(tasks, txObj.from, projectAddress, result.logs[1].args))
+      hashedTaskListSubmitted(tasks, txObj.from, projectAddress, txReceipt.logs[1].args))
   )
-
-  // map(result => rr.register({from: account})),
-  // flatMap(result => Observable.concat(
-  //   Observable.of(registeredUser(result)),
-  //   Observable.of(push('/status'))
-  // ))
 }
 
 const getVerifiedTaskListsEpic = action$ => {

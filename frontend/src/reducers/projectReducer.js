@@ -23,10 +23,16 @@ export default function projectReducer (state = initialState, action) {
       return state
     case TASK_LIST_SET:
       let project = Object.assign({}, state[2][action.projectAddress], {taskList: action.taskDetails})
-      return Object.assign({}, state, {2: {[action.projectAddress]: project}})
+      let projects = Object.assign({}, state[2], {[action.projectAddress]: project})
+      return Object.assign({}, state, {2: projects})
     case HASHED_TASK_LIST_SUBMITTED:
-      let oldSubmissions = state[2][action.projectAddress].submittedTasks
-      console.log(action.receipt, oldSubmissions)
+      let oldSubmissions
+      if (typeof state[2][action.projectAddress].submittedTasks === 'undefined') {
+        oldSubmissions = []
+      } else {
+        oldSubmissions = state[2][action.projectAddress].submittedTasks
+      }
+      console.log(action.receipt, state[2][action.projectAddress])
       let newSubmissions = oldSubmissions
       let overwrite = oldSubmissions.findIndex(function (element) { return element.submitter === action.submitterAddress })
       if (overwrite === -1) {
@@ -36,9 +42,10 @@ export default function projectReducer (state = initialState, action) {
         newSubmissions = Object.assign([], newSubmissions, {[overwrite]: {content: action.tasks, submitter: action.submitterAddress, weighting: action.receipt.weighting.toNumber()}})
       }
       project = Object.assign({}, state[2][action.projectAddress], {submittedTasks: newSubmissions})
-      return Object.assign({}, state, {2: {[action.projectAddress]: project}})
+      projects = Object.assign({}, state[2], {[action.projectAddress]: project})
+      return Object.assign({}, state, {2: projects})
     case PROJECT_STAKED:
-      console.log(action)
+      // console.log(action)
       // let repStaked = parseInt(action.value)
       // let repBal = parseInt(state[1][action.projectAddress].reputationBalance)
       let totalRepStaked = parseInt(action.value) + parseInt(state[1][action.projectAddress].reputationBalance)
@@ -48,8 +55,8 @@ export default function projectReducer (state = initialState, action) {
       return state
     case VERIFIED_TASK_LISTS_RECEIVED:
       project = Object.assign({}, state[2][action.address], {submittedTasks: action.result})
-      console.log(action)
-      return Object.assign({}, state, {2: {[action.address]: project}})
+      projects = Object.assign({}, state[2], {[action.address]: project})
+      return Object.assign({}, state, {2: projects})
     // case PROJECT_STAKED:
     //   console.log(action)
     //   console.log(action.value)

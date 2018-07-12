@@ -102,6 +102,7 @@ class Add extends React.Component {
   }
 
   render () {
+    console.log(this.props.projects)
     const projects = typeof this.props.projects !== `undefined`
       ? Object.keys(this.props.projects).map((address, i) => {
         return <Project
