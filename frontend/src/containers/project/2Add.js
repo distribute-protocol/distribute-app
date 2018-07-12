@@ -3,10 +3,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Button } from 'antd'
 import AddComponent from '../../components/project/2Add'
-import {eth, web3, pr, pl} from '../../utilities/blockchain'
+import {eth, web3} from '../../utilities/blockchain'
 import { hashTasksArray } from '../../utilities/hashing'
 import update from 'immutability-helper'
-import { setProjectTaskList, setTaskSubmission } from '../../actions/projectActions'
 import moment from 'moment'
 import * as _ from 'lodash'
 
@@ -26,46 +25,18 @@ class AddProject extends React.Component {
 
   componentWillMount () {
     this.getProjectStatus()
-    let submissionTasks
-    const projAddr = this.props.address
-    function submissionWeighting (address) {
-      return new Promise(async (resolve, reject) => {
-        let weighting = await pl.calculateWeightOfAddress(projAddr, address)
-        resolve(weighting)
-      })
-    }
-    if (this.props.submissions) {
-      let submissions = Object.keys(this.props.submissions).map((address, i) => {
-        return submissionWeighting(address)
-          .then(async (weighting) => {
-            return {
-              key: i,
-              submitter: address,
-              submission: JSON.stringify(this.props.submissions[address]),
-              weighting: (<div style={{minWidth: 70}}>{weighting.toNumber()}</div>)
-            }
-          })
-      })
+    this.props.getVerifiedTaskLists(this.props.address)
+  }
 
-      Promise.all(submissions)
-        .then(results => {
-          submissionTasks = _.compact(results)
-          this.setState({taskList: this.props.taskList, submissionTasks: submissionTasks})
-        })
-        .catch(e => {
-          console.error(e)
-        })
-    }
-    this.setState({submissionTasks})
+  getProjectStatus () {
+    let projectObj = Object.assign({}, this.props.project)
+    this.setState(projectObj)
   }
 
   componentWillReceiveProps (np) {
-    this.setState({taskList: np.taskList})
-  }
-  // let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
-  getProjectStatus () {
-    let projectObj = Object.assign({}, this.props.project, {taskList: this.props.taskList})
-    this.setState(projectObj)
+    if (np.taskList.length) {
+      this.setState({taskList: JSON.parse(np.taskList)})
+    }
   }
 
   onChange (type, val) {
@@ -85,31 +56,31 @@ class AddProject extends React.Component {
         $splice: [[dragIndex, 1], [hoverIndex, 0, dragRow]]
       }
     })
-    this.props.setProjectTaskList({taskList: newState.taskList, address: this.props.address})
+    this.props.setTaskList({taskList: newState.taskList}, this.props.address)
     this.setState(newState)
   }
 
   deleteElement (i) {
     try {
-      let newTaskList = this.props.taskList
+      let newTaskList = JSON.parse(this.props.taskList)
       newTaskList.splice(i, 1)
-      this.props.setProjectTaskList({taskList: newTaskList, address: this.props.address})
+      this.props.setTaskList({taskList: newTaskList}, this.props.address)
     } catch (error) {
       throw new Error(error)
     }
   }
 
   handleTaskInput () {
-    let task = this.state.tempTask.description
+    let description = this.state.tempTask.description
     let percentage = parseInt(this.state.tempTask.percentage, 10)
-    let tempTaskList = this.state.taskList
-    tempTaskList.push({description: task, percentage: percentage})
-    this.props.setProjectTaskList({taskList: tempTaskList, address: this.props.address})
+    let tempTaskList = this.props.taskList.length === 0 ? [] : JSON.parse(this.props.taskList)
+    tempTaskList.push({description, percentage})
+    this.props.setTaskList({taskList: tempTaskList}, this.props.address)
     this.setState({tempTask: {}})
   }
 
   submitTaskList () {
-    let tasks = this.props.taskList
+    let tasks = JSON.parse(this.props.taskList)
     let sumTotal = tasks.map(el => el.percentage).reduce((prev, curr) => {
       return prev + curr
     }, 0)
@@ -121,32 +92,21 @@ class AddProject extends React.Component {
         weiReward: task.percentage * this.state.weiCost / 100
       }))
       let taskHash = hashTasksArray(taskArray, this.state.weiCost)
-      eth.getAccounts(async (err, accounts) => {
-        if (!err) {
-          await pr.addTaskHash(this.props.address, taskHash, {from: accounts[0]}).then(() => {
-            this.props.setTaskSubmission({
-              address: this.props.address,
-              submitter: accounts[0],
-              taskSubmission: taskArray
-            })
-          })
-        }
-      })
+      this.props.submitHashedTaskList(tasks, taskHash, this.props.address)
     }
   }
 
   checkActive () {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        await pr.checkActive(this.props.address, {from: accounts[0]})
-      }
-    })
+    this.props.checkActiveStatus()
   }
 
   render () {
-    let tasks
-    if (typeof this.props.taskList !== 'undefined') {
-      tasks = this.props.taskList.map((task, i) => {
+    console.log(this.props.submissions)
+    let tasks, verifiedSubmissions
+    window.taskList = this.props.taskList
+    window.submissions = this.props.submissions
+    if (typeof this.props.taskList !== 'undefined' && this.props.taskList.length !== 0) {
+      tasks = JSON.parse(this.props.taskList).map((task, i) => {
         return {
           key: i,
           description: task.description,
@@ -178,6 +138,16 @@ class AddProject extends React.Component {
         </Button>
       </div>
 
+    if (typeof this.props.submissions !== 'undefined') {
+      verifiedSubmissions = this.props.submissions.map((submission, i) => {
+        return {
+          key: i,
+          submitter: submission.submitter,
+          submission: submission.content,
+          weighting: submission.weighting
+        }
+      })
+    }
     return (
       <AddComponent
         name={this.state.name}
@@ -192,7 +162,7 @@ class AddProject extends React.Component {
         submitTaskList={this.submitTaskList}
         checkActive={this.checkActive}
         submission={submission}
-        submissionTasks={this.state.submissionTasks}
+        submissionTasks={verifiedSubmissions}
         moveRow={this.moveRow}
       />
     )
@@ -206,11 +176,4 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setProjectTaskList: (taskDetails) => dispatch(setProjectTaskList(taskDetails)),
-    setTaskSubmission: (submissionDetails) => dispatch(setTaskSubmission(submissionDetails))
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddProject)
+export default connect(mapStateToProps)(AddProject)

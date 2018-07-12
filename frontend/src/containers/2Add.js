@@ -6,7 +6,7 @@ import { push } from 'react-router-redux'
 import { eth } from '../utilities/blockchain'
 import Project from './project/2Add'
 import fastforward from '../utilities/fastforward'
-import { getProjects } from '../actions/projectActions'
+import { getProjects, checkActiveStatus, submitHashedTaskList, setTaskList, getVerifiedTaskLists } from '../actions/projectActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -25,10 +25,24 @@ let projQuery = gql`
       reputationCost,
       summary,
       tokenBalance,
+      taskList,
       weiBal,
       weiCost
     }
   }`
+
+let taskListQuery = gql`
+  { verifiedPrelimTaskLists {
+    submitter,
+    content,
+    weighting
+  }}
+`
+
+// let projQuery2 = gql`
+// {
+//   verifiedPrelimTaskLists(state: 2, address: )
+// }`
 
 class Add extends React.Component {
   constructor () {
@@ -37,6 +51,9 @@ class Add extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
+    this.setTaskList = this.setTaskList.bind(this)
+    this.submitHashedTaskList = this.submitHashedTaskList.bind(this)
+    this.getVerifiedTaskLists = this.getVerifiedTaskLists.bind(this)
   }
 
   componentWillMount () {
@@ -55,19 +72,46 @@ class Add extends React.Component {
     })
   }
 
-// fast forward Ganache 1 week
+  async checkActiveStatus (address) {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        this.props.checkActiveStatus(address, {from: accounts[0]})
+      }
+    })
+  }
+
+  async setTaskList (taskDetails, address) {
+    this.props.setTaskList(taskDetails, address)
+  }
+
+  async submitHashedTaskList (tasks, taskHash, address) {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        this.props.submitHashedTaskList(tasks, taskHash, address, {from: accounts[0]})
+      }
+    })
+  }
+
+  getVerifiedTaskLists (address) {
+    this.props.getVerifiedTaskLists(address)
+    return 0
+  }
+  // fast forward Ganache 1 week
   async fastForward () {
     await fastforward(7 * 24 * 60 * 60)
   }
 
   render () {
     const projects = typeof this.props.projects !== `undefined`
-      ? Object.keys(this.props.project).map((address, i) => {
+      ? Object.keys(this.props.projects).map((address, i) => {
         return <Project
           key={i}
           index={i}
           address={address}
-          project={this.props.project[address]}
+          project={this.props.projects[address]}
+          setTaskList={(taskDetails, address) => this.setTaskList(taskDetails, address)}
+          getVerifiedTaskLists={(address) => this.getVerifiedTaskLists(address)}
+          submitHashedTaskList={(tasks, taskHash, address) => this.submitHashedTaskList(tasks, taskHash, address)}
         />
       })
       : []
@@ -99,7 +143,11 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
-    getProjects: () => dispatch(getProjects(2, projQuery))
+    getProjects: () => dispatch(getProjects(2, projQuery)),
+    getVerifiedTaskLists: (projectAddress) => dispatch(getVerifiedTaskLists(projectAddress, taskListQuery)),
+    checkActiveStatus: (projectAddress, txObj) => dispatch(checkActiveStatus(projectAddress, txObj)),
+    submitHashedTaskList: (tasks, taskHash, projectAddress, txObj) => dispatch(submitHashedTaskList(tasks, taskHash, projectAddress, txObj)),
+    setTaskList: (taskDetails, projectAddress) => dispatch(setTaskList(taskDetails, projectAddress))
   }
 }
 
