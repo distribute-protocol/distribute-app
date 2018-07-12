@@ -11,6 +11,7 @@ const Token = require('../models/token')
 const User = require('../models/user')
 const Validation = require('../models/validation')
 const Vote = require('../models/vote')
+const PrelimTaskList = require('../models/prelimTaskList')
 const _ = require('lodash')
 // The resolvers
 const resolvers = {
@@ -22,6 +23,7 @@ const resolvers = {
     user: (credential) => User.findOne({credentialId: credential.id}).then(user => user)
   },
   Project: {
+    prelimTaskLists: (project) => PrelimTaskList.findOne({project: project.id}).then(prelimTaskLists => prelimTaskLists),
     proposer: (project) => User.findOne({account: project.proposer}).then(user => user),
     stakes: (project) => Stake.find({projectId: project.id}).then(stakes => stakes),
     tasks: (project) => Task.find({projectId: project.id}).then(tasks => tasks),
@@ -79,7 +81,8 @@ const resolvers = {
     allTasks: () => Task.find({}).then(tasks => tasks),
     userTasks: (_, args) => User.findOne({account: args.account}).then(user => Task.find({claimer: user.id})).then(tasks => tasks),
     projectTasks: (_, args) => Project.findOne({address: args.address}).then(project => Task.find({projectId: project.id})).then(tasks => tasks),
-    userValidations: (account) => [{}],
+    verifiedPrelimTaskLists: (_, args) => PrelimTaskList.find({projectId: args.address}).then(prelimTaskList => PrelimTaskList.find({verified: true})).then(prelimTaskLists => prelimTaskLists),
+    userPrelimTaskLists: (_, args) => PrelimTaskList.findOne({submitter: args.account}).then(prelimTaskLists => prelimTaskLists),
     taskValidations: (address) => [{}],
     userVotes: (account) => [{}],
     taskVotes: (address) => [{}]
@@ -107,7 +110,93 @@ const resolvers = {
         })
         return user
       })
+    },
+    addTaskList: (obj, args) => {
+      Project.findOne({address: args.address}).exec((error, projectStatus) => {
+        if (error) console.error(error)
+        if (typeof projectStatus !== 'undefined') {
+          projectStatus.taskList = args.input // parse and unparse on frontend
+          projectStatus.save((error, doc) => {
+            if (error) console.error(error)
+            return projectStatus
+          })
+        }
+      })
+    },
+    addPrelimTaskList: (obj, args) => {
+      Project.findOne({address: args.address}).exec((error, project) => {
+        if (error) console.error(error)
+        if (typeof project !== 'undefined') {
+          PrelimTaskList.findOne({submitter: args.submitter}).exec((error, doc) => {
+            if (error) console.error(error)
+            if (doc !== null) {
+              doc.content = project.taskList
+              doc.hash = args.taskHash
+              doc.verified = false
+              doc.save(err => {
+                if (err) console.error(err)
+                console.log('prelim task list updated')
+                return doc
+              })
+            } else {
+              let prelimTaskList = new PrelimTaskList({
+                _id: new mongoose.Types.ObjectId(),
+                hash: args.taskHash,
+                projectId: project.id,
+                submitter: args.submitter,
+                content: project.taskList,
+                verified: false
+              })
+              prelimTaskList.save(err => {
+                console.log(prelimTaskList)
+                if (err) console.error(error)
+                console.log('prelim task list saved')
+                return prelimTaskList
+              })
+            }
+          })
+        }
+      })
     }
+    // let prelimTaskListSubmitted = new PrelimTaskList({
+    //   _id: new mongoose.Types.ObjectId(),
+    //   hash: taskHash,
+    //   projectId: doc.id,
+    //   submitter,
+    //   verified: true
+    // })
+    // taskListInput: (_, args) => Project.findOne({address: args.address}).then(project => Object.assign({taskList: args.taskDetails}))
+    // need to save it
+    //   addTask: (obj, args) => {
+    //     // individual tasks added by the logs
+    //     // let taskInputObj = Object.assign({_id: new mongoose.Types.ObjectId()}, args.input)
+    //     // project.findOne -- use address to find proj id
+    //     Project.findOne({address: projectAddress}).exec((error, projectStatus) => {
+    //       if (error) console.error(error)
+    //     //   let taskObj = new Task(Object.assign({}, {
+    //     //   _id: new mongoose.Types.ObjectId(),
+    //     //   description: args.input.description,
+    //     //   project:
+    //     //   })
+    //     })
+    //     // taskObj.save((err, task) => {
+    //     //   assert.equal(err, null)
+    //     //   let taskInput = new TaskInput(Object.assign({taskId: task.id}, taskInputObj))
+    //     //   taskInput.save((err, taskInput) => {
+    //     //       assert.equal(err,null)
+    //     //   })
+    //     // })
+    //     return task
+    //   }
+    // addProject: (obj, args) => {
+    //   let userObj = new User({
+    //     _id: new mongoose.Types.ObjectId(),
+    //     account: args.account,
+    //     name: args.input.name,
+    //     tokenBalance: 0,
+    //     reputationBalance: 0
+    // })
+    // }
   }
 }
 

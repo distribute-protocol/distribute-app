@@ -61,7 +61,9 @@ module.exports = function () {
         })
         User.findOne({account: account}).exec((err, userStatus) => {
           if (err) console.error(err)
-          userStatus.tokenBalance += tokensMinted
+          if (userStatus !== null) {
+            userStatus.tokenBalance += tokensMinted
+          }
           userStatus.save(err => {
             if (err) console.error(err)
           })

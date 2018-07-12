@@ -73,7 +73,9 @@ module.exports = function () {
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
         User.findOne({account: account}).exec((err, userStatus) => {
           if (err) console.error(error)
-          userStatus.reputationBalance -= reputationStaked
+          if (userStatus !== null) {
+            userStatus.reputationBalance -= reputationStaked
+          }
           userStatus.save(err => {
             if (err) console.error(error)
           })

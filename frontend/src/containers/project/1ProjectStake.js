@@ -11,13 +11,13 @@ class StakeProject extends Component {
     }
     this.tokens = this.tokens.bind(this)
     this.reputation = this.reputation.bind(this)
-    this.checkStaked = this.checkStaked.bind(this)
     this.getProjectStatus = this.getProjectStatus.bind(this)
   }
 
   async getProjectStatus () {
     let projObj = this.props.project
-    projObj = Object.assign({}, projObj, {tokensLeft: Math.ceil((parseInt(projObj.weiCost) - projObj.weiBal) / this.props.currentPrice)})
+    console.log(projObj)
+    projObj = Object.assign({}, projObj, {tokensLeft: Math.ceil(((parseFloat(projObj.weiCost) - parseFloat(projObj.weiBal)) / parseFloat(this.props.currentPrice)))})
     this.setState({...projObj})
   }
 
@@ -47,10 +47,6 @@ class StakeProject extends Component {
     this.setState({stake: ''})
   }
 
-  checkStaked () {
-    this.props.checkStakedStatus()
-  }
-
   render () {
     return (
       <StakeComponent
@@ -60,7 +56,7 @@ class StakeProject extends Component {
         summary={this.state.summary}
         location={this.state.location}
         cost={web3.fromWei(this.state.weiCost, 'ether')}
-        tokensLeft={(parseInt(this.state.weiCost) - parseInt(this.state.weiBal)) / this.props.currentPrice}
+        tokensLeft={this.state.tokensLeft}
         reputationCost={this.state.reputationCost}
         totalReputationStaked={this.state.reputationBalance}
         date={moment(this.state.nextDeadline)}
@@ -76,16 +72,9 @@ class StakeProject extends Component {
         }
         tokens={this.tokens}
         reputation={this.reputation}
-        checkStaked={this.checkStakedStatus}
       />
     )
   }
 }
-
-// const mapDispatchToProps = (dispatch) => {
-//   return bindActionCreators({
-//     updateProject
-//   }, dispatch)
-// }
 
 export default StakeProject
