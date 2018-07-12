@@ -141,7 +141,8 @@ const submitHashedTaskList = action$ => {
     mergeMap(result => {
       return Observable.from(pr.addTaskHash(projectAddress, taskHash, txObj))
     }),
-    map(result => hashedTaskListSubmitted(tasks, txObj.from, projectAddress, result.logs[0].args))
+    map(result =>
+      hashedTaskListSubmitted(tasks, txObj.from, projectAddress, result.logs[1].args))
   )
 
   // map(result => rr.register({from: account})),

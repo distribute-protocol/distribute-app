@@ -97,11 +97,11 @@ class AddProject extends React.Component {
   }
 
   checkActive () {
-    this.props.checkActiveStatus()
+    this.props.checkActiveStatus(this.props.address)
   }
 
   render () {
-    console.log(this.props.submissions)
+    // console.log(this.props.submissions)
     let tasks, verifiedSubmissions
     window.taskList = this.props.taskList
     window.submissions = this.props.submissions

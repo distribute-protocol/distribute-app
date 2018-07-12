@@ -26,6 +26,7 @@ export default function projectReducer (state = initialState, action) {
       return Object.assign({}, state, {2: {[action.projectAddress]: project}})
     case HASHED_TASK_LIST_SUBMITTED:
       let oldSubmissions = state[2][action.projectAddress].submittedTasks
+      console.log(action.receipt, oldSubmissions)
       let newSubmissions = oldSubmissions
       let overwrite = oldSubmissions.findIndex(function (element) { return element.submitter === action.submitterAddress })
       if (overwrite === -1) {

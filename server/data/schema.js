@@ -51,6 +51,7 @@ const typeDefs = `
     summary: String
     tasks: [Task]
     taskList: String
+    topTaskHash: String
     prelimTaskLists: [PrelimTaskList]
     tokenBalance: Int
     turnoverTime: Int

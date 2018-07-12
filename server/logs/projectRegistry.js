@@ -103,7 +103,6 @@ module.exports = function () {
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
     let flag = eventParamArr[1]
-    // console.log(flag)
     if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
       Project.findOne({address: projectAddress}).exec((error, doc) => {
         if (error) console.error(error)
@@ -144,10 +143,37 @@ module.exports = function () {
           prelimTaskList.save(error => {
             if (error) console.error(error)
             console.log('prelim task list submitted')
-            console.log(prelimTaskList)
           })
         }
       })
     })
+  })
+  const projectActiveFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: PR.projectRegistryAddress,
+    topics: [web3.sha3('LogProjectActive(address,bytes32,bool)')]
+  })
+  projectActiveFilter.watch(async (err, result) => {
+    if (err) console.error(err)
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let projectAddress = eventParamArr[0]
+    projectAddress = '0x' + projectAddress.substr(-40)
+    let topTaskHash = '0x' + eventParamArr[1]
+    let flag = eventParamArr[2]
+    if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
+      Project.findOne({address: projectAddress}).exec((error, doc) => {
+        if (error) console.error(error)
+        if (doc) {
+          doc.state = 3
+          doc.topTaskHash = topTaskHash
+          doc.save(err => {
+            if (err) console.error(error)
+            console.log('active project with topTaskHash')
+          })
+        }
+      })
+    }
   })
 }
