@@ -27,8 +27,8 @@ module.exports = function () {
       if (err) console.error(err)
       // console.log(txHash)
       // console.log(netStatus.processedTxs[txHash])
-      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-        if (netStatus) {
+      if (netStatus) {
+        if (typeof netStatus.processedTxs[txHash] === 'undefined') {
           netStatus.totalReputation += 10000
           netStatus.processedTxs[txHash] = true
           netStatus.markModified('processedTxs')

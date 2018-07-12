@@ -19,7 +19,7 @@ export default function projectReducer (state = initialState, action) {
         return Object.assign({}, state, {[action.state]: object})
       }
     case PROJECT_PROPOSED:
-      console.log(action.receipt)
+      // console.log(action.receipt)
       return state
     case TASK_LIST_SET:
       let project = Object.assign({}, state[2][action.projectAddress], {taskList: action.taskDetails})
