@@ -29,7 +29,7 @@ export default function projectReducer (state = initialState, action) {
       let newSubmissions = oldSubmissions
       let overwrite = oldSubmissions.findIndex(function (element) { return element.submitter === action.submitterAddress })
       if (overwrite === -1) {
-        let length = newSubmissions.length + 1
+        let length = newSubmissions.length
         newSubmissions = Object.assign([], newSubmissions, {[length]: {content: action.tasks, submitter: action.submitterAddress, weighting: action.receipt.weighting.toNumber()}})
       } else {
         newSubmissions = Object.assign([], newSubmissions, {[overwrite]: {content: action.tasks, submitter: action.submitterAddress, weighting: action.receipt.weighting.toNumber()}})
