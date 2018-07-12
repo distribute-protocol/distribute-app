@@ -112,6 +112,7 @@ class Add extends React.Component {
           setTaskList={(taskDetails, address) => this.setTaskList(taskDetails, address)}
           getVerifiedTaskLists={(address) => this.getVerifiedTaskLists(address)}
           submitHashedTaskList={(tasks, taskHash, address) => this.submitHashedTaskList(tasks, taskHash, address)}
+          checkActiveStatus={(address) => this.checkActiveStatus(address)}
         />
       })
       : []
