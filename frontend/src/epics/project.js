@@ -167,7 +167,7 @@ const getVerifiedTaskListsEpic = action$ => {
 
 const checkActiveStatus = action$ =>
   action$.ofType(CHECK_ACTIVE_STATUS).pipe(
-    mergeMap(action => pr.checkActive(action.projectAddress, action.txObj)),
+    mergeMap(action => { return pr.checkActive(action.projectAddress, action.txObj) }),
     map(result => activeStatusChecked(result))
   )
 
