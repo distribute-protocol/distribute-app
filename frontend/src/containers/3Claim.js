@@ -10,7 +10,7 @@ import { getProjects } from '../actions/projectActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
-  { allProjectsinState(state: 2){
+  { allProjectsinState(state: 3){
       address,
       id,
       ipfsHash,

@@ -127,7 +127,7 @@ class ClaimProject extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    project: state.projects.allProjects[ownProps.address]
+    project: state.projects[3][ownProps.address]
   }
 }
 

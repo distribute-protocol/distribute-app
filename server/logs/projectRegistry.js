@@ -168,8 +168,8 @@ module.exports = function () {
         if (doc) {
           doc.state = 3
           doc.topTaskHash = topTaskHash
-          console.log('the project state is', doc.state)
           doc.save(err => {
+            console.log('the project state is', doc.state)
             if (err) console.error(error)
             console.log('active project with topTaskHash')
           })
