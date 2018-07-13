@@ -72,10 +72,6 @@ export default function projectReducer (state = initialState, action) {
     //   console.log(action.collateralType)
     //   // Object.assign({}, state, {userTokens: state.userTokens + action.receipt.amountStaked.toNumber()})
       // return state
-    // case STAKED_STATUS_CHECKED
-      // no longer necessary????
-    // case ACTIVE_STATUS_CHECKED
-      // no longer necessary????
     // case TASK_CLAIMED
     //   console.log(action.taskDetails)
     // case TASK_COMPLETED

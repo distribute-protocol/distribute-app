@@ -11,7 +11,9 @@ const ButtonGroup = Button.Group
 class ClaimProject extends React.Component {
   constructor () {
     super()
-    this.state = {}
+    this.state = {
+      projects: []
+    }
     this.getProjectStatus = this.getProjectStatus.bind(this)
     this.submitWinningHashList = this.submitWinningHashList.bind(this)
     this.checkValidation = this.checkValidation.bind(this)
@@ -20,7 +22,7 @@ class ClaimProject extends React.Component {
   componentWillMount () {
     this.getProjectStatus()
   }
-// let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
+  // let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
   async getProjectStatus () {
     this.setState(this.props.project)
   }
@@ -53,9 +55,9 @@ class ClaimProject extends React.Component {
       if (!err) {
         let hash = web3.fromAscii(this.props.project.taskList[i].description, 32)
         await rr.claimTask(this.props.address, i, hash, 100 * (this.props.project.taskList[i].weiReward / this.state.weiCost), {from: accounts[0]})
-        .then(async () => {
-          this.props.taskClaimed({address: this.props.address, index: i})
-        })
+          .then(async () => {
+            this.props.taskClaimed({address: this.props.address, index: i})
+          })
       }
     })
   }
@@ -64,9 +66,9 @@ class ClaimProject extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         await pr.submitTaskComplete(this.props.address, i, {from: accounts[0]})
-        .then(async () => {
-          this.props.taskCompleted({address: this.props.address, index: i})
-        })
+          .then(async () => {
+            this.props.taskCompleted({address: this.props.address, index: i})
+          })
       }
     })
   }

@@ -10,7 +10,7 @@ import { getProjects } from '../actions/projectActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
-  { allProjectsinState(state: 3){
+  { allProjectsinState(state: 2){
       address,
       id,
       ipfsHash,
@@ -25,8 +25,10 @@ let projQuery = gql`
       reputationCost,
       summary,
       tokenBalance,
+      taskList,
       weiBal,
-      weiCost
+      weiCost,
+      state
     }
   }`
 
@@ -55,13 +57,15 @@ class Claim extends React.Component {
     })
   }
 
-// fast forward Ganache 1 week
+  // fast forward Ganache 1 week
   async fastForward () {
     await fastforward(2 * 7 * 24 * 60 * 60)
   }
 
   render () {
-    const projects = typeof this.props.projects !== `undefined`
+    console.log(this.state.projects)
+    console.log(this.props.projects, typeof this.props.projects)
+    const projects = (typeof this.props.projects !== 'undefined')
       ? Object.keys(this.props.project).map((address, i) => {
         return <Project
           key={i}

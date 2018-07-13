@@ -175,6 +175,18 @@ const checkActiveStatus = action$ =>
     map(result => activeStatusChecked(result))
   )
 
+const getActiveProjectsEpic = action$ => {
+  let state
+  return action$.ofType(GET_PROJECTS).pipe(
+    mergeMap(action => {
+      state = action.state
+      return client.query({query: action.query}
+      )
+    }),
+    map(result => projectsReceived(state, result.data.allProjectsinState))
+  )
+}
+
 export default (action$, store) => merge(
   getProposedProjectsEpic(action$, store),
   getStakedProjectsEpic(action$, store),
@@ -185,5 +197,6 @@ export default (action$, store) => merge(
   checkActiveStatus(action$, store),
   submitHashedTaskList(action$, store),
   setTaskList(action$, store),
-  getVerifiedTaskListsEpic(action$, store)
+  getVerifiedTaskListsEpic(action$, store),
+  getActiveProjectsEpic(action$, store)
 )

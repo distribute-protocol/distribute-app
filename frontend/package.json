@@ -57,6 +57,6 @@
     "server": "node server.js"
   },
   "resolutions": {
-   "eslint-scope": "3.7.1"
- }
+    "eslint-scope": "3.7.1"
+  }
 }
