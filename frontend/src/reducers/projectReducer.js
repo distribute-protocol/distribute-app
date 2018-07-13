@@ -19,7 +19,6 @@ export default function projectReducer (state = initialState, action) {
         return Object.assign({}, state, {[action.state]: object})
       }
     case PROJECT_PROPOSED:
-      // console.log(action.receipt)
       return state
     case TASK_LIST_SET:
       let project = Object.assign({}, state[2][action.projectAddress], {taskList: action.taskDetails})
@@ -47,18 +46,13 @@ export default function projectReducer (state = initialState, action) {
       // console.log(action)
       // let repStaked = parseInt(action.value)
       // let repBal = parseInt(state[1][action.projectAddress].reputationBalance)
-      let totalRepStaked = parseInt(action.value) + parseInt(state[1][action.projectAddress].reputationBalance)
-      let updateRepBal = Object.assign({}, state[1][action.projectAddress], {reputation: totalRepStaked})
+      // let totalRepStaked = parseInt(action.value) + parseInt(state[1][action.projectAddress].reputationBalance)
+      // let updateRepBal = Object.assign({}, state[1][action.projectAddress], {reputation: totalRepStaked})
       // return Object.assign({}, state, {1: {[action.projectAddress]: updateRepBal}})
       return state
     case VERIFIED_TASK_LISTS_RECEIVED:
-      console.log('project component', action)
-      project = Object.assign({}, state[2][action.address], {submittedTasks:
-        action.result
-      })
-      console.log(state[2], project)
+      project = Object.assign({}, state[2][action.address], {submittedTasks: action.result})
       projects = Object.assign({}, state[2], {[action.address]: project})
-      console.log(projects, Object.assign({}, state, {2: projects}))
       return Object.assign({}, state, {2: projects})
     // case PROJECT_STAKED:
     //   console.log(action)

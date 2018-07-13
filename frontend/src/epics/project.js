@@ -153,7 +153,6 @@ const getVerifiedTaskListsEpic = action$ => {
   return action$.ofType(GET_VERIFIED_TASK_LISTS).pipe(
     concatMap(action => {
       address = action.address
-      console.log('epic', action)
       let query = gql`
       query ($address: String!) {
         verifiedPrelimTaskLists(address: $address){
@@ -164,10 +163,7 @@ const getVerifiedTaskListsEpic = action$ => {
       }`
       return client.query({query: query, variables: {address: address}})
     }),
-    map(result =>
-      // console.log(result)
-      verifiedTaskListsReceived(address, result.data.verifiedPrelimTaskLists)
-    )
+    map(result => verifiedTaskListsReceived(address, result.data.verifiedPrelimTaskLists))
   )
 }
 
