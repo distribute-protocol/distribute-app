@@ -65,7 +65,7 @@ const typeDefs = `
   type PrelimTaskList {
     id: ID
     verified: Boolean
-    project: Project
+    address: String
     hash: String
     submitter: String
     weighting: Int

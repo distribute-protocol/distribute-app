@@ -17,6 +17,7 @@ class AddProject extends React.Component {
       taskList: []
     }
     // this.getProjectStatus = this.getProjectStatus.bind(this)
+    this.getVerifiedTaskLists = this.getVerifiedTaskLists.bind(this)
     this.handleTaskInput = this.handleTaskInput.bind(this)
     this.submitTaskList = this.submitTaskList.bind(this)
     this.moveRow = this.moveRow.bind(this)
@@ -25,9 +26,12 @@ class AddProject extends React.Component {
 
   componentWillMount () {
     // this.getProjectStatus()
-    this.props.getVerifiedTaskLists(this.props.address)
+    this.getVerifiedTaskLists(this.props.address)
   }
 
+  getVerifiedTaskLists (address) {
+    this.props.getVerifiedTaskLists(address)
+  }
   // getProjectStatus () {
   //   let projectObj = Object.assign({}, this.props.project)
   //   this.setState(...projectObj)
@@ -102,8 +106,6 @@ class AddProject extends React.Component {
 
   render () {
     let tasks, verifiedSubmissions
-    window.taskList = this.props.taskList
-    window.submissions = this.props.submissions
     if (typeof this.props.taskList !== 'undefined' && this.props.taskList.length !== 0) {
       tasks = JSON.parse(this.props.taskList).map((task, i) => {
         return {
@@ -170,6 +172,7 @@ class AddProject extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    project: state.projects[2][ownProps.address],
     taskList: state.projects[2][ownProps.address].taskList,
     submissions: state.projects[2][ownProps.address].submittedTasks
   }

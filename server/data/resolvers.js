@@ -23,7 +23,7 @@ const resolvers = {
     user: (credential) => User.findOne({credentialId: credential.id}).then(user => user)
   },
   Project: {
-    prelimTaskLists: (project) => PrelimTaskList.findOne({project: project.id}).then(prelimTaskLists => prelimTaskLists),
+    // prelimTaskLists: (project) => PrelimTaskList.findOne({address: project.id}).then(prelimTaskLists => prelimTaskLists),
     proposer: (project) => User.findOne({account: project.proposer}).then(user => user),
     stakes: (project) => Stake.find({projectId: project.id}).then(stakes => stakes),
     tasks: (project) => Task.find({projectId: project.id}).then(tasks => tasks),
@@ -81,7 +81,7 @@ const resolvers = {
     allTasks: () => Task.find({}).then(tasks => tasks),
     userTasks: (_, args) => User.findOne({account: args.account}).then(user => Task.find({claimer: user.id})).then(tasks => tasks),
     projectTasks: (_, args) => Project.findOne({address: args.address}).then(project => Task.find({projectId: project.id})).then(tasks => tasks),
-    verifiedPrelimTaskLists: (_, args) => PrelimTaskList.find({projectId: args.address}).then(prelimTaskList => PrelimTaskList.find({verified: true})).then(prelimTaskLists => prelimTaskLists),
+    verifiedPrelimTaskLists: (_, args) => PrelimTaskList.find({address: args.address, verified: true}).then(prelimTaskLists => prelimTaskLists),
     userPrelimTaskLists: (_, args) => PrelimTaskList.findOne({submitter: args.account}).then(prelimTaskLists => prelimTaskLists),
     taskValidations: (address) => [{}],
     userVotes: (account) => [{}],
@@ -127,12 +127,12 @@ const resolvers = {
       Project.findOne({address: args.address}).exec((error, project) => {
         if (error) console.error(error)
         if (typeof project !== 'undefined') {
-          PrelimTaskList.findOne({submitter: args.submitter}).exec((error, doc) => {
+          PrelimTaskList.findOne({address: args.address, submitter: args.submitter}).exec((error, doc) => {
             if (error) console.error(error)
             if (doc !== null) {
               doc.content = project.taskList
               doc.hash = args.taskHash
-              doc.verified = false
+              doc.verified = true
               doc.save(err => {
                 if (err) console.error(err)
                 console.log('prelim task list updated')
@@ -142,13 +142,12 @@ const resolvers = {
               let prelimTaskList = new PrelimTaskList({
                 _id: new mongoose.Types.ObjectId(),
                 hash: args.taskHash,
-                projectId: project.id,
+                address: args.address,
                 submitter: args.submitter,
                 content: project.taskList,
-                verified: false
+                verified: true
               })
-              prelimTaskList.save(err => {
-                console.log(prelimTaskList)
+              prelimTaskList.save((err, doc) => {
                 if (err) console.error(error)
                 console.log('prelim task list saved')
                 return prelimTaskList

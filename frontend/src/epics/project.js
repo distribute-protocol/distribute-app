@@ -1,6 +1,6 @@
 import { GET_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS, CHECK_ACTIVE_STATUS, SUBMIT_HASHED_TASK_LIST, SET_TASK_LIST, GET_VERIFIED_TASK_LISTS } from '../constants/ProjectActionTypes'
 import { projectsReceived, projectProposed, projectStaked, projectUnstaked, hashedTaskListSubmitted, stakedStatusChecked, activeStatusChecked, taskListSet, verifiedTaskListsReceived } from '../actions/projectActions'
-import { map, mergeMap } from 'rxjs/operators'
+import { map, mergeMap, concatMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
 import { client } from '../index'
@@ -151,12 +151,23 @@ const submitHashedTaskList = action$ => {
 const getVerifiedTaskListsEpic = action$ => {
   let address
   return action$.ofType(GET_VERIFIED_TASK_LISTS).pipe(
-    mergeMap(action => {
+    concatMap(action => {
       address = action.address
-      return client.query({query: action.query}
-      )
+      console.log('epic', action)
+      let query = gql`
+      query ($address: String!) {
+        verifiedPrelimTaskLists(address: $address){
+          submitter,
+          content,
+          weighting
+        }
+      }`
+      return client.query({query: query, variables: {address: address}})
     }),
-    map(result => verifiedTaskListsReceived(address, result.data.verifiedPrelimTaskLists))
+    map(result =>
+      // console.log(result)
+      verifiedTaskListsReceived(address, result.data.verifiedPrelimTaskLists)
+    )
   )
 }
 

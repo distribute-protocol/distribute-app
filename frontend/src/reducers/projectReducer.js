@@ -32,7 +32,6 @@ export default function projectReducer (state = initialState, action) {
       } else {
         oldSubmissions = state[2][action.projectAddress].submittedTasks
       }
-      console.log(action.receipt, state[2][action.projectAddress])
       let newSubmissions = oldSubmissions
       let overwrite = oldSubmissions.findIndex(function (element) { return element.submitter === action.submitterAddress })
       if (overwrite === -1) {
@@ -49,13 +48,17 @@ export default function projectReducer (state = initialState, action) {
       // let repStaked = parseInt(action.value)
       // let repBal = parseInt(state[1][action.projectAddress].reputationBalance)
       let totalRepStaked = parseInt(action.value) + parseInt(state[1][action.projectAddress].reputationBalance)
-      console.log(totalRepStaked)
       let updateRepBal = Object.assign({}, state[1][action.projectAddress], {reputation: totalRepStaked})
       // return Object.assign({}, state, {1: {[action.projectAddress]: updateRepBal}})
       return state
     case VERIFIED_TASK_LISTS_RECEIVED:
-      project = Object.assign({}, state[2][action.address], {submittedTasks: action.result})
+      console.log('project component', action)
+      project = Object.assign({}, state[2][action.address], {submittedTasks:
+        action.result
+      })
+      console.log(state[2], project)
       projects = Object.assign({}, state[2], {[action.address]: project})
+      console.log(projects, Object.assign({}, state, {2: projects}))
       return Object.assign({}, state, {2: projects})
     // case PROJECT_STAKED:
     //   console.log(action)

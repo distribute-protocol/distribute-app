@@ -174,11 +174,10 @@ export function hashedTaskListSubmitted (tasks, submitterAddress, projectAddress
   }
 }
 
-export function getVerifiedTaskLists (address, query) {
+export function getVerifiedTaskLists (address) {
   return {
     type: GET_VERIFIED_TASK_LISTS,
-    address,
-    query
+    address
   }
 }
 

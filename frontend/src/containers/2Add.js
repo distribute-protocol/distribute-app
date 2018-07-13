@@ -31,15 +31,15 @@ let projQuery = gql`
     }
   }`
 
-let taskListQuery = gql`
-  { verifiedPrelimTaskLists {
-    submitter,
-    content,
-    weighting
-  }}
-`
+// let taskListQuery = gql`
+//   query ($address: String!) {
+//     { verifiedPrelimTaskLists(address: $address){
+//       submitter,
+//       content,
+//       weighting
+//     }}
+//   }`
 
-// let projQuery2 = gql`
 // {
 //   verifiedPrelimTaskLists(state: 2, address: )
 // }`
@@ -102,7 +102,6 @@ class Add extends React.Component {
   }
 
   render () {
-    console.log(this.props.projects)
     const projects = typeof this.props.projects !== `undefined`
       ? Object.keys(this.props.projects).map((address, i) => {
         return <Project
@@ -146,7 +145,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
     getProjects: () => dispatch(getProjects(2, projQuery)),
-    getVerifiedTaskLists: (projectAddress) => dispatch(getVerifiedTaskLists(projectAddress, taskListQuery)),
+    getVerifiedTaskLists: (projectAddress) => dispatch(getVerifiedTaskLists(projectAddress)),
     checkActiveStatus: (projectAddress, txObj) => dispatch(checkActiveStatus(projectAddress, txObj)),
     submitHashedTaskList: (tasks, taskHash, projectAddress, txObj) => dispatch(submitHashedTaskList(tasks, taskHash, projectAddress, txObj)),
     setTaskList: (taskDetails, projectAddress) => dispatch(setTaskList(taskDetails, projectAddress))
