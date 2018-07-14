@@ -121,6 +121,9 @@ class Status extends Component {
           ? Math.round(this.state.ethPrice * web3.fromWei(this.state.weiBal, 'ether'))
           : 0}
         currentPrice={this.state.currentPrice}
+        currentPriceUSD={this.state.currentPrice
+          ? this.state.currentPrice * web3.fromWei(this.state.weiBal, 'ether')
+          : 0}
         totalReputationSupply={this.props.network.totalReputation}
         reputationBalance={this.props.user.userReputation}
         ethToSend={typeof this.state.ethToSend === 'undefined'
