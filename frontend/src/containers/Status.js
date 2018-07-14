@@ -44,7 +44,7 @@ class Status extends Component {
     })
   }
 
-  async getNetworkStatus () {
+  getNetworkStatus () {
     this.props.getNetworkStatus()
     this.getPriceData()
     eth.getAccounts(async (err, accounts) => {
@@ -53,7 +53,7 @@ class Status extends Component {
           // get user token balance
           this.props.getUserStatus(accounts[0])
         } else {
-          console.error('Please Unlock MetaMask')
+          alert('Please Unlock MetaMask')
         }
       }
     })
