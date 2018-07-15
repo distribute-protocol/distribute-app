@@ -84,14 +84,15 @@ class ClaimProject extends React.Component {
   render () {
     let tasks
     if (this.props.project.taskList !== null) {
+      let reputationCost = this.props.project.reputationCost
+      let weiCost = this.props.project.weiCost
       tasks = JSON.parse(this.props.project.taskList).map((task, i) => {
-        let reputationCost = this.props.project.reputationCost
-        let weiCost = this.props.project.weiCost
+        let weiReward = Math.floor(weiCost * task.percentage / 100)
         return {
           key: i,
           description: task.description,
-          ethReward: `${web3.fromWei(task.weiReward, 'ether')} ETH`,
-          repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' && typeof task.weiReward !== 'undefined' ? reputationCost * task.weiReward / weiCost : '',
+          ethReward: `${web3.fromWei(weiReward, 'ether')} ETH`,
+          repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' && typeof weiReward !== 'undefined' ? `${Math.floor(reputationCost * weiReward / weiCost)} rep` : '',
           buttons: <ButtonGroup>
             <Button
               disabled={this.props.project.taskList[i].claimed || !this.props.project.listSubmitted}
@@ -113,7 +114,7 @@ class ClaimProject extends React.Component {
         photo={this.state.photo}
         summary={this.state.summary}
         location={this.state.location}
-        cost={web3.fromWei(this.state.cost, 'ether')}
+        cost={web3.fromWei(this.state.weiCost, 'ether')}
         reputationCost={this.state.reputationCost}
         date={moment(this.state.nextDeadline)}
         tasks={tasks}
