@@ -162,14 +162,19 @@ module.exports = function () {
     projectAddress = '0x' + projectAddress.substr(-40)
     let topTaskHash = '0x' + eventParamArr[1]
     let flag = eventParamArr[2]
+    let finalTasks
     if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
-      Project.findOne({address: projectAddress}).exec((error, doc) => {
+      PrelimTaskList.findOne({address: projectAddress, hash: topTaskHash}).exec((error, prelimTaskList) => {
         if (error) console.error(error)
-        if (doc) {
-          doc.state = 3
-          doc.topTaskHash = topTaskHash
-          doc.save(err => {
-            console.log('the project state is', doc.state)
+        finalTasks = prelimTaskList.content
+      })
+      Project.findOne({address: projectAddress}).exec((error, project) => {
+        if (error) console.error(error)
+        if (project) {
+          project.state = 3
+          project.topTaskHash = topTaskHash
+          project.taskList = finalTasks
+          project.save(err => {
             if (err) console.error(error)
             console.log('active project with topTaskHash')
           })

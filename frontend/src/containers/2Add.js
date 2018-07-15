@@ -23,6 +23,7 @@ let projQuery = gql`
       photo,
       reputationBalance,
       reputationCost,
+      state,
       summary,
       tokenBalance,
       taskList,
@@ -30,19 +31,6 @@ let projQuery = gql`
       weiCost
     }
   }`
-
-// let taskListQuery = gql`
-//   query ($address: String!) {
-//     { verifiedPrelimTaskLists(address: $address){
-//       submitter,
-//       content,
-//       weighting
-//     }}
-//   }`
-
-// {
-//   verifiedPrelimTaskLists(state: 2, address: )
-// }`
 
 class Add extends React.Component {
   constructor () {
@@ -52,6 +40,7 @@ class Add extends React.Component {
     }
     this.fastForward = this.fastForward.bind(this)
     this.setTaskList = this.setTaskList.bind(this)
+    this.checkActiveStatus = this.checkActiveStatus.bind(this)
     this.submitHashedTaskList = this.submitHashedTaskList.bind(this)
     this.getVerifiedTaskLists = this.getVerifiedTaskLists.bind(this)
   }

@@ -16,6 +16,7 @@ export default function projectReducer (state = initialState, action) {
         return state
       } else {
         let object = action.projects.reduce((obj, item) => (obj[item.address] = item, obj), {})
+        console.log(object)
         return Object.assign({}, state, {[action.state]: object})
       }
     case PROJECT_PROPOSED:
@@ -79,5 +80,5 @@ export default function projectReducer (state = initialState, action) {
     // case TASK_VALIDATED
     default:
   }
-return state
+  return state
 }

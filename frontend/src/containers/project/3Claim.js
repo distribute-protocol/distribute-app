@@ -83,8 +83,8 @@ class ClaimProject extends React.Component {
 
   render () {
     let tasks
-    if (typeof this.props.project.taskList !== 'undefined') {
-      tasks = this.props.project.taskList.map((task, i) => {
+    if (this.props.project.taskList !== null) {
+      tasks = JSON.parse(this.props.project.taskList).map((task, i) => {
         let reputationCost = this.props.project.reputationCost
         let weiCost = this.props.project.weiCost
         return {

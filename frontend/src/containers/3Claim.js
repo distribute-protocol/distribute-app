@@ -63,15 +63,13 @@ class Claim extends React.Component {
   }
 
   render () {
-    console.log(this.state.projects)
-    console.log(this.props.projects, typeof this.props.projects)
-    const projects = (typeof this.props.projects !== 'undefined')
-      ? Object.keys(this.props.project).map((address, i) => {
+    const projects = typeof this.props.projects !== `undefined`
+      ? Object.keys(this.props.projects).map((address, i) => {
         return <Project
           key={i}
           index={i}
           address={address}
-          project={this.props.project[address]}
+          project={this.props.projects[address]}
         />
       })
       : []

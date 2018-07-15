@@ -32,13 +32,9 @@ class AddProject extends React.Component {
   getVerifiedTaskLists (address) {
     this.props.getVerifiedTaskLists(address)
   }
-  // getProjectStatus () {
-  //   let projectObj = Object.assign({}, this.props.project)
-  //   this.setState(...projectObj)
-  // }
 
   componentWillReceiveProps (np) {
-    if (np.taskList.length) {
+    if (np.taskList) {
       this.setState({taskList: JSON.parse(np.taskList)})
     }
   }
@@ -106,7 +102,7 @@ class AddProject extends React.Component {
 
   render () {
     let tasks, verifiedSubmissions
-    if (typeof this.props.taskList !== 'undefined' && this.props.taskList.length !== 0) {
+    if (this.props.taskList !== null && this.props.taskList.length !== 0) {
       tasks = JSON.parse(this.props.taskList).map((task, i) => {
         return {
           key: i,
