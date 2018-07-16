@@ -191,15 +191,17 @@ export function verifiedTaskListsReceived (address, result) {
   }
 }
 
-export function submitFinalTaskList () {
+export function submitFinalTaskList (address) {
   return {
-    type: SUBMIT_FINAL_TASK_LIST
+    type: SUBMIT_FINAL_TASK_LIST,
+    address
   }
 }
 
-export function finalTaskListSubmitted () {
+export function finalTaskListSubmitted (address) {
   return {
-    type: FINAL_TASK_LIST_SUBMITTED
+    type: FINAL_TASK_LIST_SUBMITTED,
+    address
   }
 }
 // export function updateProject (address, projObj) {
@@ -209,22 +211,6 @@ export function finalTaskListSubmitted () {
 //     projObj
 //   }
 // }
-
-export function getFinalTaskList (projectAddress, topTaskHash) {
-  return {
-    type: GET_FINAL_TASK_LIST,
-    projectAddress,
-    topTaskHash
-  }
-}
-
-export function receivedFinalTaskList (projectAddress, topTaskHash) {
-  return {
-    type: RECEIVED_FINAL_TASK_LIST,
-    projectAddress,
-    topTaskHash
-  }
-}
 
 export function taskValidated (validationDetails) {
   return {

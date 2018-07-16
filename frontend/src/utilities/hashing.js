@@ -13,13 +13,13 @@ const keccakHashes = (types, bytesarray) => {
   return hash
 }
 
-export const hashTasks = (taskArray, cost) => {
+export const hashTasks = (taskArray) => {
   let taskHashArray = []
   let args = ['bytes32', 'uint']
   for (var i = 0; i < taskArray.length; i++) {
     let thisTask = []
     thisTask.push(web3.fromAscii(taskArray[i].description, 32))
-    thisTask.push(100 * taskArray[i].weiReward / cost)
+    thisTask.push(100 * taskArray[i].weighting)
     taskHashArray.push(keccakHashes(args, thisTask))
   }
   return taskHashArray

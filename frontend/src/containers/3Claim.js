@@ -6,7 +6,7 @@ import { push } from 'react-router-redux'
 import { eth } from '../utilities/blockchain'
 import Project from './project/3Claim'
 import fastforward from '../utilities/fastforward'
-import { getProjects, getFinalTaskList } from '../actions/projectActions'
+import { getProjects, submitFinalTaskList } from '../actions/projectActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -40,7 +40,7 @@ class Claim extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
-    this.getFinalTaskList = this.getFinalTaskList.bind(this)
+    this.submitFinalTaskList = this.submitFinalTaskList.bind(this)
   }
 
   componentWillMount () {
@@ -59,10 +59,10 @@ class Claim extends React.Component {
     })
   }
 
-  async getFinalTaskList (address, taskHash) {
+  async submitFinalTaskList (address) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
-        this.props.getFinalTaskList(address, taskHash, {from: accounts[0]})
+        this.props.submitFinalTaskList(address, {from: accounts[0]})
       }
     })
   }
@@ -112,7 +112,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
     getProjects: () => dispatch(getProjects(3, projQuery)),
-    getFinalTaskList: (projectAddress, taskHash) => dispatch(getFinalTaskList(projectAddress, taskHash))
+    submitFinalTaskList: (address) => dispatch(submitFinalTaskList(address))
   }
 }
 

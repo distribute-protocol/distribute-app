@@ -173,6 +173,7 @@ const typeDefs = `
     taskVotes(address: String): [Vote]
     verifiedPrelimTaskLists(address: String): [PrelimTaskList]
     userPrelimTaskLists(address: String): [PrelimTaskList]
+    findFinalTaskHash(address: String, topTaskHash: String): PrelimTaskList
   }
 
   input AvatarInput {

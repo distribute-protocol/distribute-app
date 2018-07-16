@@ -34,10 +34,10 @@ class ValidateTasks extends React.Component {
       if (!err) {
         if (accounts.length) {
           await tr.validateTask(this.props.address, index, val, status, {from: accounts[0]})
-          .then(async () => {
-            this.setState({['val' + index]: ''})
-            this.props.taskValidated({ address: this.props.address, validator: validator, index: index, status: valStatus })
-          })
+            .then(async () => {
+              this.setState({['val' + index]: ''})
+              this.props.taskValidated({ address: this.props.address, validator: validator, index: index, status: valStatus })
+            })
         }
       }
     })

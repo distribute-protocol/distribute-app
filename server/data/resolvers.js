@@ -23,7 +23,6 @@ const resolvers = {
     user: (credential) => User.findOne({credentialId: credential.id}).then(user => user)
   },
   Project: {
-    // prelimTaskLists: (project) => PrelimTaskList.findOne({address: project.id}).then(prelimTaskLists => prelimTaskLists),
     proposer: (project) => User.findOne({account: project.proposer}).then(user => user),
     stakes: (project) => Stake.find({projectId: project.id}).then(stakes => stakes),
     tasks: (project) => Task.find({projectId: project.id}).then(tasks => tasks),
@@ -85,7 +84,8 @@ const resolvers = {
     userPrelimTaskLists: (_, args) => PrelimTaskList.findOne({submitter: args.account}).then(prelimTaskLists => prelimTaskLists),
     taskValidations: (address) => [{}],
     userVotes: (account) => [{}],
-    taskVotes: (address) => [{}]
+    taskVotes: (address) => [{}],
+    findFinalTaskHash: (_, args) => PrelimTaskList.findOne({hash: args.topTaskHash, address: args.address}).then(prelimTaskList => prelimTaskList)
   },
   Mutation: {
     addUser: (obj, args) => {

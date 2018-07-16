@@ -4,7 +4,7 @@ import ClaimComponent from '../../components/project/3Claim'
 import { Button } from 'antd'
 import {eth, web3, rr, pr} from '../../utilities/blockchain'
 import { hashTasksArray, hashTasks } from '../../utilities/hashing'
-import { taskClaimed, submitFinalTaskList, taskCompleted, getFinalTaskList } from '../../actions/projectActions'
+import { taskClaimed, submitFinalTaskList, taskCompleted } from '../../actions/projectActions'
 import moment from 'moment'
 const ButtonGroup = Button.Group
 
@@ -17,7 +17,6 @@ class ClaimProject extends React.Component {
     this.getProjectStatus = this.getProjectStatus.bind(this)
     this.submitWinningHashList = this.submitWinningHashList.bind(this)
     this.checkValidation = this.checkValidation.bind(this)
-    this.getFinalTaskList = this.getFinalTaskList.bind(this)
   }
 
   componentWillMount () {
@@ -29,30 +28,31 @@ class ClaimProject extends React.Component {
   }
 
   async submitWinningHashList () {
-    // this.props.getFinalTaskList(this.props.address, {taskHash: this.props.project.topTaskHash})
-    await pr.stakedProjects(this.props.address).then(winner => {
-      return winner
-    }).then((topTaskHash) => {
-      // console.log(this.props.project.taskList)
-      // console.log(this.props.project.topTaskHash)
-      Object.keys(this.props.project.taskList).map(async (address, i) => {
-        console.log(this.props.project.taskList, i)
-        let hash = hashTasksArray(this.props.project.taskList, this.state.weiCost)
-        if (hash === topTaskHash) {
-          let list = hashTasks(this.props.project.taskList[address], this.state.weiCost)
-          eth.getAccounts(async (err, accounts) => {
-            if (!err) {
-              await pr.submitHashList(this.props.address, list, {from: accounts[0]}).then(() => {
-                this.props.submitFinalTaskList({taskList: this.props.project.taskList[address], address: this.props.address, listSubmitted: true})
-              })
-            }
-          })
-        } else {
-          console.log(hash, topTaskHash)
-          console.error('hash does not match topTaskHash')
-        }
-      })
-    })
+    this.props.submitFinalTaskList(this.props.address)
+    // this.props.submitFinalTaskList(this.props.address, {taskHash: this.props.project.topTaskHash})
+    // await pr.stakedProjects(this.props.address).then(winner => {
+    //   return winner
+    // }).then((topTaskHash) => {
+    //   // console.log(this.props.project.taskList)
+    //   // console.log(this.props.project.topTaskHash)
+    //   Object.keys(this.props.project.taskList).map(async (address, i) => {
+    //     console.log(this.props.project.taskList, i)
+    //     let hash = hashTasksArray(this.props.project.taskList, this.state.weiCost)
+    //     if (hash === topTaskHash) {
+    //       let list = hashTasks(this.props.project.taskList[address], this.state.weiCost)
+    //       eth.getAccounts(async (err, accounts) => {
+    //         if (!err) {
+    //           await pr.submitHashList(this.props.address, list, {from: accounts[0]}).then(() => {
+    //             this.props.submitFinalTaskList({taskList: this.props.project.taskList[address], address: this.props.address, listSubmitted: true})
+    //           })
+    //         }
+    //       })
+    //     } else {
+    //       console.log(hash, topTaskHash)
+    //       console.error('hash does not match topTaskHash')
+    //     }
+    //   })
+    // })
   }
 
   claimTask (i) {
@@ -125,7 +125,7 @@ class ClaimProject extends React.Component {
         tasks={tasks}
         listSubmitted={this.props.project.listSubmitted}
         submitWinningHashList={this.submitWinningHashList}
-        getFinalTaskList={this.getFinalTaskList}
+        submitFinalTaskList={this.submitFinalTaskList}
         checkValidation={this.checkValidation}
       />
     )
@@ -141,9 +141,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     taskClaimed: (submissionDetails) => dispatch(taskClaimed(submissionDetails)),
-    submitFinalTaskList: (taskDetails) => dispatch(submitFinalTaskList(taskDetails)),
     taskCompleted: (taskDetails) => dispatch(taskCompleted(taskDetails)),
-    getFinalTaskList: (address, taskHash) => dispatch(getFinalTaskList(address, taskHash))
+    submitFinalTaskList: (address) => dispatch(submitFinalTaskList(address))
   }
 }
 
