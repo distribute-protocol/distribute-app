@@ -1,25 +1,28 @@
 import {
   PROPOSE_PROJECT,
   PROJECT_PROPOSED,
-  GET_PROPOSED_PROJECTS,
-  PROPOSED_PROJECTS_RECEIVED,
   STAKE_PROJECT,
   PROJECT_STAKED,
   UNSTAKE_PROJECT,
   PROJECT_UNSTAKED,
   CHECK_STAKED_STATUS,
-  SET_PROJECT_TASK_LIST,
-  SET_TASK_SUBMISSION,
+  CHECK_ACTIVE_STATUS,
+  SET_TASK_LIST,
+  SUBMIT_HASHED_TASK_LIST,
   TASK_CLAIMED,
-  TASKLIST_SUBMITTED,
+  TASK_LIST_SET,
   TASK_COMPLETED,
   // UPDATE_PROJECT,
   TASK_VALIDATED,
-  GET_STAKED_PROJECTS,
-  STAKED_PROJECTS_RECEIVED,
   GET_PROJECTS,
-  PROJECTS_RECEIVED
-
+  PROJECTS_RECEIVED,
+  STAKED_STATUS_CHECKED,
+  ACTIVE_STATUS_CHECKED,
+  HASHED_TASK_LIST_SUBMITTED,
+  FINAL_TASK_LIST_SUBMITTED,
+  SUBMIT_FINAL_TASK_LIST,
+  GET_VERIFIED_TASK_LISTS,
+  VERIFIED_TASK_LISTS_RECEIVED
 } from '../constants/ProjectActionTypes'
 
 export function proposeProject (collateralType, projObj, txObj) {
@@ -54,19 +57,6 @@ export function projectsReceived (state, projects) {
   }
 }
 
-export function getProposedProjects () {
-  return {
-    type: GET_PROPOSED_PROJECTS
-  }
-}
-
-export function proposedProjectsReceived (responseDetails) {
-  return {
-    type: PROPOSED_PROJECTS_RECEIVED,
-    responseDetails
-  }
-}
-
 export function stakeProject (collateralType, projectAddress, value, txObj) {
   return {
     type: STAKE_PROJECT,
@@ -77,21 +67,22 @@ export function stakeProject (collateralType, projectAddress, value, txObj) {
   }
 }
 
-export function projectStaked (collateralType, receipt) {
+export function projectStaked (collateralType, projectAddress, value, txObj) {
   return {
     type: PROJECT_STAKED,
-    collateralType,
-    receipt
-  }
-}
-
-export function unstakeProject (collateralType, projectAddress, value, txObj) {
-  return {
-    type: UNSTAKE_PROJECT,
     collateralType,
     projectAddress,
     value,
     txObj
+  }
+}
+
+export function unstakeProject (collateralType, projectAddress, receipt) {
+  return {
+    type: UNSTAKE_PROJECT,
+    collateralType,
+    projectAddress,
+    receipt
   }
 }
 
@@ -111,31 +102,43 @@ export function checkStakedStatus (projectAddress, txObj) {
   }
 }
 
-export function getStakedProjects (price) {
+export function stakedStatusChecked (receipt) {
   return {
-    type: GET_STAKED_PROJECTS,
-    price
+    type: STAKED_STATUS_CHECKED,
+    receipt
   }
 }
 
-export function stakedProjectsReceived (responseDetails) {
+export function checkActiveStatus (projectAddress, txObj) {
   return {
-    type: STAKED_PROJECTS_RECEIVED,
-    responseDetails
+    type: CHECK_ACTIVE_STATUS,
+    projectAddress,
+    txObj
   }
 }
 
-export function setProjectTaskList (taskDetails) {
+export function activeStatusChecked (receipt) {
   return {
-    type: SET_PROJECT_TASK_LIST,
-    taskDetails
+    type: ACTIVE_STATUS_CHECKED,
+    receipt
   }
 }
 
-export function setTaskSubmission (submissionDetails) {
+export function setTaskList (taskDetails, projectAddress, query) {
   return {
-    type: SET_TASK_SUBMISSION,
-    submissionDetails
+    type: SET_TASK_LIST,
+    taskDetails,
+    projectAddress
+  }
+}
+
+export function submitHashedTaskList (tasks, taskListHash, projectAddress, txObj) {
+  return {
+    type: SUBMIT_HASHED_TASK_LIST,
+    tasks,
+    taskListHash,
+    projectAddress,
+    txObj
   }
 }
 
@@ -146,10 +149,11 @@ export function taskClaimed (taskDetails) {
   }
 }
 
-export function taskListSubmitted (taskDetails) {
+export function taskListSet (taskDetails, projectAddress) {
   return {
-    type: TASKLIST_SUBMITTED,
-    taskDetails
+    type: TASK_LIST_SET,
+    taskDetails,
+    projectAddress
   }
 }
 
@@ -160,6 +164,43 @@ export function taskCompleted (taskDetails) {
   }
 }
 
+export function hashedTaskListSubmitted (tasks, submitterAddress, projectAddress, receipt) {
+  return {
+    type: HASHED_TASK_LIST_SUBMITTED,
+    tasks,
+    submitterAddress,
+    projectAddress,
+    receipt
+  }
+}
+
+export function getVerifiedTaskLists (address, query) {
+  return {
+    type: GET_VERIFIED_TASK_LISTS,
+    address,
+    query
+  }
+}
+
+export function verifiedTaskListsReceived (address, result) {
+  return {
+    type: VERIFIED_TASK_LISTS_RECEIVED,
+    address,
+    result
+  }
+}
+
+export function submitFinalTaskList () {
+  return {
+    type: SUBMIT_FINAL_TASK_LIST
+  }
+}
+
+export function finalTaskListSubmitted () {
+  return {
+    type: FINAL_TASK_LIST_SUBMITTED
+  }
+}
 // export function updateProject (address, projObj) {
 //   return {
 //     type: UPDATE_PROJECT,

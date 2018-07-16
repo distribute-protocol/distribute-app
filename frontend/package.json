@@ -55,5 +55,8 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "server": "node server.js"
-  }
+  },
+  "resolutions": {
+   "eslint-scope": "3.7.1"
+ }
 }

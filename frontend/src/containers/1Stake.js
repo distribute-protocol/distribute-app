@@ -4,7 +4,7 @@ import Sidebar from '../components/shared/Sidebar'
 import Project from './project/1ProjectStake'
 import { push } from 'react-router-redux'
 import { eth, dt } from '../utilities/blockchain'
-import { getProjects, stakeProject, unstakeProject, checkStakedStatus } from '../actions/projectActions'
+import { getProjects, stakeProject, unstakeProject } from '../actions/projectActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -40,7 +40,6 @@ class Stake extends React.Component {
     }
     this.stakeProject = this.stakeProject.bind(this)
     this.unstakeProject = this.unstakeProject.bind(this)
-    this.checkStakedStatus = this.checkStakedStatus.bind(this)
   }
 
   componentWillMount () {
@@ -77,14 +76,6 @@ class Stake extends React.Component {
     })
   }
 
-  checkStakedStatus (address) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        this.props.checkStakedStatus(address, {from: accounts[0]})
-      }
-    })
-  }
-
   render () {
     const projects = typeof this.props.projects !== `undefined`
       ? Object.keys(this.props.projects).map((address, i) => {
@@ -96,7 +87,6 @@ class Stake extends React.Component {
           project={this.props.projects[address]}
           stakeProject={(type, val) => this.stakeProject(type, address, val)}
           unstakeProject={(type, val) => this.unstakeProject(type, address, val)}
-          checkStaked={() => this.checkStakedStatus(address)}
         />
       })
       : []
@@ -128,7 +118,6 @@ const mapDispatchToProps = (dispatch) => {
     getProjects: () => dispatch(getProjects(1, projQuery)),
     stakeProject: (collateralType, projectAddress, value, txObj) => dispatch(stakeProject(collateralType, projectAddress, value, txObj)),
     unstakeProject: (collateralType, projectAddress, value, txObj) => dispatch(unstakeProject(collateralType, projectAddress, value, txObj)),
-    checkStakedStatus: (projectAddress, txObj) => dispatch(checkStakedStatus(projectAddress, txObj))
   }
 }
 

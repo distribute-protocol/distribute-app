@@ -16,8 +16,7 @@ export default ({
   date,
   stakeInput,
   tokens,
-  reputation,
-  checkStaked
+  reputation
 }) => {
   return (
     <div style={{backgroundColor: '#DDE4E5', marginTop: 30}}>
@@ -67,9 +66,6 @@ export default ({
             </div>
           </div>
         </div>
-        <Button style={{margin: 20}} onClick={checkStaked}>
-          Check Staked
-        </Button>
       </div>
     </div>
   )
