@@ -91,12 +91,14 @@ const typeDefs = `
   }
 
   type Task {
+    address: String
     claimed: Boolean
     claimedAt: String
     claimer: User
     complete: Boolean
     description: String
     id: ID
+    index: Int
     project: Project
     validations: [Validation]
     validationRewardClaimable: Boolean

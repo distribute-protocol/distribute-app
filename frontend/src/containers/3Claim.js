@@ -6,7 +6,7 @@ import { push } from 'react-router-redux'
 import { eth } from '../utilities/blockchain'
 import Project from './project/3Claim'
 import fastforward from '../utilities/fastforward'
-import { getProjects } from '../actions/projectActions'
+import { getProjects, getFinalTaskList } from '../actions/projectActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -25,6 +25,7 @@ let projQuery = gql`
       reputationCost,
       summary,
       tokenBalance,
+      topTaskHash,
       taskList,
       weiBal,
       weiCost,
@@ -39,6 +40,7 @@ class Claim extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
+    this.getFinalTaskList = this.getFinalTaskList.bind(this)
   }
 
   componentWillMount () {
@@ -53,6 +55,14 @@ class Claim extends React.Component {
         } else {
           console.log('Please Unlock MetaMask')
         }
+      }
+    })
+  }
+
+  async getFinalTaskList (address, taskHash) {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        this.props.getFinalTaskList(address, taskHash, {from: accounts[0]})
       }
     })
   }
@@ -101,7 +111,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
-    getProjects: () => dispatch(getProjects(3, projQuery))
+    getProjects: () => dispatch(getProjects(3, projQuery)),
+    getFinalTaskList: (projectAddress, taskHash) => dispatch(getFinalTaskList(projectAddress, taskHash))
   }
 }
 

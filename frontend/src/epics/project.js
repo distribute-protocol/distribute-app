@@ -191,11 +191,12 @@ const getActiveProjectsEpic = action$ => {
 const getFinalTaskListEpic = action$ => {
   let projectAddress
   let topTaskHash
-  console.log('i want to watch incredibles 2')
   return action$.ofType(GET_FINAL_TASK_LIST).pipe(
     mergeMap(action => {
+      console.log('i want to watch incredibles 2')
       projectAddress = action.projectAddress
-      topTaskHash = action.taskListHash
+      topTaskHash = action.topTaskHash
+      console.log(topTaskHash)
       return Observable.from(pr.submitHashList(projectAddress, topTaskHash))
     }),
     map(result => receivedFinalTaskList(projectAddress, topTaskHash)) // receipt.logs[0].args

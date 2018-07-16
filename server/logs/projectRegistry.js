@@ -4,6 +4,7 @@ const PR = require('../../frontend/src/abi/ProjectRegistry')
 const mongoose = require('mongoose')
 const Project = require('../models/project')
 const PrelimTaskList = require('../models/prelimTaskList')
+const Task = require('../models/task')
 const ipfs = require('../ipfs-api')
 const { TextDecoder } = require('text-encoding')
 
@@ -166,7 +167,9 @@ module.exports = function () {
     if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
       PrelimTaskList.findOne({address: projectAddress, hash: topTaskHash}).exec((error, prelimTaskList) => {
         if (error) console.error(error)
-        finalTasks = prelimTaskList.content
+        if (prelimTaskList !== null) {
+          finalTasks = prelimTaskList.content
+        }
       })
       Project.findOne({address: projectAddress}).exec((error, project) => {
         if (error) console.error(error)
@@ -181,5 +184,47 @@ module.exports = function () {
         }
       })
     }
+  })
+  const finalTasksFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: PR.projectRegistryAddress,
+    topics: [web3.sha3('LogFinalTaskCreated(address,address,bytes32,uint256)')]
+  })
+  finalTasksFilter.watch(async (err, result) => {
+    if (err) console.error(err)
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let taskAddress = eventParamArr[0]
+    taskAddress = '0x' + taskAddress.substr(-40)
+    let projectAddress = eventParamArr[1]
+    projectAddress = '0x' + projectAddress.substr(-40)
+    let topTaskHash = '0x' + eventParamArr[2]
+    let index = parseInt(eventParamArr[3], 16)
+    console.log(topTaskHash, typeof topTaskHash, 'hash here')
+    Project.findOne({address: projectAddress}).exec((error, doc) => {
+      if (error) console.error(error)
+      console.log(doc.taskList, 'here is the task info')
+      console.log(index, 'i here')
+      // get weighting and description
+      if (doc.topTaskHash === topTaskHash) {
+        let finalTask = new Task({
+          _id: new mongoose.Types.ObjectId(),
+          address: taskAddress,
+          projectId: doc.id,
+          claimed: false,
+          complete: false,
+          index,
+          validationRewardClaimable: false,
+          workerRewardClaimable: false
+        })
+        finalTask.save(err => {
+          if (err) console.error(error)
+          console.log('final tasks created')
+        })
+      } else {
+        console.log('task hashes do not match')
+      }
+    })
   })
 }
