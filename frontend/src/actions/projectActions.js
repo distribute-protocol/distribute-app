@@ -22,7 +22,9 @@ import {
   FINAL_TASK_LIST_SUBMITTED,
   SUBMIT_FINAL_TASK_LIST,
   GET_VERIFIED_TASK_LISTS,
-  VERIFIED_TASK_LISTS_RECEIVED
+  VERIFIED_TASK_LISTS_RECEIVED,
+  GET_FINAL_TASK_LIST,
+  RECEIVED_FINAL_TASK_LIST
 } from '../constants/ProjectActionTypes'
 
 export function proposeProject (collateralType, projObj, txObj) {
@@ -207,6 +209,22 @@ export function finalTaskListSubmitted () {
 //     projObj
 //   }
 // }
+
+export function getFinalTaskList (projectAddress, topTaskHash) {
+  return {
+    type: GET_FINAL_TASK_LIST,
+    projectAddress,
+    topTaskHash
+  }
+}
+
+export function receivedFinalTaskList (projectAddress, topTaskHash) {
+  return {
+    type: RECEIVED_FINAL_TASK_LIST,
+    projectAddress,
+    topTaskHash
+  }
+}
 
 export function taskValidated (validationDetails) {
   return {

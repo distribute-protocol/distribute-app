@@ -1,5 +1,5 @@
-import { GET_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS, CHECK_ACTIVE_STATUS, SUBMIT_HASHED_TASK_LIST, SET_TASK_LIST, GET_VERIFIED_TASK_LISTS } from '../constants/ProjectActionTypes'
-import { projectsReceived, projectProposed, projectStaked, projectUnstaked, hashedTaskListSubmitted, stakedStatusChecked, activeStatusChecked, taskListSet, verifiedTaskListsReceived } from '../actions/projectActions'
+import { GET_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS, CHECK_ACTIVE_STATUS, SUBMIT_HASHED_TASK_LIST, SET_TASK_LIST, GET_FINAL_TASK_LIST, GET_VERIFIED_TASK_LISTS } from '../constants/ProjectActionTypes'
+import { projectsReceived, projectProposed, projectStaked, projectUnstaked, hashedTaskListSubmitted, stakedStatusChecked, activeStatusChecked, taskListSet, receivedFinalTaskList, verifiedTaskListsReceived } from '../actions/projectActions'
 import { map, mergeMap, concatMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
@@ -187,6 +187,21 @@ const getActiveProjectsEpic = action$ => {
   )
 }
 
+// need new project actions, epic to actually call the contract fcn
+const getFinalTaskListEpic = action$ => {
+  let projectAddress
+  let topTaskHash
+  console.log('i want to watch incredibles 2')
+  return action$.ofType(GET_FINAL_TASK_LIST).pipe(
+    mergeMap(action => {
+      projectAddress = action.projectAddress
+      topTaskHash = action.taskListHash
+      return Observable.from(pr.submitHashList(projectAddress, topTaskHash))
+    }),
+    map(result => receivedFinalTaskList(projectAddress, topTaskHash)) // receipt.logs[0].args
+  )
+}
+
 export default (action$, store) => merge(
   getProposedProjectsEpic(action$, store),
   getStakedProjectsEpic(action$, store),
@@ -198,5 +213,6 @@ export default (action$, store) => merge(
   submitHashedTaskList(action$, store),
   setTaskList(action$, store),
   getVerifiedTaskListsEpic(action$, store),
-  getActiveProjectsEpic(action$, store)
+  getActiveProjectsEpic(action$, store),
+  getFinalTaskListEpic(action$, store)
 )
