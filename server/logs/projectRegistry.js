@@ -204,14 +204,10 @@ module.exports = function () {
     let index = parseInt(eventParamArr[3], 16)
     Project.findOne({address: projectAddress}).exec((error, doc) => {
       if (error) console.error(error)
-      console.log(doc.taskList, 'here is the task info')
       let taskListArr = JSON.parse(doc.taskList)
       let taskContent = [taskListArr[index]]
-      let taskHash = hashTasks(taskContent) 
-      console.log('task content: ', taskContent)
-      console.log('task hash stored in db: ', taskHash) // this is an empty array atm
-      console.log('individual task hash: ', individualTaskHash)
-      if (individualTaskHash === taskHash) {
+      let taskHash = hashTasks(taskContent)
+      if (individualTaskHash === taskHash[0]) {
         let finalTask = new Task({
           _id: new mongoose.Types.ObjectId(),
           address: taskAddress,
