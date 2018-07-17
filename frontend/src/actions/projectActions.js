@@ -205,18 +205,20 @@ export function finalTaskListSubmitted (address) {
 //   }
 // }
 
-export function claimTask (address, txObj) {
+export function claimTask (address, index, txObj) {
   return {
     type: CLAIM_TASK,
     address,
+    index,
     txObj
   }
 }
 
-export function taskClaimed (address) {
+export function taskClaimed (address, index) {
   return {
     type: TASK_CLAIMED,
-    address
+    address,
+    index
   }
 }
 

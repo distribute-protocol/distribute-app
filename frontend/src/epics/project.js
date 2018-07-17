@@ -222,12 +222,32 @@ const submitFinalTaskListEpic = action$ => {
   )
 }
 
-const claimTaskEpic = action$ =>
-  action$.ofType(CLAIM_TASK).pipe(
-    
-    mergeMap(action => { return rr.claimTask(action.address, action.txObj) }),
-    map(result => claimTaskEpic(result))
+const claimTaskEpic = action$ => {
+  let address
+  let txObj
+  let index
+  return action$.ofType(CLAIM_TASK).pipe(
+    mergeMap(action => {
+      address = action.address
+      txObj = action.txObj
+      index = action.index
+      let query = gql`
+      query($address: String!, $index: Number!) {
+        findTaskByIndex(address: $address, index: $index) {
+          description,
+          hash,
+          weighting
+        }
+      }`
+      return client.query({query: query, variables: {address: address, index: action.index}})
+    }),
+    mergeMap(result => {
+      let taskHash = hashTasks(result.data.findTaskByIndex.description)
+      return rr.claimTask(address, index, taskHash, result.data.findTaskByIndex.weighting, txObj)
+    }),
+    map(result => taskClaimed(address, index))
   )
+}
 
 export default (action$, store) => merge(
   getProposedProjectsEpic(action$, store),
@@ -241,5 +261,6 @@ export default (action$, store) => merge(
   setTaskList(action$, store),
   getVerifiedTaskListsEpic(action$, store),
   getActiveProjectsEpic(action$, store),
-  submitFinalTaskListEpic(action$, store)
+  submitFinalTaskListEpic(action$, store),
+  claimTaskEpic(action$, store)
 )
