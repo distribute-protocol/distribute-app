@@ -22,9 +22,7 @@ import {
   FINAL_TASK_LIST_SUBMITTED,
   SUBMIT_FINAL_TASK_LIST,
   GET_VERIFIED_TASK_LISTS,
-  VERIFIED_TASK_LISTS_RECEIVED,
-  GET_FINAL_TASK_LIST,
-  RECEIVED_FINAL_TASK_LIST
+  VERIFIED_TASK_LISTS_RECEIVED
 } from '../constants/ProjectActionTypes'
 
 export function proposeProject (collateralType, projObj, txObj) {
@@ -191,10 +189,12 @@ export function verifiedTaskListsReceived (address, result) {
   }
 }
 
-export function submitFinalTaskList (address) {
+export function submitFinalTaskList (address, txObj) {
+  console.log('goobi')
   return {
     type: SUBMIT_FINAL_TASK_LIST,
-    address
+    address,
+    txObj
   }
 }
 

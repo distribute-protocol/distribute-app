@@ -5,7 +5,7 @@ import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
 import { client } from '../index'
 import { merge } from 'rxjs/observable/merge'
-import { rr, tr, pr, pl } from '../utilities/blockchain'
+import { rr, tr, pr } from '../utilities/blockchain'
 import { hashTasksArray, hashTasks } from '../utilities/hashing'
 import gql from 'graphql-tag'
 
@@ -189,10 +189,11 @@ const getActiveProjectsEpic = action$ => {
 const submitFinalTaskListEpic = action$ => {
   let address
   let taskArray
+  let txObj
   return action$.ofType(SUBMIT_FINAL_TASK_LIST).pipe(
     mergeMap(action => {
-      console.log('i want to watch incredibles 2')
       address = action.address
+      txObj = action.txObj
       // get topTaskHash from contract logs
       let query = gql`
       query ($address: String!) {
@@ -211,13 +212,11 @@ const submitFinalTaskListEpic = action$ => {
           content
         }
       }`
-      // compare the top task hash from the contracts and the top task hash generated and put into db upon sibmission
       return client.query({query: query, variables: {address: address, topTaskHash: result.data.project.topTaskHash}})
     }),
     mergeMap(result => {
       taskArray = hashTasks(JSON.parse(result.data.findFinalTaskHash.content))
-      console.log(address, taskArray)
-      return Observable.from(pr.submitHashList(address, taskArray))
+      return Observable.from(pr.submitHashList(address, taskArray, txObj))
     }),
     map(result => finalTaskListSubmitted(address))
   )

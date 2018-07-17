@@ -80,6 +80,7 @@ class Claim extends React.Component {
           index={i}
           address={address}
           project={this.props.projects[address]}
+          submitFinalTaskList={this.submitFinalTaskList}
         />
       })
       : []
@@ -112,7 +113,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
     getProjects: () => dispatch(getProjects(3, projQuery)),
-    submitFinalTaskList: (address) => dispatch(submitFinalTaskList(address))
+    submitFinalTaskList: (address, txObj) => dispatch(submitFinalTaskList(address, txObj))
   }
 }
 

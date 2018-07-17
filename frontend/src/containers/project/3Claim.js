@@ -15,19 +15,20 @@ class ClaimProject extends React.Component {
       projects: []
     }
     this.getProjectStatus = this.getProjectStatus.bind(this)
-    this.submitWinningHashList = this.submitWinningHashList.bind(this)
+    this.submitFinalTaskList = this.submitFinalTaskList.bind(this)
     this.checkValidation = this.checkValidation.bind(this)
   }
 
   componentWillMount () {
     this.getProjectStatus()
+    // this.submitFinalTaskList(this.props.address)
   }
   // let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
   async getProjectStatus () {
     this.setState(this.props.project)
   }
 
-  async submitWinningHashList () {
+  async submitFinalTaskList () {
     this.props.submitFinalTaskList(this.props.address)
     // this.props.submitFinalTaskList(this.props.address, {taskHash: this.props.project.topTaskHash})
     // await pr.stakedProjects(this.props.address).then(winner => {
@@ -42,7 +43,7 @@ class ClaimProject extends React.Component {
     //       let list = hashTasks(this.props.project.taskList[address], this.state.weiCost)
     //       eth.getAccounts(async (err, accounts) => {
     //         if (!err) {
-    //           await pr.submitHashList(this.props.address, list, {from: accounts[0]}).then(() => {
+    //           await pr.submitFinalTaskList(this.props.address, list, {from: accounts[0]}).then(() => {
     //             this.props.submitFinalTaskList({taskList: this.props.project.taskList[address], address: this.props.address, listSubmitted: true})
     //           })
     //         }
@@ -124,7 +125,6 @@ class ClaimProject extends React.Component {
         date={moment(this.state.nextDeadline)}
         tasks={tasks}
         listSubmitted={this.props.project.listSubmitted}
-        submitWinningHashList={this.submitWinningHashList}
         submitFinalTaskList={this.submitFinalTaskList}
         checkValidation={this.checkValidation}
       />
@@ -138,12 +138,4 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    taskClaimed: (submissionDetails) => dispatch(taskClaimed(submissionDetails)),
-    taskCompleted: (taskDetails) => dispatch(taskCompleted(taskDetails)),
-    submitFinalTaskList: (address) => dispatch(submitFinalTaskList(address))
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ClaimProject)
+export default connect(mapStateToProps)(ClaimProject)
