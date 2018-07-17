@@ -9,7 +9,6 @@ import {
   CHECK_ACTIVE_STATUS,
   SET_TASK_LIST,
   SUBMIT_HASHED_TASK_LIST,
-  TASK_CLAIMED,
   TASK_LIST_SET,
   TASK_COMPLETED,
   // UPDATE_PROJECT,
@@ -22,7 +21,9 @@ import {
   FINAL_TASK_LIST_SUBMITTED,
   SUBMIT_FINAL_TASK_LIST,
   GET_VERIFIED_TASK_LISTS,
-  VERIFIED_TASK_LISTS_RECEIVED
+  VERIFIED_TASK_LISTS_RECEIVED,
+  CLAIM_TASK,
+  TASK_CLAIMED
 } from '../constants/ProjectActionTypes'
 
 export function proposeProject (collateralType, projObj, txObj) {
@@ -142,13 +143,6 @@ export function submitHashedTaskList (tasks, taskListHash, projectAddress, txObj
   }
 }
 
-export function taskClaimed (taskDetails) {
-  return {
-    type: TASK_CLAIMED,
-    taskDetails
-  }
-}
-
 export function taskListSet (taskDetails, projectAddress) {
   return {
     type: TASK_LIST_SET,
@@ -190,7 +184,6 @@ export function verifiedTaskListsReceived (address, result) {
 }
 
 export function submitFinalTaskList (address, txObj) {
-  console.log('goobi')
   return {
     type: SUBMIT_FINAL_TASK_LIST,
     address,
@@ -211,6 +204,21 @@ export function finalTaskListSubmitted (address) {
 //     projObj
 //   }
 // }
+
+export function claimTask (address, txObj) {
+  return {
+    type: CLAIM_TASK,
+    address,
+    txObj
+  }
+}
+
+export function taskClaimed (address) {
+  return {
+    type: TASK_CLAIMED,
+    address
+  }
+}
 
 export function taskValidated (validationDetails) {
   return {

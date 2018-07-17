@@ -59,8 +59,9 @@ class ClaimProject extends React.Component {
   claimTask (i) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
+        // why are we hashing the description?
         let hash = web3.fromAscii(this.props.project.taskList[i].description, 32)
-        await rr.claimTask(this.props.address, i, hash, 100 * (this.props.project.taskList[i].weiReward / this.state.weiCost), {from: accounts[0]})
+        await rr.claimTask(this.props.address, i, hash, this.props.project.taskList[i].percentage, {from: accounts[0]})
           .then(async () => {
             this.props.taskClaimed({address: this.props.address, index: i})
           })

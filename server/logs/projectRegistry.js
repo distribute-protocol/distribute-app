@@ -222,7 +222,7 @@ module.exports = function () {
         })
         finalTask.save(err => {
           if (err) console.error(error)
-          console.log('final tasks created', finalTask)
+          console.log('final tasks created')
         })
       } else {
         console.log('task hashes do not match')

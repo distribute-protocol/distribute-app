@@ -1,5 +1,5 @@
-import { GET_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS, CHECK_ACTIVE_STATUS, SUBMIT_HASHED_TASK_LIST, SET_TASK_LIST, SUBMIT_FINAL_TASK_LIST, GET_VERIFIED_TASK_LISTS } from '../constants/ProjectActionTypes'
-import { projectsReceived, projectProposed, projectStaked, projectUnstaked, hashedTaskListSubmitted, stakedStatusChecked, activeStatusChecked, taskListSet, finalTaskListSubmitted, verifiedTaskListsReceived } from '../actions/projectActions'
+import { GET_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS, CHECK_ACTIVE_STATUS, SUBMIT_HASHED_TASK_LIST, SET_TASK_LIST, SUBMIT_FINAL_TASK_LIST, GET_VERIFIED_TASK_LISTS, CLAIM_TASK } from '../constants/ProjectActionTypes'
+import { projectsReceived, projectProposed, projectStaked, projectUnstaked, hashedTaskListSubmitted, stakedStatusChecked, activeStatusChecked, taskListSet, finalTaskListSubmitted, verifiedTaskListsReceived, taskClaimed } from '../actions/projectActions'
 import { map, mergeMap, concatMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
@@ -221,6 +221,13 @@ const submitFinalTaskListEpic = action$ => {
     map(result => finalTaskListSubmitted(address))
   )
 }
+
+const claimTaskEpic = action$ =>
+  action$.ofType(CLAIM_TASK).pipe(
+    
+    mergeMap(action => { return rr.claimTask(action.address, action.txObj) }),
+    map(result => claimTaskEpic(result))
+  )
 
 export default (action$, store) => merge(
   getProposedProjectsEpic(action$, store),

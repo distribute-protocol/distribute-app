@@ -175,6 +175,7 @@ const typeDefs = `
     verifiedPrelimTaskLists(address: String): [PrelimTaskList]
     userPrelimTaskLists(address: String): [PrelimTaskList]
     findFinalTaskHash(address: String, topTaskHash: String): PrelimTaskList
+    findTaskByIndex(address: String, index: Int): Task
   }
 
   input AvatarInput {

@@ -18,16 +18,13 @@ const keccakHashes = (types, bytesarray) => {
 
 const hashTasks = (taskArray) => {
   let taskHashArray = []
-  console.log('kungfu', taskArray)
   let args = ['bytes32', 'uint']
   for (var i = 0; i < taskArray.length; i++) {
     let thisTask = []
-    console.log('task array of i', taskArray[i])
     thisTask.push(web3.fromAscii(taskArray[i].description, 32))
     thisTask.push(taskArray[i].percentage)
     taskHashArray.push(keccakHashes(args, thisTask))
   }
-  console.log('HELLO', taskHashArray)
   return taskHashArray
 }
 
