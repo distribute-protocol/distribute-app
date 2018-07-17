@@ -1,5 +1,8 @@
-import { soliditySha3 } from 'web3-utils'
-import { web3 } from './blockchain'
+/* global web3 */
+
+const web3Utils = require('./web3-utils')
+// const Web3 = require('web3')
+// const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
 
 const keccakHashes = (types, bytesarray) => {
   // {t: 'string', v: 'Hello!%'}, {t: 'int8', v:-23}, {t: 'address', v: '0x85F43D8a49eeB85d32Cf465507DD71d507100C1d'}
@@ -9,23 +12,23 @@ const keccakHashes = (types, bytesarray) => {
       ? objArray.push({t: types[i], v: bytesarray[i].toString()})
       : objArray.push({t: types[i], v: bytesarray[i]})
   }
-  let hash = soliditySha3(...objArray)
+  let hash = web3Utils.soliditySha3(...objArray).toString('hex')
   return hash
 }
 
-export const hashTasks = (taskArray) => {
+const hashTasks = (taskArray) => {
   let taskHashArray = []
   let args = ['bytes32', 'uint']
   for (var i = 0; i < taskArray.length; i++) {
     let thisTask = []
     thisTask.push(web3.fromAscii(taskArray[i].description, 32))
-    thisTask.push(100 * taskArray[i].weighting)
+    thisTask.push(taskArray[i].weighting)
     taskHashArray.push(keccakHashes(args, thisTask))
   }
   return taskHashArray
 }
 
-export const hashTasksArray = (taskArray) => {
+const hashTasksArray = (taskArray) => {
   let hashList = hashTasks(taskArray)
   hashList.map(arr => arr.slice(2))
   let numArgs = hashList.length
@@ -33,3 +36,5 @@ export const hashTasksArray = (taskArray) => {
   let taskHash = keccakHashes(args, hashList)
   return taskHash
 }
+
+module.exports = {hashTasks, hashTasksArray}

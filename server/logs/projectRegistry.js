@@ -5,8 +5,9 @@ const mongoose = require('mongoose')
 const Project = require('../models/project')
 const PrelimTaskList = require('../models/prelimTaskList')
 const Task = require('../models/task')
-const ipfs = require('../ipfs-api')
+const ipfs = require('../utilities/ipfs-api')
 const { TextDecoder } = require('text-encoding')
+const { hashTasks } = require('../utilities/hashing')
 
 module.exports = function () {
   // filter for project created events
@@ -199,28 +200,31 @@ module.exports = function () {
     taskAddress = '0x' + taskAddress.substr(-40)
     let projectAddress = eventParamArr[1]
     projectAddress = '0x' + projectAddress.substr(-40)
-    let topTaskHash = '0x' + eventParamArr[2]
+    let individualTaskHash = '0x' + eventParamArr[2]
     let index = parseInt(eventParamArr[3], 16)
-    console.log(topTaskHash, typeof topTaskHash, 'hash here')
     Project.findOne({address: projectAddress}).exec((error, doc) => {
       if (error) console.error(error)
       console.log(doc.taskList, 'here is the task info')
-      console.log(index, 'i here')
-      // get weighting and description
-      if (doc.topTaskHash === topTaskHash) {
+      let taskListArr = JSON.parse(doc.taskList)
+      let taskContent = taskListArr[index]
+      let taskHash = hashTasks(taskContent)
+      console.log(taskContent, taskHash, individualTaskHash)
+      if (individualTaskHash === taskHash) {
         let finalTask = new Task({
           _id: new mongoose.Types.ObjectId(),
           address: taskAddress,
           projectId: doc.id,
           claimed: false,
           complete: false,
+          description: taskContent.description,
           index,
           validationRewardClaimable: false,
+          weighting: taskContent.weighting,
           workerRewardClaimable: false
         })
         finalTask.save(err => {
           if (err) console.error(error)
-          console.log('final tasks created')
+          console.log('final tasks created', finalTask)
         })
       } else {
         console.log('task hashes do not match')

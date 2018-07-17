@@ -9,6 +9,7 @@ let taskSchema = mongoose.Schema({
   complete: Boolean,
   description: String,
   index: Number,
+  hash: String,
   projectId: mongoose.Schema.Types.ObjectId,
   validationRewardClaimable: Boolean, // reward claimable by validator
   weighting: Number,

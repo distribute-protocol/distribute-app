@@ -99,6 +99,7 @@ const typeDefs = `
     description: String
     id: ID
     index: Int
+    hash: String
     project: Project
     validations: [Validation]
     validationRewardClaimable: Boolean
