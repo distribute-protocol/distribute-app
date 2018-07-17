@@ -19,7 +19,7 @@ export const hashTasks = (taskArray) => {
   for (var i = 0; i < taskArray.length; i++) {
     let thisTask = []
     thisTask.push(web3.fromAscii(taskArray[i].description, 32))
-    thisTask.push(100 * taskArray[i].weighting)
+    thisTask.push(taskArray[i].percentage)
     taskHashArray.push(keccakHashes(args, thisTask))
   }
   return taskHashArray

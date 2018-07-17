@@ -1,8 +1,8 @@
 /* global web3 */
 
 const web3Utils = require('web3-utils')
-// const Web3 = require('web3')
-// const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
+const Web3 = require('web3')
+const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
 
 const keccakHashes = (types, bytesarray) => {
   // {t: 'string', v: 'Hello!%'}, {t: 'int8', v:-23}, {t: 'address', v: '0x85F43D8a49eeB85d32Cf465507DD71d507100C1d'}
@@ -18,13 +18,16 @@ const keccakHashes = (types, bytesarray) => {
 
 const hashTasks = (taskArray) => {
   let taskHashArray = []
+  console.log('kungfu', taskArray)
   let args = ['bytes32', 'uint']
   for (var i = 0; i < taskArray.length; i++) {
     let thisTask = []
+    console.log('task array of i', taskArray[i])
     thisTask.push(web3.fromAscii(taskArray[i].description, 32))
-    thisTask.push(taskArray[i].weighting)
+    thisTask.push(taskArray[i].percentage)
     taskHashArray.push(keccakHashes(args, thisTask))
   }
+  console.log('HELLO', taskHashArray)
   return taskHashArray
 }
 

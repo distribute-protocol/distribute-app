@@ -89,9 +89,10 @@ class AddProject extends React.Component {
     } else {
       let taskArray = tasks.map(task => ({
         description: task.description,
-        weiReward: task.percentage * this.state.weiCost / 100
+        percentage: task.percentage
+        // weiReward: task.percentage * this.state.weiCost / 100
       }))
-      let taskHash = hashTasksArray(taskArray, this.state.weiCost)
+      let taskHash = hashTasksArray(taskArray)
       this.props.submitHashedTaskList(tasks, taskHash, this.props.address)
     }
   }
