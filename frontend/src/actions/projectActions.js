@@ -10,20 +10,14 @@ import {
   SET_TASK_LIST,
   SUBMIT_HASHED_TASK_LIST,
   TASK_LIST_SET,
-  TASK_COMPLETED,
   // UPDATE_PROJECT,
-  TASK_VALIDATED,
   GET_PROJECTS,
   PROJECTS_RECEIVED,
   STAKED_STATUS_CHECKED,
   ACTIVE_STATUS_CHECKED,
   HASHED_TASK_LIST_SUBMITTED,
-  FINAL_TASK_LIST_SUBMITTED,
-  SUBMIT_FINAL_TASK_LIST,
   GET_VERIFIED_TASK_LISTS,
-  VERIFIED_TASK_LISTS_RECEIVED,
-  CLAIM_TASK,
-  TASK_CLAIMED
+  VERIFIED_TASK_LISTS_RECEIVED
 } from '../constants/ProjectActionTypes'
 
 export function proposeProject (collateralType, projObj, txObj) {
@@ -151,12 +145,12 @@ export function taskListSet (taskDetails, projectAddress) {
   }
 }
 
-export function taskCompleted (taskDetails) {
-  return {
-    type: TASK_COMPLETED,
-    taskDetails
-  }
-}
+// export function taskCompleted (taskDetails) {
+//   return {
+//     type: TASK_COMPLETED,
+//     taskDetails
+//   }
+// }
 
 export function hashedTaskListSubmitted (tasks, submitterAddress, projectAddress, receipt) {
   return {
@@ -180,51 +174,5 @@ export function verifiedTaskListsReceived (address, result) {
     type: VERIFIED_TASK_LISTS_RECEIVED,
     address,
     result
-  }
-}
-
-export function submitFinalTaskList (address, txObj) {
-  return {
-    type: SUBMIT_FINAL_TASK_LIST,
-    address,
-    txObj
-  }
-}
-
-export function finalTaskListSubmitted (address) {
-  return {
-    type: FINAL_TASK_LIST_SUBMITTED,
-    address
-  }
-}
-// export function updateProject (address, projObj) {
-//   return {
-//     type: UPDATE_PROJECT,
-//     address,
-//     projObj
-//   }
-// }
-
-export function claimTask (address, index, txObj) {
-  return {
-    type: CLAIM_TASK,
-    address,
-    index,
-    txObj
-  }
-}
-
-export function taskClaimed (address, index) {
-  return {
-    type: TASK_CLAIMED,
-    address,
-    index
-  }
-}
-
-export function taskValidated (validationDetails) {
-  return {
-    type: TASK_VALIDATED,
-    validationDetails
   }
 }

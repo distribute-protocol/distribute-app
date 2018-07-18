@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import ValidateComponent from '../../components/project/4Validate'
 import { Button } from 'antd'
 import {eth, pr, tr, web3, P} from '../../utilities/blockchain'
-import { taskValidated } from '../../actions/projectActions'
+import { taskValidated } from '../../actions/taskActions'
 import moment from 'moment'
 
 class ValidateTasks extends React.Component {

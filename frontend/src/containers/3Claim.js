@@ -6,7 +6,8 @@ import { push } from 'react-router-redux'
 import { eth } from '../utilities/blockchain'
 import Project from './project/3Claim'
 import fastforward from '../utilities/fastforward'
-import { getProjects, submitFinalTaskList } from '../actions/projectActions'
+import { getProjects } from '../actions/projectActions'
+import { submitFinalTaskList } from '../actions/taskActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`

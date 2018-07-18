@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 import ClaimComponent from '../../components/project/3Claim'
 import { Button } from 'antd'
 import {eth, web3, rr, pr} from '../../utilities/blockchain'
-import { hashTasksArray, hashTasks } from '../../utilities/hashing'
-import { taskClaimed, submitFinalTaskList, taskCompleted } from '../../actions/projectActions'
+// import { hashTasksArray, hashTasks } from '../../utilities/hashing'
+// import { taskClaimed, submitFinalTaskList, taskCompleted } from '../../actions/taskActions'
 import moment from 'moment'
 const ButtonGroup = Button.Group
 

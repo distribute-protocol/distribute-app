@@ -1,12 +1,12 @@
-import { GET_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS, CHECK_ACTIVE_STATUS, SUBMIT_HASHED_TASK_LIST, SET_TASK_LIST, SUBMIT_FINAL_TASK_LIST, GET_VERIFIED_TASK_LISTS, CLAIM_TASK } from '../constants/ProjectActionTypes'
-import { projectsReceived, projectProposed, projectStaked, projectUnstaked, hashedTaskListSubmitted, stakedStatusChecked, activeStatusChecked, taskListSet, finalTaskListSubmitted, verifiedTaskListsReceived, taskClaimed } from '../actions/projectActions'
+import { GET_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS, CHECK_ACTIVE_STATUS, SUBMIT_HASHED_TASK_LIST, SET_TASK_LIST, GET_VERIFIED_TASK_LISTS } from '../constants/ProjectActionTypes'
+import { projectsReceived, projectProposed, projectStaked, projectUnstaked, hashedTaskListSubmitted, stakedStatusChecked, activeStatusChecked, taskListSet, verifiedTaskListsReceived } from '../actions/projectActions'
 import { map, mergeMap, concatMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
 import { client } from '../index'
 import { merge } from 'rxjs/observable/merge'
 import { rr, tr, pr } from '../utilities/blockchain'
-import { hashTasksArray, hashTasks } from '../utilities/hashing'
+// import { hashTasksArray, hashTasks } from '../utilities/hashing'
 import gql from 'graphql-tag'
 
 const getProposedProjectsEpic = action$ => {
@@ -186,68 +186,68 @@ const getActiveProjectsEpic = action$ => {
   )
 }
 
-const submitFinalTaskListEpic = action$ => {
-  let address
-  let taskArray
-  let txObj
-  return action$.ofType(SUBMIT_FINAL_TASK_LIST).pipe(
-    mergeMap(action => {
-      address = action.address
-      txObj = action.txObj
-      // get topTaskHash from contract logs
-      let query = gql`
-      query ($address: String!) {
-        project(address: $address){
-          topTaskHash
-        }
-      }`
-      return client.query({query: query, variables: {address: address}})
-    }),
-    // find the prelim task list in the db that matches toptask hash
-    mergeMap(result => {
-      let query = gql`
-      query($address: String!, $topTaskHash: String!) {
-        findFinalTaskHash(address: $address, topTaskHash: $topTaskHash) {
-          hash,
-          content
-        }
-      }`
-      return client.query({query: query, variables: {address: address, topTaskHash: result.data.project.topTaskHash}})
-    }),
-    mergeMap(result => {
-      taskArray = hashTasks(JSON.parse(result.data.findFinalTaskHash.content))
-      return Observable.from(pr.submitHashList(address, taskArray, txObj))
-    }),
-    map(result => finalTaskListSubmitted(address))
-  )
-}
+// const submitFinalTaskListEpic = action$ => {
+//   let address
+//   let taskArray
+//   let txObj
+//   return action$.ofType(SUBMIT_FINAL_TASK_LIST).pipe(
+//     mergeMap(action => {
+//       address = action.address
+//       txObj = action.txObj
+//       // get topTaskHash from contract logs
+//       let query = gql`
+//       query ($address: String!) {
+//         project(address: $address){
+//           topTaskHash
+//         }
+//       }`
+//       return client.query({query: query, variables: {address: address}})
+//     }),
+//     // find the prelim task list in the db that matches toptask hash
+//     mergeMap(result => {
+//       let query = gql`
+//       query($address: String!, $topTaskHash: String!) {
+//         findFinalTaskHash(address: $address, topTaskHash: $topTaskHash) {
+//           hash,
+//           content
+//         }
+//       }`
+//       return client.query({query: query, variables: {address: address, topTaskHash: result.data.project.topTaskHash}})
+//     }),
+//     mergeMap(result => {
+//       taskArray = hashTasks(JSON.parse(result.data.findFinalTaskHash.content))
+//       return Observable.from(pr.submitHashList(address, taskArray, txObj))
+//     }),
+//     map(result => finalTaskListSubmitted(address))
+//   )
+// }
 
-const claimTaskEpic = action$ => {
-  let address
-  let txObj
-  let index
-  return action$.ofType(CLAIM_TASK).pipe(
-    mergeMap(action => {
-      address = action.address
-      txObj = action.txObj
-      index = action.index
-      let query = gql`
-      query($address: String!, $index: Number!) {
-        findTaskByIndex(address: $address, index: $index) {
-          description,
-          hash,
-          weighting
-        }
-      }`
-      return client.query({query: query, variables: {address: address, index: action.index}})
-    }),
-    mergeMap(result => {
-      let taskHash = hashTasks(result.data.findTaskByIndex.description)
-      return rr.claimTask(address, index, taskHash, result.data.findTaskByIndex.weighting, txObj)
-    }),
-    map(result => taskClaimed(address, index))
-  )
-}
+// const claimTaskEpic = action$ => {
+//   let address
+//   let txObj
+//   let index
+//   return action$.ofType(CLAIM_TASK).pipe(
+//     mergeMap(action => {
+//       address = action.address
+//       txObj = action.txObj
+//       index = action.index
+//       let query = gql`
+//       query($address: String!, $index: Number!) {
+//         findTaskByIndex(address: $address, index: $index) {
+//           description,
+//           hash,
+//           weighting
+//         }
+//       }`
+//       return client.query({query: query, variables: {address: address, index: action.index}})
+//     }),
+//     mergeMap(result => {
+//       let taskHash = hashTasks(result.data.findTaskByIndex.description)
+//       return rr.claimTask(address, index, taskHash, result.data.findTaskByIndex.weighting, txObj)
+//     }),
+//     map(result => taskClaimed(address, index))
+//   )
+// }
 
 export default (action$, store) => merge(
   getProposedProjectsEpic(action$, store),
@@ -260,7 +260,6 @@ export default (action$, store) => merge(
   submitHashedTaskList(action$, store),
   setTaskList(action$, store),
   getVerifiedTaskListsEpic(action$, store),
-  getActiveProjectsEpic(action$, store),
-  submitFinalTaskListEpic(action$, store),
-  claimTaskEpic(action$, store)
+  getActiveProjectsEpic(action$, store)
+  // submitFinalTaskListEpic(action$, store)
 )
