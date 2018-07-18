@@ -1,6 +1,6 @@
 import { SUBMIT_FINAL_TASK_LIST, CLAIM_TASK } from '../constants/TaskActionTypes'
 import { finalTaskListSubmitted, taskClaimed } from '../actions/taskActions'
-import { map, mergeMap, concatMap } from 'rxjs/operators'
+import { map, mergeMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
 import { client } from '../index'
@@ -13,6 +13,7 @@ const submitFinalTaskListEpic = action$ => {
   let address
   let taskArray
   let txObj
+  let tasks
   return action$.ofType(SUBMIT_FINAL_TASK_LIST).pipe(
     mergeMap(action => {
       address = action.address
@@ -38,10 +39,11 @@ const submitFinalTaskListEpic = action$ => {
       return client.query({query: query, variables: {address: address, topTaskHash: result.data.project.topTaskHash}})
     }),
     mergeMap(result => {
-      taskArray = hashTasks(JSON.parse(result.data.findFinalTaskHash.content))
+      tasks = result.data.findFinalTaskHash.content
+      taskArray = hashTasks(JSON.parse(tasks))
       return Observable.from(pr.submitHashList(address, taskArray, txObj))
     }),
-    map(result => finalTaskListSubmitted(address))
+    map(result => finalTaskListSubmitted(address, tasks))
   )
 }
 
@@ -51,7 +53,6 @@ const claimTaskEpic = action$ => {
   let index
   return action$.ofType(CLAIM_TASK).pipe(
     mergeMap(action => {
-      console.log(typeof action.index)
       address = action.address
       txObj = action.txObj
       index = action.index
@@ -66,9 +67,7 @@ const claimTaskEpic = action$ => {
       return client.query({query: query, variables: {address: address, index: index}})
     }),
     mergeMap(result => {
-      console.log(result)
-      let taskHash = hashTasks(result.data.findTaskByIndex.description)
-      return Observable.from(rr.claimTask(address, index, taskHash, result.data.findTaskByIndex.weighting, txObj))
+      return Observable.from(rr.claimTask(address, index, result.data.findTaskByIndex.description, result.data.findTaskByIndex.weighting, txObj))
     }),
     map(result => taskClaimed(address, index))
   )

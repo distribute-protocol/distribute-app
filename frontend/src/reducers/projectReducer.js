@@ -1,4 +1,5 @@
 import { PROJECT_PROPOSED, PROJECTS_RECEIVED, TASK_LIST_SET, HASHED_TASK_LIST_SUBMITTED, PROJECT_STAKED, VERIFIED_TASK_LISTS_RECEIVED } from '../constants/ProjectActionTypes'
+import { FINAL_TASK_LIST_SUBMITTED } from '../constants/TaskActionTypes'
 
 const initialState = {
 }
@@ -55,6 +56,10 @@ export default function projectReducer (state = initialState, action) {
       project = Object.assign({}, state[2][action.address], {submittedTasks: action.result})
       projects = Object.assign({}, state[2], {[action.address]: project})
       return Object.assign({}, state, {2: projects})
+    case FINAL_TASK_LIST_SUBMITTED:
+      project = Object.assign({}, state[3][action.address], {taskList: action.tasks})
+      projects = Object.assign({}, state[3], {[action.address]: project})
+      return Object.assign({}, state, {3: projects})
     // case PROJECT_STAKED:
     //   console.log(action)
     //   console.log(action.value)

@@ -109,7 +109,7 @@ module.exports = function () {
     if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
       Project.findOne({address: projectAddress}).exec((error, doc) => {
         if (error) console.error(error)
-        if (doc) {
+        if (doc.state === 1) {
           doc.state = 2
           doc.save(err => {
             if (err) console.error(error)
@@ -173,13 +173,14 @@ module.exports = function () {
           finalTasks = prelimTaskList.content
         }
       })
+      console.log('final tasks', finalTasks)
       Project.findOne({address: projectAddress}).exec((error, project) => {
         if (error) console.error(error)
         if (project) {
           project.state = 3
           project.topTaskHash = topTaskHash
           project.taskList = finalTasks
-          console.log(finalTasks, project.taskList)
+          console.log('final tasks2', finalTasks)
           project.save(err => {
             if (err) console.error(error)
             console.log('active project with topTaskHash')
@@ -204,13 +205,11 @@ module.exports = function () {
     projectAddress = '0x' + projectAddress.substr(-40)
     let individualTaskHash = '0x' + eventParamArr[2]
     let index = parseInt(eventParamArr[3], 16)
-    console.log(projectAddress)
     Task.findOne({address: taskAddress}).exec((error, task) => {
       if (error) console.error(error)
       if (!task) {
         Project.findOne({address: projectAddress}).exec((error, doc) => {
           if (error) console.error(error)
-          console.log(doc)
           let taskListArr = JSON.parse(doc.taskList)
           let taskContent = [taskListArr[index]]
           let taskHash = hashTasks(taskContent)
@@ -222,10 +221,10 @@ module.exports = function () {
               project: doc.id,
               claimed: false,
               complete: false,
-              description: taskContent.description,
+              description: taskContent[0].description,
               index,
               validationRewardClaimable: false,
-              weighting: taskContent.weighting,
+              weighting: taskContent[0].percentage,
               workerRewardClaimable: false
             })
             finalTask.save(err => {

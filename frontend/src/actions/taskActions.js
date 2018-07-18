@@ -17,10 +17,11 @@ export function submitFinalTaskList (address, txObj) {
   }
 }
 
-export function finalTaskListSubmitted (address) {
+export function finalTaskListSubmitted (address, tasks) {
   return {
     type: FINAL_TASK_LIST_SUBMITTED,
-    address
+    address,
+    tasks
   }
 }
 

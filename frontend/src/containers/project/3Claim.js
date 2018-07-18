@@ -90,6 +90,7 @@ class ClaimProject extends React.Component {
   }
 
   render () {
+    console.log(this.props.project)
     let tasks
     if (this.props.project.taskList !== null) {
       let reputationCost = this.props.project.reputationCost
