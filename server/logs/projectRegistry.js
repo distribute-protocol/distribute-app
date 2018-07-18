@@ -4,6 +4,7 @@ const PR = require('../../frontend/src/abi/ProjectRegistry')
 const mongoose = require('mongoose')
 const Project = require('../models/project')
 const PrelimTaskList = require('../models/prelimTaskList')
+const User = require('../models/user')
 const Task = require('../models/task')
 const ipfs = require('../utilities/ipfs-api')
 const { TextDecoder } = require('text-encoding')
@@ -229,7 +230,7 @@ module.exports = function () {
             })
             finalTask.save(err => {
               if (err) console.error(error)
-              console.log('final tasks created', finalTask)
+              console.log('final tasks created')
             })
             doc.save(err => {
               if (err) console.error(error)
@@ -238,6 +239,48 @@ module.exports = function () {
           } else {
             console.log('task hashes do not match')
           }
+        })
+      }
+    })
+  })
+  const taskClaimedFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: PR.projectRegistryAddress,
+    topics: [web3.sha3('LogTaskClaimed(address,uint256,uint256,address)')]
+  })
+  taskClaimedFilter.watch(async (err, result) => {
+    if (err) console.error(err)
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let projectAddress = eventParamArr[0]
+    projectAddress = '0x' + projectAddress.substr(-40)
+    let index = parseInt(eventParamArr[1], 16)
+    let reputationVal = parseInt(eventParamArr[2], 16)
+    let claimer = eventParamArr[3]
+    claimer = '0x' + claimer.substr(-40)
+    User.findOne({address: claimer}).exec((error, user) => {
+      if (error) console.error(error)
+      if (claimer !== null) {
+        claimer.reputationBalance -= reputationVal
+        Project.findOne({address: projectAddress}).exec((error, doc) => {
+          if (error) console.error(error)
+          if (doc) {
+            Task.findOne({project: doc.id, index: index}).exec((error, task) => {
+              if (error) console.error(error)
+              console.log(task.claimed, 'goobi')
+              task.claimed = true
+              task.claimer = user.id
+              // task.claimedAt
+              user.tasks.push(task.id)
+              task.save(err => {
+                if (err) console.error(err)
+              })
+            })
+          }
+        })
+        user.save(err => {
+          if (err) console.error(error)
         })
       }
     })
