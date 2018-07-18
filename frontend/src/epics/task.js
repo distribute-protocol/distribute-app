@@ -51,22 +51,24 @@ const claimTaskEpic = action$ => {
   let index
   return action$.ofType(CLAIM_TASK).pipe(
     mergeMap(action => {
+      console.log(typeof action.index)
       address = action.address
       txObj = action.txObj
       index = action.index
       let query = gql`
-      query($address: String!, $index: Number!) {
+      query($address: String!, $index: Int!) {
         findTaskByIndex(address: $address, index: $index) {
           description,
           hash,
           weighting
         }
       }`
-      return client.query({query: query, variables: {address: address, index: action.index}})
+      return client.query({query: query, variables: {address: address, index: index}})
     }),
     mergeMap(result => {
+      console.log(result)
       let taskHash = hashTasks(result.data.findTaskByIndex.description)
-      return rr.claimTask(address, index, taskHash, result.data.findTaskByIndex.weighting, txObj)
+      return Observable.from(rr.claimTask(address, index, taskHash, result.data.findTaskByIndex.weighting, txObj))
     }),
     map(result => taskClaimed(address, index))
   )

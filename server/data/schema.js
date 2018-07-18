@@ -36,6 +36,7 @@ const typeDefs = `
     address: String
     id: ID
     ipfsHash: String
+    listSubmitted: Boolean
     location: Location
     name: String
     nextDeadline: String

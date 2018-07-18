@@ -59,6 +59,7 @@ module.exports = function () {
               activeStatePeriod,
               address: projectAddress,
               ipfsHash,
+              listSubmitted: false,
               location: dataObj.location,
               name: dataObj.name,
               nextDeadline,
@@ -178,6 +179,7 @@ module.exports = function () {
           project.state = 3
           project.topTaskHash = topTaskHash
           project.taskList = finalTasks
+          console.log(finalTasks, project.taskList)
           project.save(err => {
             if (err) console.error(error)
             console.log('active project with topTaskHash')
@@ -202,30 +204,42 @@ module.exports = function () {
     projectAddress = '0x' + projectAddress.substr(-40)
     let individualTaskHash = '0x' + eventParamArr[2]
     let index = parseInt(eventParamArr[3], 16)
-    Project.findOne({address: projectAddress}).exec((error, doc) => {
+    console.log(projectAddress)
+    Task.findOne({address: taskAddress}).exec((error, task) => {
       if (error) console.error(error)
-      let taskListArr = JSON.parse(doc.taskList)
-      let taskContent = [taskListArr[index]]
-      let taskHash = hashTasks(taskContent)
-      if (individualTaskHash === taskHash[0]) {
-        let finalTask = new Task({
-          _id: new mongoose.Types.ObjectId(),
-          address: taskAddress,
-          projectId: doc.id,
-          claimed: false,
-          complete: false,
-          description: taskContent.description,
-          index,
-          validationRewardClaimable: false,
-          weighting: taskContent.weighting,
-          workerRewardClaimable: false
+      if (!task) {
+        Project.findOne({address: projectAddress}).exec((error, doc) => {
+          if (error) console.error(error)
+          console.log(doc)
+          let taskListArr = JSON.parse(doc.taskList)
+          let taskContent = [taskListArr[index]]
+          let taskHash = hashTasks(taskContent)
+          doc.listSubmitted = true
+          if (individualTaskHash === taskHash[0]) {
+            let finalTask = new Task({
+              _id: new mongoose.Types.ObjectId(),
+              address: taskAddress,
+              project: doc.id,
+              claimed: false,
+              complete: false,
+              description: taskContent.description,
+              index,
+              validationRewardClaimable: false,
+              weighting: taskContent.weighting,
+              workerRewardClaimable: false
+            })
+            finalTask.save(err => {
+              if (err) console.error(error)
+              console.log('final tasks created', finalTask)
+            })
+            doc.save(err => {
+              if (err) console.error(error)
+              console.log('list submitted')
+            })
+          } else {
+            console.log('task hashes do not match')
+          }
         })
-        finalTask.save(err => {
-          if (err) console.error(error)
-          console.log('final tasks created')
-        })
-      } else {
-        console.log('task hashes do not match')
       }
     })
   })

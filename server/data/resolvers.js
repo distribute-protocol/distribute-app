@@ -79,14 +79,14 @@ const resolvers = {
     task: (_, args) => Task.find({address: args.address}).then(task => task),
     allTasks: () => Task.find({}).then(tasks => tasks),
     userTasks: (_, args) => User.findOne({account: args.account}).then(user => Task.find({claimer: user.id})).then(tasks => tasks),
-    projectTasks: (_, args) => Project.findOne({address: args.address}).then(project => Task.find({projectId: project.id})).then(tasks => tasks),
+    projectTasks: (_, args) => Project.findOne({address: args.address}).then(project => Task.find({project: project.id})).then(tasks => tasks),
     verifiedPrelimTaskLists: (_, args) => PrelimTaskList.find({address: args.address, verified: true}).then(prelimTaskLists => prelimTaskLists),
     userPrelimTaskLists: (_, args) => PrelimTaskList.findOne({submitter: args.account}).then(prelimTaskLists => prelimTaskLists),
     taskValidations: (address) => [{}],
     userVotes: (account) => [{}],
     taskVotes: (address) => [{}],
     findFinalTaskHash: (_, args) => PrelimTaskList.findOne({hash: args.topTaskHash, address: args.address}).then(prelimTaskList => prelimTaskList),
-    findTaskByIndex: (_, args) => Project.findOne({address: args.address}).then(project => Task.find({projectId: project.id})).then(tasks => Task.findOne({index: args.index}))
+    findTaskByIndex: (_, args) => Project.findOne({address: args.address}).then(project => Task.findOne({project: project.id, index: args.index})).then(task => task)
   },
   Mutation: {
     addUser: (obj, args) => {

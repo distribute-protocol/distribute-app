@@ -5,6 +5,7 @@ let projectSchema = mongoose.Schema({
   activeStatePeriod: Number,
   address: String,
   ipfsHash: String,
+  listSubmitted: Boolean,
   location: [Number],
   name: String,
   nextDeadline: Date,

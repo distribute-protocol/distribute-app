@@ -56,17 +56,18 @@ class ClaimProject extends React.Component {
     // })
   }
 
-  claimTask (i) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        // why are we hashing the description?
-        let hash = web3.fromAscii(this.props.project.taskList[i].description, 32)
-        await rr.claimTask(this.props.address, i, hash, this.props.project.taskList[i].percentage, {from: accounts[0]})
-          .then(async () => {
-            this.props.taskClaimed({address: this.props.address, index: i})
-          })
-      }
-    })
+  async claimTask (i) {
+    this.props.claimTask(this.props.address, i)
+    // eth.getAccounts(async (err, accounts) => {
+    //   if (!err) {
+    //     // why are we hashing the description?
+    //     let hash = web3.fromAscii(this.props.project.taskList[i].description, 32)
+    //     await rr.claimTask(this.props.address, i, hash, this.props.project.taskList[i].percentage, {from: accounts[0]})
+    //       .then(async () => {
+    //         this.props.taskClaimed({address: this.props.address, index: i})
+    //       })
+    //   }
+    // })
   }
 
   markTaskComplete (i) {
@@ -94,6 +95,7 @@ class ClaimProject extends React.Component {
       let reputationCost = this.props.project.reputationCost
       let weiCost = this.props.project.weiCost
       tasks = JSON.parse(this.props.project.taskList).map((task, i) => {
+        console.log((JSON.parse(this.props.project.taskList))[i])
         let weiReward = Math.floor(weiCost * task.percentage / 100)
         return {
           key: i,
@@ -127,6 +129,7 @@ class ClaimProject extends React.Component {
         tasks={tasks}
         listSubmitted={this.props.project.listSubmitted}
         submitFinalTaskList={this.submitFinalTaskList}
+        claimTask={this.claimTask}
         checkValidation={this.checkValidation}
       />
     )
