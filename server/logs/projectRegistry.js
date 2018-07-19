@@ -174,14 +174,13 @@ module.exports = function () {
           finalTasks = prelimTaskList.content
         }
       })
-      console.log('final tasks', finalTasks)
       Project.findOne({address: projectAddress}).exec((error, project) => {
         if (error) console.error(error)
         if (project) {
           project.state = 3
           project.topTaskHash = topTaskHash
           project.taskList = finalTasks
-          console.log('final tasks2', finalTasks)
+          console.log('final tasks:', finalTasks)
           project.save(err => {
             if (err) console.error(error)
             console.log('active project with topTaskHash')
@@ -259,16 +258,16 @@ module.exports = function () {
     let reputationVal = parseInt(eventParamArr[2], 16)
     let claimer = eventParamArr[3]
     claimer = '0x' + claimer.substr(-40)
-    User.findOne({address: claimer}).exec((error, user) => {
+    User.findOne({account: claimer}).exec((error, user) => {
       if (error) console.error(error)
-      if (claimer !== null) {
-        claimer.reputationBalance -= reputationVal
+      user.reputationBalance -= reputationVal
+      if (user) {
         Project.findOne({address: projectAddress}).exec((error, doc) => {
           if (error) console.error(error)
+          console.log('gets to project')
           if (doc) {
             Task.findOne({project: doc.id, index: index}).exec((error, task) => {
               if (error) console.error(error)
-              console.log(task.claimed, 'goobi')
               task.claimed = true
               task.claimer = user.id
               // task.claimedAt
@@ -278,9 +277,14 @@ module.exports = function () {
               })
             })
           }
-        })
-        user.save(err => {
-          if (err) console.error(error)
+          doc.save(err => {
+            if (err) console.error(error)
+            console.log('doc saved')
+          })
+          user.save(err => {
+            if (err) console.error(error)
+            console.log('claimer saved')
+          })
         })
       }
     })
