@@ -4,6 +4,7 @@ import {
   CLAIM_TASK,
   TASK_CLAIMED,
   TASK_VALIDATED,
+  SUBMIT_TASK_COMPLETE,
   TASK_COMPLETED,
   GET_TASKS,
   TASKS_RECEIVED
@@ -11,7 +12,6 @@ import {
 // task actions start at submitFinalTaskList because task contract initialized in this action
 
 export function submitFinalTaskList (address, txObj) {
-  console.log('here')
   return {
     type: SUBMIT_FINAL_TASK_LIST,
     address,
@@ -55,6 +55,15 @@ export function taskCompleted (taskDetails) {
   return {
     type: TASK_COMPLETED,
     taskDetails
+  }
+}
+
+export function submitTaskComplete (address, index, txObj) {
+  return {
+    type: SUBMIT_TASK_COMPLETE,
+    address,
+    index,
+    txObj
   }
 }
 

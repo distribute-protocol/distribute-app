@@ -9,7 +9,6 @@ import moment from 'moment'
 
 const ButtonGroup = Button.Group
 
-
 class ClaimProject extends React.Component {
   constructor () {
     super()
@@ -31,7 +30,7 @@ class ClaimProject extends React.Component {
     this.setState(this.props.project)
   }
 
-  getTasks () {
+  async getTasks () {
     this.props.getTasks(this.props.address)
   }
 
@@ -77,15 +76,16 @@ class ClaimProject extends React.Component {
     // })
   }
 
-  markTaskComplete (i) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        await pr.submitTaskComplete(this.props.address, i, {from: accounts[0]})
-          .then(async () => {
-            this.props.taskCompleted({address: this.props.address, index: i})
-          })
-      }
-    })
+  submitTaskComplete (i) {
+    this.props.submitTaskComplete(this.props.address, i)
+    // eth.getAccounts(async (err, accounts) => {
+    //   if (!err) {
+    //     await pr.submitTaskComplete(this.props.address, i, {from: accounts[0]})
+    //       .then(async () => {
+    //         this.props.taskCompleted({address: this.props.address, index: i})
+    //       })
+    //   }
+    // })
   }
 
   checkValidation () {
@@ -97,7 +97,7 @@ class ClaimProject extends React.Component {
   }
 
   render () {
-    console.log(this.props.tasks)
+    console.log(this.props.tasks, 'here')
     let tasks
     if (this.props.project.taskList !== null && this.props.tasks !== undefined) {
       let reputationCost = this.props.project.reputationCost
@@ -114,8 +114,8 @@ class ClaimProject extends React.Component {
               disabled={this.props.tasks[i].claimed || !this.props.project.listSubmitted}
               type='danger' onClick={() => this.claimTask(i)}>Claim</Button>
             <Button
-              disabled={this.props.project.taskList[i].submitted || !this.props.tasks[i].claimed || !this.props.project.listSubmitted}
-              type='danger' onClick={() => this.markTaskComplete(i)}>Task Complete</Button>
+              // disabled={this.props.project.taskList[i].submitted || !this.props.tasks[i].claimed || !this.props.project.listSubmitted}
+              type='danger' onClick={() => this.submitTaskComplete(i)}>Task Complete</Button>
           </ButtonGroup>
         }
       })
@@ -138,7 +138,7 @@ class ClaimProject extends React.Component {
         submitFinalTaskList={this.submitFinalTaskList}
         claimTask={this.claimTask}
         checkValidation={this.checkValidation}
-        taskClaimed={this.taskClaimed}
+        // taskClaimed={this.taskClaimed}
       />
     )
   }

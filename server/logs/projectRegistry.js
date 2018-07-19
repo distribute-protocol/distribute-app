@@ -289,4 +289,32 @@ module.exports = function () {
       }
     })
   })
+  const submitTaskCompleteFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: PR.projectRegistryAddress,
+    topics: [web3.sha3('LogSubmitTaskComplete(address,uint256,address)')]
+  })
+  submitTaskCompleteFilter.watch(async (err, result) => {
+    if (err) console.error(err)
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let projectAddress = eventParamArr[0]
+    projectAddress = '0x' + projectAddress.substr(-40)
+    let index = parseInt(eventParamArr[1], 16)
+    Project.findOne({address: projectAddress}).exec((error, doc) => {
+      if (error) console.error(error)
+      console.log('gets to project')
+      if (doc) {
+        Task.findOne({project: doc.id, index: index}).exec((error, task) => {
+          if (error) console.error(error)
+          task.complete = true
+          task.save(err => {
+            if (err) console.error(err)
+            console.log('task submitted complete', task)
+          })
+        })
+      }
+    })
+  })
 }

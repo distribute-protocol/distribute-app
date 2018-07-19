@@ -7,7 +7,7 @@ import { eth } from '../utilities/blockchain'
 import Project from './project/3Claim'
 import fastforward from '../utilities/fastforward'
 import { getProjects } from '../actions/projectActions'
-import { submitFinalTaskList, claimTask, getTasks } from '../actions/taskActions'
+import { submitFinalTaskList, claimTask, submitTaskComplete } from '../actions/taskActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -44,6 +44,7 @@ class Claim extends React.Component {
     this.fastForward = this.fastForward.bind(this)
     this.submitFinalTaskList = this.submitFinalTaskList.bind(this)
     this.claimTask = this.claimTask.bind(this)
+    this.submitTaskComplete = this.submitTaskComplete.bind(this)
   }
 
   componentWillMount () {
@@ -78,6 +79,14 @@ class Claim extends React.Component {
     })
   }
 
+  async submitTaskComplete (address, index) {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        this.props.submitTaskComplete(address, index, {from: accounts[0]})
+      }
+    })
+  }
+
   // fast forward Ganache 1 week
   async fastForward () {
     await fastforward(2 * 7 * 24 * 60 * 60)
@@ -93,6 +102,7 @@ class Claim extends React.Component {
           project={this.props.projects[address]}
           submitFinalTaskList={this.submitFinalTaskList}
           claimTask={this.claimTask}
+          submitTaskComplete={this.submitTaskComplete}
         />
       })
       : []
@@ -126,7 +136,8 @@ const mapDispatchToProps = (dispatch) => {
     reroute: () => dispatch(push('/')),
     getProjects: () => dispatch(getProjects(3, projQuery)),
     submitFinalTaskList: (address, txObj) => dispatch(submitFinalTaskList(address, txObj)),
-    claimTask: (address, index, txObj) => dispatch(claimTask(address, index, txObj))
+    claimTask: (address, index, txObj) => dispatch(claimTask(address, index, txObj)),
+    submitTaskComplete: (address, index, txObj) => dispatch(submitTaskComplete(address, index, txObj))
   }
 }
 

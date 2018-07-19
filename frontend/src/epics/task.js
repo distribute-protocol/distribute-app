@@ -1,5 +1,5 @@
-import { SUBMIT_FINAL_TASK_LIST, CLAIM_TASK, GET_TASKS } from '../constants/TaskActionTypes'
-import { finalTaskListSubmitted, taskClaimed, tasksReceived } from '../actions/taskActions'
+import { SUBMIT_FINAL_TASK_LIST, CLAIM_TASK, GET_TASKS, SUBMIT_TASK_COMPLETE } from '../constants/TaskActionTypes'
+import { finalTaskListSubmitted, taskClaimed, tasksReceived, taskCompleted } from '../actions/taskActions'
 import { map, mergeMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
@@ -99,8 +99,23 @@ const getTasksEpic = action$ => {
   )
 }
 
+const submitTaskCompleteEpic = action$ => {
+  let address
+  let index
+  return action$.ofType(SUBMIT_TASK_COMPLETE).pipe(
+    mergeMap(action => {
+      address = action.address
+      index = action.index
+      console.log(address, index, action.txObj)
+      return Observable.from(pr.submitTaskComplete(address, index, action.txObj))
+    }),
+    map(result => taskCompleted(address, index))
+  )
+}
+
 export default (action$, store) => merge(
   submitFinalTaskListEpic(action$, store),
   claimTaskEpic(action$, store),
-  getTasksEpic(action$, store)
+  getTasksEpic(action$, store),
+  submitTaskCompleteEpic(action$, store)
 )
