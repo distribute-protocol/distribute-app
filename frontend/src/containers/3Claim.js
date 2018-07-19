@@ -7,7 +7,7 @@ import { eth } from '../utilities/blockchain'
 import Project from './project/3Claim'
 import fastforward from '../utilities/fastforward'
 import { getProjects } from '../actions/projectActions'
-import { submitFinalTaskList, claimTask } from '../actions/taskActions'
+import { submitFinalTaskList, claimTask, getTasks } from '../actions/taskActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -34,12 +34,6 @@ let projQuery = gql`
       state
     }
   }`
-
-// let taskQuery = gql`
-// { projectTasks(address: address){
-//
-//   }
-// }`
 
 class Claim extends React.Component {
   constructor () {

@@ -4,7 +4,9 @@ import {
   CLAIM_TASK,
   TASK_CLAIMED,
   TASK_VALIDATED,
-  TASK_COMPLETED
+  TASK_COMPLETED,
+  GET_TASKS,
+  TASKS_RECEIVED
 } from '../constants/TaskActionTypes'
 // task actions start at submitFinalTaskList because task contract initialized in this action
 
@@ -52,6 +54,21 @@ export function taskValidated (validationDetails) {
 export function taskCompleted (taskDetails) {
   return {
     type: TASK_COMPLETED,
+    taskDetails
+  }
+}
+
+export function getTasks (projectAddress) {
+  return {
+    type: GET_TASKS,
+    projectAddress
+  }
+}
+
+export function tasksReceived (projectAddress, taskDetails) {
+  return {
+    type: TASKS_RECEIVED,
+    projectAddress,
     taskDetails
   }
 }

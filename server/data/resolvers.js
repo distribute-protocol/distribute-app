@@ -86,7 +86,8 @@ const resolvers = {
     userVotes: (account) => [{}],
     taskVotes: (address) => [{}],
     findFinalTaskHash: (_, args) => PrelimTaskList.findOne({hash: args.topTaskHash, address: args.address}).then(prelimTaskList => prelimTaskList),
-    findTaskByIndex: (_, args) => Project.findOne({address: args.address}).then(project => Task.findOne({project: project.id, index: args.index})).then(task => task)
+    findTaskByIndex: (_, args) => Project.findOne({address: args.address}).then(project => Task.findOne({project: project.id, index: args.index})).then(task => task),
+    allTasksinProject: (_, args) => Project.findOne({address: args.address}).then(project => Task.find({project: project.id})).then(tasks => tasks)
   },
   Mutation: {
     addUser: (obj, args) => {

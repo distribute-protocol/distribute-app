@@ -4,15 +4,17 @@ import ClaimComponent from '../../components/project/3Claim'
 import { Button } from 'antd'
 import {eth, web3, rr, pr} from '../../utilities/blockchain'
 // import { hashTasksArray, hashTasks } from '../../utilities/hashing'
-// import { taskClaimed, submitFinalTaskList, taskCompleted } from '../../actions/taskActions'
+import { getTasks } from '../../actions/taskActions'
 import moment from 'moment'
+
 const ButtonGroup = Button.Group
+
 
 class ClaimProject extends React.Component {
   constructor () {
     super()
     this.state = {
-      projects: []
+      tasks: []
     }
     this.getProjectStatus = this.getProjectStatus.bind(this)
     this.submitFinalTaskList = this.submitFinalTaskList.bind(this)
@@ -21,11 +23,16 @@ class ClaimProject extends React.Component {
 
   componentWillMount () {
     this.getProjectStatus()
+    this.getTasks()
     // this.submitFinalTaskList(this.props.address)
   }
   // let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
   async getProjectStatus () {
     this.setState(this.props.project)
+  }
+
+  getTasks () {
+    this.props.getTasks(this.props.address)
   }
 
   async submitFinalTaskList () {
@@ -90,13 +97,12 @@ class ClaimProject extends React.Component {
   }
 
   render () {
-    console.log(this.props.project)
+    console.log(this.props.tasks)
     let tasks
-    if (this.props.project.taskList !== null) {
+    if (this.props.project.taskList !== null && this.props.tasks !== undefined) {
       let reputationCost = this.props.project.reputationCost
       let weiCost = this.props.project.weiCost
       tasks = JSON.parse(this.props.project.taskList).map((task, i) => {
-        console.log((JSON.parse(this.props.project.taskList))[i])
         let weiReward = Math.floor(weiCost * task.percentage / 100)
         return {
           key: i,
@@ -105,10 +111,10 @@ class ClaimProject extends React.Component {
           repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' && typeof weiReward !== 'undefined' ? `${Math.floor(reputationCost * weiReward / weiCost)} rep` : '',
           buttons: <ButtonGroup>
             <Button
-              disabled={this.props.project.taskList[i].claimed || !this.props.project.listSubmitted}
+              disabled={this.props.tasks[i].claimed || !this.props.project.listSubmitted}
               type='danger' onClick={() => this.claimTask(i)}>Claim</Button>
             <Button
-              disabled={this.props.project.taskList[i].submitted || !this.props.project.taskList[i].claimed || !this.props.project.listSubmitted}
+              disabled={this.props.project.taskList[i].submitted || !this.props.tasks[i].claimed || !this.props.project.listSubmitted}
               type='danger' onClick={() => this.markTaskComplete(i)}>Task Complete</Button>
           </ButtonGroup>
         }
@@ -132,6 +138,7 @@ class ClaimProject extends React.Component {
         submitFinalTaskList={this.submitFinalTaskList}
         claimTask={this.claimTask}
         checkValidation={this.checkValidation}
+        taskClaimed={this.taskClaimed}
       />
     )
   }
@@ -139,8 +146,15 @@ class ClaimProject extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    project: state.projects[3][ownProps.address]
+    project: state.projects[3][ownProps.address],
+    tasks: state.projects[3][ownProps.address].tasks
   }
 }
 
-export default connect(mapStateToProps)(ClaimProject)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getTasks: (address) => dispatch(getTasks(address))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ClaimProject)

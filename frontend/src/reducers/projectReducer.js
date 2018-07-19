@@ -1,5 +1,5 @@
 import { PROJECT_PROPOSED, PROJECTS_RECEIVED, TASK_LIST_SET, HASHED_TASK_LIST_SUBMITTED, PROJECT_STAKED, VERIFIED_TASK_LISTS_RECEIVED } from '../constants/ProjectActionTypes'
-import { FINAL_TASK_LIST_SUBMITTED } from '../constants/TaskActionTypes'
+import { FINAL_TASK_LIST_SUBMITTED, TASKS_RECEIVED } from '../constants/TaskActionTypes'
 
 const initialState = {
 }
@@ -17,7 +17,7 @@ export default function projectReducer (state = initialState, action) {
         return state
       } else {
         let object = action.projects.reduce((obj, item) => (obj[item.address] = item, obj), {})
-        console.log(object)
+        // console.log(object)
         return Object.assign({}, state, {[action.state]: object})
       }
     case PROJECT_PROPOSED:
@@ -60,29 +60,10 @@ export default function projectReducer (state = initialState, action) {
       project = Object.assign({}, state[3][action.address], {taskList: action.tasks})
       projects = Object.assign({}, state[3], {[action.address]: project})
       return Object.assign({}, state, {3: projects})
-    // case PROJECT_STAKED:
-    //   console.log(action)
-    //   console.log(action.value)
-    //   let reputationStaked = action.value
-    //   let reputationBalance = state[1][action.projectAddress].reputationBalance.toNumber()
-    //   console.log(reputationBalance)
-    //   let totalReputationStaked = reputationBalance + reputationStaked
-    //   console.log(totalReputationStaked)
-    //   return Object.assign({}, state, {1: {[action.projectAddress]: totalReputationStaked}})
-    //   return Object.assign({}, state, {userTokens: state.userTokens + action.receipt.amountMinted.toNumber()})
-    //   console.log(action.collateralType)
-    //   // Object.assign({}, state, {userTokens: state.userTokens - action.receipt.amountStaked.toNumber()})
-    //   return state
-    // case PROJECT_UNSTAKED
-    //   console.log(action.receipt)
-    //   console.log(action.collateralType)
-    //   // Object.assign({}, state, {userTokens: state.userTokens + action.receipt.amountStaked.toNumber()})
-      // return state
-    // case TASK_CLAIMED
-    //   console.log(action.taskDetails)
-    // case TASK_COMPLETED
-    //     console.log(taskDetails)
-    // case TASK_VALIDATED
+    case TASKS_RECEIVED:
+      project = Object.assign({}, state[3][action.projectAddress], {tasks: action.taskDetails})
+      projects = Object.assign({}, state[3], {[action.projectAddress]: project})
+      return Object.assign({}, state, {3: projects})
     default:
   }
   return state

@@ -1,5 +1,5 @@
-import { SUBMIT_FINAL_TASK_LIST, CLAIM_TASK } from '../constants/TaskActionTypes'
-import { finalTaskListSubmitted, taskClaimed } from '../actions/taskActions'
+import { SUBMIT_FINAL_TASK_LIST, CLAIM_TASK, GET_TASKS } from '../constants/TaskActionTypes'
+import { finalTaskListSubmitted, taskClaimed, tasksReceived } from '../actions/taskActions'
 import { map, mergeMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
@@ -73,7 +73,34 @@ const claimTaskEpic = action$ => {
   )
 }
 
+const getTasksEpic = action$ => {
+  let address
+  return action$.ofType(GET_TASKS).pipe(
+    mergeMap(action => {
+      address = action.projectAddress
+      let query = gql`
+      query($address: String!) {
+        allTasksinProject(address: $address) {
+          id,
+          address,
+          claimed,
+          claimedAt,
+          complete,
+          description,
+          index,
+          hash,
+          weighting
+        }
+      }`
+      return client.query({query: query, variables: {address: address}}
+      )
+    }),
+    map(result => tasksReceived(address, result.data.allTasksinProject))
+  )
+}
+
 export default (action$, store) => merge(
   submitFinalTaskListEpic(action$, store),
-  claimTaskEpic(action$, store)
+  claimTaskEpic(action$, store),
+  getTasksEpic(action$, store)
 )
