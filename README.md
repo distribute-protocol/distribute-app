@@ -28,6 +28,7 @@ For notes on how to install each of the above please refer to the section on Ins
 Note that it is essential to have all of these softwares before proceeding with the installation of the Distribute Protocol.
 
 #### Installing yarn (and Node.js)
+Make sure that Homebrew is installed. If not, go to this [link](https://brew.sh/) and follow the documentation.
 You can install yarn through the Homebrew package manager. This will also install Node.js if it is not already installed.
 ```
 brew install yarn
@@ -53,10 +54,14 @@ npm -v
 ```
 You need at least `npm v5.3.0` and `node v8.3.0` to proceed.
 
-#### Installing Truffle
+#### Installing Truffle and Ganache
 ```
 npm install -g truffle
 ```
+```
+npm install -g ganache-cli
+```
+
 #### Installing MongoDB
 Open Terminal and enter
 ```
@@ -67,6 +72,7 @@ Create a default "db" directory to store the Mongo data files by running
 ```
 mkdir -p /data/db
 ```
+To initialise the Mongo shell, run `mongod`.
 To run the Mongo shell, run `mongo`.  
 To exit the Mongo shell, run `quit()`.  
 
@@ -91,6 +97,9 @@ Then cd into the directory where `go-ipfs` was downloaded.
 Once you have done this, in Terminal, type
 ```
 make install
+```
+If `make install` doesn't work, install from a pre-built package following the documentation [here](https://ipfs.io/docs/install/).
+```
 brew install ipfs
 ```
 Initialize the daemon by entering
@@ -154,7 +163,7 @@ Test that Yarn has been successfully installed by running
 ```
 yarn --version
 ```
-#### Installing truffle
+#### Installing truffle and ganache
 Run:
 ```
 npm install -g truffle
@@ -209,6 +218,7 @@ Note that all of these steps _must_ be carried out before sending any transactio
 Clone this repository to your machine and add the contracts repository as a submodule. This will give you access to all the frontend, server, and contract code you will need from both repositories.
 ```
 git clone https://github.com/distribute-protocol/distribute-app.git
+cd distribute-app
 git rm .gitmodules contracts
 git submodule add https://github.com/distribute-protocol/distribute-contracts.git contracts
 git submodule update --init --recursive
@@ -253,7 +263,7 @@ For <MetaMask_address\>: Paste (Ctrl-Shift-V) the address you copied to clipboar
 For <i\>: Type any number between 0 and 9. This is a reference to the 10 accounts in your locally running 10 accounts.
 
 *Step 6:*
-In another Terminal window, clear your database by typing:
+In a new Terminal window, clear your database by typing:
 ```
 mongo
 use distribute
