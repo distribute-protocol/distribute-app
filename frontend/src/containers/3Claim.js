@@ -7,6 +7,7 @@ import { eth } from '../utilities/blockchain'
 import Project from './project/3Claim'
 import fastforward from '../utilities/fastforward'
 import { getProjects } from '../actions/projectActions'
+import { submitFinalTaskList, claimTask, submitTaskComplete } from '../actions/taskActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -18,6 +19,7 @@ let projQuery = gql`
         lat,
         lng
       },
+      listSubmitted,
       name
       nextDeadline,
       photo,
@@ -25,8 +27,11 @@ let projQuery = gql`
       reputationCost,
       summary,
       tokenBalance,
+      topTaskHash,
+      taskList,
       weiBal,
-      weiCost
+      weiCost,
+      state
     }
   }`
 
@@ -37,6 +42,9 @@ class Claim extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
+    this.submitFinalTaskList = this.submitFinalTaskList.bind(this)
+    this.claimTask = this.claimTask.bind(this)
+    this.submitTaskComplete = this.submitTaskComplete.bind(this)
   }
 
   componentWillMount () {
@@ -55,19 +63,46 @@ class Claim extends React.Component {
     })
   }
 
-// fast forward Ganache 1 week
+  async submitFinalTaskList (address) {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        this.props.submitFinalTaskList(address, {from: accounts[0]})
+      }
+    })
+  }
+
+  async claimTask (address, index) {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        this.props.claimTask(address, index, {from: accounts[0]})
+      }
+    })
+  }
+
+  async submitTaskComplete (address, index) {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        this.props.submitTaskComplete(address, index, {from: accounts[0]})
+      }
+    })
+  }
+
+  // fast forward Ganache 1 week
   async fastForward () {
     await fastforward(2 * 7 * 24 * 60 * 60)
   }
 
   render () {
     const projects = typeof this.props.projects !== `undefined`
-      ? Object.keys(this.props.project).map((address, i) => {
+      ? Object.keys(this.props.projects).map((address, i) => {
         return <Project
           key={i}
           index={i}
           address={address}
-          project={this.props.project[address]}
+          project={this.props.projects[address]}
+          submitFinalTaskList={this.submitFinalTaskList}
+          claimTask={this.claimTask}
+          submitTaskComplete={this.submitTaskComplete}
         />
       })
       : []
@@ -99,7 +134,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
-    getProjects: () => dispatch(getProjects(3, projQuery))
+    getProjects: () => dispatch(getProjects(3, projQuery)),
+    submitFinalTaskList: (address, txObj) => dispatch(submitFinalTaskList(address, txObj)),
+    claimTask: (address, index, txObj) => dispatch(claimTask(address, index, txObj)),
+    submitTaskComplete: (address, index, txObj) => dispatch(submitTaskComplete(address, index, txObj))
   }
 }
 

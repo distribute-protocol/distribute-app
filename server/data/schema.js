@@ -36,6 +36,7 @@ const typeDefs = `
     address: String
     id: ID
     ipfsHash: String
+    listSubmitted: Boolean
     location: Location
     name: String
     nextDeadline: String
@@ -51,6 +52,7 @@ const typeDefs = `
     summary: String
     tasks: [Task]
     taskList: String
+    topTaskHash: String
     prelimTaskLists: [PrelimTaskList]
     tokenBalance: Int
     turnoverTime: Int
@@ -64,7 +66,7 @@ const typeDefs = `
   type PrelimTaskList {
     id: ID
     verified: Boolean
-    project: Project
+    address: String
     hash: String
     submitter: String
     weighting: Int
@@ -90,12 +92,15 @@ const typeDefs = `
   }
 
   type Task {
+    address: String
     claimed: Boolean
     claimedAt: String
     claimer: User
     complete: Boolean
     description: String
     id: ID
+    index: Int
+    hash: String
     project: Project
     validations: [Validation]
     validationRewardClaimable: Boolean
@@ -170,6 +175,9 @@ const typeDefs = `
     taskVotes(address: String): [Vote]
     verifiedPrelimTaskLists(address: String): [PrelimTaskList]
     userPrelimTaskLists(address: String): [PrelimTaskList]
+    findFinalTaskHash(address: String, topTaskHash: String): PrelimTaskList
+    findTaskByIndex(address: String, index: Int): Task
+    allTasksinProject(address: String): [Task]
   }
 
   input AvatarInput {

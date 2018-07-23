@@ -4,8 +4,11 @@ const PR = require('../../frontend/src/abi/ProjectRegistry')
 const mongoose = require('mongoose')
 const Project = require('../models/project')
 const PrelimTaskList = require('../models/prelimTaskList')
-const ipfs = require('../ipfs-api')
+const User = require('../models/user')
+const Task = require('../models/task')
+const ipfs = require('../utilities/ipfs-api')
 const { TextDecoder } = require('text-encoding')
+const { hashTasks } = require('../utilities/hashing')
 
 module.exports = function () {
   // filter for project created events
@@ -57,6 +60,7 @@ module.exports = function () {
               activeStatePeriod,
               address: projectAddress,
               ipfsHash,
+              listSubmitted: false,
               location: dataObj.location,
               name: dataObj.name,
               nextDeadline,
@@ -103,11 +107,10 @@ module.exports = function () {
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
     let flag = eventParamArr[1]
-    // console.log(flag)
     if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
       Project.findOne({address: projectAddress}).exec((error, doc) => {
         if (error) console.error(error)
-        if (doc) {
+        if (doc.state === 1) {
           doc.state = 2
           doc.save(err => {
             if (err) console.error(error)
@@ -144,10 +147,174 @@ module.exports = function () {
           prelimTaskList.save(error => {
             if (error) console.error(error)
             console.log('prelim task list submitted')
-            console.log(prelimTaskList)
           })
         }
       })
+    })
+  })
+  const projectActiveFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: PR.projectRegistryAddress,
+    topics: [web3.sha3('LogProjectActive(address,bytes32,bool)')]
+  })
+  projectActiveFilter.watch(async (err, result) => {
+    if (err) console.error(err)
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let projectAddress = eventParamArr[0]
+    projectAddress = '0x' + projectAddress.substr(-40)
+    let topTaskHash = '0x' + eventParamArr[1]
+    let flag = eventParamArr[2]
+    let finalTasks
+    if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
+      PrelimTaskList.findOne({address: projectAddress, hash: topTaskHash}).exec((error, prelimTaskList) => {
+        if (error) console.error(error)
+        if (prelimTaskList !== null) {
+          finalTasks = prelimTaskList.content
+        }
+      })
+      Project.findOne({address: projectAddress}).exec((error, project) => {
+        if (error) console.error(error)
+        if (project) {
+          project.state = 3
+          project.topTaskHash = topTaskHash
+          project.taskList = finalTasks
+          console.log('final tasks:', finalTasks)
+          project.save(err => {
+            if (err) console.error(error)
+            console.log('active project with topTaskHash')
+          })
+        }
+      })
+    }
+  })
+  const finalTasksFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: PR.projectRegistryAddress,
+    topics: [web3.sha3('LogFinalTaskCreated(address,address,bytes32,uint256)')]
+  })
+  finalTasksFilter.watch(async (err, result) => {
+    if (err) console.error(err)
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let taskAddress = eventParamArr[0]
+    taskAddress = '0x' + taskAddress.substr(-40)
+    let projectAddress = eventParamArr[1]
+    projectAddress = '0x' + projectAddress.substr(-40)
+    let individualTaskHash = '0x' + eventParamArr[2]
+    let index = parseInt(eventParamArr[3], 16)
+    Task.findOne({address: taskAddress}).exec((error, task) => {
+      if (error) console.error(error)
+      if (!task) {
+        Project.findOne({address: projectAddress}).exec((error, doc) => {
+          if (error) console.error(error)
+          let taskListArr = JSON.parse(doc.taskList)
+          let taskContent = [taskListArr[index]]
+          let taskHash = hashTasks(taskContent)
+          doc.listSubmitted = true
+          if (individualTaskHash === taskHash[0]) {
+            let finalTask = new Task({
+              _id: new mongoose.Types.ObjectId(),
+              address: taskAddress,
+              project: doc.id,
+              claimed: false,
+              complete: false,
+              description: taskContent[0].description,
+              index,
+              validationRewardClaimable: false,
+              weighting: taskContent[0].percentage,
+              workerRewardClaimable: false
+            })
+            finalTask.save(err => {
+              if (err) console.error(error)
+              console.log('final tasks created')
+            })
+            doc.save(err => {
+              if (err) console.error(error)
+              console.log('list submitted')
+            })
+          } else {
+            console.log('task hashes do not match')
+          }
+        })
+      }
+    })
+  })
+  const taskClaimedFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: PR.projectRegistryAddress,
+    topics: [web3.sha3('LogTaskClaimed(address,uint256,uint256,address)')]
+  })
+  taskClaimedFilter.watch(async (err, result) => {
+    if (err) console.error(err)
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let projectAddress = eventParamArr[0]
+    projectAddress = '0x' + projectAddress.substr(-40)
+    let index = parseInt(eventParamArr[1], 16)
+    let reputationVal = parseInt(eventParamArr[2], 16)
+    let claimer = eventParamArr[3]
+    claimer = '0x' + claimer.substr(-40)
+    User.findOne({account: claimer}).exec((error, user) => {
+      if (error) console.error(error)
+      user.reputationBalance -= reputationVal
+      if (user) {
+        Project.findOne({address: projectAddress}).exec((error, doc) => {
+          if (error) console.error(error)
+          console.log('gets to project')
+          if (doc) {
+            Task.findOne({project: doc.id, index: index}).exec((error, task) => {
+              if (error) console.error(error)
+              task.claimed = true
+              task.claimer = user.id
+              // task.claimedAt
+              user.tasks.push(task.id)
+              task.save(err => {
+                if (err) console.error(err)
+              })
+            })
+          }
+          doc.save(err => {
+            if (err) console.error(error)
+            console.log('doc saved')
+          })
+          user.save(err => {
+            if (err) console.error(error)
+            console.log('claimer saved')
+          })
+        })
+      }
+    })
+  })
+  const submitTaskCompleteFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: PR.projectRegistryAddress,
+    topics: [web3.sha3('LogSubmitTaskComplete(address,uint256,address)')]
+  })
+  submitTaskCompleteFilter.watch(async (err, result) => {
+    if (err) console.error(err)
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let projectAddress = eventParamArr[0]
+    projectAddress = '0x' + projectAddress.substr(-40)
+    let index = parseInt(eventParamArr[1], 16)
+    Project.findOne({address: projectAddress}).exec((error, doc) => {
+      if (error) console.error(error)
+      console.log('gets to project')
+      if (doc) {
+        Task.findOne({project: doc.id, index: index}).exec((error, task) => {
+          if (error) console.error(error)
+          task.complete = true
+          task.save(err => {
+            if (err) console.error(err)
+            console.log('task submitted complete', task)
+          })
+        })
+      }
     })
   })
 }

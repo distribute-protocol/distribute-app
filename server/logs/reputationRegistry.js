@@ -43,7 +43,7 @@ module.exports = function () {
               userStatus.reputationBalance += 10000
               userStatus.save(err => {
                 if (err) throw Error
-                console.log('user registerd')
+                console.log('user registered')
               })
             }
           })

@@ -31,7 +31,7 @@ export default ({
   date,
   tasks,
   listSubmitted,
-  submitWinningHashList,
+  submitFinalTaskList,
   checkValidation
 }) => {
   return (
@@ -58,7 +58,7 @@ export default ({
       <div style={{margin: 20}}>
         <Button
           disabled={listSubmitted}
-          onClick={() => submitWinningHashList()}>
+          onClick={() => submitFinalTaskList()}>
             Submit Winning Hash List
         </Button>
         <Button onClick={() => checkValidation()}>

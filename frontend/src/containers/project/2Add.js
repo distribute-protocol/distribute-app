@@ -16,7 +16,8 @@ class AddProject extends React.Component {
       tempTask: {},
       taskList: []
     }
-    this.getProjectStatus = this.getProjectStatus.bind(this)
+    // this.getProjectStatus = this.getProjectStatus.bind(this)
+    this.getVerifiedTaskLists = this.getVerifiedTaskLists.bind(this)
     this.handleTaskInput = this.handleTaskInput.bind(this)
     this.submitTaskList = this.submitTaskList.bind(this)
     this.moveRow = this.moveRow.bind(this)
@@ -24,17 +25,16 @@ class AddProject extends React.Component {
   }
 
   componentWillMount () {
-    this.getProjectStatus()
-    this.props.getVerifiedTaskLists(this.props.address)
+    // this.getProjectStatus()
+    this.getVerifiedTaskLists(this.props.address)
   }
 
-  getProjectStatus () {
-    let projectObj = Object.assign({}, this.props.project)
-    this.setState(projectObj)
+  getVerifiedTaskLists (address) {
+    this.props.getVerifiedTaskLists(address)
   }
 
   componentWillReceiveProps (np) {
-    if (np.taskList.length) {
+    if (np.taskList) {
       this.setState({taskList: JSON.parse(np.taskList)})
     }
   }
@@ -89,23 +89,21 @@ class AddProject extends React.Component {
     } else {
       let taskArray = tasks.map(task => ({
         description: task.description,
-        weiReward: task.percentage * this.state.weiCost / 100
+        percentage: task.percentage
+        // weiReward: task.percentage * this.state.weiCost / 100
       }))
-      let taskHash = hashTasksArray(taskArray, this.state.weiCost)
+      let taskHash = hashTasksArray(taskArray)
       this.props.submitHashedTaskList(tasks, taskHash, this.props.address)
     }
   }
 
   checkActive () {
-    this.props.checkActiveStatus()
+    this.props.checkActiveStatus(this.props.address)
   }
 
   render () {
-    console.log(this.props.submissions)
     let tasks, verifiedSubmissions
-    window.taskList = this.props.taskList
-    window.submissions = this.props.submissions
-    if (typeof this.props.taskList !== 'undefined' && this.props.taskList.length !== 0) {
+    if (this.props.taskList !== null && this.props.taskList.length !== 0) {
       tasks = JSON.parse(this.props.taskList).map((task, i) => {
         return {
           key: i,
@@ -150,14 +148,14 @@ class AddProject extends React.Component {
     }
     return (
       <AddComponent
-        name={this.state.name}
+        name={this.props.project.name}
         address={this.props.address}
-        photo={this.state.photo}
-        summary={this.state.summary}
-        location={this.state.location}
-        cost={web3.fromWei(this.state.cost, 'ether')}
-        reputationCost={this.state.reputationCost}
-        date={moment(this.state.nextDeadline)}
+        photo={this.props.project.photo}
+        summary={this.props.project.summary}
+        location={this.props.project.location}
+        cost={web3.fromWei(this.props.project.weiCost, 'ether')}
+        reputationCost={this.props.project.reputationCost}
+        date={moment(this.props.project.nextDeadline)}
         tasks={tasks}
         submitTaskList={this.submitTaskList}
         checkActive={this.checkActive}
@@ -171,6 +169,7 @@ class AddProject extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    project: state.projects[2][ownProps.address],
     taskList: state.projects[2][ownProps.address].taskList,
     submissions: state.projects[2][ownProps.address].submittedTasks
   }

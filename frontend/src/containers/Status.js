@@ -44,7 +44,7 @@ class Status extends Component {
     })
   }
 
-  async getNetworkStatus () {
+  getNetworkStatus () {
     this.props.getNetworkStatus()
     this.getPriceData()
     eth.getAccounts(async (err, accounts) => {
@@ -53,7 +53,7 @@ class Status extends Component {
           // get user token balance
           this.props.getUserStatus(accounts[0])
         } else {
-          console.error('Please Unlock MetaMask')
+          alert('Please Unlock MetaMask')
         }
       }
     })
@@ -118,9 +118,12 @@ class Status extends Component {
           : 0}
         ethPool={web3.fromWei(this.state.weiBal, 'ether')}
         capitalEquivalent={this.state.ethPrice
-          ? Math.round(this.state.ethPrice * web3.fromWei(this.state.weiBal, 'ether'))
+          ? parseFloat(this.state.ethPrice * web3.fromWei(this.state.weiBal, 'ether')).toFixed(2)
           : 0}
         currentPrice={this.state.currentPrice}
+        currentPriceUSD={this.state.currentPrice
+          ? parseFloat(this.state.currentPrice * web3.fromWei(this.state.weiBal, 'ether')).toFixed(5)
+          : 0}
         totalReputationSupply={this.props.network.totalReputation}
         reputationBalance={this.props.user.userReputation}
         ethToSend={typeof this.state.ethToSend === 'undefined'

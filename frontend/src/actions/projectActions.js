@@ -9,18 +9,13 @@ import {
   CHECK_ACTIVE_STATUS,
   SET_TASK_LIST,
   SUBMIT_HASHED_TASK_LIST,
-  TASK_CLAIMED,
   TASK_LIST_SET,
-  TASK_COMPLETED,
   // UPDATE_PROJECT,
-  TASK_VALIDATED,
   GET_PROJECTS,
   PROJECTS_RECEIVED,
   STAKED_STATUS_CHECKED,
   ACTIVE_STATUS_CHECKED,
   HASHED_TASK_LIST_SUBMITTED,
-  FINAL_TASK_LIST_SUBMITTED,
-  SUBMIT_FINAL_TASK_LIST,
   GET_VERIFIED_TASK_LISTS,
   VERIFIED_TASK_LISTS_RECEIVED
 } from '../constants/ProjectActionTypes'
@@ -142,13 +137,6 @@ export function submitHashedTaskList (tasks, taskListHash, projectAddress, txObj
   }
 }
 
-export function taskClaimed (taskDetails) {
-  return {
-    type: TASK_CLAIMED,
-    taskDetails
-  }
-}
-
 export function taskListSet (taskDetails, projectAddress) {
   return {
     type: TASK_LIST_SET,
@@ -157,12 +145,12 @@ export function taskListSet (taskDetails, projectAddress) {
   }
 }
 
-export function taskCompleted (taskDetails) {
-  return {
-    type: TASK_COMPLETED,
-    taskDetails
-  }
-}
+// export function taskCompleted (taskDetails) {
+//   return {
+//     type: TASK_COMPLETED,
+//     taskDetails
+//   }
+// }
 
 export function hashedTaskListSubmitted (tasks, submitterAddress, projectAddress, receipt) {
   return {
@@ -174,11 +162,10 @@ export function hashedTaskListSubmitted (tasks, submitterAddress, projectAddress
   }
 }
 
-export function getVerifiedTaskLists (address, query) {
+export function getVerifiedTaskLists (address) {
   return {
     type: GET_VERIFIED_TASK_LISTS,
-    address,
-    query
+    address
   }
 }
 
@@ -187,31 +174,5 @@ export function verifiedTaskListsReceived (address, result) {
     type: VERIFIED_TASK_LISTS_RECEIVED,
     address,
     result
-  }
-}
-
-export function submitFinalTaskList () {
-  return {
-    type: SUBMIT_FINAL_TASK_LIST
-  }
-}
-
-export function finalTaskListSubmitted () {
-  return {
-    type: FINAL_TASK_LIST_SUBMITTED
-  }
-}
-// export function updateProject (address, projObj) {
-//   return {
-//     type: UPDATE_PROJECT,
-//     address,
-//     projObj
-//   }
-// }
-
-export function taskValidated (validationDetails) {
-  return {
-    type: TASK_VALIDATED,
-    validationDetails
   }
 }

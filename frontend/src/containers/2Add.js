@@ -23,6 +23,7 @@ let projQuery = gql`
       photo,
       reputationBalance,
       reputationCost,
+      state,
       summary,
       tokenBalance,
       taskList,
@@ -30,19 +31,6 @@ let projQuery = gql`
       weiCost
     }
   }`
-
-let taskListQuery = gql`
-  { verifiedPrelimTaskLists {
-    submitter,
-    content,
-    weighting
-  }}
-`
-
-// let projQuery2 = gql`
-// {
-//   verifiedPrelimTaskLists(state: 2, address: )
-// }`
 
 class Add extends React.Component {
   constructor () {
@@ -52,6 +40,7 @@ class Add extends React.Component {
     }
     this.fastForward = this.fastForward.bind(this)
     this.setTaskList = this.setTaskList.bind(this)
+    this.checkActiveStatus = this.checkActiveStatus.bind(this)
     this.submitHashedTaskList = this.submitHashedTaskList.bind(this)
     this.getVerifiedTaskLists = this.getVerifiedTaskLists.bind(this)
   }
@@ -145,7 +134,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
     getProjects: () => dispatch(getProjects(2, projQuery)),
-    getVerifiedTaskLists: (projectAddress) => dispatch(getVerifiedTaskLists(projectAddress, taskListQuery)),
+    getVerifiedTaskLists: (projectAddress) => dispatch(getVerifiedTaskLists(projectAddress)),
     checkActiveStatus: (projectAddress, txObj) => dispatch(checkActiveStatus(projectAddress, txObj)),
     submitHashedTaskList: (tasks, taskHash, projectAddress, txObj) => dispatch(submitHashedTaskList(tasks, taskHash, projectAddress, txObj)),
     setTaskList: (taskDetails, projectAddress) => dispatch(setTaskList(taskDetails, projectAddress))

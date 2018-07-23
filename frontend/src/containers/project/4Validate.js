@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import ValidateComponent from '../../components/project/4Validate'
 import { Button } from 'antd'
 import {eth, pr, tr, web3, P} from '../../utilities/blockchain'
-import { taskValidated } from '../../actions/projectActions'
+import { taskValidated } from '../../actions/taskActions'
 import moment from 'moment'
 
 class ValidateTasks extends React.Component {
@@ -34,10 +34,10 @@ class ValidateTasks extends React.Component {
       if (!err) {
         if (accounts.length) {
           await tr.validateTask(this.props.address, index, val, status, {from: accounts[0]})
-          .then(async () => {
-            this.setState({['val' + index]: ''})
-            this.props.taskValidated({ address: this.props.address, validator: validator, index: index, status: valStatus })
-          })
+            .then(async () => {
+              this.setState({['val' + index]: ''})
+              this.props.taskValidated({ address: this.props.address, validator: validator, index: index, status: valStatus })
+            })
         }
       }
     })
