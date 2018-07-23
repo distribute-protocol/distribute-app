@@ -32,6 +32,7 @@ class ClaimProject extends React.Component {
 
   async getTasks () {
     this.props.getTasks(this.props.address)
+    console.log(this.props.getTasks(this.props.address))
   }
 
   async submitFinalTaskList () {
@@ -78,6 +79,7 @@ class ClaimProject extends React.Component {
 
   submitTaskComplete (i) {
     this.props.submitTaskComplete(this.props.address, i)
+    console.log('goob')
     // eth.getAccounts(async (err, accounts) => {
     //   if (!err) {
     //     await pr.submitTaskComplete(this.props.address, i, {from: accounts[0]})
@@ -98,23 +100,28 @@ class ClaimProject extends React.Component {
 
   render () {
     console.log(this.props.tasks, 'here')
+    let taskList = JSON.parse(this.props.project.taskList)
+    console.log(taskList)
+    // console.log(taskList.description)
     let tasks
-    if (this.props.project.taskList !== null && this.props.tasks !== undefined) {
+    if (this.props.project.taskList !== null) {
       let reputationCost = this.props.project.reputationCost
       let weiCost = this.props.project.weiCost
       tasks = JSON.parse(this.props.project.taskList).map((task, i) => {
+        // console.log(tasks.description)
         let weiReward = Math.floor(weiCost * task.percentage / 100)
         return {
           key: i,
-          description: task.description,
+          // description loads incorrectly, we need a way to reference the description key in the string
+          description: `${this.props.project.taskList}`,
           ethReward: `${web3.fromWei(weiReward, 'ether')} ETH`,
           repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' && typeof weiReward !== 'undefined' ? `${Math.floor(reputationCost * weiReward / weiCost)} rep` : '',
           buttons: <ButtonGroup>
             <Button
-              disabled={this.props.tasks[i].claimed || !this.props.project.listSubmitted}
+              disabled={!this.props.project.listSubmitted} // this.props.tasks[i].claimed === undefined)
               type='danger' onClick={() => this.claimTask(i)}>Claim</Button>
             <Button
-              // disabled={this.props.project.taskList[i].submitted || !this.props.tasks[i].claimed || !this.props.project.listSubmitted}
+              disabled={!this.props.project.listSubmitted} // this.props.tasks[i].claimed === true
               type='danger' onClick={() => this.submitTaskComplete(i)}>Task Complete</Button>
           </ButtonGroup>
         }

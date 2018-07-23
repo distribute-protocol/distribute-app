@@ -110,8 +110,10 @@ module.exports = function () {
     if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
       Project.findOne({address: projectAddress}).exec((error, doc) => {
         if (error) console.error(error)
-        if (doc.state === 1) {
-          doc.state = 2
+        if (doc  !== null) {
+          if (doc.state === 1) {
+            doc.state = 2
+          }
           doc.save(err => {
             if (err) console.error(error)
             console.log('project fully staked')
@@ -209,34 +211,36 @@ module.exports = function () {
       if (error) console.error(error)
       if (!task) {
         Project.findOne({address: projectAddress}).exec((error, doc) => {
-          if (error) console.error(error)
-          let taskListArr = JSON.parse(doc.taskList)
-          let taskContent = [taskListArr[index]]
-          let taskHash = hashTasks(taskContent)
-          doc.listSubmitted = true
-          if (individualTaskHash === taskHash[0]) {
-            let finalTask = new Task({
-              _id: new mongoose.Types.ObjectId(),
-              address: taskAddress,
-              project: doc.id,
-              claimed: false,
-              complete: false,
-              description: taskContent[0].description,
-              index,
-              validationRewardClaimable: false,
-              weighting: taskContent[0].percentage,
-              workerRewardClaimable: false
-            })
-            finalTask.save(err => {
-              if (err) console.error(error)
-              console.log('final tasks created')
-            })
-            doc.save(err => {
-              if (err) console.error(error)
-              console.log('list submitted')
-            })
-          } else {
-            console.log('task hashes do not match')
+          if (doc) {
+            if (error) console.error(error)
+            let taskListArr = JSON.parse(doc.taskList)
+            let taskContent = [taskListArr[index]]
+            let taskHash = hashTasks(taskContent)
+            doc.listSubmitted = true
+            if (individualTaskHash === taskHash[0]) {
+              let finalTask = new Task({
+                _id: new mongoose.Types.ObjectId(),
+                address: taskAddress,
+                project: doc.id,
+                claimed: false,
+                complete: false,
+                description: taskContent[0].description,
+                index,
+                validationRewardClaimable: false,
+                weighting: taskContent[0].percentage,
+                workerRewardClaimable: false
+              })
+              finalTask.save(err => {
+                if (err) console.error(error)
+                console.log('final tasks created')
+              })
+              doc.save(err => {
+                if (err) console.error(error)
+                console.log('list submitted')
+              })
+            } else {
+              console.log('task hashes do not match')
+            }
           }
         })
       }
@@ -260,11 +264,12 @@ module.exports = function () {
     claimer = '0x' + claimer.substr(-40)
     User.findOne({account: claimer}).exec((error, user) => {
       if (error) console.error(error)
-      user.reputationBalance -= reputationVal
+      if (user) {
+        user.reputationBalance -= reputationVal
+      }
       if (user) {
         Project.findOne({address: projectAddress}).exec((error, doc) => {
           if (error) console.error(error)
-          console.log('gets to project')
           if (doc) {
             Task.findOne({project: doc.id, index: index}).exec((error, task) => {
               if (error) console.error(error)
@@ -293,7 +298,7 @@ module.exports = function () {
     fromBlock: 0,
     toBlock: 'latest',
     address: PR.projectRegistryAddress,
-    topics: [web3.sha3('LogSubmitTaskComplete(address,uint256,address)')]
+    topics: [web3.sha3('LogSubmitTaskComplete(address,uint256)')]
   })
   submitTaskCompleteFilter.watch(async (err, result) => {
     if (err) console.error(err)
@@ -302,6 +307,7 @@ module.exports = function () {
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
     let index = parseInt(eventParamArr[1], 16)
+    console.log(projectAddress, index)
     Project.findOne({address: projectAddress}).exec((error, doc) => {
       if (error) console.error(error)
       console.log('gets to project')

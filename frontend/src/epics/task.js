@@ -60,7 +60,6 @@ const claimTaskEpic = action$ => {
       query($address: String!, $index: Int!) {
         findTaskByIndex(address: $address, index: $index) {
           description,
-          hash,
           weighting
         }
       }`
@@ -106,7 +105,6 @@ const submitTaskCompleteEpic = action$ => {
     mergeMap(action => {
       address = action.address
       index = action.index
-      console.log(address, index, action.txObj)
       return Observable.from(pr.submitTaskComplete(address, index, action.txObj))
     }),
     map(result => taskCompleted(address, index))
