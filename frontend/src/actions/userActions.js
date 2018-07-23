@@ -1,9 +1,16 @@
-import { LOGIN_USER, LOGGED_IN_USER, LOGOUT_USER, REGISTER_USER } from '../constants/UserActionTypes'
+import { LOGIN_USER, LOGGED_IN_USER, LOGOUT_USER, REGISTER_USER, REGISTERED_USER, GET_USER_STATUS, USER_STATUS_RECEIVED } from '../constants/UserActionTypes'
 
-export function registerUser (credentials) {
+export function registerUser (credentials, account) {
   return {
     type: REGISTER_USER,
-    credentials
+    credentials,
+    account
+  }
+}
+
+export function registeredUser (credentials, account) {
+  return {
+    type: REGISTERED_USER
   }
 }
 
@@ -24,5 +31,19 @@ export function loggedInUser (userObj) {
 export function logoutUser () {
   return {
     type: LOGOUT_USER
+  }
+}
+
+export function getUserStatus (userDetails) {
+  return {
+    type: GET_USER_STATUS,
+    payload: userDetails
+  }
+}
+
+export function userStatusReceived (responseDetails) {
+  return {
+    type: USER_STATUS_RECEIVED,
+    responseDetails
   }
 }

@@ -5,8 +5,30 @@ import Project from './project/4Validate'
 import fastforward from '../utilities/fastforward'
 import { push } from 'react-router-redux'
 import { connect } from 'react-redux'
-import { P } from '../utilities/blockchain'
-import * as _ from 'lodash'
+import { eth } from '../utilities/blockchain'
+import { getProjects } from '../actions/projectActions'
+import gql from 'graphql-tag'
+
+let projQuery = gql`
+  { allProjectsinState(state: 4){
+      address,
+      id,
+      ipfsHash,
+      location {
+        lat,
+        lng
+      },
+      name
+      nextDeadline,
+      photo,
+      reputationBalance,
+      reputationCost,
+      summary,
+      tokenBalance,
+      weiBal,
+      weiCost
+    }
+  }`
 
 class Validate extends React.Component {
   constructor () {
@@ -18,39 +40,19 @@ class Validate extends React.Component {
   }
 
   componentWillMount () {
-    if (_.isEmpty(this.props.user)) {
-      // this.props.reroute()
-    }
+    this.getProjects()
   }
 
-  componentWillReceiveProps (np) {
-    let projectsArr
-
-    function projectState (address) {
-      return new Promise(async (resolve, reject) => {
-        let proj = P.at(address)
-        let state = await proj.state()
-        resolve(state)
-      })
-    }
-
-    let projects = Object.keys(np.projects).map((projAddr, i) => {
-      return projectState(projAddr)
-        .then(state => {
-          if (state.toNumber() === 4) {
-            return np.projects[projAddr]
-          }
-        })
+  async getProjects () {
+    eth.getAccounts(async (err, result) => {
+      if (!err) {
+        if (result.length) {
+          this.props.getProjects()
+        } else {
+          console.log('Please Unlock MetaMask')
+        }
+      }
     })
-
-    Promise.all(projects)
-      .then(results => {
-        projectsArr = _.compact(results)
-        this.setState({projects: projectsArr})
-      })
-      .catch(e => {
-        console.error(e)
-      })
   }
 
   async fastForward () {
@@ -58,13 +60,16 @@ class Validate extends React.Component {
   }
 
   render () {
-    const projects = this.state.projects.map((proj, i) => {
-      return <Project
-        key={i}
-        index={i}
-        address={proj.address}
-      />
-    })
+    const projects = typeof this.props.projects !== `undefined`
+      ? Object.keys(this.props.project).map((address, i) => {
+        return <Project
+          key={i}
+          index={i}
+          address={address}
+          project={this.props.project[address]}
+        />
+      })
+      : []
 
     return (
       <div>
@@ -87,13 +92,14 @@ class Validate extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    projects: state.projects.allProjects
+    projects: state.projects[4]
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    reroute: () => dispatch(push('/'))
+    reroute: () => dispatch(push('/')),
+    getProjects: () => dispatch(getProjects(4, projQuery))
   }
 }
 

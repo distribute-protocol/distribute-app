@@ -2,12 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import ClaimComponent from '../../components/project/3Claim'
 import { Button } from 'antd'
-import {eth, web3, rr, pr, P} from '../../utilities/blockchain'
+import {eth, web3, rr, pr} from '../../utilities/blockchain'
 import { hashTasksArray, hashTasks } from '../../utilities/hashing'
-import { taskClaimed, taskListSubmitted, taskCompleted } from '../../actions/projectActions'
+import { taskClaimed, submitFinalTaskList, taskCompleted } from '../../actions/projectActions'
 import moment from 'moment'
-import ipfsAPI from 'ipfs-api'
-let ipfs = ipfsAPI()
 const ButtonGroup = Button.Group
 
 class ClaimProject extends React.Component {
@@ -24,37 +22,7 @@ class ClaimProject extends React.Component {
   }
 // let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
   async getProjectStatus () {
-    let accounts
-    let p = P.at(this.props.address)
-    eth.getAccounts(async (err, result) => {
-      if (!err) {
-        accounts = result
-        if (accounts.length) {
-          let weiCost = (await p.weiCost()).toNumber()
-          let reputationCost = (await p.reputationCost()).toNumber()
-          let ipfsHash = web3.toAscii(await p.ipfsHash())
-          let nextDeadline = (await p.nextDeadline()) * 1000
-          let projectState = (await p.state())
-          let projObj = {
-            weiCost,
-            reputationCost,
-            ipfsHash,
-            nextDeadline,
-            state: projectState,
-            project: p,
-            taskList: this.props.project.taskList
-          }
-          ipfs.object.get(ipfsHash, (err, node) => {
-            if (err) {
-              throw err
-            }
-            let dataString = new TextDecoder('utf-8').decode(node.toJSON().data)
-            projObj = Object.assign({}, projObj, JSON.parse(dataString))
-            this.setState(projObj)
-          })
-        }
-      }
-    })
+    this.setState(this.props.project)
   }
 
   async submitWinningHashList () {
@@ -68,7 +36,7 @@ class ClaimProject extends React.Component {
           eth.getAccounts(async (err, accounts) => {
             if (!err) {
               await pr.submitHashList(this.props.address, list, {from: accounts[0]}).then(() => {
-                this.props.taskListSubmitted({taskList: this.props.project.submittedTasks[address], address: this.props.address, listSubmitted: true})
+                this.props.submitFinalTaskList({taskList: this.props.project.submittedTasks[address], address: this.props.address, listSubmitted: true})
               })
             }
           })
@@ -85,7 +53,7 @@ class ClaimProject extends React.Component {
       if (!err) {
         let hash = web3.fromAscii(this.props.project.taskList[i].description, 32)
         await rr.claimTask(this.props.address, i, hash, 100 * (this.props.project.taskList[i].weiReward / this.state.weiCost), {from: accounts[0]})
-        .then(async() => {
+        .then(async () => {
           this.props.taskClaimed({address: this.props.address, index: i})
         })
       }
@@ -96,7 +64,7 @@ class ClaimProject extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         await pr.submitTaskComplete(this.props.address, i, {from: accounts[0]})
-        .then(async() => {
+        .then(async () => {
           this.props.taskCompleted({address: this.props.address, index: i})
         })
       }
@@ -164,7 +132,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     taskClaimed: (submissionDetails) => dispatch(taskClaimed(submissionDetails)),
-    taskListSubmitted: (taskDetails) => dispatch(taskListSubmitted(taskDetails)),
+    submitFinalTaskList: (taskDetails) => dispatch(submitFinalTaskList(taskDetails)),
     taskCompleted: (taskDetails) => dispatch(taskCompleted(taskDetails))
   }
 }

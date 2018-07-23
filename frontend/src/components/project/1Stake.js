@@ -16,9 +16,7 @@ export default ({
   date,
   stakeInput,
   tokens,
-  reputation,
-  checkStaked,
-  getProjectStatus
+  reputation
 }) => {
   return (
     <div style={{backgroundColor: '#DDE4E5', marginTop: 30}}>
@@ -33,7 +31,7 @@ export default ({
       />
       <div style={{padding: 10, paddingTop: 0}}>
         <div>{`Tokens Remaining: ${tokensLeft}`}</div>
-        <div>Reputation Remaining {`${reputationCost - totalReputationStaked}`}</div>
+        <div>Reputation Remaining: {`${reputationCost - totalReputationStaked}`}</div>
         <div>Expiration: {typeof date !== 'undefined' ? `${date.fromNow()}` : 'N/A'}</div>
         <div style={{display: 'flex', flexDirection: 'row', marginTop: 10}}>
           {stakeInput}
@@ -68,17 +66,6 @@ export default ({
             </div>
           </div>
         </div>
-        <Button style={{margin: 20}} onClick={checkStaked}>
-          Check Staked
-        </Button>
-        <Button style={{
-          marginLeft: 20,
-          marginTop: 10,
-          width: 160,
-          backgroundColor: '#115D8C',
-          color: '#FFF'}} icon='reload' color='info' onClick={getProjectStatus}>
-          Refresh Balances
-        </Button>
       </div>
     </div>
   )

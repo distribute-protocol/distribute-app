@@ -5,6 +5,7 @@ import uport from '../utilities/uport'
 import { Button } from 'antd'
 
 import { loginUser } from '../actions/userActions'
+import { getNetworkStatus } from '../actions/networkActions'
 
 class Landing extends React.Component {
   constructor () {
@@ -16,9 +17,8 @@ class Landing extends React.Component {
       requested: ['name', 'avatar'],
       notifications: true
     }).then((credentials) => {
+      this.props.getNetworkStatus()
       this.props.loginUser(credentials)
-      // this.props.login()
-      // console.log(credentials)
     })
   }
   render () {
@@ -51,7 +51,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    loginUser: (credentials) => dispatch(loginUser(credentials))
+    loginUser: (credentials) => dispatch(loginUser(credentials)),
+    getNetworkStatus: () => dispatch(getNetworkStatus())
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Landing)

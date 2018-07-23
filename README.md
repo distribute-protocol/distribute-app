@@ -71,7 +71,7 @@ Make sure that the `/data/db` directory has the right permissions by running
 ```
 sudo chown -R `id -un` /data/db
 ```
-To run the Mongo daemon, run `mongod`, and to run the shell, run `mongo`.  
+To run the Mongo shell, run `mongo`.  
 To exit the Mongo shell, run `quit()`.  
 
 #### Installing the IPFS daemon
@@ -91,12 +91,13 @@ To get the ipfs daemon running, type the following in Terminal
 ```
 go get -u -d github.com/ipfs/go-ipfs
 ```
-Then cd into the directory whre `go-ipfs` was downloaded.  
+Then cd into the directory where `go-ipfs` was downloaded.  
 Once you have done this, in Terminal, type
 ```
 make install
+brew install ipfs
 ```
-Initialise the daemon by entering
+Initialize the daemon by entering
 ```
 ipfs init
 ```
@@ -109,14 +110,12 @@ To test that it is working, type
 ```
 ipfs help
 ```
-This will yield something like:
+Run the following lines to ensure everything will work properly:
 ```
-USAGE:
-
-    ipfs - Global p2p merkle-dag filesystem.
-...
+ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["*"]'
+ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "GET", "POST"]'
+ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials '["true"]'
 ```
-If you see this, you have successfully installing the ipfs-daemon.
 #### Installing MetaMask
 Go to [this](https://metamask.io/) site in your Google Chrome browser.
 
@@ -195,13 +194,13 @@ To test that it is working, type
 ```
 ipfs help
 ```
-This will yield something like:
+Run the following lines to ensure everything will work properly:
 ```
-USAGE:
+ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["*"]'
+ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "GET", "POST"]'
+ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials '["true"]'
+```
 
-    ipfs - Global p2p merkle-dag filesystem.
-...
-```
 #### Installing MetaMask
 
 Go to [this](https://metamask.io/) site in your Google Chrome browser.
@@ -211,15 +210,16 @@ Go to [this](https://metamask.io/) site in your Google Chrome browser.
 Note that all of these steps _must_ be carried out before sending any transactions on distribute.
 
 *Step 1:*    
-Clone this repository to your machine and add the contracts repository as a submodule. This will give you access to all the frontend, server, and contract code you'll need from both repositories.
+Clone this repository to your machine and add the contracts repository as a submodule. This will give you access to all the frontend, server, and contract code you will need from both repositories.
 ```
-git clone https://github.com/distribute-protocol/distribute-frontend.git
+git clone https://github.com/distribute-protocol/distribute-app.git
+git rm .gitmodules contracts
 git submodule add https://github.com/distribute-protocol/distribute-contracts.git contracts
 git submodule update --init --recursive
 ```
 
 *Step 2:*    
-In `distribute-frontend` (you shouldn't have to change folders), install the node modules and dependencies from the `package.json` file.
+In `distribute-app` (you should not have to change folders), install the node modules and dependencies from the `package.json` file.
 
 ```
 yarn
@@ -241,6 +241,7 @@ To reset the account, confirm that you are on Localhost 8545, then navigate to S
 *Step 5:*   
 In a new Terminal window, navigate to the `contracts` folder you cloned from GitHub in Step 1. Deploy it to the local blockchain running in ganache by typing:
 ```
+cd contracts
 truffle migrate
 ```
 Then enter the Truffle console.
@@ -256,10 +257,6 @@ For <MetaMask_address\>: Paste (Ctrl-Shift-V) the address you copied to clipboar
 For <i\>: Type any number between 0 and 9. This is a reference to the 10 accounts in your locally running 10 accounts.
 
 *Step 6:*
-Initialize mongoDB in a new Terminal window.
-```
-mongod
-```
 In another Terminal window, clear your database by typing:
 ```
 mongo
@@ -279,7 +276,7 @@ Gateway server listening on /ip4/127.0.0.1/tcp/8080
 ```
 *Step 8:*   
 mongoDB must be running before this step.  
-Cd into `distribute-protocol/server`, then install the necessary node modules and start up the server by typing:
+Cd into `distribute-app/server`, then install the necessary node modules and start up the server by typing:
 ```
 npm install
 npm start
@@ -288,30 +285,12 @@ The server should be running at localhost 3001.
 
 *Step 9:*  
 Your MetaMask account needs to be on localhost 8545, and reset (as described in Step 2 if it has been used before).
-Cd into `distribute-protocol/frontend`, then install the necessary node modules and start up the frontend by typing:
+Cd into `distribute-app/frontend`, then install the necessary node modules and start up the frontend by typing:
 ```
 yarn
 yarn start
 ```
-The frontend should open up in a browser tab and be running on localhost 3000.
-
-*Step 10:*  
-Navigate to where the the /frontend folder is located on your computer. Then, open `store.js` using your text editor. We like atom.
-```
-cd src/store/
-atom store.js
-```
-(Use `xdg-open store.js` if you are using Linux.)  
-Open `store.js` in a text editor.  
-Find the line the line `persistedStore.purge()`. Uncomment it by removing the slashes.  
-Save and close the file.
-Open `store.js` again and recomment the line (by adding two slashes at the front of the line.
-```
-// persistedStore.purge()
-```
-Save the file.
-
-This step is temporary and will be deprecated when we finish migrating the data to mongoDB.
+The frontend should open up in a browser tab and be running on localhost 3000. Make sure that it runs on a browser that has the MetaMask extension installed.
 
 ## Authors
 Ashoka Finley (ashoka [dot] finley [at] consensys [dot] net)  

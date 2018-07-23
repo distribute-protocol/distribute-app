@@ -1,66 +1,82 @@
-import { PROPOSE_PROJECT, SET_PROJECT_TASK_LIST, SET_TASK_SUBMISSION, TASK_CLAIMED, TASKLIST_SUBMITTED, TASK_COMPLETED, UPDATE_PROJECT, TASK_VALIDATED } from '../constants/ProjectActionTypes'
+import { PROJECT_PROPOSED, PROJECTS_RECEIVED, TASK_LIST_SET, HASHED_TASK_LIST_SUBMITTED, PROJECT_STAKED, VERIFIED_TASK_LISTS_RECEIVED } from '../constants/ProjectActionTypes'
+
 const initialState = {
-  allProjects: {},
-  fetching: 'FALSE'
 }
 
+// let receiptHandler = (tx, multiHash) => {
+//   let txReceipt = tx.receipt
+//   let projectAddress = txReceipt.logs[0].address
+//   this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress, ipfsHash: `https://ipfs.io/ipfs/${multiHash}`}))  // this is calling the reducer
+//   this.setState({cost: 0, photo: false, imageUrl: false, coords: 0, location: ''})
+// }
 export default function projectReducer (state = initialState, action) {
-  let allProjects, project, address, taskList, index, status
-  let updateAllProjects = (state, address, project) => {
-    allProjects = Object.assign({}, state.allProjects, {[address]: project})
-    return Object.assign({}, state, {allProjects})
-  }
   switch (action.type) {
-    case PROPOSE_PROJECT:
-      ({address} = action.projectDetails)
-      allProjects = Object.assign(
-        {},
-        state.allProjects,
-        {[address]: Object.assign({}, {...action.projectDetails}, {taskList: [], submittedTasks: {}})}
-      )
-      return Object.assign({}, state, {allProjects})
-    case UPDATE_PROJECT:
-      project = Object.assign({}, state.allProjects[action.address], action.projObj)
-      return updateAllProjects(state, action.address, project)
-    case SET_PROJECT_TASK_LIST:
-      ({address, taskList} = action.taskDetails)
-      project = state.allProjects[address]
-      project.taskList = taskList
-      return updateAllProjects(state, address, project)
-    case SET_TASK_SUBMISSION:
-      ({address} = action.submissionDetails)
-      let {submitter, taskSubmission} = action.submissionDetails
-      project = state.allProjects[address]
-      project.submittedTasks[submitter] = taskSubmission
-      return updateAllProjects(state, address, project)
-    case TASKLIST_SUBMITTED:
-      ({address, taskList} = action.taskDetails)
-      let {listSubmitted} = action.taskDetails
-      project = state.allProjects[address]
-      project.taskList = taskList
-      project.listSubmitted = listSubmitted
-      return updateAllProjects(state, address, project)
-    case TASK_CLAIMED:
-      ({address, index} = action.taskDetails)
-      project = state.allProjects[address]
-      project.taskList[index].claimed = true
-      return updateAllProjects(state, address, project)
-    case TASK_COMPLETED:
-      ({address, index} = action.taskDetails)
-      project = state.allProjects[address]
-      project.taskList[index] = Object.assign(
-        {},
-        project.taskList[index],
-        {submitted: true, validated: {}}
-      )
-      return updateAllProjects(state, address, project)
-    case TASK_VALIDATED:
-      ({address, index, status} = action.validationDetails)
-      let {validator} = action.validationDetails
-      project = state.allProjects[address]
-      project.taskList[index].validated[validator] = Object.assign({}, {status})
-      return updateAllProjects(state, address, project)
+    case PROJECTS_RECEIVED:
+      if (!action.projects.length) {
+        return state
+      } else {
+        let object = action.projects.reduce((obj, item) => (obj[item.address] = item, obj), {})
+        return Object.assign({}, state, {[action.state]: object})
+      }
+    case PROJECT_PROPOSED:
+      // console.log(action.receipt)
+      return state
+    case TASK_LIST_SET:
+      let project = Object.assign({}, state[2][action.projectAddress], {taskList: action.taskDetails})
+      return Object.assign({}, state, {2: {[action.projectAddress]: project}})
+    case HASHED_TASK_LIST_SUBMITTED:
+      let oldSubmissions = state[2][action.projectAddress].submittedTasks
+      let newSubmissions = oldSubmissions
+      let overwrite = oldSubmissions.findIndex(function (element) { return element.submitter === action.submitterAddress })
+      if (overwrite === -1) {
+        let length = newSubmissions.length
+        newSubmissions = Object.assign([], newSubmissions, {[length]: {content: action.tasks, submitter: action.submitterAddress, weighting: action.receipt.weighting.toNumber()}})
+      } else {
+        newSubmissions = Object.assign([], newSubmissions, {[overwrite]: {content: action.tasks, submitter: action.submitterAddress, weighting: action.receipt.weighting.toNumber()}})
+      }
+      project = Object.assign({}, state[2][action.projectAddress], {submittedTasks: newSubmissions})
+      return Object.assign({}, state, {2: {[action.projectAddress]: project}})
+    case PROJECT_STAKED:
+      console.log(action)
+      // let repStaked = parseInt(action.value)
+      // let repBal = parseInt(state[1][action.projectAddress].reputationBalance)
+      let totalRepStaked = parseInt(action.value) + parseInt(state[1][action.projectAddress].reputationBalance)
+      console.log(totalRepStaked)
+      let updateRepBal = Object.assign({}, state[1][action.projectAddress], {reputation: totalRepStaked})
+      // return Object.assign({}, state, {1: {[action.projectAddress]: updateRepBal}})
+      return state
+    case VERIFIED_TASK_LISTS_RECEIVED:
+      project = Object.assign({}, state[2][action.address], {submittedTasks: action.result})
+      console.log(action)
+      return Object.assign({}, state, {2: {[action.address]: project}})
+    // case PROJECT_STAKED:
+    //   console.log(action)
+    //   console.log(action.value)
+    //   let reputationStaked = action.value
+    //   let reputationBalance = state[1][action.projectAddress].reputationBalance.toNumber()
+    //   console.log(reputationBalance)
+    //   let totalReputationStaked = reputationBalance + reputationStaked
+    //   console.log(totalReputationStaked)
+    //   return Object.assign({}, state, {1: {[action.projectAddress]: totalReputationStaked}})
+    //   return Object.assign({}, state, {userTokens: state.userTokens + action.receipt.amountMinted.toNumber()})
+    //   console.log(action.collateralType)
+    //   // Object.assign({}, state, {userTokens: state.userTokens - action.receipt.amountStaked.toNumber()})
+    //   return state
+    // case PROJECT_UNSTAKED
+    //   console.log(action.receipt)
+    //   console.log(action.collateralType)
+    //   // Object.assign({}, state, {userTokens: state.userTokens + action.receipt.amountStaked.toNumber()})
+      // return state
+    // case STAKED_STATUS_CHECKED
+      // no longer necessary????
+    // case ACTIVE_STATUS_CHECKED
+      // no longer necessary????
+    // case TASK_CLAIMED
+    //   console.log(action.taskDetails)
+    // case TASK_COMPLETED
+    //     console.log(taskDetails)
+    // case TASK_VALIDATED
     default:
   }
-  return state
+return state
 }
