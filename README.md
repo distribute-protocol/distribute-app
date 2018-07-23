@@ -67,6 +67,10 @@ Create a default "db" directory to store the Mongo data files by running
 ```
 mkdir -p /data/db
 ```
+Make sure that the `/data/db` directory has the right permissions by running
+```
+sudo chown -R `id -un` /data/db
+```
 To run the Mongo shell, run `mongo`.  
 To exit the Mongo shell, run `quit()`.  
 
