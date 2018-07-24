@@ -60,7 +60,6 @@ const claimTaskEpic = action$ => {
       query($address: String!, $index: Int!) {
         findTaskByIndex(address: $address, index: $index) {
           description,
-          hash,
           weighting
         }
       }`
@@ -75,9 +74,11 @@ const claimTaskEpic = action$ => {
 
 const getTasksEpic = action$ => {
   let address
+  let state
   return action$.ofType(GET_TASKS).pipe(
     mergeMap(action => {
       address = action.projectAddress
+      state = action.state
       let query = gql`
       query($address: String!) {
         allTasksinProject(address: $address) {
@@ -95,7 +96,7 @@ const getTasksEpic = action$ => {
       return client.query({query: query, variables: {address: address}}
       )
     }),
-    map(result => tasksReceived(address, result.data.allTasksinProject))
+    map(result => tasksReceived(address, result.data.allTasksinProject, state))
   )
 }
 
@@ -106,7 +107,6 @@ const submitTaskCompleteEpic = action$ => {
     mergeMap(action => {
       address = action.address
       index = action.index
-      console.log(address, index, action.txObj)
       return Observable.from(pr.submitTaskComplete(address, index, action.txObj))
     }),
     map(result => taskCompleted(address, index))

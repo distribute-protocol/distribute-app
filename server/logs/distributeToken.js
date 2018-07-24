@@ -63,19 +63,19 @@ module.exports = function () {
           if (err) console.error(err)
           if (userStatus !== null) {
             userStatus.tokenBalance += tokensMinted
+            userStatus.save(err => {
+              if (err) console.error(err)
+            })
+            let TokenEvent = new Token({
+              _id: new mongoose.Types.ObjectId(),
+              userId: userStatus.id,
+              amount: tokensMinted,
+              ether: weiSpent
+            })
+            TokenEvent.save((err) => {
+              if (err) console.error(err)
+            })
           }
-          userStatus.save(err => {
-            if (err) console.error(err)
-          })
-          let TokenEvent = new Token({
-            _id: new mongoose.Types.ObjectId(),
-            userId: userStatus.id,
-            amount: tokensMinted,
-            ether: weiSpent
-          })
-          TokenEvent.save((err) => {
-            if (err) console.error(err)
-          })
         })
       }
     })

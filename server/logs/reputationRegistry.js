@@ -75,27 +75,29 @@ module.exports = function () {
           if (err) console.error(error)
           if (userStatus !== null) {
             userStatus.reputationBalance -= reputationStaked
+            userStatus.save(err => {
+              if (err) console.error(error)
+            })
           }
-          userStatus.save(err => {
-            if (err) console.error(error)
-          })
           Project.findOne({address: projectAddress}).exec((error, projectStatus) => {
             if (error) console.error(error)
-            let StakeEvent = new Stake({
-              _id: new mongoose.Types.ObjectId(),
-              amount: reputationStaked,
-              projectId: projectStatus.id,
-              type: 'reputation',
-              userId: userStatus.id
-            })
-            projectStatus.reputationBalance += reputationStaked
-            projectStatus.save((error, saved) => {
-              if (error) console.error(error)
-            })
-            StakeEvent.save((error, saved) => {
-              if (error) console.error(error)
-              console.log('reputation staked')
-            })
+            if (projectStatus !== null) {
+              let StakeEvent = new Stake({
+                _id: new mongoose.Types.ObjectId(),
+                amount: reputationStaked,
+                projectId: projectStatus.id,
+                type: 'reputation',
+                userId: userStatus.id
+              })
+              projectStatus.reputationBalance += reputationStaked
+              projectStatus.save((error, saved) => {
+                if (error) console.error(error)
+              })
+              StakeEvent.save((error, saved) => {
+                if (error) console.error(error)
+                console.log('reputation staked')
+              })
+            }
           })
         })
         netStatus.processedTxs[txHash] = true

@@ -3,23 +3,30 @@ import { connect } from 'react-redux'
 import ValidateComponent from '../../components/project/4Validate'
 import { Button } from 'antd'
 import {eth, pr, tr, web3, P} from '../../utilities/blockchain'
-import { taskValidated } from '../../actions/taskActions'
+import { taskValidated, getTasks } from '../../actions/taskActions'
 import moment from 'moment'
 
 class ValidateTasks extends React.Component {
   constructor () {
     super()
-    this.state = {}
+    this.state = {
+      tasks: []
+    }
     this.checkVoting = this.checkVoting.bind(this)
   }
 
   componentWillMount () {
     this.getProjectStatus()
+    this.getTasks()
   }
 
   // let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
   async getProjectStatus () {
     this.setState(this.props.project)
+  }
+
+  async getTasks () {
+    this.props.getTasks(this.props.address, this.props.project.state)
   }
 
   onChange (e) {
@@ -68,16 +75,16 @@ class ValidateTasks extends React.Component {
         <div>
           <Button
             type='danger'
-            disabled={this.props.project.taskList[i].validated[eth.accounts[0]]}
+            // disabled={this.props.tasks[i].validated[eth.accounts[0]]}
             onClick={() => this.validateTask(this.state['val' + i], i, true)} >Yes</Button>
           <Button
             type='danger'
-            disabled={this.props.project.taskList[i].validated[eth.accounts[0]]}
+            // disabled={this.props.tasks[i].validated[eth.accounts[0]]}
             onClick={() => this.validateTask(this.state['val' + i], i, false)} >No</Button>
         </div>
       </div>)
-    if (typeof this.props.project.taskList !== 'undefined') {
-      tasks = this.props.project.taskList.map((task, i) => {
+    if (typeof this.props.tasks !== 'undefined') {
+      tasks = this.props.tasks.map((task, i) => {
         return {
           key: i,
           description: task.description,
@@ -108,12 +115,14 @@ class ValidateTasks extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    project: state.projects.allProjects[ownProps.address]
+    project: state.projects[4][ownProps.address],
+    tasks: state.projects[4][ownProps.address].tasks
   }
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    taskValidated: (validationDetails) => dispatch(taskValidated(validationDetails))
+    taskValidated: (validationDetails) => dispatch(taskValidated(validationDetails)),
+    getTasks: (address, state) => dispatch(getTasks(address, state))
   }
 }
 

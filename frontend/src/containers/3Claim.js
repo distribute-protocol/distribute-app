@@ -6,7 +6,11 @@ import { push } from 'react-router-redux'
 import { eth } from '../utilities/blockchain'
 import Project from './project/3Claim'
 import fastforward from '../utilities/fastforward'
+<<<<<<< HEAD
 import { getProjects } from '../actions/projectActions'
+=======
+import { getProjects, checkValidateStatus } from '../actions/projectActions'
+>>>>>>> fixed project action import
 import { submitFinalTaskList, claimTask, submitTaskComplete } from '../actions/taskActions'
 import gql from 'graphql-tag'
 
@@ -26,6 +30,7 @@ let projQuery = gql`
       reputationBalance,
       reputationCost,
       summary,
+      state,
       tokenBalance,
       topTaskHash,
       taskList,

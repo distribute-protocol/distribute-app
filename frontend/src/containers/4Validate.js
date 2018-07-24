@@ -24,6 +24,7 @@ let projQuery = gql`
       reputationBalance,
       reputationCost,
       summary,
+      state,
       tokenBalance,
       weiBal,
       weiCost
@@ -61,12 +62,12 @@ class Validate extends React.Component {
 
   render () {
     const projects = typeof this.props.projects !== `undefined`
-      ? Object.keys(this.props.project).map((address, i) => {
+      ? Object.keys(this.props.projects).map((address, i) => {
         return <Project
           key={i}
           index={i}
           address={address}
-          project={this.props.project[address]}
+          project={this.props.projects[address]}
         />
       })
       : []

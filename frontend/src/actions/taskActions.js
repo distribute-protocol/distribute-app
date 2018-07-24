@@ -67,17 +67,19 @@ export function submitTaskComplete (address, index, txObj) {
   }
 }
 
-export function getTasks (projectAddress) {
+export function getTasks (projectAddress, state) {
   return {
     type: GET_TASKS,
-    projectAddress
+    projectAddress,
+    state
   }
 }
 
-export function tasksReceived (projectAddress, taskDetails) {
+export function tasksReceived (projectAddress, taskDetails, state) {
   return {
     type: TASKS_RECEIVED,
     projectAddress,
-    taskDetails
+    taskDetails,
+    state
   }
 }
