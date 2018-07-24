@@ -186,11 +186,12 @@ const getActiveProjectsEpic = action$ => {
   )
 }
 
-const checkValidateStatus = action$ =>
-  action$.ofType(CHECK_VALIDATE_STATUS).pipe(
+const checkValidateStatus = action$ => {
+  return action$.ofType(CHECK_VALIDATE_STATUS).pipe(
     mergeMap(action => { return pr.checkValidate(action.projectAddress, action.txObj) }),
     map(result => validateStatusChecked(result))
   )
+}
 
 const getValidateProjectsEpic = action$ => {
   let state

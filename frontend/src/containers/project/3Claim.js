@@ -101,20 +101,35 @@ class ClaimProject extends React.Component {
       let weiCost = this.props.project.weiCost
       tasks = JSON.parse(this.props.project.taskList).map((task, i) => {
         let weiReward = Math.floor(weiCost * task.percentage / 100)
-        return {
-          key: i,
-          // description loads incorrectly, we need a way to reference the description key in the string
-          description: `${this.props.project.taskList}`,
-          ethReward: `${web3.fromWei(weiReward, 'ether')} ETH`,
-          repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' && typeof weiReward !== 'undefined' ? `${Math.floor(reputationCost * weiReward / weiCost)} rep` : '',
-          buttons: <ButtonGroup>
-            <Button
-              disabled={!this.props.project.listSubmitted || (typeof this.props.tasks !== 'undefined' && this.props.tasks[i].claimed)}
-              type='danger' onClick={() => this.claimTask(i)}>Claim</Button>
-            <Button
-              disabled={!this.props.project.listSubmitted || (typeof this.props.tasks !== 'undefined' && !this.props.tasks[i].claimed) || (typeof this.props.tasks !== 'undefined' && this.props.tasks[i].complete)}
-              type='danger' onClick={() => this.submitTaskComplete(i)}>Task Complete</Button>
-          </ButtonGroup>
+        console.log(!this.props.project.listSubmitted || (typeof this.props.tasks !== 'undefined' && this.props.tasks[i].claimed))
+        console.log(!this.props.project.listSubmitted && !this.props.tasks[i].claimed && this.props.tasks[i].complete)
+        // console.log('test', this.props.project.listSubmitted, this.props.tasks[i].claimed, this.props.tasks[i].complete)
+        if (typeof this.props.tasks !== 'undefined') {
+          return {
+            key: i,
+            // description loads incorrectly, we need a way to reference the description key in the string
+            description: `${this.props.project.taskList}`,
+            ethReward: `${web3.fromWei(weiReward, 'ether')} ETH`,
+            repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' && typeof weiReward !== 'undefined' ? `${Math.floor(reputationCost * weiReward / weiCost)} rep` : '',
+            buttons: <ButtonGroup>
+              <Button
+                disabled={!this.props.project.listSubmitted || !this.props.tasks[i].claimed}
+                type='danger' onClick={() => this.claimTask(i)}>Claim</Button>
+              <Button
+                disabled={!this.props.project.listSubmitted || !this.props.tasks[i].claimed || (this.props.tasks[i].claimed && this.props.tasks[i].complete)
+                  // !(!this.props.project.listSubmitted || (!this.props.tasks[i].claimed && this.props.tasks[i].complete))
+                }
+                type='danger' onClick={() => this.submitTaskComplete(i)}>Task Complete</Button>
+            </ButtonGroup>
+          }
+        } else {
+          return {
+            key: i,
+            description: ``,
+            ethReward: ``,
+            repClaim: ``,
+            buttons: <div />
+          }
         }
       })
     } else {

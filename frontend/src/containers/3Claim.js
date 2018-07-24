@@ -6,11 +6,7 @@ import { push } from 'react-router-redux'
 import { eth } from '../utilities/blockchain'
 import Project from './project/3Claim'
 import fastforward from '../utilities/fastforward'
-<<<<<<< HEAD
-import { getProjects } from '../actions/projectActions'
-=======
 import { getProjects, checkValidateStatus } from '../actions/projectActions'
->>>>>>> fixed project action import
 import { submitFinalTaskList, claimTask, submitTaskComplete } from '../actions/taskActions'
 import gql from 'graphql-tag'
 
@@ -50,6 +46,7 @@ class Claim extends React.Component {
     this.submitFinalTaskList = this.submitFinalTaskList.bind(this)
     this.claimTask = this.claimTask.bind(this)
     this.submitTaskComplete = this.submitTaskComplete.bind(this)
+    this.checkValidateStatus = this.checkValidateStatus.bind(this)
   }
 
   componentWillMount () {
@@ -92,6 +89,14 @@ class Claim extends React.Component {
     })
   }
 
+  async checkValidateStatus (address) {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        this.props.checkValidateStatus(address, {from: accounts[0]})
+      }
+    })
+  }
+
   // fast forward Ganache 1 week
   async fastForward () {
     await fastforward(2 * 7 * 24 * 60 * 60)
@@ -108,6 +113,7 @@ class Claim extends React.Component {
           submitFinalTaskList={this.submitFinalTaskList}
           claimTask={this.claimTask}
           submitTaskComplete={this.submitTaskComplete}
+          checkValidateStatus={this.checkValidateStatus}
         />
       })
       : []
@@ -142,7 +148,8 @@ const mapDispatchToProps = (dispatch) => {
     getProjects: () => dispatch(getProjects(3, projQuery)),
     submitFinalTaskList: (address, txObj) => dispatch(submitFinalTaskList(address, txObj)),
     claimTask: (address, index, txObj) => dispatch(claimTask(address, index, txObj)),
-    submitTaskComplete: (address, index, txObj) => dispatch(submitTaskComplete(address, index, txObj))
+    submitTaskComplete: (address, index, txObj) => dispatch(submitTaskComplete(address, index, txObj)),
+    checkValidateStatus: (address, txObj) => dispatch(checkValidateStatus(address, txObj))
   }
 }
 
