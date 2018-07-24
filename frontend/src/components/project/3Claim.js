@@ -32,7 +32,7 @@ export default ({
   tasks,
   listSubmitted,
   submitFinalTaskList,
-  checkValidation
+  checkValidateStatus
 }) => {
   return (
     <div style={{backgroundColor: '#DDE4E5', marginBottom: 30}}>
@@ -61,7 +61,7 @@ export default ({
           onClick={() => submitFinalTaskList()}>
             Submit Winning Hash List
         </Button>
-        <Button onClick={() => checkValidation()}>
+        <Button onClick={() => checkValidateStatus()}>
           Check Validate
         </Button>
       </div>

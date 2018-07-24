@@ -17,7 +17,7 @@ class ClaimProject extends React.Component {
     }
     this.getProjectStatus = this.getProjectStatus.bind(this)
     this.submitFinalTaskList = this.submitFinalTaskList.bind(this)
-    this.checkValidation = this.checkValidation.bind(this)
+    this.checkValidateStatus = this.checkValidateStatus.bind(this)
   }
 
   componentWillMount () {
@@ -31,8 +31,7 @@ class ClaimProject extends React.Component {
   }
 
   async getTasks () {
-    this.props.getTasks(this.props.address)
-    console.log(this.props.getTasks(this.props.address))
+    this.props.getTasks(this.props.address, this.props.project.state)
   }
 
   async submitFinalTaskList () {
@@ -90,25 +89,17 @@ class ClaimProject extends React.Component {
     // })
   }
 
-  checkValidation () {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        await pr.checkValidate(this.props.address, {from: accounts[0]})
-      }
-    })
+  checkValidateStatus () {
+    this.props.checkValidateStatus(this.props.address)
   }
 
   render () {
-    console.log(this.props.tasks, 'here')
-    let taskList = JSON.parse(this.props.project.taskList)
-    console.log(taskList)
-    // console.log(taskList.description)
+    // let taskList = JSON.parse(this.props.project.taskList)
     let tasks
     if (this.props.project.taskList !== null) {
       let reputationCost = this.props.project.reputationCost
       let weiCost = this.props.project.weiCost
       tasks = JSON.parse(this.props.project.taskList).map((task, i) => {
-        // console.log(tasks.description)
         let weiReward = Math.floor(weiCost * task.percentage / 100)
         return {
           key: i,
@@ -118,10 +109,10 @@ class ClaimProject extends React.Component {
           repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' && typeof weiReward !== 'undefined' ? `${Math.floor(reputationCost * weiReward / weiCost)} rep` : '',
           buttons: <ButtonGroup>
             <Button
-              disabled={!this.props.project.listSubmitted} // this.props.tasks[i].claimed === undefined)
+              disabled={!this.props.project.listSubmitted || (typeof this.props.tasks !== 'undefined' && this.props.tasks[i].claimed)}
               type='danger' onClick={() => this.claimTask(i)}>Claim</Button>
             <Button
-              disabled={!this.props.project.listSubmitted} // this.props.tasks[i].claimed === true
+              disabled={!this.props.project.listSubmitted || (typeof this.props.tasks !== 'undefined' && !this.props.tasks[i].claimed) || (typeof this.props.tasks !== 'undefined' && this.props.tasks[i].complete)}
               type='danger' onClick={() => this.submitTaskComplete(i)}>Task Complete</Button>
           </ButtonGroup>
         }
@@ -144,7 +135,7 @@ class ClaimProject extends React.Component {
         listSubmitted={this.props.project.listSubmitted}
         submitFinalTaskList={this.submitFinalTaskList}
         claimTask={this.claimTask}
-        checkValidation={this.checkValidation}
+        checkValidateStatus={this.checkValidateStatus}
         // taskClaimed={this.taskClaimed}
       />
     )
@@ -160,7 +151,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getTasks: (address) => dispatch(getTasks(address))
+    getTasks: (address, state) => dispatch(getTasks(address, state))
   }
 }
 

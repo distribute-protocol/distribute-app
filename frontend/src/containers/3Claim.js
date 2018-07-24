@@ -26,6 +26,7 @@ let projQuery = gql`
       reputationBalance,
       reputationCost,
       summary,
+      state,
       tokenBalance,
       topTaskHash,
       taskList,

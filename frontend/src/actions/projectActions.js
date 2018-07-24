@@ -17,7 +17,9 @@ import {
   ACTIVE_STATUS_CHECKED,
   HASHED_TASK_LIST_SUBMITTED,
   GET_VERIFIED_TASK_LISTS,
-  VERIFIED_TASK_LISTS_RECEIVED
+  VERIFIED_TASK_LISTS_RECEIVED,
+  CHECK_VALIDATE_STATUS,
+  VALIDATE_STATUS_CHECKED
 } from '../constants/ProjectActionTypes'
 
 export function proposeProject (collateralType, projObj, txObj) {
@@ -174,5 +176,20 @@ export function verifiedTaskListsReceived (address, result) {
     type: VERIFIED_TASK_LISTS_RECEIVED,
     address,
     result
+  }
+}
+
+export function checkValidateStatus (projectAddress, txObj) {
+  return {
+    type: CHECK_VALIDATE_STATUS,
+    projectAddress,
+    txObj
+  }
+}
+
+export function validateStatusChecked (receipt) {
+  return {
+    type: VALIDATE_STATUS_CHECKED,
+    receipt
   }
 }

@@ -102,6 +102,7 @@ const typeDefs = `
     index: Int
     hash: String
     project: Project
+    state: Int
     validations: [Validation]
     validationRewardClaimable: Boolean
     votes: [Vote]

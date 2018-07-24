@@ -110,7 +110,7 @@ module.exports = function () {
     if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
       Project.findOne({address: projectAddress}).exec((error, doc) => {
         if (error) console.error(error)
-        if (doc  !== null) {
+        if (doc !== null) {
           if (doc.state === 1) {
             doc.state = 2
           }
@@ -168,24 +168,22 @@ module.exports = function () {
     projectAddress = '0x' + projectAddress.substr(-40)
     let topTaskHash = '0x' + eventParamArr[1]
     let flag = eventParamArr[2]
-    let finalTasks
     if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
       PrelimTaskList.findOne({address: projectAddress, hash: topTaskHash}).exec((error, prelimTaskList) => {
         if (error) console.error(error)
         if (prelimTaskList !== null) {
-          finalTasks = prelimTaskList.content
-        }
-      })
-      Project.findOne({address: projectAddress}).exec((error, project) => {
-        if (error) console.error(error)
-        if (project) {
-          project.state = 3
-          project.topTaskHash = topTaskHash
-          project.taskList = finalTasks
-          console.log('final tasks:', finalTasks)
-          project.save(err => {
-            if (err) console.error(error)
-            console.log('active project with topTaskHash')
+          Project.findOne({address: projectAddress}).exec((error, project) => {
+            if (error) console.error(error)
+            if (project) {
+              project.state = 3
+              project.topTaskHash = topTaskHash
+              project.taskList = prelimTaskList.content
+              console.log('final tasks:', project.taskList)
+              project.save(err => {
+                if (err) console.error(error)
+                console.log('active project with topTaskHash')
+              })
+            }
           })
         }
       })
@@ -226,6 +224,7 @@ module.exports = function () {
                 complete: false,
                 description: taskContent[0].description,
                 index,
+                state: 3,
                 validationRewardClaimable: false,
                 weighting: taskContent[0].percentage,
                 workerRewardClaimable: false
@@ -281,11 +280,11 @@ module.exports = function () {
                 if (err) console.error(err)
               })
             })
+            doc.save(err => {
+              if (err) console.error(error)
+              console.log('doc saved')
+            })
           }
-          doc.save(err => {
-            if (err) console.error(error)
-            console.log('doc saved')
-          })
           user.save(err => {
             if (err) console.error(error)
             console.log('claimer saved')
@@ -307,20 +306,54 @@ module.exports = function () {
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
     let index = parseInt(eventParamArr[1], 16)
-    console.log(projectAddress, index)
     Project.findOne({address: projectAddress}).exec((error, doc) => {
       if (error) console.error(error)
-      console.log('gets to project')
       if (doc) {
         Task.findOne({project: doc.id, index: index}).exec((error, task) => {
           if (error) console.error(error)
           task.complete = true
           task.save(err => {
             if (err) console.error(err)
-            console.log('task submitted complete', task)
+            console.log('task submitted complete')
           })
         })
       }
     })
+  })
+  const projectValidateFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: PR.projectRegistryAddress,
+    topics: [web3.sha3('LogProjectValidate(address,bool)')]
+  })
+  projectValidateFilter.watch(async (err, result) => {
+    if (err) console.error(err)
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let projectAddress = eventParamArr[0]
+    projectAddress = '0x' + projectAddress.substr(-40)
+    let flag = eventParamArr[1]
+    if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
+      Project.findOne({address: projectAddress}).exec((error, project) => {
+        if (error) console.error(error)
+        if (project) {
+          project.state = 4
+          Task.find({project: project.id}).exec((error, tasks) => {
+            if (error) console.error(error)
+            tasks.map((task, i) => {
+              task.state = 4
+              task.save(err => {
+                if (err) console.error(error)
+                console.log('validate tasks')
+              })
+            })
+          })
+          project.save(err => {
+            if (err) console.error(error)
+            console.log('validate project')
+          })
+        }
+      })
+    }
   })
 }
