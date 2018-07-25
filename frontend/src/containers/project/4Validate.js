@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import ValidateComponent from '../../components/project/4Validate'
 import { Button, Table } from 'antd'
 import {eth, pr, web3} from '../../utilities/blockchain'
-import { getTasks } from '../../actions/taskActions'
+import { getTasks, validateTask, getValidations } from '../../actions/taskActions'
 import moment from 'moment'
 
 class ValidateTasks extends React.Component {
@@ -122,6 +122,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getTasks: (address, state) => dispatch(getTasks(address, state))
+    getValidations: (address, state) => dispatch(getValidations(address, index, validationState))
   }
 }
 
