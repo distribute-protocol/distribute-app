@@ -137,7 +137,7 @@ const typeDefs = `
     id: ID
     amount: Int
     task: Task
-    user: User
+    user: String
     state: Boolean
   }
 

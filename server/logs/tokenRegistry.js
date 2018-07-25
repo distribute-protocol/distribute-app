@@ -120,4 +120,64 @@ module.exports = function () {
       }
     })
   })
+  // filter validated tasks
+  const validatedTasksFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: TR.TokenRegistryAddress,
+    topics: [web3.sha3('LogValidateTask(address,uint256,bool,uint256,address)')]
+  })
+  validatedTasksFilter.watch(async (error, result) => {
+    if (error) console.error(error)
+    let txHash = result.transactionHash
+    let projectAddress = result.topics[1]
+    projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    console.log(eventParamArr)
+    let validationFee = parseInt(eventParamArr[0], 16)
+    let validationState = parseInt(eventParamArr[1], 16)
+    let taskIndex = parseInt(eventParamArr[2], 16)
+    let validator = eventParamArr[3]
+    validator = '0x' + account.substr(-40)
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        // subtract tokens from user balance
+        User.findOne({account: validator}).exec((err, userStatus) => {
+          if (err) console.error(err)
+          userStatus.tokenBalance -= validationFee
+          userStatus.save(err => {
+            if (err) console.error(err)
+          })
+        // create validation entry
+        Project.findOne({address: projectAddress}).exec((error, doc) => {
+          if (error) console.error(error)
+          Task.findOne({project: doc.id, index: taskIndex}).exec((error, taskStatus) => {
+            let ValidationEvent = new Validation({
+              _id: new mongoose.Types.ObjectId(),
+              amount: validationFee,
+              task: taskStatus.id,
+              user: validator,
+              state: validationState
+            })
+            ValidationEvent.save(err => {
+              if (err) console.error(err)
+              console.log('new validation event saved')
+            })
+            // add validation to user
+            User.findOne({account: validator}).exec((error, userStatus) => {
+              userStatus.validations.push(ValidationEvent.id)
+              userStatus.save(err => {
+                if (err) console.error(err)
+              })
+            })
+            taskStatus.validations.push(ValidationEvent.id)
+            taskStatus.save(err => {
+              if (err) console.error(err)
+            })
+          })
+        })
+      })
+  }
 }
