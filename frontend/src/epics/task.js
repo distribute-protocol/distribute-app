@@ -1,5 +1,5 @@
-import { SUBMIT_FINAL_TASK_LIST, CLAIM_TASK, GET_TASKS, SUBMIT_TASK_COMPLETE, VALIDATE_TASK } from '../constants/TaskActionTypes'
-import { finalTaskListSubmitted, taskClaimed, tasksReceived, taskCompleted, taskValidated } from '../actions/taskActions'
+import { SUBMIT_FINAL_TASK_LIST, CLAIM_TASK, GET_TASKS, SUBMIT_TASK_COMPLETE, VALIDATE_TASK, GET_VALIDATIONS } from '../constants/TaskActionTypes'
+import { finalTaskListSubmitted, taskClaimed, tasksReceived, taskCompleted, taskValidated, validationsReceived } from '../actions/taskActions'
 import { map, mergeMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
@@ -121,12 +121,36 @@ const validateTaskEpic = action$ => {
   return action$.ofType(VALIDATE_TASK).pipe(
     mergeMap(action => {
       address = action.address
+      console.log(action)
       userAddress = action.txObj.from
       index = action.taskIndex
       validationState = action.validationState
       return Observable.from(tr.validateTask(address, index, validationState, action.txObj))
     }),
-    map(result => taskValidated(address, userAddress, index, validationState))
+    map(result => taskValidated(address, index, validationState))
+  )
+}
+
+const getValidationsEpic = action$ => {
+  let address
+  return action$.ofType(GET_VALIDATIONS).pipe(
+    mergeMap(action => {
+      address = action.address
+      let query = gql`
+      query($address: String!) {
+        getValidations(address: $address) {
+          id,
+          amount,
+          task,
+          user,
+          state,
+          address
+        }
+      }`
+      return client.query({query: query, variables: {address: address}}
+      )
+    }),
+    map(result => validationsReceived(address, result.data.getValidations.user, result.data.getValidations.state))
   )
 }
 
@@ -135,5 +159,6 @@ export default (action$, store) => merge(
   claimTaskEpic(action$, store),
   getTasksEpic(action$, store),
   submitTaskCompleteEpic(action$, store),
-  validateTaskEpic(action$, store)
+  validateTaskEpic(action$, store),
+  getValidationsEpic(action$, store)
 )

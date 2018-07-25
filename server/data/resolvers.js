@@ -81,7 +81,7 @@ const resolvers = {
     projectTasks: (_, args) => Project.findOne({address: args.address}).then(project => Task.find({project: project.id})).then(tasks => tasks),
     verifiedPrelimTaskLists: (_, args) => PrelimTaskList.find({address: args.address, verified: true}).then(prelimTaskLists => prelimTaskLists),
     userPrelimTaskLists: (_, args) => PrelimTaskList.findOne({submitter: args.account}).then(prelimTaskLists => prelimTaskLists),
-    taskValidations: (address) => [{}],
+    taskValidations: (_, args) => Project.findOne({address: args.address}).then(project => Task.find({project: project.id}).then(task => Validation.find({task: task.id})).then(validations => validations)),
     userVotes: (account) => [{}],
     taskVotes: (address) => [{}],
     findFinalTaskHash: (_, args) => PrelimTaskList.findOne({hash: args.topTaskHash, address: args.address}).then(prelimTaskList => prelimTaskList),

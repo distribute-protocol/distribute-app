@@ -139,6 +139,7 @@ const typeDefs = `
     task: Task
     user: String
     state: Boolean
+    address: String
   }
 
   type Vote {

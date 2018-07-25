@@ -5,7 +5,8 @@ let validatorSchema = mongoose.Schema({
   amount: Number,
   state: Boolean,
   taskId: mongoose.Schema.Types.ObjectId,
-  userid: mongoose.Schema.Types.ObjectId
+  userid: mongoose.Schema.Types.ObjectId,
+  address: String
 })
 
 const Validator = mongoose.model('Validator', validatorSchema)

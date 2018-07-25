@@ -33,8 +33,13 @@ class ValidateTasks extends React.Component {
     this.setState({[e.target.name]: e.target.value})
   }
 
-  validateTask (index, status) {
-    this.props.validateTask(this.props.address, index, status)
+  validateTask (index, validationState) {
+    console.log(validationState)
+    this.props.validateTask(this.props.address, index, validationState)
+  }
+
+  async getValidations (address, index, validationState) {
+    this.props.getValidations(this.props.address, index, validationState)
   }
 
   checkVoting () {
@@ -48,6 +53,7 @@ class ValidateTasks extends React.Component {
   }
 
   render () {
+    console.log(this.props.tasks)
     let tasks
     const columns = [{
       title: 'Yes Validators',
@@ -58,7 +64,7 @@ class ValidateTasks extends React.Component {
       dataIndex: 'noval',
       key: 'noval'
     }]
-    let submissionTasks
+    let validations
     let returnInput = (i) => (
       <div>
         <div>
@@ -73,7 +79,7 @@ class ValidateTasks extends React.Component {
         </div>
         <div>
           <div style={{display: 'flex', flexDirection: 'column', backgroundColor: '#FCFCFC', marginTop: 30}}>
-            <Table style={{backgroundColor: '#ffffff'}} dataSource={submissionTasks} columns={columns} pagination={false} />
+            <Table style={{backgroundColor: '#ffffff'}} dataSource={validations} columns={columns} pagination={false} />
           </div>
         </div>
       </div>)

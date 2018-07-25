@@ -8,7 +8,9 @@ import {
   SUBMIT_TASK_COMPLETE,
   TASK_COMPLETED,
   GET_TASKS,
-  TASKS_RECEIVED
+  TASKS_RECEIVED,
+  GET_VALIDATIONS,
+  VALIDATIONS_RECEIVED
 } from '../constants/TaskActionTypes'
 // task actions start at submitFinalTaskList because task contract initialized in this action
 
@@ -46,6 +48,7 @@ export function taskClaimed (address, index) {
 }
 
 export function validateTask (address, taskIndex, validationState, txObj) {
+  console.log(validationState)
   return {
     type: VALIDATE_TASK,
     address,
@@ -94,5 +97,23 @@ export function tasksReceived (projectAddress, taskDetails, state) {
     projectAddress,
     taskDetails,
     state
+  }
+}
+
+export function getValidations (projectAddress, index, validationState) {
+  return {
+    type: GET_VALIDATIONS,
+    projectAddress,
+    index,
+    validationState
+  }
+}
+
+export function validationsReceived (projectAddress, index, user, validationState) {
+  return {
+    type: VALIDATIONS_RECEIVED,
+    projectAddress,
+    user,
+    validationState
   }
 }

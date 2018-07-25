@@ -78,7 +78,6 @@ class ClaimProject extends React.Component {
 
   submitTaskComplete (i) {
     this.props.submitTaskComplete(this.props.address, i)
-    console.log('goob')
     // eth.getAccounts(async (err, accounts) => {
     //   if (!err) {
     //     await pr.submitTaskComplete(this.props.address, i, {from: accounts[0]})
