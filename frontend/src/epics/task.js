@@ -1,11 +1,11 @@
-import { SUBMIT_FINAL_TASK_LIST, CLAIM_TASK, GET_TASKS, SUBMIT_TASK_COMPLETE } from '../constants/TaskActionTypes'
-import { finalTaskListSubmitted, taskClaimed, tasksReceived, taskCompleted } from '../actions/taskActions'
+import { SUBMIT_FINAL_TASK_LIST, CLAIM_TASK, GET_TASKS, SUBMIT_TASK_COMPLETE, VALIDATE_TASK } from '../constants/TaskActionTypes'
+import { finalTaskListSubmitted, taskClaimed, tasksReceived, taskCompleted, taskValidated } from '../actions/taskActions'
 import { map, mergeMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
 import { client } from '../index'
 import { merge } from 'rxjs/observable/merge'
-import { rr, pr } from '../utilities/blockchain'
+import { tr, rr, pr } from '../utilities/blockchain'
 import { hashTasks } from '../utilities/hashing'
 import gql from 'graphql-tag'
 
@@ -113,9 +113,27 @@ const submitTaskCompleteEpic = action$ => {
   )
 }
 
+const validateTaskEpic = action$ => {
+  let address
+  let userAddress
+  let index
+  let validationState
+  return action$.ofType(VALIDATE_TASK).pipe(
+    mergeMap(action => {
+      address = action.address
+      userAddress = action.txObj.from
+      index = action.index
+      validationState = action.validationState
+      return Observable.from(tr.validateTask(address, userAddress, index, validationState, action.txObj))
+    }),
+    map(result => taskValidated(address, index, validationState))
+  )
+}
+
 export default (action$, store) => merge(
   submitFinalTaskListEpic(action$, store),
   claimTaskEpic(action$, store),
   getTasksEpic(action$, store),
-  submitTaskCompleteEpic(action$, store)
+  submitTaskCompleteEpic(action$, store),
+  validateTaskEpic(action$, store)
 )

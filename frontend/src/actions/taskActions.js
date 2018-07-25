@@ -3,6 +3,7 @@ import {
   FINAL_TASK_LIST_SUBMITTED,
   CLAIM_TASK,
   TASK_CLAIMED,
+  VALIDATE_TASK,
   TASK_VALIDATED,
   SUBMIT_TASK_COMPLETE,
   TASK_COMPLETED,
@@ -44,10 +45,23 @@ export function taskClaimed (address, index) {
   }
 }
 
-export function taskValidated (validationDetails) {
+export function validateTask (address, userAddress, taskIndex, validationState, txObj) {
+  return {
+    type: VALIDATE_TASK,
+    address,
+    userAddress,
+    taskIndex,
+    validationState,
+    txObj
+  }
+}
+
+export function taskValidated (address, taskIndex, validationState) {
   return {
     type: TASK_VALIDATED,
-    validationDetails
+    address,
+    taskIndex,
+    validationState
   }
 }
 

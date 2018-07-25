@@ -6,7 +6,7 @@ import fastforward from '../utilities/fastforward'
 import { push } from 'react-router-redux'
 import { connect } from 'react-redux'
 import { eth } from '../utilities/blockchain'
-import { getProjects } from '../actions/projectActions'
+import { getProjects, validateTask } from '../actions/projectActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -38,10 +38,19 @@ class Validate extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
+    this.validateTask = this.validateTask.bind(this)
   }
 
   componentWillMount () {
     this.getProjects()
+  }
+
+  async validateTask () {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        this.props.validateTask(address, {from: accounts[0]})
+      }
+    })
   }
 
   async getProjects () {
@@ -100,7 +109,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
-    getProjects: () => dispatch(getProjects(4, projQuery))
+    getProjects: () => dispatch(getProjects(4, projQuery)),
+    validateTask: () => dispatch(validateTask())
   }
 }
 

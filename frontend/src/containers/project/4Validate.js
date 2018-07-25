@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import ValidateComponent from '../../components/project/4Validate'
-import { Button } from 'antd'
+import { Button, Table } from 'antd'
 import {eth, pr, tr, web3, P} from '../../utilities/blockchain'
 import { taskValidated, getTasks } from '../../actions/taskActions'
 import moment from 'moment'
@@ -34,20 +34,21 @@ class ValidateTasks extends React.Component {
   }
 
   validateTask (val, index, status) {
-    let validator
-    let valStatus = status
-    eth.getAccounts(async (err, accounts) => {
-      validator = accounts[0]
-      if (!err) {
-        if (accounts.length) {
-          await tr.validateTask(this.props.address, index, val, status, {from: accounts[0]})
-            .then(async () => {
-              this.setState({['val' + index]: ''})
-              this.props.taskValidated({ address: this.props.address, validator: validator, index: index, status: valStatus })
-            })
-        }
-      }
-    })
+    this.props.validateTask(this.props.address)
+    // let validator
+    // let valStatus = status
+    // eth.getAccounts(async (err, accounts) => {
+    //   validator = accounts[0]
+    //   if (!err) {
+    //     if (accounts.length) {
+    //       await tr.validateTask(this.props.address, index, val, status, {from: accounts[0]})
+    //         .then(async () => {
+    //           this.setState({['val' + index]: ''})
+    //           this.props.taskValidated({ address: this.props.address, validator: validator, index: index, status: valStatus })
+    //         })
+    //     }
+    //   }
+    // })
   }
 
   checkVoting () {
@@ -62,16 +63,18 @@ class ValidateTasks extends React.Component {
 
   render () {
     let tasks
+    const columns = [{
+      title: 'Yes Validators',
+      dataIndex: 'yesval',
+      key: 'yesval'
+    }, {
+      title: 'No Validators',
+      dataIndex: 'noval',
+      key: 'noval'
+    }]
+    let submissionTasks
     let returnInput = (i) => (
       <div>
-        <div>
-          <input
-            name={'val' + i}
-            placeholder='tokens'
-            onChange={(e) => this.onChange(e)}
-            value={this.state['val' + i] || ''}
-          />
-        </div>
         <div>
           <Button
             type='danger'
@@ -81,6 +84,11 @@ class ValidateTasks extends React.Component {
             type='danger'
             // disabled={this.props.tasks[i].validated[eth.accounts[0]]}
             onClick={() => this.validateTask(this.state['val' + i], i, false)} >No</Button>
+        </div>
+        <div>
+          <div style={{display: 'flex', flexDirection: 'column', backgroundColor: '#FCFCFC', marginTop: 30}}>
+            <Table style={{backgroundColor: '#ffffff'}} dataSource={submissionTasks} columns={columns} pagination={false} />
+          </div>
         </div>
       </div>)
     if (typeof this.props.tasks !== 'undefined') {
@@ -121,7 +129,6 @@ const mapStateToProps = (state, ownProps) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    taskValidated: (validationDetails) => dispatch(taskValidated(validationDetails)),
     getTasks: (address, state) => dispatch(getTasks(address, state))
   }
 }

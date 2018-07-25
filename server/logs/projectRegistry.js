@@ -297,7 +297,7 @@ module.exports = function () {
     fromBlock: 0,
     toBlock: 'latest',
     address: PR.projectRegistryAddress,
-    topics: [web3.sha3('LogSubmitTaskComplete(address,uint256)')]
+    topics: [web3.sha3('LogSubmitTaskComplete(address,uint256,uint256)')]
   })
   submitTaskCompleteFilter.watch(async (err, result) => {
     if (err) console.error(err)
@@ -306,12 +306,14 @@ module.exports = function () {
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
     let index = parseInt(eventParamArr[1], 16)
+    let validationFee = parseInt(eventParamArr[2], 16)
     Project.findOne({address: projectAddress}).exec((error, doc) => {
       if (error) console.error(error)
       if (doc) {
         Task.findOne({project: doc.id, index: index}).exec((error, task) => {
           if (error) console.error(error)
           task.complete = true
+          task.validationFee = validationFee
           task.save(err => {
             if (err) console.error(err)
             console.log('task submitted complete')
