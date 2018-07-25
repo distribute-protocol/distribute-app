@@ -101,8 +101,8 @@ class ClaimProject extends React.Component {
       let weiCost = this.props.project.weiCost
       tasks = JSON.parse(this.props.project.taskList).map((task, i) => {
         let weiReward = Math.floor(weiCost * task.percentage / 100)
-        console.log(!this.props.project.listSubmitted || (typeof this.props.tasks !== 'undefined' && this.props.tasks[i].claimed))
-        console.log(!this.props.project.listSubmitted && !this.props.tasks[i].claimed && this.props.tasks[i].complete)
+        // console.log(!this.props.project.listSubmitted || (typeof this.props.tasks !== 'undefined' && this.props.tasks[i].claimed))
+        // console.log(!this.props.project.listSubmitted && !this.props.tasks[i].claimed && this.props.tasks[i].complete)
         // console.log('test', this.props.project.listSubmitted, this.props.tasks[i].claimed, this.props.tasks[i].complete)
         if (typeof this.props.tasks !== 'undefined') {
           return {
@@ -113,7 +113,7 @@ class ClaimProject extends React.Component {
             repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' && typeof weiReward !== 'undefined' ? `${Math.floor(reputationCost * weiReward / weiCost)} rep` : '',
             buttons: <ButtonGroup>
               <Button
-                disabled={!this.props.project.listSubmitted || !this.props.tasks[i].claimed}
+                disabled={!this.props.project.listSubmitted || this.props.tasks[i].claimed}
                 type='danger' onClick={() => this.claimTask(i)}>Claim</Button>
               <Button
                 disabled={!this.props.project.listSubmitted || !this.props.tasks[i].claimed || (this.props.tasks[i].claimed && this.props.tasks[i].complete)
