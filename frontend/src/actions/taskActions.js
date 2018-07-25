@@ -45,11 +45,10 @@ export function taskClaimed (address, index) {
   }
 }
 
-export function validateTask (address, userAddress, taskIndex, validationState, txObj) {
+export function validateTask (address, taskIndex, validationState, txObj) {
   return {
     type: VALIDATE_TASK,
     address,
-    userAddress,
     taskIndex,
     validationState,
     txObj

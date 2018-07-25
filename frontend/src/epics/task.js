@@ -120,13 +120,14 @@ const validateTaskEpic = action$ => {
   let validationState
   return action$.ofType(VALIDATE_TASK).pipe(
     mergeMap(action => {
+      console.log(action)
       address = action.address
       userAddress = action.txObj.from
-      index = action.index
+      index = action.taskIndex
       validationState = action.validationState
-      return Observable.from(tr.validateTask(address, userAddress, index, validationState, action.txObj))
+      return Observable.from(tr.validateTask(address, index, validationState, action.txObj))
     }),
-    map(result => taskValidated(address, index, validationState))
+    map(result => taskValidated(address, userAddress, index, validationState))
   )
 }
 

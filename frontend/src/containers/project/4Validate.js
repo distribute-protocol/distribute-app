@@ -2,8 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import ValidateComponent from '../../components/project/4Validate'
 import { Button, Table } from 'antd'
-import {eth, pr, tr, web3, P} from '../../utilities/blockchain'
-import { taskValidated, getTasks } from '../../actions/taskActions'
+import {eth, pr, web3} from '../../utilities/blockchain'
+import { getTasks } from '../../actions/taskActions'
 import moment from 'moment'
 
 class ValidateTasks extends React.Component {
@@ -33,22 +33,8 @@ class ValidateTasks extends React.Component {
     this.setState({[e.target.name]: e.target.value})
   }
 
-  validateTask (val, index, status) {
-    this.props.validateTask(this.props.address)
-    // let validator
-    // let valStatus = status
-    // eth.getAccounts(async (err, accounts) => {
-    //   validator = accounts[0]
-    //   if (!err) {
-    //     if (accounts.length) {
-    //       await tr.validateTask(this.props.address, index, val, status, {from: accounts[0]})
-    //         .then(async () => {
-    //           this.setState({['val' + index]: ''})
-    //           this.props.taskValidated({ address: this.props.address, validator: validator, index: index, status: valStatus })
-    //         })
-    //     }
-    //   }
-    // })
+  validateTask (index, status) {
+    this.props.validateTask(this.props.address, index, status)
   }
 
   checkVoting () {
@@ -79,11 +65,11 @@ class ValidateTasks extends React.Component {
           <Button
             type='danger'
             // disabled={this.props.tasks[i].validated[eth.accounts[0]]}
-            onClick={() => this.validateTask(this.state['val' + i], i, true)} >Yes</Button>
+            onClick={() => this.validateTask(i, true)} >Yes</Button>
           <Button
             type='danger'
             // disabled={this.props.tasks[i].validated[eth.accounts[0]]}
-            onClick={() => this.validateTask(this.state['val' + i], i, false)} >No</Button>
+            onClick={() => this.validateTask(i, false)} >No</Button>
         </div>
         <div>
           <div style={{display: 'flex', flexDirection: 'column', backgroundColor: '#FCFCFC', marginTop: 30}}>
