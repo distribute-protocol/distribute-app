@@ -6,6 +6,8 @@ const Network = require('../models/network')
 const Stake = require('../models/stake')
 const Project = require('../models/project')
 const User = require('../models/user')
+const Task = require('../models/task')
+const Validation = require('../models/validation')
 
 module.exports = function () {
   // filter staked tokens
@@ -134,15 +136,16 @@ module.exports = function () {
     projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
     let eventParams = result.data
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
-    console.log(eventParamArr)
     let validationFee = parseInt(eventParamArr[0], 16)
     let validationState = parseInt(eventParamArr[1], 16)
     let taskIndex = parseInt(eventParamArr[2], 16)
     let validator = eventParamArr[3]
-    validator = '0x' + account.substr(-40)
+    validator = '0x' + validator.substr(-40)
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
         // subtract tokens from user balance
         User.findOne({account: validator}).exec((err, userStatus) => {
           if (err) console.error(err)
@@ -150,10 +153,12 @@ module.exports = function () {
           userStatus.save(err => {
             if (err) console.error(err)
           })
+        })
         // create validation entry
         Project.findOne({address: projectAddress}).exec((error, doc) => {
           if (error) console.error(error)
           Task.findOne({project: doc.id, index: taskIndex}).exec((error, taskStatus) => {
+            if (error) console.error(error)
             let ValidationEvent = new Validation({
               _id: new mongoose.Types.ObjectId(),
               amount: validationFee,
@@ -167,6 +172,7 @@ module.exports = function () {
             })
             // add validation to user
             User.findOne({account: validator}).exec((error, userStatus) => {
+              if (error) console.error(error)
               userStatus.validations.push(ValidationEvent.id)
               userStatus.save(err => {
                 if (err) console.error(err)
@@ -178,6 +184,10 @@ module.exports = function () {
             })
           })
         })
+      }
+      netStatus.save(err => {
+        if (err) console.error(err)
       })
-  }
+    })
+  })
 }

@@ -98,7 +98,8 @@ const resolvers = {
         name: args.input.name,
         tokenBalance: 0,
         reputationBalance: 0,
-        tasks: []
+        tasks: [],
+        validations: []
       })
       userObj.save((err, user) => {
         assert.equal(err, null)

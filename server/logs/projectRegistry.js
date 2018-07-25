@@ -225,6 +225,7 @@ module.exports = function () {
                 description: taskContent[0].description,
                 index,
                 state: 3,
+                validations: [],
                 validationRewardClaimable: false,
                 weighting: taskContent[0].percentage,
                 workerRewardClaimable: false
