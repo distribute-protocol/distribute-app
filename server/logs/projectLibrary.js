@@ -21,5 +21,49 @@ module.exports = function () {
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
     let confirmation = parseInt(eventParamArr[1], 16)
+  })
+
+  const taskFailedFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: PL.projectLibraryAddress,
+    topics: [web3.sha3('LogTaskPass(address,address,bool)')]
+  })
+  taskFailedFilter.watch(async (err, result) => {
+    if (err) console.error(err)
+    let txHash = result.transactionHash
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let taskAddress = eventParamArr[0]
+    taskAddress = '0x' + taskAddress.substr(-40)
+    let projectAddress = eventParamArr[1]
+    projectAddress = '0x' + projectAddress.substr(-40)
+    let confirmation = eventParamArr[2]
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        netStatus.save((err, returned) => {
+          if (err) throw Error
+        })
+      }
+      Project.findOne({address: projectAddress}).exec((err, doc) => {
+        doc.state = 5
+        doc.save(err => {
+          if (err) console.error(error)
+          console.log('project in voting stage')
+        })
+      })
+      Task.findOne({address: taskAddress}).exec((err, task) => {
+        task.confirmation = confirmation
+        task.workerRewardClaimable = confirmation
+        task.validationRewardClaimable = true
+        task.save(err => {
+          if (err) console.error(error)
+          console.log('task failed')
+        })
+      })
+  })
 
 }

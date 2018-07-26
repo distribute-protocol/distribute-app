@@ -287,6 +287,7 @@ module.exports = function () {
                   let finalTask = new Task({
                     _id: new mongoose.Types.ObjectId(),
                     address: taskAddress,
+                    pollNonce: null,
                     project: doc.id,
                     claimed: false,
                     complete: false,
