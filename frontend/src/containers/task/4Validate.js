@@ -23,7 +23,6 @@ class ValidateTasks extends React.Component {
     let validations
     if (typeof this.props.validations !== 'undefined') {
       validations = this.props.validations.map((validation, i) => {
-        console.log(validation)
         return {
           key: i,
           address: validation.user,

@@ -2,7 +2,7 @@ import React from 'react'
 import { Table } from 'antd'
 
 const columns = [{
-  title: 'Yes Validators',
+  title: 'Validators',
   dataIndex: 'address',
   key: 'address'
 }, {
