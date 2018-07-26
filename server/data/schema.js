@@ -181,6 +181,7 @@ const typeDefs = `
     findFinalTaskHash(address: String, topTaskHash: String): PrelimTaskList
     findTaskByIndex(address: String, index: Int): Task
     allTasksinProject(address: String): [Task]
+    getValidations(address: String, index: Int): [Validation]
   }
 
   input AvatarInput {

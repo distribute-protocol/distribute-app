@@ -48,7 +48,6 @@ export function taskClaimed (address, index) {
 }
 
 export function validateTask (address, taskIndex, validationState, txObj) {
-  console.log(validationState)
   return {
     type: VALIDATE_TASK,
     address,

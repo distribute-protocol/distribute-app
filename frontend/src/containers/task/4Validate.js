@@ -2,28 +2,21 @@ import React from 'react'
 import { connect } from 'react-redux'
 import ValidateTaskComponent from '../../components/task/4Validate'
 import { getValidations } from '../../actions/taskActions'
-import gql from 'graphql-tag'
-
-let validationQuery = gql`
-  { taskValidations {
-    id,
-    amount,
-    state,
-    task,
-    user,
-    address
-  }
-}`
 
 class ValidateTasks extends React.Component {
   constructor () {
     super()
     this.state = {
     }
+    this.getValidations = this.getValidations.bind(this)
   }
 
   componentWillMount () {
-    // this.getValidations(this)
+    this.getValidations()
+  }
+
+  getValidations () {
+    this.props.getValidations(this.props.address, this.props.index)
   }
 
   render () {
@@ -58,8 +51,13 @@ class ValidateTasks extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    tasks: state.projects[4][ownProps.address].tasks
+    validations: state.projects[4][ownProps.address].tasks[ownProps.index].validations
+  }
+}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getValidations: (address, state) => dispatch(getValidations(address, state))
   }
 }
 
-export default connect(mapStateToProps)(ValidateTasks)
+export default connect(mapStateToProps, mapDispatchToProps)(ValidateTasks)
