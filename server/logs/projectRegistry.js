@@ -273,47 +273,47 @@ module.exports = function () {
         netStatus.save((err, returned) => {
           if (err) throw Error
         })
-      }
-      Task.findOne({address: taskAddress}).exec((error, task) => {
-        if (error) console.error(error)
-        if (!task) {
-          Project.findOne({address: projectAddress}).exec((error, doc) => {
-            if (doc) {
-              if (error) console.error(error)
-              let taskListArr = JSON.parse(doc.taskList)
-              let taskContent = [taskListArr[index]]
-              let taskHash = hashTasks(taskContent)
-              doc.listSubmitted = true
-              if (individualTaskHash === taskHash[0]) {
-                let finalTask = new Task({
-                  _id: new mongoose.Types.ObjectId(),
-                  address: taskAddress,
-                  project: doc.id,
-                  claimed: false,
-                  complete: false,
-                  description: taskContent[0].description,
-                  index,
-                  state: 3,
-                  validations: [],
-                  validationRewardClaimable: false,
-                  weighting: taskContent[0].percentage,
-                  workerRewardClaimable: false
-                })
-                finalTask.save(err => {
-                  if (err) console.error(error)
-                  console.log('final tasks created')
-                })
-                doc.save(err => {
-                  if (err) console.error(error)
-                  console.log('list submitted')
-                })
-              } else {
-                console.log('task hashes do not match')
+        Task.findOne({address: taskAddress}).exec((error, task) => {
+          if (error) console.error(error)
+          if (!task) {
+            Project.findOne({address: projectAddress}).exec((error, doc) => {
+              if (doc) {
+                if (error) console.error(error)
+                let taskListArr = JSON.parse(doc.taskList)
+                let taskContent = [taskListArr[index]]
+                let taskHash = hashTasks(taskContent)
+                doc.listSubmitted = true
+                if (individualTaskHash === taskHash[0]) {
+                  let finalTask = new Task({
+                    _id: new mongoose.Types.ObjectId(),
+                    address: taskAddress,
+                    project: doc.id,
+                    claimed: false,
+                    complete: false,
+                    description: taskContent[0].description,
+                    index,
+                    state: 3,
+                    validations: [],
+                    validationRewardClaimable: false,
+                    weighting: taskContent[0].percentage,
+                    workerRewardClaimable: false
+                  })
+                  finalTask.save(err => {
+                    if (err) console.error(error)
+                    console.log('final tasks created')
+                  })
+                  doc.save(err => {
+                    if (err) console.error(error)
+                    console.log('list submitted')
+                  })
+                } else {
+                  console.log('task hashes do not match')
+                }
               }
-            }
-          })
-        }
-      })
+            })
+          }
+        })
+      }
     })
   })
   // filter for claiming task
@@ -342,38 +342,38 @@ module.exports = function () {
         netStatus.save((err, returned) => {
           if (err) throw Error
         })
-      }
-      User.findOne({account: claimer}).exec((error, user) => {
-        if (error) console.error(error)
-        if (user) {
-          user.reputationBalance -= reputationVal
-        }
-        if (user) {
-          Project.findOne({address: projectAddress}).exec((error, doc) => {
-            if (error) console.error(error)
-            if (doc) {
-              Task.findOne({project: doc.id, index: index}).exec((error, task) => {
-                if (error) console.error(error)
-                task.claimed = true
-                task.claimer = user.id
-                // task.claimedAt
-                user.tasks.push(task.id)
-                task.save(err => {
-                  if (err) console.error(err)
+        User.findOne({account: claimer}).exec((error, user) => {
+          if (error) console.error(error)
+          if (user) {
+            user.reputationBalance -= reputationVal
+          }
+          if (user) {
+            Project.findOne({address: projectAddress}).exec((error, doc) => {
+              if (error) console.error(error)
+              if (doc) {
+                Task.findOne({project: doc.id, index: index}).exec((error, task) => {
+                  if (error) console.error(error)
+                  task.claimed = true
+                  task.claimer = user.id
+                  // task.claimedAt
+                  user.tasks.push(task.id)
+                  task.save(err => {
+                    if (err) console.error(err)
+                  })
                 })
-              })
-              doc.save(err => {
+                doc.save(err => {
+                  if (err) console.error(error)
+                  console.log('doc saved')
+                })
+              }
+              user.save(err => {
                 if (err) console.error(error)
-                console.log('doc saved')
+                console.log('claimer saved')
               })
-            }
-            user.save(err => {
-              if (err) console.error(error)
-              console.log('claimer saved')
             })
-          })
-        }
-      })
+          }
+        })
+      }
     })
   })
   // filter for task submitted complete
@@ -400,21 +400,21 @@ module.exports = function () {
         netStatus.save((err, returned) => {
           if (err) throw Error
         })
-      }
-      Project.findOne({address: projectAddress}).exec((error, doc) => {
-        if (error) console.error(error)
-        if (doc) {
-          Task.findOne({project: doc.id, index: index}).exec((error, task) => {
-            if (error) console.error(error)
-            task.complete = true
-            task.validationFee = validationFee
-            task.save(err => {
-              if (err) console.error(err)
-              console.log('task submitted complete')
+        Project.findOne({address: projectAddress}).exec((error, doc) => {
+          if (error) console.error(error)
+          if (doc) {
+            Task.findOne({project: doc.id, index: index}).exec((error, task) => {
+              if (error) console.error(error)
+              task.complete = true
+              task.validationFee = validationFee
+              task.save(err => {
+                if (err) console.error(err)
+                console.log('task submitted complete')
+              })
             })
-          })
-        }
-      })
+          }
+        })
+      }
     })
   })
   // filter for project tasks ready to be validated

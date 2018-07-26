@@ -1,8 +1,7 @@
 import { SUBMIT_FINAL_TASK_LIST, CLAIM_TASK, GET_TASKS, SUBMIT_TASK_COMPLETE, VALIDATE_TASK, GET_VALIDATIONS } from '../constants/TaskActionTypes'
 import { finalTaskListSubmitted, taskClaimed, tasksReceived, taskCompleted, taskValidated, validationsReceived } from '../actions/taskActions'
-import { map, mergeMap } from 'rxjs/operators'
+import { map, mergeMap, concatMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
-import { push } from 'react-router-redux'
 import { client } from '../index'
 import { merge } from 'rxjs/observable/merge'
 import { tr, rr, pr } from '../utilities/blockchain'
@@ -132,10 +131,9 @@ const getValidationsEpic = action$ => {
   let address
   let index
   return action$.ofType(GET_VALIDATIONS).pipe(
-    mergeMap(action => {
+    concatMap(action => {
       address = action.projectAddress
       index = action.index
-      console.log(action)
       let query = gql`
       query($address: String!, $index: Int!) {
         getValidations(address: $address, index: $index) {
@@ -150,8 +148,7 @@ const getValidationsEpic = action$ => {
       )
     }),
     map(result =>
-      console.log(result)
-      // validationsReceived(address, result.data.getValidations.user, result.data.getValidations.state)
+      validationsReceived(address, index, result.data.getValidations)
     )
   )
 }

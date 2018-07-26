@@ -107,11 +107,11 @@ export function getValidations (projectAddress, index) {
   }
 }
 
-export function validationsReceived (projectAddress, index, user, validationState) {
+export function validationsReceived (projectAddress, index, result) {
   return {
     type: VALIDATIONS_RECEIVED,
     projectAddress,
-    user,
-    validationState
+    index,
+    result
   }
 }

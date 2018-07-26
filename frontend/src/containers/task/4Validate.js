@@ -20,30 +20,24 @@ class ValidateTasks extends React.Component {
   }
 
   render () {
-    let yesValidations
-    let noValidations
-    if (typeof this.props.tasks !== 'undefined') {
-      yesValidations = this.props.tasks.map((task, i) => {
+    let validations
+    if (typeof this.props.validations !== 'undefined') {
+      validations = this.props.validations.map((validation, i) => {
+        console.log(validation)
         return {
           key: i,
-          address: task.description
-        }
-      })
-      noValidations = this.props.tasks.map((task, i) => {
-        return {
-          key: i,
-          address: task.description
+          address: validation.user,
+          amount: validation.amount,
+          state: (validation.state).toString()
         }
       })
     } else {
-      yesValidations = []
-      noValidations = []
+      validations = []
     }
 
     return (
       <ValidateTaskComponent
-        yesValidations={yesValidations}
-        noValidations={noValidations}
+        validations={validations}
       />
     )
   }

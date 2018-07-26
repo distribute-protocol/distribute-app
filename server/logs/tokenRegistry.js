@@ -159,13 +159,14 @@ module.exports = function () {
           if (error) console.error(error)
           Task.findOne({project: doc.id, index: taskIndex}).exec((error, taskStatus) => {
             if (error) console.error(error)
-            console.log(taskStatus, validationFee, validator)
+            console.log('VALIDATE', taskStatus, validationFee, validator)
             let ValidationEvent = new Validation({
               _id: new mongoose.Types.ObjectId(),
               amount: validationFee,
               task: taskStatus.id,
               user: validator,
-              state: validationState
+              state: validationState,
+              address: taskStatus.address
             })
             ValidationEvent.save(err => {
               if (err) console.error(err)
@@ -180,6 +181,7 @@ module.exports = function () {
               })
             })
             taskStatus.validations.push(ValidationEvent.id)
+            console.log(taskStatus, ValidationEvent, ValidationEvent.id)
             taskStatus.save(err => {
               if (err) console.error(err)
             })

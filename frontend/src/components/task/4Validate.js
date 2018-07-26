@@ -1,26 +1,26 @@
 import React from 'react'
 import { Table } from 'antd'
 
-const yesColumns = [{
+const columns = [{
   title: 'Yes Validators',
   dataIndex: 'address',
   key: 'address'
-}]
-
-const noColumns = [{
-  title: 'No Validators',
-  dataIndex: 'address',
-  key: 'address'
+}, {
+  title: 'Amount of Tokens',
+  dataIndex: 'amount',
+  key: 'amount'
+}, {
+  title: 'Validation State',
+  dataIndex: 'state',
+  key: 'state'
 }]
 
 export default ({
-  yesValidations,
-  noValidations
+  validations
 }) => {
   return (
     <div style={{backgroundColor: '#DDE4E5', marginBottom: 30}}>
-      <Table dataSource={yesValidations} columns={yesColumns} pagination={false} />
-      <Table dataSource={noValidations} columns={noColumns} pagination={false} />
+      <Table dataSource={validations} columns={columns} pagination={false} />
     </div>
   )
 }

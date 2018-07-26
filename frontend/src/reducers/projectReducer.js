@@ -65,9 +65,18 @@ export default function projectReducer (state = initialState, action) {
       project = Object.assign({}, state[currentState][action.projectAddress], {tasks: action.taskDetails})
       projects = Object.assign({}, state[currentState], {[action.projectAddress]: project})
       return Object.assign({}, state, {[currentState]: projects})
+    // called for every task
     case VALIDATIONS_RECEIVED:
-      // let task = Object.assign({}, [action.projectAddress], [action.index], {validations: action.txObj})
-      // return Object.assign({}, action.projectAddress, action.index, {[task]: validations})
+      let task, tasks, validation
+      // action.result.length is the number of validations for this task
+      for (let i = 0; i < action.result.length; i++) {
+        validation = Object.assign([], {[i]: {amount: action.result[i].amount, state: action.result[i].state, user: action.result[i].user}})
+        task = Object.assign({}, state[4][action.projectAddress].tasks[action.index], {validations: validation})
+        tasks = Object.assign([], state[4][action.projectAddress].tasks, {[action.index]: task})
+        project = Object.assign({}, state[4][action.projectAddress], {tasks: tasks})
+        projects = Object.assign({}, state[4], {[action.projectAddress]: project})
+        return Object.assign({}, state, {4: projects})
+      }
       return state
     default:
   }
