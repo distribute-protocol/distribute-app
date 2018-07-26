@@ -17,7 +17,6 @@ module.exports = function () {
     address: RR.ReputationRegistryAddress,
     topics: [web3.sha3('LogRegister(address)')]
   })
-
   registerFilter.watch(async (error, result) => {
     if (error) console.error(error)
     let txHash = result.transactionHash
