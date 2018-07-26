@@ -66,8 +66,9 @@ export default function projectReducer (state = initialState, action) {
       projects = Object.assign({}, state[currentState], {[action.projectAddress]: project})
       return Object.assign({}, state, {[currentState]: projects})
     case VALIDATIONS_RECEIVED:
-      let task = Object.assign({}, [action.projectAddress], [action.index], {validations: action.txObj})
-      return Object.assign({}, action.projectAddress, action.index, {[task]: validations})
+      // let task = Object.assign({}, [action.projectAddress], [action.index], {validations: action.txObj})
+      // return Object.assign({}, action.projectAddress, action.index, {[task]: validations})
+      return state
     default:
   }
   return state

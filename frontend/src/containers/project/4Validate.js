@@ -1,9 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import ValidateComponent from '../../components/project/4Validate'
-import { Button, Table } from 'antd'
+import ValidateTaskComponent from '../../components/task/4Validate'
+import { Button } from 'antd'
 import {eth, pr, web3} from '../../utilities/blockchain'
-import { getTasks, validateTask, getValidations } from '../../actions/taskActions'
+import { getTasks } from '../../actions/taskActions'
 import moment from 'moment'
 
 class ValidateTasks extends React.Component {
@@ -34,13 +35,12 @@ class ValidateTasks extends React.Component {
   }
 
   validateTask (index, validationState) {
-    console.log(validationState)
     this.props.validateTask(this.props.address, index, validationState)
   }
 
-  async getValidations (address, index, validationState) {
-    this.props.getValidations(this.props.address, index, validationState)
-  }
+  // async getValidations (address, index, validationState) {
+  //   this.props.getValidations(this.props.address, index, validationState)
+  // }
 
   checkVoting () {
     eth.getAccounts(async (err, accounts) => {
@@ -53,18 +53,7 @@ class ValidateTasks extends React.Component {
   }
 
   render () {
-    console.log(this.props.tasks)
     let tasks
-    const columns = [{
-      title: 'Yes Validators',
-      dataIndex: 'yesval',
-      key: 'yesval'
-    }, {
-      title: 'No Validators',
-      dataIndex: 'noval',
-      key: 'noval'
-    }]
-    let validations
     let returnInput = (i) => (
       <div>
         <div>
@@ -78,9 +67,10 @@ class ValidateTasks extends React.Component {
             onClick={() => this.validateTask(i, false)} >No</Button>
         </div>
         <div>
-          <div style={{display: 'flex', flexDirection: 'column', backgroundColor: '#FCFCFC', marginTop: 30}}>
-            <Table style={{backgroundColor: '#ffffff'}} dataSource={validations} columns={columns} pagination={false} />
-          </div>
+          <ValidateTaskComponent
+            index={i}
+            address={this.props.address}
+          />
         </div>
       </div>)
     if (typeof this.props.tasks !== 'undefined') {
@@ -122,7 +112,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getTasks: (address, state) => dispatch(getTasks(address, state))
-    getValidations: (address, state) => dispatch(getValidations(address, index, validationState))
   }
 }
 
