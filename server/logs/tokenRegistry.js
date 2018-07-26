@@ -159,6 +159,7 @@ module.exports = function () {
           if (error) console.error(error)
           Task.findOne({project: doc.id, index: taskIndex}).exec((error, taskStatus) => {
             if (error) console.error(error)
+            console.log(taskStatus, validationFee, validator)
             let ValidationEvent = new Validation({
               _id: new mongoose.Types.ObjectId(),
               amount: validationFee,

@@ -56,7 +56,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    getValidations: (address, state) => dispatch(getValidations(address, state))
+    getValidations: (address, index) => dispatch(getValidations(address, index))
   }
 }
 

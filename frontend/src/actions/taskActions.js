@@ -99,12 +99,11 @@ export function tasksReceived (projectAddress, taskDetails, state) {
   }
 }
 
-export function getValidations (projectAddress, index, validationState) {
+export function getValidations (projectAddress, index) {
   return {
     type: GET_VALIDATIONS,
     projectAddress,
-    index,
-    validationState
+    index
   }
 }
 

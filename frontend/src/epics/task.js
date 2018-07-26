@@ -115,13 +115,11 @@ const submitTaskCompleteEpic = action$ => {
 
 const validateTaskEpic = action$ => {
   let address
-  let userAddress
   let index
   let validationState
   return action$.ofType(VALIDATE_TASK).pipe(
     mergeMap(action => {
       address = action.address
-      userAddress = action.txObj.from
       index = action.taskIndex
       validationState = action.validationState
       return Observable.from(tr.validateTask(address, index, validationState, action.txObj))
@@ -135,14 +133,14 @@ const getValidationsEpic = action$ => {
   let index
   return action$.ofType(GET_VALIDATIONS).pipe(
     mergeMap(action => {
-      address = action.address
+      address = action.projectAddress
       index = action.index
+      console.log(action)
       let query = gql`
-      query($address: String!) {
+      query($address: String!, $index: Int!) {
         getValidations(address: $address, index: $index) {
           id,
           amount,
-          task,
           user,
           state,
           address
@@ -151,7 +149,10 @@ const getValidationsEpic = action$ => {
       return client.query({query: query, variables: {address: address, index: index}}
       )
     }),
-    map(result => validationsReceived(address, result.data.getValidations.user, result.data.getValidations.state))
+    map(result =>
+      console.log(result)
+      // validationsReceived(address, result.data.getValidations.user, result.data.getValidations.state)
+    )
   )
 }
 
