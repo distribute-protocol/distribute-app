@@ -13,7 +13,7 @@ class ValidateTasks extends React.Component {
     this.state = {
       tasks: []
     }
-    this.checkVoting = this.checkVoting.bind(this)
+    this.checkVotingStatus = this.checkVotingStatus.bind(this)
   }
 
   componentWillMount () {
@@ -42,14 +42,9 @@ class ValidateTasks extends React.Component {
   //   this.props.getValidations(this.props.address, index, validationState)
   // }
 
-  checkVoting () {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        await pr.checkVoting(this.props.address, {from: accounts[0]}).then((res) => {
-          return res
-        })
-      }
-    })
+  checkVotingStatus () {
+    console.log('1')
+    this.props.checkVotingStatus(this.props.address)
   }
 
   render () {
@@ -97,7 +92,7 @@ class ValidateTasks extends React.Component {
         reputationCost={this.state.reputationCost}
         date={moment(this.state.nextDeadline)}
         tasks={tasks}
-        checkVoting={this.checkVoting}
+        checkVotingStatus={this.checkVotingStatus}
       />
     )
   }

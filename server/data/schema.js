@@ -97,11 +97,13 @@ const typeDefs = `
     claimedAt: String
     claimer: User
     complete: Boolean
+    confirmation: Boolean
     description: String
     id: ID
     index: Int
     hash: String
     project: Project
+    pollNonce: Int
     state: Int
     validationFee: Int
     validations: [Validation]
