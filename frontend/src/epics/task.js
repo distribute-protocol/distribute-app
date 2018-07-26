@@ -121,7 +121,6 @@ const validateTaskEpic = action$ => {
   return action$.ofType(VALIDATE_TASK).pipe(
     mergeMap(action => {
       address = action.address
-      console.log(action)
       userAddress = action.txObj.from
       index = action.taskIndex
       validationState = action.validationState

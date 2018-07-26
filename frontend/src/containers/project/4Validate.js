@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import ValidateComponent from '../../components/project/4Validate'
-import ValidateTaskComponent from '../../components/task/4Validate'
+import ValidateTask from '../task/4Validate'
 import { Button } from 'antd'
 import {eth, pr, web3} from '../../utilities/blockchain'
 import { getTasks } from '../../actions/taskActions'
@@ -67,7 +67,7 @@ class ValidateTasks extends React.Component {
             onClick={() => this.validateTask(i, false)} >No</Button>
         </div>
         <div>
-          <ValidateTaskComponent
+          <ValidateTask
             index={i}
             address={this.props.address}
           />

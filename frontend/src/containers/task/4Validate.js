@@ -1,6 +1,19 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import ValidateTaskComponent from '../../components/task/4Validate'
+import { getValidations } from '../../actions/taskActions'
+import gql from 'graphql-tag'
+
+let validationQuery = gql`
+  { taskValidations {
+    id,
+    amount,
+    state,
+    task,
+    user,
+    address
+  }
+}`
 
 class ValidateTasks extends React.Component {
   constructor () {
@@ -10,6 +23,7 @@ class ValidateTasks extends React.Component {
   }
 
   componentWillMount () {
+    // this.getValidations(this)
   }
 
   render () {

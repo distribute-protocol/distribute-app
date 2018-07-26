@@ -7,7 +7,7 @@ import { push } from 'react-router-redux'
 import { connect } from 'react-redux'
 import { eth } from '../utilities/blockchain'
 import { getProjects } from '../actions/projectActions'
-import { validateTask, getValidations } from '../actions/taskActions'
+import { validateTask } from '../actions/taskActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -32,17 +32,6 @@ let projQuery = gql`
     }
   }`
 
-let validationQuery = gql`
-  { taskValidations {
-    id,
-    amount,
-    state,
-    taskId,
-    userid,
-    address
-  }
-}`
-
 class Validate extends React.Component {
   constructor () {
     super()
@@ -51,7 +40,6 @@ class Validate extends React.Component {
     }
     this.fastForward = this.fastForward.bind(this)
     this.validateTask = this.validateTask.bind(this)
-    this.getValidations = this.getValidations.bind(this)
   }
 
   componentWillMount () {
@@ -76,10 +64,6 @@ class Validate extends React.Component {
         }
       }
     })
-  }
-
-  async getValidations () {
-    this.props.getValidations(this.props.address)
   }
 
   async fastForward () {
@@ -128,8 +112,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
     getProjects: () => dispatch(getProjects(4, projQuery)),
-    validateTask: (address, taskIndex, status, txObj) => dispatch(validateTask(address, taskIndex, status, txObj)),
-    getValidations: () => dispatch(getValidations(validationQuery))
+    validateTask: (address, taskIndex, status, txObj) => dispatch(validateTask(address, taskIndex, status, txObj))
   }
 }
 
