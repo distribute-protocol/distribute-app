@@ -72,45 +72,45 @@ module.exports = function () {
                 netStatus.save((err, returned) => {
                   if (err) throw Error
                 })
+                Project.findOne({address: projectAddress}).exec((error, doc) => {
+                  if (error) console.error(error)
+                  if (!doc) {
+                    doc = new Project({
+                      _id: new mongoose.Types.ObjectId(),
+                      activeStatePeriod,
+                      address: projectAddress,
+                      ipfsHash,
+                      listSubmitted: false,
+                      location: dataObj.location,
+                      name: dataObj.name,
+                      nextDeadline,
+                      passThreshold,
+                      photo: dataObj.photo,
+                      prelimTaskLists: [],
+                      proposer,
+                      proposerType,
+                      reputationBalance: 0,
+                      reputationCost,
+                      stakedStatePeriod,
+                      state,
+                      summary: dataObj.summary,
+                      taskList: [],
+                      turnoverTime,
+                      tokenBalance: 0,
+                      validateStatePeriod,
+                      voteCommitPeriod,
+                      voteRevealPeriod,
+                      weiBal: 0,
+                      weiCost
+                    })
+                    doc.save((error, saved) => {
+                      if (error) console.error(error)
+                      console.log('project details updated')
+                      projectDetailsFilter.stopWatching()
+                    })
+                  }
+                })
               }
-              Project.findOne({address: projectAddress}).exec((error, doc) => {
-                if (error) console.error(error)
-                if (!doc) {
-                  doc = new Project({
-                    _id: new mongoose.Types.ObjectId(),
-                    activeStatePeriod,
-                    address: projectAddress,
-                    ipfsHash,
-                    listSubmitted: false,
-                    location: dataObj.location,
-                    name: dataObj.name,
-                    nextDeadline,
-                    passThreshold,
-                    photo: dataObj.photo,
-                    prelimTaskLists: [],
-                    proposer,
-                    proposerType,
-                    reputationBalance: 0,
-                    reputationCost,
-                    stakedStatePeriod,
-                    state,
-                    summary: dataObj.summary,
-                    taskList: [],
-                    turnoverTime,
-                    tokenBalance: 0,
-                    validateStatePeriod,
-                    voteCommitPeriod,
-                    voteRevealPeriod,
-                    weiBal: 0,
-                    weiCost
-                  })
-                  doc.save((error, saved) => {
-                    if (error) console.error(error)
-                    console.log('project details updated')
-                    projectDetailsFilter.stopWatching()
-                  })
-                }
-              })
             })
           })
         })
