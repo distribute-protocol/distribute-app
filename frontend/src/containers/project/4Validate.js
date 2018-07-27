@@ -73,7 +73,7 @@ class ValidateTasks extends React.Component {
         return {
           key: i,
           description: task.description,
-          ethReward: `${web3.fromWei(task.weiReward, 'ether')} ETH`,
+          ethReward: `${web3.fromWei(this.props.project.weiCost) * (task.weighting / 100)} ETH`,
           input: returnInput(i)
         }
       })
