@@ -63,7 +63,12 @@ export default function projectReducer (state = initialState, action) {
       return Object.assign({}, state, {3: projects})
     case TASKS_RECEIVED:
       let currentState = action.state
-      project = Object.assign({}, state[currentState][action.projectAddress], {tasks: action.taskDetails})
+      let taskDetails = action.taskDetails.slice(0)
+      console.log(taskDetails)
+      let sortedTasks = taskDetails.sort(function (a, b) {
+        return a.index - b.index
+      })
+      project = Object.assign({}, state[currentState][action.projectAddress], {tasks: sortedTasks})
       projects = Object.assign({}, state[currentState], {[action.projectAddress]: project})
       return Object.assign({}, state, {[currentState]: projects})
     // called for every task

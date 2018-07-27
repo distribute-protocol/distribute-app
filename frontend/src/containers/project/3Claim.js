@@ -108,10 +108,10 @@ class ClaimProject extends React.Component {
           repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' && typeof weiReward !== 'undefined' ? `${Math.floor(reputationCost * weiReward / weiCost)} rep` : '',
           buttons: <ButtonGroup>
             <Button
-              disabled={!this.props.project.listSubmitted || this.props.tasks[i].claimed}
+              disabled={!this.props.project.listSubmitted || sortedTasks[i].claimed}
               type='danger' onClick={() => this.claimTask(i)}>Claim</Button>
             <Button
-              disabled={!this.props.project.listSubmitted || !this.props.tasks[i].claimed || (this.props.tasks[i].claimed && this.props.tasks[i].complete)
+              disabled={!this.props.project.listSubmitted || !sortedTasks[i].claimed || (sortedTasks[i].claimed && sortedTasks[i].complete)
                 // !(!this.props.project.listSubmitted || (!this.props.tasks[i].claimed && this.props.tasks[i].complete))
               }
               type='danger' onClick={() => this.submitTaskComplete(i)}>Task Complete</Button>
