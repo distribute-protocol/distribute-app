@@ -52,6 +52,7 @@ const claimTaskEpic = action$ => {
   let index
   return action$.ofType(CLAIM_TASK).pipe(
     mergeMap(action => {
+      console.log(action)
       address = action.address
       txObj = action.txObj
       index = action.index

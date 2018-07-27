@@ -7,6 +7,7 @@ const Task = require('../models/task')
 const Network = require('../models/network')
 
 module.exports = function () {
+  // filter for tasks passing, no vote needed
   const taskPassedFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
@@ -23,6 +24,7 @@ module.exports = function () {
     let projectAddress = eventParamArr[1]
     projectAddress = '0x' + projectAddress.substr(-40)
     let confirmation = eventParamArr[2]
+    console.log('should be true', confirmation)
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
@@ -31,27 +33,30 @@ module.exports = function () {
         netStatus.save((err, returned) => {
           if (err) throw Error
         })
+        Project.findOne({address: taskAddress}).exec((err, doc) => {
+          if (err) console.error(err)
+          if (doc) {
+            doc.state = 5
+            doc.save(err => {
+              if (err) console.error(err)
+              console.log('project in voting stage')
+            })
+            Task.findOne({address: taskAddress}).exec((err, task) => {
+              if (err) console.error(err)
+              task.confirmation = confirmation
+              task.workerRewardClaimable = confirmation
+              task.validationRewardClaimable = true
+              task.save(err => {
+                if (err) console.error(err)
+                console.log('task passed')
+              })
+            })
+          }
+        })
       }
-      Project.findOne({address: taskAddress}).exec((err, doc) => {
-        if (err) console.error(err)
-        doc.state = 5
-        doc.save(err => {
-          if (err) console.error(err)
-          console.log('project in voting stage')
-        })
-        Task.findOne({address: taskAddress}).exec((err, task) => {
-          if (err) console.error(err)
-          task.confirmation = confirmation
-          task.workerRewardClaimable = confirmation
-          task.validationRewardClaimable = true
-          task.save(err => {
-            if (err) console.error(err)
-            console.log('task passed')
-          })
-        })
-      })
     })
   })
+  // filter for tasks failing, no vote needed
   const taskFailedFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
@@ -68,6 +73,7 @@ module.exports = function () {
     let projectAddress = eventParamArr[1]
     projectAddress = '0x' + projectAddress.substr(-40)
     let confirmation = eventParamArr[2]
+    console.log('should be false', confirmation)
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
@@ -76,23 +82,26 @@ module.exports = function () {
         netStatus.save((err, returned) => {
           if (err) throw Error
         })
+        Project.findOne({address: projectAddress}).exec((err, doc) => {
+          if (err) console.error(err)
+          doc.state = 5
+          doc.save(err => {
+            if (err) console.error(err)
+            console.log('project in voting stage')
+          })
+        })
+        Task.findOne({address: taskAddress}).exec((err, task) => {
+          if (err) console.error(err)
+          task.confirmation = confirmation
+          task.workerRewardClaimable = confirmation
+          task.validationRewardClaimable = true
+          task.save(err => {
+            if (err) console.error(err)
+            console.log('task failed')
+          })
+        })
       }
-      Project.findOne({address: projectAddress}).exec((err, doc) => {
-        doc.state = 5
-        doc.save(err => {
-          if (err) console.error(error)
-          console.log('project in voting stage')
-        })
-      })
-      Task.findOne({address: taskAddress}).exec((err, task) => {
-        task.confirmation = confirmation
-        task.workerRewardClaimable = confirmation
-        task.validationRewardClaimable = true
-        task.save(err => {
-          if (err) console.error(error)
-          console.log('task failed')
-        })
-      })
+    })
   })
   const taskVoteFilter = web3.eth.filter({
     fromBlock: 0,
@@ -118,24 +127,24 @@ module.exports = function () {
         netStatus.save((err, returned) => {
           if (err) throw Error
         })
-      }
-      Project.findOne({address: taskAddress}).exec((err, doc) => {
-        if (err) console.error(err)
-        doc.state = 5
-        doc.save(err => {
+        Project.findOne({address: taskAddress}).exec((err, doc) => {
           if (err) console.error(err)
-          console.log('project in voting stage')
-        })
-        Task.findOne({address: taskAddress}).exec((err, task) => {
-          if (err) console.error(err)
-          task.state = 5
-          task.pollNonce = pollNonce
-          task.save(err => {
+          doc.state = 5
+          doc.save(err => {
             if (err) console.error(err)
-            console.log('task uncomfirmed, poll created')
+            console.log('project in voting stage')
+          })
+          Task.findOne({address: taskAddress}).exec((err, task) => {
+            if (err) console.error(err)
+            task.state = 5
+            task.pollNonce = pollNonce
+            task.save(err => {
+              if (err) console.error(err)
+              console.log('task uncomfirmed, poll created')
+            })
           })
         })
-      })
+      }
     })
   })
 }

@@ -148,11 +148,13 @@ module.exports = function () {
         netStatus.markModified('processedTxs')
         // subtract tokens from user balance
         User.findOne({account: validator}).exec((err, userStatus) => {
-          if (err) console.error(err)
-          userStatus.tokenBalance -= validationFee
-          userStatus.save(err => {
+          if (userStatus) {
             if (err) console.error(err)
-          })
+            userStatus.tokenBalance -= validationFee
+            userStatus.save(err => {
+              if (err) console.error(err)
+            })
+          }
         })
         // create validation entry
         Project.findOne({address: projectAddress}).exec((error, doc) => {
