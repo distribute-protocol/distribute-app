@@ -183,21 +183,22 @@ module.exports = function () {
         netStatus.save((err, returned) => {
           if (err) throw Error
         })
-      }
-      Project.findOne({address: projectAddress}).exec((error, doc) => {
-        if (error) console.error(error)
-        PrelimTaskList.findOne({submitter: submitter}).exec((error, prelimTaskList) => {
+        Project.findOne({address: projectAddress}).exec((error, doc) => {
           if (error) console.error(error)
-          if (prelimTaskList !== null && prelimTaskList.hash === taskHash) {
-            prelimTaskList.verified = true
-            prelimTaskList.weighting = weighting
-            prelimTaskList.save(error => {
-              if (error) console.error(error)
-              console.log('prelim task list submitted')
-            })
-          }
+          PrelimTaskList.findOne({submitter: submitter}).exec((error, prelimTaskList) => {
+            if (error) console.error(error)
+            if (prelimTaskList !== null && prelimTaskList.hash === taskHash) {
+              console.log(prelimTaskList)
+              prelimTaskList.verified = true
+              prelimTaskList.weighting = weighting
+              prelimTaskList.save(error => {
+                if (error) console.error(error)
+                console.log('prelim task list submitted')
+              })
+            }
+          })
         })
-      })
+      }
     })
   })
   // filter for active projects
@@ -224,26 +225,26 @@ module.exports = function () {
         netStatus.save((err, returned) => {
           if (err) throw Error
         })
-      }
-      if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
-        PrelimTaskList.findOne({address: projectAddress, hash: topTaskHash}).exec((error, prelimTaskList) => {
-          if (error) console.error(error)
-          if (prelimTaskList !== null) {
-            Project.findOne({address: projectAddress}).exec((error, project) => {
-              if (error) console.error(error)
-              if (project) {
-                project.state = 3
-                project.topTaskHash = topTaskHash
-                project.taskList = prelimTaskList.content
-                console.log('final tasks:', project.taskList)
-                project.save(err => {
-                  if (err) console.error(error)
-                  console.log('active project with topTaskHash')
-                })
-              }
-            })
-          }
-        })
+        if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
+          PrelimTaskList.findOne({address: projectAddress, hash: topTaskHash}).exec((error, prelimTaskList) => {
+            if (error) console.error(error)
+            if (prelimTaskList !== null) {
+              Project.findOne({address: projectAddress}).exec((error, project) => {
+                if (error) console.error(error)
+                if (project) {
+                  project.state = 3
+                  project.topTaskHash = topTaskHash
+                  project.taskList = prelimTaskList.content
+                  console.log('final tasks:', project.taskList)
+                  project.save(err => {
+                    if (err) console.error(error)
+                    console.log('active project with topTaskHash')
+                  })
+                }
+              })
+            }
+          })
+        }
       }
     })
   })

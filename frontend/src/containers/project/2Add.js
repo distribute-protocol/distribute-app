@@ -102,6 +102,7 @@ class AddProject extends React.Component {
   }
 
   render () {
+    console.log(this.props.project)
     let tasks, verifiedSubmissions
     if (this.props.taskList !== null && this.props.taskList.length !== 0) {
       tasks = JSON.parse(this.props.taskList).map((task, i) => {
@@ -109,7 +110,7 @@ class AddProject extends React.Component {
           key: i,
           description: task.description,
           percentage: task.percentage,
-          ethReward: web3.fromWei(this.state.weiCost * (task.percentage / 100), 'ether'),
+          ethReward: web3.fromWei(this.props.project.weiCost * (task.percentage / 100), 'ether'),
           deleteTask: <Button type='danger' onClick={() => this.deleteElement(i)} >Delete</Button>
         }
       })
