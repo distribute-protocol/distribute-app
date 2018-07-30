@@ -43,7 +43,6 @@ class ValidateTasks extends React.Component {
   // }
 
   checkVotingStatus () {
-    console.log('1')
     this.props.checkVotingStatus(this.props.address)
   }
 

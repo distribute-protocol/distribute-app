@@ -44,7 +44,7 @@ module.exports = function () {
             let StakeEvent = new Stake({
               _id: new mongoose.Types.ObjectId(),
               amount: tokensStaked,
-              projectId: doc.id,
+              project: doc.id,
               type: 'token',
               userId: userStatus.id
             })
@@ -161,7 +161,6 @@ module.exports = function () {
           if (error) console.error(error)
           Task.findOne({project: doc.id, index: taskIndex}).exec((error, taskStatus) => {
             if (error) console.error(error)
-            console.log('VALIDATE', taskStatus, validationFee, validator)
             let ValidationEvent = new Validation({
               _id: new mongoose.Types.ObjectId(),
               amount: validationFee,

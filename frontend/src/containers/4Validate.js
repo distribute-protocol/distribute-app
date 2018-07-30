@@ -57,7 +57,6 @@ class Validate extends React.Component {
 
   async checkVotingStatus (address) {
     eth.getAccounts(async (err, accounts) => {
-      console.log('2', accounts)
       if (!err) {
         this.props.checkVotingStatus(address, {from: accounts[0]})
       }

@@ -95,7 +95,7 @@ module.exports = function () {
                   weiBal: 0,
                   weiCost
                 })
-                doc.save((error, saved) => {
+                doc.save(error => {
                   if (error) console.error(error)
                   console.log('project details updated')
                   projectDetailsFilter.stopWatching()
@@ -423,6 +423,7 @@ module.exports = function () {
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
     let flag = eventParamArr[1]
+    console.log(projectAddress, flag)
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
