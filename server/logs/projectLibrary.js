@@ -102,7 +102,7 @@ module.exports = function () {
             task.pollNonce = pollNonce
             task.save(err => {
               if (err) console.error(err)
-              console.log('task uncomfirmed, poll created')
+              console.log('task completion uncomfirmed, poll created')
             })
           })
         })
