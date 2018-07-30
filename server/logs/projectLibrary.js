@@ -33,7 +33,7 @@ module.exports = function () {
         netStatus.save((err, returned) => {
           if (err) throw Error
         })
-        Project.findOne({address: taskAddress}).exec((err, doc) => {
+        Project.findOne({address: projectAddress}).exec((err, doc) => {
           if (err) console.error(err)
           if (doc) {
             doc.state = 5
@@ -127,7 +127,7 @@ module.exports = function () {
         netStatus.save((err, returned) => {
           if (err) throw Error
         })
-        Project.findOne({address: taskAddress}).exec((err, doc) => {
+        Project.findOne({address: projectAddress}).exec((err, doc) => {
           if (err) console.error(err)
           doc.state = 5
           doc.save(err => {
