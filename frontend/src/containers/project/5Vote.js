@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import VoteComponent from '../../components/project/5Vote'
 import { Button } from 'antd'
 import {eth, pr, tr, rr, web3, P, T} from '../../utilities/blockchain'
+import { getTasks } from '../../actions/taskActions'
 import { voteCommitted, voteRevealed } from '../../actions/pollActions'
 import moment from 'moment'
 import { utils } from 'ethers'
@@ -20,22 +21,28 @@ class VoteTasks extends React.Component {
 
   componentWillMount () {
     this.getProjectStatus()
-    this.props.project.taskList.map(async (task, i) => {
-      let claimable, claimableByRep
-      let p = await P.at(this.props.address)
-      let index = await p.tasks(i)
-      let t = T.at(index)
-      claimable = await t.claimable()
-      claimableByRep = await t.claimableByRep()
-      let stateTasks = this.state.tasks
-      stateTasks[i] = {claimable, claimableByRep}
-      this.setState({tasks: stateTasks})
-    })
+    this.getTasks()
+    // this.getProjectStatus()
+    // this.props.project.taskList.map(async (task, i) => {
+    //   let claimable, claimableByRep
+    //   let p = await P.at(this.props.address)
+    //   let index = await p.tasks(i)
+    //   let t = T.at(index)
+    //   claimable = await t.claimable()
+    //   claimableByRep = await t.claimableByRep()
+    //   let stateTasks = this.state.tasks
+    //   stateTasks[i] = {claimable, claimableByRep}
+    //   this.setState({tasks: stateTasks})
+    // })
   }
 
   // let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
   async getProjectStatus () {
     this.setState(this.props.project)
+  }
+
+  async getTasks () {
+    this.props.getTasks(this.props.address, 5)
   }
 
   onChange (e) {
@@ -334,7 +341,7 @@ class VoteTasks extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    project: state.projects.allProjects[ownProps.address],
+    project: state.projects[5][ownProps.address],
     users: state.polls.allUsers
   }
 }
@@ -342,7 +349,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     voteCommitted: (voteDetails) => dispatch(voteCommitted(voteDetails)),
-    voteRevealed: (voteDetails) => dispatch(voteCommitted(voteDetails))
+    voteRevealed: (voteDetails) => dispatch(voteCommitted(voteDetails)),
+    getTasks: (address, state) => dispatch(getTasks(address, state))
   }
 }
 

@@ -10,9 +10,6 @@ import moment from 'moment'
 class ValidateTasks extends React.Component {
   constructor () {
     super()
-    this.state = {
-      tasks: []
-    }
     this.checkVotingStatus = this.checkVotingStatus.bind(this)
   }
 
