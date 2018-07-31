@@ -90,7 +90,9 @@ const getTasksEpic = action$ => {
           description,
           index,
           hash,
-          weighting
+          weighting,
+          validationRewardClaimable,
+          workerRewardClaimable
         }
       }`
       return client.query({query: query, variables: {address: address}}

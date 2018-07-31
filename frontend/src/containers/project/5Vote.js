@@ -227,11 +227,11 @@ class VoteTasks extends React.Component {
 
   render () {
     let tasks
-    if (typeof this.props.project.taskList !== 'undefined') {
-      let rewardVal, rewardWork, needsVote
-      tasks = this.state.tasks.map((task, i) => {
-        if (this.state.tasks[i].claimable) {
-          if (this.state.tasks[i].claimableByRep) {
+    if (typeof this.props.tasks !== 'undefined') {
+      tasks = this.props.tasks.map((task, i) => {
+        let rewardVal, rewardWork, needsVote
+        if (this.props.tasks[i].validationRewardClaimable) {
+          if (this.props.tasks[i].workerRewardClaimable) {
             // validators and workers can claim
             rewardVal =
               <div>
@@ -311,8 +311,8 @@ class VoteTasks extends React.Component {
 
         return {
           key: i,
-          description: this.props.project.taskList[i].description,
-          ethReward: `${web3.fromWei(this.props.project.taskList[i].weiReward, 'ether')} ETH`,
+          description: task.description,
+          ethReward: `${web3.fromWei(this.props.project.weiCost) * (task.weighting / 100)} ETH`,
           rewardValidator: rewardVal,
           rewardWorker: rewardWork,
           taskNeedsVote: needsVote
@@ -342,6 +342,7 @@ class VoteTasks extends React.Component {
 const mapStateToProps = (state, ownProps) => {
   return {
     project: state.projects[5][ownProps.address],
+    tasks: state.projects[5][ownProps.address].tasks,
     users: state.polls.allUsers
   }
 }
