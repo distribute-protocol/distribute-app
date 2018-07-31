@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import VoteComponent from '../../components/project/5Vote'
-import { Button } from 'antd'
+import { Button, Icon } from 'antd'
 import {eth, pr, tr, rr, web3, P, T} from '../../utilities/blockchain'
 import { getTasks } from '../../actions/taskActions'
 import { voteCommitted, voteRevealed } from '../../actions/pollActions'
@@ -243,7 +243,7 @@ class VoteTasks extends React.Component {
                 <Button
                   type='danger' onClick={() => this.rewardTask(i)}> Reward Task </Button>
               </div>
-            needsVote = <div />
+            needsVote = <Icon type='close' />
           } else {
             // validators can claim, task fails
             rewardVal =
@@ -252,7 +252,7 @@ class VoteTasks extends React.Component {
                   type='danger' onClick={() => this.rewardValidator(i)}> Reward No Validator </Button>
               </div>
             rewardWork = <div>ineligible</div>
-            needsVote = <div />
+            needsVote = <Icon type='close' />
           }
         } else {
           // vote needs to happen
