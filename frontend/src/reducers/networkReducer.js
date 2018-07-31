@@ -9,7 +9,7 @@ const initialState = {
   userReputation: 0
 }
 
-export default function generalReducer (state = initialState, action) {
+export default function networkReducer (state = initialState, action) {
   switch (action.type) {
     case NETWORK_STATUS_RECEIVED:
       if (!action.responseDetails.data.network) {

@@ -64,7 +64,6 @@ export default function projectReducer (state = initialState, action) {
     case TASKS_RECEIVED:
       let currentState = action.state
       let taskDetails = action.taskDetails.slice(0)
-      console.log(taskDetails)
       let sortedTasks = taskDetails.sort(function (a, b) {
         return a.index - b.index
       })
@@ -75,15 +74,15 @@ export default function projectReducer (state = initialState, action) {
     case VALIDATIONS_RECEIVED:
       let task, tasks, validation
       // action.result.length is the number of validations for this task
+      validation = []
       for (let i = 0; i < action.result.length; i++) {
-        validation = Object.assign([], {[i]: {amount: action.result[i].amount, state: action.result[i].state, user: action.result[i].user}})
-        task = Object.assign({}, state[4][action.projectAddress].tasks[action.index], {validations: validation})
-        tasks = Object.assign([], state[4][action.projectAddress].tasks, {[action.index]: task})
-        project = Object.assign({}, state[4][action.projectAddress], {tasks: tasks})
-        projects = Object.assign({}, state[4], {[action.projectAddress]: project})
-        return Object.assign({}, state, {4: projects})
+        validation = Object.assign(validation, {[i]: {amount: action.result[i].amount, state: action.result[i].state, user: action.result[i].user}})
       }
-      return state
+      task = Object.assign({}, state[4][action.projectAddress].tasks[action.index], {validations: validation})
+      tasks = Object.assign([], state[4][action.projectAddress].tasks, {[action.index]: task})
+      project = Object.assign({}, state[4][action.projectAddress], {tasks: tasks})
+      projects = Object.assign({}, state[4], {[action.projectAddress]: project})
+      return Object.assign({}, state, {4: projects})
     default:
   }
   return state
