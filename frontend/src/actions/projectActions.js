@@ -19,7 +19,9 @@ import {
   GET_VERIFIED_TASK_LISTS,
   VERIFIED_TASK_LISTS_RECEIVED,
   CHECK_VALIDATE_STATUS,
-  VALIDATE_STATUS_CHECKED
+  VALIDATE_STATUS_CHECKED,
+  CHECK_VOTING_STATUS,
+  VOTING_STATUS_CHECKED
 } from '../constants/ProjectActionTypes'
 
 export function proposeProject (collateralType, projObj, txObj) {
@@ -190,6 +192,21 @@ export function checkValidateStatus (projectAddress, txObj) {
 export function validateStatusChecked (receipt) {
   return {
     type: VALIDATE_STATUS_CHECKED,
+    receipt
+  }
+}
+
+export function checkVotingStatus (projectAddress, txObj) {
+  return {
+    type: CHECK_VOTING_STATUS,
+    projectAddress,
+    txObj
+  }
+}
+
+export function votingStatusChecked (receipt) {
+  return {
+    type: VOTING_STATUS_CHECKED,
     receipt
   }
 }

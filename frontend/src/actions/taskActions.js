@@ -3,11 +3,14 @@ import {
   FINAL_TASK_LIST_SUBMITTED,
   CLAIM_TASK,
   TASK_CLAIMED,
+  VALIDATE_TASK,
   TASK_VALIDATED,
   SUBMIT_TASK_COMPLETE,
   TASK_COMPLETED,
   GET_TASKS,
-  TASKS_RECEIVED
+  TASKS_RECEIVED,
+  GET_VALIDATIONS,
+  VALIDATIONS_RECEIVED
 } from '../constants/TaskActionTypes'
 // task actions start at submitFinalTaskList because task contract initialized in this action
 
@@ -44,10 +47,22 @@ export function taskClaimed (address, index) {
   }
 }
 
-export function taskValidated (validationDetails) {
+export function validateTask (address, taskIndex, validationState, txObj) {
+  return {
+    type: VALIDATE_TASK,
+    address,
+    taskIndex,
+    validationState,
+    txObj
+  }
+}
+
+export function taskValidated (address, taskIndex, validationState) {
   return {
     type: TASK_VALIDATED,
-    validationDetails
+    address,
+    taskIndex,
+    validationState
   }
 }
 
@@ -81,5 +96,22 @@ export function tasksReceived (projectAddress, taskDetails, state) {
     projectAddress,
     taskDetails,
     state
+  }
+}
+
+export function getValidations (projectAddress, index) {
+  return {
+    type: GET_VALIDATIONS,
+    projectAddress,
+    index
+  }
+}
+
+export function validationsReceived (projectAddress, index, result) {
+  return {
+    type: VALIDATIONS_RECEIVED,
+    projectAddress,
+    index,
+    result
   }
 }

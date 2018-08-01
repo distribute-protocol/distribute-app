@@ -55,8 +55,7 @@ const resolvers = {
     votes: (user) => Vote.find({userId: user.id}).then(votes => votes)
   },
   Validation: {
-    task: (validation) => Task.findById(validation.taskId).then(task => task),
-    user: (validation) => User.findById(validation.userId).then(user => user)
+    task: (validation) => Task.findById(validation.taskId).then(task => task)
   },
   Vote: {
     task: (vote) => Task.findById(vote.taskId).then(vote => vote),
@@ -82,12 +81,13 @@ const resolvers = {
     projectTasks: (_, args) => Project.findOne({address: args.address}).then(project => Task.find({project: project.id})).then(tasks => tasks),
     verifiedPrelimTaskLists: (_, args) => PrelimTaskList.find({address: args.address, verified: true}).then(prelimTaskLists => prelimTaskLists),
     userPrelimTaskLists: (_, args) => PrelimTaskList.findOne({submitter: args.account}).then(prelimTaskLists => prelimTaskLists),
-    taskValidations: (address) => [{}],
+    taskValidations: (_, args) => Project.findOne({address: args.address}).then(project => Task.find({project: project.id}).then(task => Validation.find({task: task.id})).then(validations => validations)),
     userVotes: (account) => [{}],
     taskVotes: (address) => [{}],
     findFinalTaskHash: (_, args) => PrelimTaskList.findOne({hash: args.topTaskHash, address: args.address}).then(prelimTaskList => prelimTaskList),
     findTaskByIndex: (_, args) => Project.findOne({address: args.address}).then(project => Task.findOne({project: project.id, index: args.index})).then(task => task),
-    allTasksinProject: (_, args) => Project.findOne({address: args.address}).then(project => Task.find({project: project.id})).then(tasks => tasks)
+    allTasksinProject: (_, args) => Project.findOne({address: args.address}).then(project => Task.find({project: project.id})).then(tasks => tasks),
+    getValidations: (_, args) => Project.findOne({address: args.address}).then(project => Task.findOne({project: project.id, index: args.index})).then(task => Validation.find({task: task.id})).then(validations => validations)
   },
   Mutation: {
     addUser: (obj, args) => {
@@ -99,7 +99,8 @@ const resolvers = {
         name: args.input.name,
         tokenBalance: 0,
         reputationBalance: 0,
-        tasks: []
+        tasks: [],
+        validations: []
       })
       userObj.save((err, user) => {
         assert.equal(err, null)

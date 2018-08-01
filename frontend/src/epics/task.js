@@ -1,11 +1,10 @@
-import { SUBMIT_FINAL_TASK_LIST, CLAIM_TASK, GET_TASKS, SUBMIT_TASK_COMPLETE } from '../constants/TaskActionTypes'
-import { finalTaskListSubmitted, taskClaimed, tasksReceived, taskCompleted } from '../actions/taskActions'
-import { map, mergeMap } from 'rxjs/operators'
+import { SUBMIT_FINAL_TASK_LIST, CLAIM_TASK, GET_TASKS, SUBMIT_TASK_COMPLETE, VALIDATE_TASK, GET_VALIDATIONS } from '../constants/TaskActionTypes'
+import { finalTaskListSubmitted, taskClaimed, tasksReceived, taskCompleted, taskValidated, validationsReceived } from '../actions/taskActions'
+import { map, mergeMap, concatMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
-import { push } from 'react-router-redux'
 import { client } from '../index'
 import { merge } from 'rxjs/observable/merge'
-import { rr, pr } from '../utilities/blockchain'
+import { tr, rr, pr } from '../utilities/blockchain'
 import { hashTasks } from '../utilities/hashing'
 import gql from 'graphql-tag'
 
@@ -53,6 +52,7 @@ const claimTaskEpic = action$ => {
   let index
   return action$.ofType(CLAIM_TASK).pipe(
     mergeMap(action => {
+      console.log(action)
       address = action.address
       txObj = action.txObj
       index = action.index
@@ -90,7 +90,9 @@ const getTasksEpic = action$ => {
           description,
           index,
           hash,
-          weighting
+          weighting,
+          validationRewardClaimable,
+          workerRewardClaimable
         }
       }`
       return client.query({query: query, variables: {address: address}}
@@ -113,9 +115,52 @@ const submitTaskCompleteEpic = action$ => {
   )
 }
 
+const validateTaskEpic = action$ => {
+  let address
+  let index
+  let validationState
+  return action$.ofType(VALIDATE_TASK).pipe(
+    mergeMap(action => {
+      address = action.address
+      index = action.taskIndex
+      validationState = action.validationState
+      return Observable.from(tr.validateTask(address, index, validationState, action.txObj))
+    }),
+    map(result => taskValidated(address, index, validationState))
+  )
+}
+
+const getValidationsEpic = action$ => {
+  let address
+  let index
+  return action$.ofType(GET_VALIDATIONS).pipe(
+    concatMap(action => {
+      address = action.projectAddress
+      index = action.index
+      let query = gql`
+      query($address: String!, $index: Int!) {
+        getValidations(address: $address, index: $index) {
+          id,
+          amount,
+          user,
+          state,
+          address
+        }
+      }`
+      return client.query({query: query, variables: {address: address, index: index}}
+      )
+    }),
+    map(result =>
+      validationsReceived(address, index, result.data.getValidations)
+    )
+  )
+}
+
 export default (action$, store) => merge(
   submitFinalTaskListEpic(action$, store),
   claimTaskEpic(action$, store),
   getTasksEpic(action$, store),
-  submitTaskCompleteEpic(action$, store)
+  submitTaskCompleteEpic(action$, store),
+  validateTaskEpic(action$, store),
+  getValidationsEpic(action$, store)
 )

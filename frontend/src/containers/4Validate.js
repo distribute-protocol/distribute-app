@@ -6,7 +6,8 @@ import fastforward from '../utilities/fastforward'
 import { push } from 'react-router-redux'
 import { connect } from 'react-redux'
 import { eth } from '../utilities/blockchain'
-import { getProjects } from '../actions/projectActions'
+import { getProjects, checkVotingStatus } from '../actions/projectActions'
+import { validateTask } from '../actions/taskActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -38,10 +39,28 @@ class Validate extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
+    this.validateTask = this.validateTask.bind(this)
+    this.checkVotingStatus = this.checkVotingStatus.bind(this)
   }
 
   componentWillMount () {
     this.getProjects()
+  }
+
+  async validateTask (address, index, status) {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        this.props.validateTask(address, index, status, {from: accounts[0]})
+      }
+    })
+  }
+
+  async checkVotingStatus (address) {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        this.props.checkVotingStatus(address, {from: accounts[0]})
+      }
+    })
   }
 
   async getProjects () {
@@ -68,6 +87,8 @@ class Validate extends React.Component {
           index={i}
           address={address}
           project={this.props.projects[address]}
+          validateTask={this.validateTask}
+          checkVotingStatus={this.checkVotingStatus}
         />
       })
       : []
@@ -100,7 +121,9 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
-    getProjects: () => dispatch(getProjects(4, projQuery))
+    getProjects: () => dispatch(getProjects(4, projQuery)),
+    validateTask: (address, taskIndex, status, txObj) => dispatch(validateTask(address, taskIndex, status, txObj)),
+    checkVotingStatus: (address, txObj) => dispatch(checkVotingStatus(address, txObj))
   }
 }
 

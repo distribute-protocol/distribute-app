@@ -1,18 +1,16 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import ValidateComponent from '../../components/project/4Validate'
+import ValidateTask from '../task/4Validate'
 import { Button } from 'antd'
-import {eth, pr, tr, web3, P} from '../../utilities/blockchain'
-import { taskValidated, getTasks } from '../../actions/taskActions'
+import {eth, pr, web3} from '../../utilities/blockchain'
+import { getTasks } from '../../actions/taskActions'
 import moment from 'moment'
 
 class ValidateTasks extends React.Component {
   constructor () {
     super()
-    this.state = {
-      tasks: []
-    }
-    this.checkVoting = this.checkVoting.bind(this)
+    this.checkVotingStatus = this.checkVotingStatus.bind(this)
   }
 
   componentWillMount () {
@@ -33,31 +31,16 @@ class ValidateTasks extends React.Component {
     this.setState({[e.target.name]: e.target.value})
   }
 
-  validateTask (val, index, status) {
-    let validator
-    let valStatus = status
-    eth.getAccounts(async (err, accounts) => {
-      validator = accounts[0]
-      if (!err) {
-        if (accounts.length) {
-          await tr.validateTask(this.props.address, index, val, status, {from: accounts[0]})
-            .then(async () => {
-              this.setState({['val' + index]: ''})
-              this.props.taskValidated({ address: this.props.address, validator: validator, index: index, status: valStatus })
-            })
-        }
-      }
-    })
+  validateTask (index, validationState) {
+    this.props.validateTask(this.props.address, index, validationState)
   }
 
-  checkVoting () {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        await pr.checkVoting(this.props.address, {from: accounts[0]}).then((res) => {
-          return res
-        })
-      }
-    })
+  // async getValidations (address, index, validationState) {
+  //   this.props.getValidations(this.props.address, index, validationState)
+  // }
+
+  checkVotingStatus () {
+    this.props.checkVotingStatus(this.props.address)
   }
 
   render () {
@@ -65,22 +48,20 @@ class ValidateTasks extends React.Component {
     let returnInput = (i) => (
       <div>
         <div>
-          <input
-            name={'val' + i}
-            placeholder='tokens'
-            onChange={(e) => this.onChange(e)}
-            value={this.state['val' + i] || ''}
-          />
+          <Button
+            type='danger'
+            // disabled={this.props.tasks[i].validated[eth.accounts[0]]}
+            onClick={() => this.validateTask(i, true)} >Yes</Button>
+          <Button
+            type='danger'
+            // disabled={this.props.tasks[i].validated[eth.accounts[0]]}
+            onClick={() => this.validateTask(i, false)} >No</Button>
         </div>
         <div>
-          <Button
-            type='danger'
-            // disabled={this.props.tasks[i].validated[eth.accounts[0]]}
-            onClick={() => this.validateTask(this.state['val' + i], i, true)} >Yes</Button>
-          <Button
-            type='danger'
-            // disabled={this.props.tasks[i].validated[eth.accounts[0]]}
-            onClick={() => this.validateTask(this.state['val' + i], i, false)} >No</Button>
+          <ValidateTask
+            index={i}
+            address={this.props.address}
+          />
         </div>
       </div>)
     if (typeof this.props.tasks !== 'undefined') {
@@ -88,7 +69,7 @@ class ValidateTasks extends React.Component {
         return {
           key: i,
           description: task.description,
-          ethReward: `${web3.fromWei(task.weiReward, 'ether')} ETH`,
+          ethReward: `${web3.fromWei(this.props.project.weiCost) * (task.weighting / 100)} ETH`,
           input: returnInput(i)
         }
       })
@@ -107,7 +88,7 @@ class ValidateTasks extends React.Component {
         reputationCost={this.state.reputationCost}
         date={moment(this.state.nextDeadline)}
         tasks={tasks}
-        checkVoting={this.checkVoting}
+        checkVotingStatus={this.checkVotingStatus}
       />
     )
   }
@@ -121,7 +102,6 @@ const mapStateToProps = (state, ownProps) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    taskValidated: (validationDetails) => dispatch(taskValidated(validationDetails)),
     getTasks: (address, state) => dispatch(getTasks(address, state))
   }
 }

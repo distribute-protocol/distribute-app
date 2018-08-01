@@ -1,8 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import VoteComponent from '../../components/project/5Vote'
-import { Button } from 'antd'
+import { Button, Icon } from 'antd'
 import {eth, pr, tr, rr, web3, P, T} from '../../utilities/blockchain'
+import { getTasks } from '../../actions/taskActions'
 import { voteCommitted, voteRevealed } from '../../actions/pollActions'
 import moment from 'moment'
 import { utils } from 'ethers'
@@ -20,22 +21,28 @@ class VoteTasks extends React.Component {
 
   componentWillMount () {
     this.getProjectStatus()
-    this.props.project.taskList.map(async (task, i) => {
-      let claimable, claimableByRep
-      let p = await P.at(this.props.address)
-      let index = await p.tasks(i)
-      let t = T.at(index)
-      claimable = await t.claimable()
-      claimableByRep = await t.claimableByRep()
-      let stateTasks = this.state.tasks
-      stateTasks[i] = {claimable, claimableByRep}
-      this.setState({tasks: stateTasks})
-    })
+    this.getTasks()
+    // this.getProjectStatus()
+    // this.props.project.taskList.map(async (task, i) => {
+    //   let claimable, claimableByRep
+    //   let p = await P.at(this.props.address)
+    //   let index = await p.tasks(i)
+    //   let t = T.at(index)
+    //   claimable = await t.claimable()
+    //   claimableByRep = await t.claimableByRep()
+    //   let stateTasks = this.state.tasks
+    //   stateTasks[i] = {claimable, claimableByRep}
+    //   this.setState({tasks: stateTasks})
+    // })
   }
 
   // let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
   async getProjectStatus () {
     this.setState(this.props.project)
+  }
+
+  async getTasks () {
+    this.props.getTasks(this.props.address, 5)
   }
 
   onChange (e) {
@@ -220,11 +227,11 @@ class VoteTasks extends React.Component {
 
   render () {
     let tasks
-    if (typeof this.props.project.taskList !== 'undefined') {
-      let rewardVal, rewardWork, needsVote
-      tasks = this.state.tasks.map((task, i) => {
-        if (this.state.tasks[i].claimable) {
-          if (this.state.tasks[i].claimableByRep) {
+    if (typeof this.props.tasks !== 'undefined') {
+      tasks = this.props.tasks.map((task, i) => {
+        let rewardVal, rewardWork, needsVote
+        if (this.props.tasks[i].validationRewardClaimable) {
+          if (this.props.tasks[i].workerRewardClaimable) {
             // validators and workers can claim
             rewardVal =
               <div>
@@ -236,7 +243,7 @@ class VoteTasks extends React.Component {
                 <Button
                   type='danger' onClick={() => this.rewardTask(i)}> Reward Task </Button>
               </div>
-            needsVote = <div />
+            needsVote = <Icon type='close' />
           } else {
             // validators can claim, task fails
             rewardVal =
@@ -245,7 +252,7 @@ class VoteTasks extends React.Component {
                   type='danger' onClick={() => this.rewardValidator(i)}> Reward No Validator </Button>
               </div>
             rewardWork = <div>ineligible</div>
-            needsVote = <div />
+            needsVote = <Icon type='close' />
           }
         } else {
           // vote needs to happen
@@ -304,8 +311,8 @@ class VoteTasks extends React.Component {
 
         return {
           key: i,
-          description: this.props.project.taskList[i].description,
-          ethReward: `${web3.fromWei(this.props.project.taskList[i].weiReward, 'ether')} ETH`,
+          description: task.description,
+          ethReward: `${web3.fromWei(this.props.project.weiCost) * (task.weighting / 100)} ETH`,
           rewardValidator: rewardVal,
           rewardWorker: rewardWork,
           taskNeedsVote: needsVote
@@ -334,7 +341,8 @@ class VoteTasks extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    project: state.projects.allProjects[ownProps.address],
+    project: state.projects[5][ownProps.address],
+    tasks: state.projects[5][ownProps.address].tasks,
     users: state.polls.allUsers
   }
 }
@@ -342,7 +350,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     voteCommitted: (voteDetails) => dispatch(voteCommitted(voteDetails)),
-    voteRevealed: (voteDetails) => dispatch(voteCommitted(voteDetails))
+    voteRevealed: (voteDetails) => dispatch(voteCommitted(voteDetails)),
+    getTasks: (address, state) => dispatch(getTasks(address, state))
   }
 }
 

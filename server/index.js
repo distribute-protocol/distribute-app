@@ -13,6 +13,7 @@ const dtLogs = require('./logs/distributeToken')
 const rrLogs = require('./logs/reputationRegistry')
 const prLogs = require('./logs/projectRegistry')
 const trLogs = require('./logs/tokenRegistry')
+const plLogs = require('./logs/projectLibrary')
 const schema = require('./data/schema')
 
 const app = express()
@@ -51,6 +52,7 @@ dtLogs()
 rrLogs()
 prLogs()
 trLogs()
+plLogs()
 
 engine.listen({
   port: app.get('port'),

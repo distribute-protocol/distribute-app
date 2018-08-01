@@ -97,12 +97,15 @@ const typeDefs = `
     claimedAt: String
     claimer: User
     complete: Boolean
+    confirmation: Boolean
     description: String
     id: ID
     index: Int
     hash: String
     project: Project
+    pollNonce: Int
     state: Int
+    validationFee: Int
     validations: [Validation]
     validationRewardClaimable: Boolean
     votes: [Vote]
@@ -136,8 +139,9 @@ const typeDefs = `
     id: ID
     amount: Int
     task: Task
-    user: User
+    user: String
     state: Boolean
+    address: String
   }
 
   type Vote {
@@ -179,6 +183,7 @@ const typeDefs = `
     findFinalTaskHash(address: String, topTaskHash: String): PrelimTaskList
     findTaskByIndex(address: String, index: Int): Task
     allTasksinProject(address: String): [Task]
+    getValidations(address: String, index: Int): [Validation]
   }
 
   input AvatarInput {

@@ -4,8 +4,9 @@ let validatorSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   amount: Number,
   state: Boolean,
-  taskId: mongoose.Schema.Types.ObjectId,
-  userid: mongoose.Schema.Types.ObjectId
+  task: mongoose.Schema.Types.ObjectId,
+  user: String,
+  address: String
 })
 
 const Validator = mongoose.model('Validator', validatorSchema)

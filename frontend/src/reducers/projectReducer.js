@@ -1,5 +1,5 @@
 import { PROJECT_PROPOSED, PROJECTS_RECEIVED, TASK_LIST_SET, HASHED_TASK_LIST_SUBMITTED, PROJECT_STAKED, VERIFIED_TASK_LISTS_RECEIVED } from '../constants/ProjectActionTypes'
-import { FINAL_TASK_LIST_SUBMITTED, TASKS_RECEIVED } from '../constants/TaskActionTypes'
+import { FINAL_TASK_LIST_SUBMITTED, TASKS_RECEIVED, VALIDATIONS_RECEIVED } from '../constants/TaskActionTypes'
 
 const initialState = {
 }
@@ -53,6 +53,7 @@ export default function projectReducer (state = initialState, action) {
       // return Object.assign({}, state, {1: {[action.projectAddress]: updateRepBal}})
       return state
     case VERIFIED_TASK_LISTS_RECEIVED:
+      console.log(action)
       project = Object.assign({}, state[2][action.address], {submittedTasks: action.result})
       projects = Object.assign({}, state[2], {[action.address]: project})
       return Object.assign({}, state, {2: projects})
@@ -62,9 +63,26 @@ export default function projectReducer (state = initialState, action) {
       return Object.assign({}, state, {3: projects})
     case TASKS_RECEIVED:
       let currentState = action.state
-      project = Object.assign({}, state[currentState][action.projectAddress], {tasks: action.taskDetails})
+      let taskDetails = action.taskDetails.slice(0)
+      let sortedTasks = taskDetails.sort(function (a, b) {
+        return a.index - b.index
+      })
+      project = Object.assign({}, state[currentState][action.projectAddress], {tasks: sortedTasks})
       projects = Object.assign({}, state[currentState], {[action.projectAddress]: project})
       return Object.assign({}, state, {[currentState]: projects})
+    // called for every task
+    case VALIDATIONS_RECEIVED:
+      let task, tasks, validation
+      // action.result.length is the number of validations for this task
+      validation = []
+      for (let i = 0; i < action.result.length; i++) {
+        validation = Object.assign(validation, {[i]: {amount: action.result[i].amount, state: action.result[i].state, user: action.result[i].user}})
+      }
+      task = Object.assign({}, state[4][action.projectAddress].tasks[action.index], {validations: validation})
+      tasks = Object.assign([], state[4][action.projectAddress].tasks, {[action.index]: task})
+      project = Object.assign({}, state[4][action.projectAddress], {tasks: tasks})
+      projects = Object.assign({}, state[4], {[action.projectAddress]: project})
+      return Object.assign({}, state, {4: projects})
     default:
   }
   return state

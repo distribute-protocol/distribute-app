@@ -61,6 +61,15 @@ module.exports = function () {
         })
         User.findOne({account: account}).exec((err, userStatus) => {
           if (err) console.error(err)
+          if (userStatus === null) {
+            let NewUser = new User({
+              _id: new mongoose.Types.ObjectId()
+            })
+            NewUser.save(err => {
+              if (err) throw Error
+              console.log('new user registered for validation lots')
+            })
+          }
           if (userStatus !== null) {
             userStatus.tokenBalance += tokensMinted
             userStatus.save(err => {

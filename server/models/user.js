@@ -19,7 +19,8 @@ let userSchema = mongoose.Schema({
   name: String,
   reputationBalance: Number,
   tokenBalance: Number,
-  tasks: [mongoose.Schema.Types.ObjectId]
+  tasks: [mongoose.Schema.Types.ObjectId],
+  validations: [mongoose.Schema.Types.ObjectId]
 })
 
 const User = mongoose.model('User', userSchema)

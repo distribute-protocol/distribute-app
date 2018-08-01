@@ -6,6 +6,7 @@ const Project = require('../models/project')
 const PrelimTaskList = require('../models/prelimTaskList')
 const User = require('../models/user')
 const Task = require('../models/task')
+const Network = require('../models/network')
 const ipfs = require('../utilities/ipfs-api')
 const { TextDecoder } = require('text-encoding')
 const { hashTasks } = require('../utilities/hashing')
@@ -20,8 +21,10 @@ module.exports = function () {
   })
 
   let projectAddress
+  let txHash
   projectCreatedFilter.watch(async (error, result) => {
     if (error) console.error(error)
+    txHash = result.transactionHash
     projectAddress = result.topics[1]
     projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
     const projectDetailsFilter = web3.eth.filter({
@@ -32,6 +35,7 @@ module.exports = function () {
     })
     projectDetailsFilter.watch(async (error, result) => {
       if (error) console.error(error)
+      txHash = result.transactionHash
       let eventParamArr = result.data.slice(2).match(/.{1,64}/g)
       let weiCost = parseInt(eventParamArr[0], 16)
       let reputationCost = parseInt(eventParamArr[1], 16)
@@ -52,41 +56,51 @@ module.exports = function () {
           throw err
         }
         let dataObj = JSON.parse(new TextDecoder('utf-8').decode(node.toJSON().data))
-        Project.findOne({address: projectAddress}).exec((error, doc) => {
-          if (error) console.error(error)
-          if (!doc) {
-            doc = new Project({
-              _id: new mongoose.Types.ObjectId(),
-              activeStatePeriod,
-              address: projectAddress,
-              ipfsHash,
-              listSubmitted: false,
-              location: dataObj.location,
-              name: dataObj.name,
-              nextDeadline,
-              passThreshold,
-              photo: dataObj.photo,
-              prelimTaskLists: [],
-              proposer,
-              proposerType,
-              reputationBalance: 0,
-              reputationCost,
-              stakedStatePeriod,
-              state,
-              summary: dataObj.summary,
-              taskList: [],
-              turnoverTime,
-              tokenBalance: 0,
-              validateStatePeriod,
-              voteCommitPeriod,
-              voteRevealPeriod,
-              weiBal: 0,
-              weiCost
+        Network.findOne({}).exec((err, netStatus) => {
+          if (err) console.error(err)
+          if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+            netStatus.processedTxs[txHash] = true
+            netStatus.markModified('processedTxs')
+            netStatus.save((err, returned) => {
+              if (err) throw Error
             })
-            doc.save((error, saved) => {
+            Project.findOne({address: projectAddress}).exec((error, doc) => {
               if (error) console.error(error)
-              console.log('project details updated')
-              projectDetailsFilter.stopWatching()
+              if (!doc) {
+                doc = new Project({
+                  _id: new mongoose.Types.ObjectId(),
+                  activeStatePeriod,
+                  address: projectAddress,
+                  ipfsHash,
+                  listSubmitted: false,
+                  location: dataObj.location,
+                  name: dataObj.name,
+                  nextDeadline,
+                  passThreshold,
+                  photo: dataObj.photo,
+                  prelimTaskLists: [],
+                  proposer,
+                  proposerType,
+                  reputationBalance: 0,
+                  reputationCost,
+                  stakedStatePeriod,
+                  state,
+                  summary: dataObj.summary,
+                  taskList: [],
+                  turnoverTime,
+                  tokenBalance: 0,
+                  validateStatePeriod,
+                  voteCommitPeriod,
+                  voteRevealPeriod,
+                  weiBal: 0,
+                  weiCost
+                })
+                doc.save(error => {
+                  if (error) console.error(error)
+                  console.log('project details updated')
+                  projectDetailsFilter.stopWatching()
+                })
+              }
             })
           }
         })
@@ -102,25 +116,36 @@ module.exports = function () {
   })
   projectFullyStakedFilter.watch(async (err, result) => {
     if (err) console.error(err)
+    let txHash = result.transactionHash
     let eventParams = result.data
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
     let flag = eventParamArr[1]
-    if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
-      Project.findOne({address: projectAddress}).exec((error, doc) => {
-        if (error) console.error(error)
-        if (doc !== null) {
-          if (doc.state === 1) {
-            doc.state = 2
-          }
-          doc.save(err => {
-            if (err) console.error(error)
-            console.log('project fully staked')
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        netStatus.save((err, returned) => {
+          if (err) throw Error
+        })
+        if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
+          Project.findOne({address: projectAddress}).exec((error, doc) => {
+            if (error) console.error(error)
+            if (doc !== null) {
+              if (doc.state === 1) {
+                doc.state = 2
+              }
+              doc.save(err => {
+                if (err) console.error(error)
+                console.log('project fully staked')
+              })
+            }
           })
         }
-      })
-    }
+      }
+    })
   })
   // filter for task hash submissions
   const taskHashSubmittedFilter = web3.eth.filter({
@@ -131,6 +156,7 @@ module.exports = function () {
   })
   taskHashSubmittedFilter.watch(async (err, result) => {
     if (err) console.error(err)
+    let txHash = result.transactionHash
     let eventParams = result.data
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
     let projectAddress = eventParamArr[0]
@@ -139,21 +165,33 @@ module.exports = function () {
     let submitter = eventParamArr[2]
     submitter = '0x' + submitter.substr(-40)
     let weighting = parseInt(eventParamArr[3], 16)
-    Project.findOne({address: projectAddress}).exec((error, doc) => {
-      if (error) console.error(error)
-      PrelimTaskList.findOne({submitter: submitter}).exec((error, prelimTaskList) => {
-        if (error) console.error(error)
-        if (prelimTaskList !== null && prelimTaskList.hash === taskHash) {
-          prelimTaskList.verified = true
-          prelimTaskList.weighting = weighting
-          prelimTaskList.save(error => {
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        netStatus.save((err, returned) => {
+          if (err) throw Error
+        })
+        Project.findOne({address: projectAddress}).exec((error, doc) => {
+          if (error) console.error(error)
+          PrelimTaskList.findOne({submitter: submitter}).exec((error, prelimTaskList) => {
             if (error) console.error(error)
-            console.log('prelim task list submitted')
+            if (prelimTaskList !== null && prelimTaskList.hash === taskHash) {
+              console.log(prelimTaskList)
+              prelimTaskList.verified = true
+              prelimTaskList.weighting = weighting
+              prelimTaskList.save(error => {
+                if (error) console.error(error)
+                console.log('prelim task list submitted')
+              })
+            }
           })
-        }
-      })
+        })
+      }
     })
   })
+  // filter for active projects
   const projectActiveFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
@@ -162,33 +200,45 @@ module.exports = function () {
   })
   projectActiveFilter.watch(async (err, result) => {
     if (err) console.error(err)
+    let txHash = result.transactionHash
     let eventParams = result.data
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
     let topTaskHash = '0x' + eventParamArr[1]
     let flag = eventParamArr[2]
-    if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
-      PrelimTaskList.findOne({address: projectAddress, hash: topTaskHash}).exec((error, prelimTaskList) => {
-        if (error) console.error(error)
-        if (prelimTaskList !== null) {
-          Project.findOne({address: projectAddress}).exec((error, project) => {
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        netStatus.save((err, returned) => {
+          if (err) throw Error
+        })
+        if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
+          PrelimTaskList.findOne({address: projectAddress, hash: topTaskHash}).exec((error, prelimTaskList) => {
             if (error) console.error(error)
-            if (project) {
-              project.state = 3
-              project.topTaskHash = topTaskHash
-              project.taskList = prelimTaskList.content
-              console.log('final tasks:', project.taskList)
-              project.save(err => {
-                if (err) console.error(error)
-                console.log('active project with topTaskHash')
+            if (prelimTaskList !== null) {
+              Project.findOne({address: projectAddress}).exec((error, project) => {
+                if (error) console.error(error)
+                if (project) {
+                  project.state = 3
+                  project.topTaskHash = topTaskHash
+                  project.taskList = prelimTaskList.content
+                  console.log('final tasks:', project.taskList)
+                  project.save(err => {
+                    if (err) console.error(error)
+                    console.log('active project with topTaskHash')
+                  })
+                }
               })
             }
           })
         }
-      })
-    }
+      }
+    })
   })
+  //  filter for final tasks submitted
   const finalTasksFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
@@ -197,6 +247,7 @@ module.exports = function () {
   })
   finalTasksFilter.watch(async (err, result) => {
     if (err) console.error(err)
+    let txHash = result.transactionHash
     let eventParams = result.data
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
     let taskAddress = eventParamArr[0]
@@ -205,46 +256,59 @@ module.exports = function () {
     projectAddress = '0x' + projectAddress.substr(-40)
     let individualTaskHash = '0x' + eventParamArr[2]
     let index = parseInt(eventParamArr[3], 16)
-    Task.findOne({address: taskAddress}).exec((error, task) => {
-      if (error) console.error(error)
-      if (!task) {
-        Project.findOne({address: projectAddress}).exec((error, doc) => {
-          if (doc) {
-            if (error) console.error(error)
-            let taskListArr = JSON.parse(doc.taskList)
-            let taskContent = [taskListArr[index]]
-            let taskHash = hashTasks(taskContent)
-            doc.listSubmitted = true
-            if (individualTaskHash === taskHash[0]) {
-              let finalTask = new Task({
-                _id: new mongoose.Types.ObjectId(),
-                address: taskAddress,
-                project: doc.id,
-                claimed: false,
-                complete: false,
-                description: taskContent[0].description,
-                index,
-                state: 3,
-                validationRewardClaimable: false,
-                weighting: taskContent[0].percentage,
-                workerRewardClaimable: false
-              })
-              finalTask.save(err => {
-                if (err) console.error(error)
-                console.log('final tasks created')
-              })
-              doc.save(err => {
-                if (err) console.error(error)
-                console.log('list submitted')
-              })
-            } else {
-              console.log('task hashes do not match')
-            }
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        netStatus.save((err, returned) => {
+          if (err) throw Error
+        })
+        Task.findOne({address: taskAddress}).exec((error, task) => {
+          if (error) console.error(error)
+          if (!task) {
+            Project.findOne({address: projectAddress}).exec((error, doc) => {
+              if (doc) {
+                if (error) console.error(error)
+                let taskListArr = JSON.parse(doc.taskList)
+                let taskContent = [taskListArr[index]]
+                let taskHash = hashTasks(taskContent)
+                doc.listSubmitted = true
+                if (individualTaskHash === taskHash[0]) {
+                  let finalTask = new Task({
+                    _id: new mongoose.Types.ObjectId(),
+                    address: taskAddress,
+                    pollNonce: null,
+                    project: doc.id,
+                    claimed: false,
+                    complete: false,
+                    description: taskContent[0].description,
+                    index,
+                    state: 3,
+                    validations: [],
+                    validationRewardClaimable: false,
+                    weighting: taskContent[0].percentage,
+                    workerRewardClaimable: false
+                  })
+                  finalTask.save(err => {
+                    if (err) console.error(error)
+                    console.log('final tasks created')
+                  })
+                  doc.save(err => {
+                    if (err) console.error(error)
+                    console.log('list submitted')
+                  })
+                } else {
+                  console.log('task hashes do not match')
+                }
+              }
+            })
           }
         })
       }
     })
   })
+  // filter for claiming task
   const taskClaimedFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
@@ -253,6 +317,7 @@ module.exports = function () {
   })
   taskClaimedFilter.watch(async (err, result) => {
     if (err) console.error(err)
+    let txHash = result.transactionHash
     let eventParams = result.data
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
     let projectAddress = eventParamArr[0]
@@ -261,65 +326,90 @@ module.exports = function () {
     let reputationVal = parseInt(eventParamArr[2], 16)
     let claimer = eventParamArr[3]
     claimer = '0x' + claimer.substr(-40)
-    User.findOne({account: claimer}).exec((error, user) => {
-      if (error) console.error(error)
-      if (user) {
-        user.reputationBalance -= reputationVal
-      }
-      if (user) {
-        Project.findOne({address: projectAddress}).exec((error, doc) => {
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        netStatus.save((err, returned) => {
+          if (err) throw Error
+        })
+        User.findOne({account: claimer}).exec((error, user) => {
           if (error) console.error(error)
-          if (doc) {
-            Task.findOne({project: doc.id, index: index}).exec((error, task) => {
+          if (user) {
+            user.reputationBalance -= reputationVal
+          }
+          if (user) {
+            Project.findOne({address: projectAddress}).exec((error, doc) => {
               if (error) console.error(error)
-              task.claimed = true
-              task.claimer = user.id
-              // task.claimedAt
-              user.tasks.push(task.id)
-              task.save(err => {
-                if (err) console.error(err)
+              if (doc) {
+                Task.findOne({project: doc.id, index: index}).exec((error, task) => {
+                  if (error) console.error(error)
+                  task.claimed = true
+                  task.claimer = user.id
+                  // task.claimedAt
+                  user.tasks.push(task.id)
+                  task.save(err => {
+                    if (err) console.error(err)
+                  })
+                })
+                doc.save(err => {
+                  if (err) console.error(error)
+                  console.log('doc saved')
+                })
+              }
+              user.save(err => {
+                if (err) console.error(error)
+                console.log('claimer saved')
               })
             })
-            doc.save(err => {
-              if (err) console.error(error)
-              console.log('doc saved')
-            })
           }
-          user.save(err => {
-            if (err) console.error(error)
-            console.log('claimer saved')
-          })
         })
       }
     })
   })
+  // filter for task submitted complete
   const submitTaskCompleteFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
     address: PR.projectRegistryAddress,
-    topics: [web3.sha3('LogSubmitTaskComplete(address,uint256)')]
+    topics: [web3.sha3('LogSubmitTaskComplete(address,uint256,uint256)')]
   })
   submitTaskCompleteFilter.watch(async (err, result) => {
     if (err) console.error(err)
+    let txHash = result.transactionHash
     let eventParams = result.data
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
     let index = parseInt(eventParamArr[1], 16)
-    Project.findOne({address: projectAddress}).exec((error, doc) => {
-      if (error) console.error(error)
-      if (doc) {
-        Task.findOne({project: doc.id, index: index}).exec((error, task) => {
+    let validationFee = parseInt(eventParamArr[2], 16)
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        netStatus.save((err, returned) => {
+          if (err) throw Error
+        })
+        Project.findOne({address: projectAddress}).exec((error, doc) => {
           if (error) console.error(error)
-          task.complete = true
-          task.save(err => {
-            if (err) console.error(err)
-            console.log('task submitted complete')
-          })
+          if (doc) {
+            Task.findOne({project: doc.id, index: index}).exec((error, task) => {
+              if (error) console.error(error)
+              task.complete = true
+              task.validationFee = validationFee
+              task.save(err => {
+                if (err) console.error(err)
+                console.log('task submitted complete')
+              })
+            })
+          }
         })
       }
     })
   })
+  // filter for project tasks ready to be validated
   const projectValidateFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
@@ -333,27 +423,38 @@ module.exports = function () {
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
     let flag = eventParamArr[1]
-    if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
-      Project.findOne({address: projectAddress}).exec((error, project) => {
-        if (error) console.error(error)
-        if (project) {
-          project.state = 4
-          Task.find({project: project.id}).exec((error, tasks) => {
+    console.log(projectAddress, flag)
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        netStatus.save((err, returned) => {
+          if (err) throw Error
+        })
+        if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
+          Project.findOne({address: projectAddress}).exec((error, project) => {
             if (error) console.error(error)
-            tasks.map((task, i) => {
-              task.state = 4
-              task.save(err => {
-                if (err) console.error(error)
-                console.log('validate tasks')
+            if (project) {
+              project.state = 4
+              Task.find({project: project.id}).exec((error, tasks) => {
+                if (error) console.error(error)
+                tasks.map((task, i) => {
+                  task.state = 4
+                  task.save(err => {
+                    if (err) console.error(error)
+                    console.log('validate tasks')
+                  })
+                })
               })
-            })
-          })
-          project.save(err => {
-            if (err) console.error(error)
-            console.log('validate project')
+              project.save(err => {
+                if (err) console.error(error)
+                console.log('validate project')
+              })
+            }
           })
         }
-      })
-    }
+      }
+    })
   })
 }
