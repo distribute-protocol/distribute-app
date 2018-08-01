@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import StakeComponent from '../../components/project/1Stake'
 import moment from 'moment'
 import { web3 } from '../../utilities/blockchain'
+import { BigNumber } from 'bignumber.js'
 
 class StakeProject extends Component {
   constructor () {
@@ -11,17 +13,6 @@ class StakeProject extends Component {
     }
     this.tokens = this.tokens.bind(this)
     this.reputation = this.reputation.bind(this)
-    this.getProjectStatus = this.getProjectStatus.bind(this)
-  }
-
-  async getProjectStatus () {
-    let projObj = this.props.project
-    projObj = Object.assign({}, projObj, {tokensLeft: Math.ceil(((parseFloat(projObj.weiCost) - parseFloat(projObj.weiBal)) / parseFloat(this.props.currentPrice)))})
-    this.setState({...projObj})
-  }
-
-  componentWillMount () {
-    this.getProjectStatus()
   }
 
   onChange (val) {
@@ -47,25 +38,33 @@ class StakeProject extends Component {
   }
 
   render () {
+    let tokensLeft
+    if (typeof this.props.project !== `undefined`) {
+      let weiCost = new BigNumber(this.props.project.weiCost.toString())
+      let weiBal = new BigNumber(this.props.project.weiBal.toString())
+      tokensLeft = Math.ceil((weiCost).minus(weiBal).div(this.props.currentPrice))
+    } else {
+      tokensLeft = 'calculating...'
+    }
     return (
       <StakeComponent
-        name={this.state.name}
+        name={this.props.project.name}
         address={this.props.address}
-        photo={this.state.photo}
-        summary={this.state.summary}
-        location={this.state.location}
-        cost={web3.fromWei(this.state.weiCost, 'ether')}
-        tokensLeft={this.state.tokensLeft}
-        reputationCost={this.state.reputationCost}
-        totalReputationStaked={this.state.reputationBalance}
-        date={moment(this.state.nextDeadline)}
+        photo={this.props.project.photo}
+        summary={this.props.project.summary}
+        location={this.props.project.location}
+        cost={web3.fromWei(this.props.project.weiCost, 'ether')}
+        tokensLeft={tokensLeft}
+        reputationCost={this.props.project.reputationCost}
+        totalReputationStaked={this.props.project.reputationBalance}
+        date={moment(this.props.project.nextDeadline)}
         stakeInput={
           <input
             ref={(input) => (this.stakedValue = input)}
             placeholder='Amount'
             type='number'
             onChange={() => this.onChange(this.stakedValue.value)}
-            value={this.state.tokensToStake}
+            value={this.state.stake}
             style={{height: 30, marginRight: 15}}
           />
         }
@@ -76,4 +75,10 @@ class StakeProject extends Component {
   }
 }
 
-export default StakeProject
+const mapStateToProps = (state, ownProps) => {
+  return {
+    project: state.projects[1][ownProps.address]
+  }
+}
+
+export default connect(mapStateToProps)(StakeProject)
