@@ -1,7 +1,6 @@
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
 const PL = require('../../frontend/src/abi/ProjectLibrary')
-const mongoose = require('mongoose')
 const Project = require('../models/project')
 const Task = require('../models/task')
 const Network = require('../models/network')
@@ -32,37 +31,37 @@ module.exports = function () {
         netStatus.save((err, returned) => {
           if (err) throw Error
         })
-        Project.findOne({address: projectAddress}).exec((err, doc) => {
-          if (err) console.error(err)
-          if (doc) {
-            doc.state = 5
-            doc.save(err => {
-              if (err) console.error(err)
-              console.log('project in voting stage')
-            })
-            Task.findOne({address: taskAddress}).exec((err, task) => {
-              if (err) console.error(err)
-              if (confirmation === '0000000000000000000000000000000000000000000000000000000000000001') {
-                task.confirmation = true
-                task.workerRewardClaimable = true
-                task.validationRewardClaimable = true
-                task.save(err => {
-                  if (err) console.error(err)
-                  console.log('task successfully validated yes')
-                })
-              } else {
-                task.confirmation = false
-                task.workerRewardClaimable = false
-                task.validationRewardClaimable = true
-                task.save(err => {
-                  if (err) console.error(err)
-                  console.log('task successfully validated no')
-                })
-              }
-            })
-          }
-        })
       }
+      Project.findOne({address: projectAddress}).exec((err, doc) => {
+        if (err) console.error(err)
+        if (doc) {
+          doc.state = 5
+          doc.save(err => {
+            if (err) console.error(err)
+            console.log('project in voting stage')
+          })
+          Task.findOne({address: taskAddress}).exec((err, task) => {
+            if (err) console.error(err)
+            if (confirmation === '0000000000000000000000000000000000000000000000000000000000000001') {
+              task.confirmation = true
+              task.workerRewardClaimable = true
+              task.validationRewardClaimable = true
+              task.save(err => {
+                if (err) console.error(err)
+                console.log('task successfully validated yes')
+              })
+            } else {
+              task.confirmation = false
+              task.workerRewardClaimable = false
+              task.validationRewardClaimable = true
+              task.save(err => {
+                if (err) console.error(err)
+                console.log('task successfully validated no')
+              })
+            }
+          })
+        }
+      })
     })
   })
   const taskVoteFilter = web3.eth.filter({

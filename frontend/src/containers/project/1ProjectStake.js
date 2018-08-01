@@ -38,11 +38,15 @@ class StakeProject extends Component {
   }
 
   render () {
-    let tokensLeft
+    let tokensLeft, currentPrice
     if (typeof this.props.project !== `undefined`) {
+      console.log(this.props.project)
       let weiCost = new BigNumber(this.props.project.weiCost.toString())
       let weiBal = new BigNumber(this.props.project.weiBal.toString())
-      tokensLeft = Math.ceil((weiCost).minus(weiBal).div(this.props.currentPrice))
+      this.props.project.currentPrice !== `undefined`
+        ? currentPrice = this.props.currentPrice
+        : currentPrice = this.props.project.currentPrice
+      tokensLeft = Math.ceil((weiCost).minus(weiBal).div(currentPrice))
     } else {
       tokensLeft = 'calculating...'
     }

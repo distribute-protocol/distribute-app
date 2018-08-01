@@ -31,40 +31,40 @@ module.exports = function () {
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-        User.findOne({account: account}).exec((err, userStatus) => {
-          if (err) console.error(error)
-          if (userStatus !== null) {
-            userStatus.tokenBalance -= tokensStaked
-            userStatus.save(err => {
-              if (err) console.error(error)
-            })
-          }
-          Project.findOne({address: projectAddress}).exec((error, doc) => {
-            if (error) console.error(error)
-            let StakeEvent = new Stake({
-              _id: new mongoose.Types.ObjectId(),
-              amount: tokensStaked,
-              project: doc.id,
-              type: 'token',
-              userId: userStatus.id
-            })
-            doc.tokenBalance += tokensStaked
-            doc.weiBal += weiChange
-            doc.save((error, saved) => {
-              if (error) console.error(error)
-            })
-            StakeEvent.save((error, saved) => {
-              if (error) console.error(error)
-              console.log('tokens staked')
-            })
-          })
-        })
         netStatus.processedTxs[txHash] = true
         netStatus.markModified('processedTxs')
         netStatus.save(err => {
           if (err) console.log(err)
         })
       }
+      User.findOne({account: account}).exec((err, userStatus) => {
+        if (err) console.error(error)
+        if (userStatus !== null) {
+          userStatus.tokenBalance -= tokensStaked
+          userStatus.save(err => {
+            if (err) console.error(error)
+          })
+        }
+        Project.findOne({address: projectAddress}).exec((error, doc) => {
+          if (error) console.error(error)
+          let StakeEvent = new Stake({
+            _id: new mongoose.Types.ObjectId(),
+            amount: tokensStaked,
+            project: doc.id,
+            type: 'token',
+            userId: userStatus.id
+          })
+          doc.tokenBalance += tokensStaked
+          doc.weiBal += weiChange
+          doc.save((error, saved) => {
+            if (error) console.error(error)
+          })
+          StakeEvent.save((error, saved) => {
+            if (error) console.error(error)
+            console.log('tokens staked')
+          })
+        })
+      })
     })
   })
   // filter unstaked tokens

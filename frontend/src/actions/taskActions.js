@@ -66,10 +66,11 @@ export function taskValidated (address, taskIndex, validationState) {
   }
 }
 
-export function taskCompleted (taskDetails) {
+export function taskCompleted (address, index) {
   return {
     type: TASK_COMPLETED,
-    taskDetails
+    address,
+    index
   }
 }
 

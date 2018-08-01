@@ -1,6 +1,6 @@
 import { LOGIN_USER, REGISTER_USER, GET_USER_STATUS } from '../constants/UserActionTypes'
 import { userStatusReceived, loggedInUser, registerUser, registeredUser } from '../actions/userActions'
-import { map, mergeMap, mapTo, flatMap } from 'rxjs/operators'
+import { map, mergeMap, flatMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { merge } from 'rxjs/observable/merge'
 import { client } from '../index'
@@ -56,7 +56,7 @@ const registerUserEpic = action$ => {
         }
       })
     }),
-    map(result => rr.register({from: account})),
+    map(result => Observable.from(rr.register({from: account}))),
     flatMap(result => Observable.concat(
       Observable.of(registeredUser(result)),
       Observable.of(push('/status'))

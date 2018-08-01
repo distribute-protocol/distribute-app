@@ -1,5 +1,5 @@
-import { PROJECT_PROPOSED, PROJECTS_RECEIVED, TASK_LIST_SET, HASHED_TASK_LIST_SUBMITTED, PROJECT_STAKED, PROJECT_UNSTAKED, VERIFIED_TASK_LISTS_RECEIVED } from '../constants/ProjectActionTypes'
-import { FINAL_TASK_LIST_SUBMITTED, TASKS_RECEIVED, VALIDATIONS_RECEIVED } from '../constants/TaskActionTypes'
+import { PROJECTS_RECEIVED, TASK_LIST_SET, HASHED_TASK_LIST_SUBMITTED, PROJECT_STAKED, PROJECT_UNSTAKED, VERIFIED_TASK_LISTS_RECEIVED } from '../constants/ProjectActionTypes'
+import { FINAL_TASK_LIST_SUBMITTED, TASKS_RECEIVED, VALIDATIONS_RECEIVED, TASK_CLAIMED, TASK_COMPLETED } from '../constants/TaskActionTypes'
 
 const initialState = {
 }
@@ -20,8 +20,6 @@ export default function projectReducer (state = initialState, action) {
         // console.log(object)
         return Object.assign({}, state, {[action.state]: object})
       }
-    case PROJECT_PROPOSED:
-      return state
     case TASK_LIST_SET:
       let project = Object.assign({}, state[2][action.projectAddress], {taskList: action.taskDetails})
       let projects = Object.assign({}, state[2], {[action.projectAddress]: project})
@@ -48,11 +46,11 @@ export default function projectReducer (state = initialState, action) {
       if (action.collateralType === 'tokens') {
         let weiBal = parseInt(state[1][action.result.projectAddress].weiBal)
         let weiChange = parseInt(action.result.weiChange)
-        project = Object.assign({}, state[1][action.result.projectAddress], {weiBal: weiBal + weiChange})
+        project = Object.assign({}, state[1][action.result.projectAddress], {weiBal: weiBal + weiChange, currentPrice: action.currentPrice})
       } else if (action.collateralType === 'reputation') {
         let repBalance = parseInt(state[1][action.result.projectAddress].reputationBalance)
         let repStaked = action.result.reputation.toNumber()
-        project = Object.assign({}, state[1][action.result.projectAddress], {reputationBalance: repBalance + repStaked})
+        project = Object.assign({}, state[1][action.result.projectAddress], {reputationBalance: repBalance + repStaked, currentPrice: action.currentPrice})
       }
       projects = Object.assign({}, state[1], {[action.result.projectAddress]: project})
       return Object.assign({}, state, {1: projects})
@@ -60,21 +58,20 @@ export default function projectReducer (state = initialState, action) {
       if (action.collateralType === 'tokens') {
         let weiBal = parseInt(state[1][action.result.projectAddress].weiBal)
         let weiChange = parseInt(action.result.weiChange)
-        project = Object.assign({}, state[1][action.result.projectAddress], {weiBal: weiBal - weiChange})
+        project = Object.assign({}, state[1][action.result.projectAddress], {weiBal: weiBal - weiChange, currentPrice: action.currentPrice})
       } else if (action.collateralType === 'reputation') {
         let repBalance = parseInt(state[1][action.result.projectAddress].reputationBalance)
         let repStaked = action.result.reputation.toNumber()
-        project = Object.assign({}, state[1][action.result.projectAddress], {reputationBalance: repBalance - repStaked})
+        project = Object.assign({}, state[1][action.result.projectAddress], {reputationBalance: repBalance - repStaked, currentPrice: action.currentPrice})
       }
       projects = Object.assign({}, state[1], {[action.result.projectAddress]: project})
       return Object.assign({}, state, {1: projects})
     case VERIFIED_TASK_LISTS_RECEIVED:
-      console.log(action)
       project = Object.assign({}, state[2][action.address], {submittedTasks: action.result})
       projects = Object.assign({}, state[2], {[action.address]: project})
       return Object.assign({}, state, {2: projects})
     case FINAL_TASK_LIST_SUBMITTED:
-      project = Object.assign({}, state[3][action.address], {taskList: action.tasks})
+      project = Object.assign({}, state[3][action.address], {taskList: action.tasks, listSubmitted: true})
       projects = Object.assign({}, state[3], {[action.address]: project})
       return Object.assign({}, state, {3: projects})
     case TASKS_RECEIVED:
@@ -86,9 +83,22 @@ export default function projectReducer (state = initialState, action) {
       project = Object.assign({}, state[currentState][action.projectAddress], {tasks: sortedTasks})
       projects = Object.assign({}, state[currentState], {[action.projectAddress]: project})
       return Object.assign({}, state, {[currentState]: projects})
+    case TASK_CLAIMED:
+      let task, tasks
+      task = Object.assign({}, state[3][action.address].tasks[action.index], {claimed: true})
+      tasks = Object.assign([], state[3][action.address].tasks, {[action.index]: task})
+      project = Object.assign({}, state[3][action.address], {tasks: tasks})
+      projects = Object.assign({}, state[3], {[action.address]: project})
+      return Object.assign({}, state, {3: projects})
+    case TASK_COMPLETED:
+      task = Object.assign({}, state[3][action.address].tasks[action.index], {complete: true})
+      tasks = Object.assign([], state[3][action.address].tasks, {[action.index]: task})
+      project = Object.assign({}, state[3][action.address], {tasks: tasks})
+      projects = Object.assign({}, state[3], {[action.address]: project})
+      return Object.assign({}, state, {3: projects})
     // called for every task
     case VALIDATIONS_RECEIVED:
-      let task, tasks, validation
+      let validation
       // action.result.length is the number of validations for this task
       validation = []
       for (let i = 0; i < action.result.length; i++) {
