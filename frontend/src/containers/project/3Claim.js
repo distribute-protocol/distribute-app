@@ -48,6 +48,7 @@ class ClaimProject extends React.Component {
       let reputationCost = this.props.project.reputationCost
       let weiCost = this.props.project.weiCost
       tasks = JSON.parse(this.props.project.taskList).map((task, i) => {
+        console.log(this.props.tasks[i], this.props.tasks)
         let weiReward = Math.floor(weiCost * task.percentage / 100)
         return {
           key: i,
@@ -57,10 +58,10 @@ class ClaimProject extends React.Component {
           buttons: <ButtonGroup>
             <Button
             // somehow figure out to augment this for this.props.tasks yet to be defined
-              disabled={!this.props.project.listSubmitted || this.props.tasks[i].claimed}
+              disabled={!this.props.project.listSubmitted || this.props.tasks[i] === undefined || this.props.tasks[i].claimed}
               type='danger' onClick={() => this.claimTask(i)}>Claim</Button>
             <Button
-              disabled={!this.props.project.listSubmitted || !this.props.tasks[i].claimed || (this.props.tasks[i].claimed && this.props.tasks[i].complete)
+              disabled={!this.props.project.listSubmitted || this.props.tasks[i] === undefined || !this.props.tasks[i].claimed || (this.props.tasks[i].claimed && this.props.tasks[i].complete)
               }
               type='danger' onClick={() => this.submitTaskComplete(i)}>Task Complete</Button>
           </ButtonGroup>

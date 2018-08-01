@@ -40,7 +40,6 @@ class StakeProject extends Component {
   render () {
     let tokensLeft, currentPrice
     if (typeof this.props.project !== `undefined`) {
-      console.log(this.props.project)
       let weiCost = new BigNumber(this.props.project.weiCost.toString())
       let weiBal = new BigNumber(this.props.project.weiBal.toString())
       this.props.project.currentPrice !== `undefined`
