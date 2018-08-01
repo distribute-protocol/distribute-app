@@ -130,20 +130,20 @@ module.exports = function () {
         netStatus.save((err, returned) => {
           if (err) throw Error
         })
-      }
-      if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
-        Project.findOne({address: projectAddress}).exec((error, doc) => {
-          if (error) console.error(error)
-          if (doc !== null) {
-            if (doc.state === 1) {
-              doc.state = 2
+        if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
+          Project.findOne({address: projectAddress}).exec((error, doc) => {
+            if (error) console.error(error)
+            if (doc !== null) {
+              if (doc.state === 1) {
+                doc.state = 2
+              }
+              doc.save(err => {
+                if (err) console.error(error)
+                console.log('project fully staked')
+              })
             }
-            doc.save(err => {
-              if (err) console.error(error)
-              console.log('project fully staked')
-            })
-          }
-        })
+          })
+        }
       }
     })
   })
@@ -432,28 +432,28 @@ module.exports = function () {
         netStatus.save((err, returned) => {
           if (err) throw Error
         })
-      }
-      if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
-        Project.findOne({address: projectAddress}).exec((error, project) => {
-          if (error) console.error(error)
-          if (project) {
-            project.state = 4
-            Task.find({project: project.id}).exec((error, tasks) => {
-              if (error) console.error(error)
-              tasks.map((task, i) => {
-                task.state = 4
-                task.save(err => {
-                  if (err) console.error(error)
-                  console.log('validate tasks')
+        if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
+          Project.findOne({address: projectAddress}).exec((error, project) => {
+            if (error) console.error(error)
+            if (project) {
+              project.state = 4
+              Task.find({project: project.id}).exec((error, tasks) => {
+                if (error) console.error(error)
+                tasks.map((task, i) => {
+                  task.state = 4
+                  task.save(err => {
+                    if (err) console.error(error)
+                    console.log('validate tasks')
+                  })
                 })
               })
-            })
-            project.save(err => {
-              if (err) console.error(error)
-              console.log('validate project')
-            })
-          }
-        })
+              project.save(err => {
+                if (err) console.error(error)
+                console.log('validate project')
+              })
+            }
+          })
+        }
       }
     })
   })

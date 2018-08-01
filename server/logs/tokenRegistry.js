@@ -144,8 +144,6 @@ module.exports = function () {
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-        netStatus.processedTxs[txHash] = true
-        netStatus.markModified('processedTxs')
         // subtract tokens from user balance
         User.findOne({account: validator}).exec((err, userStatus) => {
           if (userStatus) {
@@ -188,10 +186,12 @@ module.exports = function () {
             })
           })
         })
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        netStatus.save(err => {
+          if (err) console.error(err)
+        })
       }
-      netStatus.save(err => {
-        if (err) console.error(err)
-      })
     })
   })
 }
