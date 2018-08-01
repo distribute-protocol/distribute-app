@@ -66,9 +66,17 @@ export function stakeProject (collateralType, projectAddress, value, txObj) {
   }
 }
 
-export function projectStaked (collateralType, projectAddress, value, txObj) {
+export function projectStaked (collateralType, result) {
   return {
     type: PROJECT_STAKED,
+    collateralType,
+    result
+  }
+}
+
+export function unstakeProject (collateralType, projectAddress, value, txObj) {
+  return {
+    type: UNSTAKE_PROJECT,
     collateralType,
     projectAddress,
     value,
@@ -76,20 +84,11 @@ export function projectStaked (collateralType, projectAddress, value, txObj) {
   }
 }
 
-export function unstakeProject (collateralType, projectAddress, receipt) {
-  return {
-    type: UNSTAKE_PROJECT,
-    collateralType,
-    projectAddress,
-    receipt
-  }
-}
-
-export function projectUnstaked (collateralType, receipt) {
+export function projectUnstaked (collateralType, result) {
   return {
     type: PROJECT_UNSTAKED,
     collateralType,
-    receipt
+    result
   }
 }
 

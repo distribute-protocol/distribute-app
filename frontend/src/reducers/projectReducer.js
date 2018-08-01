@@ -1,4 +1,4 @@
-import { PROJECT_PROPOSED, PROJECTS_RECEIVED, TASK_LIST_SET, HASHED_TASK_LIST_SUBMITTED, PROJECT_STAKED, VERIFIED_TASK_LISTS_RECEIVED } from '../constants/ProjectActionTypes'
+import { PROJECT_PROPOSED, PROJECTS_RECEIVED, TASK_LIST_SET, HASHED_TASK_LIST_SUBMITTED, PROJECT_STAKED, PROJECT_UNSTAKED, VERIFIED_TASK_LISTS_RECEIVED } from '../constants/ProjectActionTypes'
 import { FINAL_TASK_LIST_SUBMITTED, TASKS_RECEIVED, VALIDATIONS_RECEIVED } from '../constants/TaskActionTypes'
 
 const initialState = {
@@ -45,13 +45,29 @@ export default function projectReducer (state = initialState, action) {
       projects = Object.assign({}, state[2], {[action.projectAddress]: project})
       return Object.assign({}, state, {2: projects})
     case PROJECT_STAKED:
-      // console.log(action)
-      // let repStaked = parseInt(action.value)
-      // let repBal = parseInt(state[1][action.projectAddress].reputationBalance)
-      // let totalRepStaked = parseInt(action.value) + parseInt(state[1][action.projectAddress].reputationBalance)
-      // let updateRepBal = Object.assign({}, state[1][action.projectAddress], {reputation: totalRepStaked})
-      // return Object.assign({}, state, {1: {[action.projectAddress]: updateRepBal}})
-      return state
+      if (action.collateralType === 'tokens') {
+        let weiBal = parseInt(state[1][action.result.projectAddress].weiBal)
+        let weiChange = parseInt(action.result.weiChange)
+        project = Object.assign({}, state[1][action.result.projectAddress], {weiBal: weiBal + weiChange})
+      } else if (action.collateralType === 'reputation') {
+        let repBalance = parseInt(state[1][action.result.projectAddress].reputationBalance)
+        let repStaked = action.result.reputation.toNumber()
+        project = Object.assign({}, state[1][action.result.projectAddress], {reputationBalance: repBalance + repStaked})
+      }
+      projects = Object.assign({}, state[1], {[action.result.projectAddress]: project})
+      return Object.assign({}, state, {1: projects})
+    case PROJECT_UNSTAKED:
+      if (action.collateralType === 'tokens') {
+        let weiBal = parseInt(state[1][action.result.projectAddress].weiBal)
+        let weiChange = parseInt(action.result.weiChange)
+        project = Object.assign({}, state[1][action.result.projectAddress], {weiBal: weiBal - weiChange})
+      } else if (action.collateralType === 'reputation') {
+        let repBalance = parseInt(state[1][action.result.projectAddress].reputationBalance)
+        let repStaked = action.result.reputation.toNumber()
+        project = Object.assign({}, state[1][action.result.projectAddress], {reputationBalance: repBalance - repStaked})
+      }
+      projects = Object.assign({}, state[1], {[action.result.projectAddress]: project})
+      return Object.assign({}, state, {1: projects})
     case VERIFIED_TASK_LISTS_RECEIVED:
       console.log(action)
       project = Object.assign({}, state[2][action.address], {submittedTasks: action.result})

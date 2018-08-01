@@ -3,7 +3,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Button } from 'antd'
 import AddComponent from '../../components/project/2Add'
-import {eth, web3} from '../../utilities/blockchain'
+import {web3} from '../../utilities/blockchain'
 import { hashTasksArray } from '../../utilities/hashing'
 import update from 'immutability-helper'
 import moment from 'moment'
@@ -16,7 +16,6 @@ class AddProject extends React.Component {
       tempTask: {},
       taskList: []
     }
-    // this.getProjectStatus = this.getProjectStatus.bind(this)
     this.getVerifiedTaskLists = this.getVerifiedTaskLists.bind(this)
     this.handleTaskInput = this.handleTaskInput.bind(this)
     this.submitTaskList = this.submitTaskList.bind(this)
@@ -25,7 +24,6 @@ class AddProject extends React.Component {
   }
 
   componentWillMount () {
-    // this.getProjectStatus()
     this.getVerifiedTaskLists(this.props.address)
   }
 
