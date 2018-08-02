@@ -88,24 +88,24 @@ module.exports = function () {
         netStatus.save((err, returned) => {
           if (err) throw Error
         })
-        Project.findOne({address: projectAddress}).exec((err, doc) => {
+      }
+      Project.findOne({address: projectAddress}).exec((err, doc) => {
+        if (err) console.error(err)
+        doc.state = 5
+        doc.save(err => {
           if (err) console.error(err)
-          doc.state = 5
-          doc.save(err => {
+          console.log('project in voting stage')
+        })
+        Task.findOne({address: taskAddress}).exec((err, task) => {
+          if (err) console.error(err)
+          task.state = 5
+          task.pollNonce = pollNonce
+          task.save(err => {
             if (err) console.error(err)
-            console.log('project in voting stage')
-          })
-          Task.findOne({address: taskAddress}).exec((err, task) => {
-            if (err) console.error(err)
-            task.state = 5
-            task.pollNonce = pollNonce
-            task.save(err => {
-              if (err) console.error(err)
-              console.log('task completion uncomfirmed, poll created')
-            })
+            console.log('task completion uncomfirmed, poll created')
           })
         })
-      }
+      })
     })
   })
 }
