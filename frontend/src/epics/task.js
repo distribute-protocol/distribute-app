@@ -4,7 +4,7 @@ import { map, mergeMap, concatMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { client } from '../index'
 import { merge } from 'rxjs/observable/merge'
-import { tr, rr, pr } from '../utilities/blockchain'
+import { tr, rr, pr, T, P } from '../utilities/blockchain'
 import { hashTasks } from '../utilities/hashing'
 import gql from 'graphql-tag'
 
@@ -52,7 +52,6 @@ const claimTaskEpic = action$ => {
   let index
   return action$.ofType(CLAIM_TASK).pipe(
     mergeMap(action => {
-      console.log(action)
       address = action.address
       txObj = action.txObj
       index = action.index
@@ -128,7 +127,13 @@ const validateTaskEpic = action$ => {
       txObj = action.txObj
       return Observable.from(tr.validateTask(address, index, validationState, action.txObj))
     }),
-    map(result => taskValidated(address, index, validationState, txObj.from))
+    mergeMap(result => {
+      return Observable.from(P.at(address).tasks(index))
+    }),
+    mergeMap(result => {
+      return Observable.from(T.at(result).validationEntryFee())
+    }),
+    map(result => taskValidated(address, index, validationState, result, txObj.from))
   )
 }
 

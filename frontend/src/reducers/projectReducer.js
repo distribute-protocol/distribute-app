@@ -109,19 +109,11 @@ export default function projectReducer (state = initialState, action) {
       projects = Object.assign({}, state[4], {[action.projectAddress]: project})
       return Object.assign({}, state, {4: projects})
     case TASK_VALIDATED:
-      console.log(state)
-      console.log('made it here')
-      validation = Object.assign([], state[4][action.address].tasks[action.taskIndex].validations, {[state[4][action.address].tasks[action.taskIndex].validations.length]: {amount: 'will get this later', state: action.validationState, user: action.validator}})
-      console.log(validation)
+      validation = Object.assign([], state[4][action.address].tasks[action.taskIndex].validations, {[state[4][action.address].tasks[action.taskIndex].validations.length]: {amount: action.valFee.toNumber(), state: action.validationState, user: action.validator}})
       task = Object.assign({}, state[4][action.address].tasks[action.taskIndex], {validations: validation})
-      console.log(task)
       tasks = Object.assign([], state[4][action.address].tasks, {[action.taskIndex]: task})
-      console.log(tasks)
       project = Object.assign({}, state[4][action.address], {tasks: tasks})
-      console.log(project)
       projects = Object.assign({}, state[4], {[action.address]: project})
-      console.log(projects)
-      console.log(Object.assign({}, state, {4: projects}))
       return Object.assign({}, state, {4: projects})
     default:
   }
