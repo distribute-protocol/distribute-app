@@ -208,6 +208,7 @@ module.exports = function () {
     let txHash = result.transactionHash
     let eventParams = result.data
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    console.log(eventParamArr)
     let projectAddress = result.data.topics
     projectAddress = '0x' + projectAddress.substr(-40)
     let index = parseInt(eventParamArr[0], 16)
