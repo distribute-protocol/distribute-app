@@ -28,8 +28,11 @@ module.exports = function () {
     let weiChange = parseInt(eventParamArr[1], 16)
     let account = eventParamArr[2]
     account = '0x' + account.substr(-40)
+    console.log('hello', tokensStaked)
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
+      console.log(txHash)
+      console.log(typeof netStatus.processedTxs[txHash], 'GOOBI')
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
         netStatus.processedTxs[txHash] = true
         netStatus.markModified('processedTxs')

@@ -505,4 +505,53 @@ module.exports = function () {
       }
     })
   })
+
+  // filter for project tasks ready to be validated
+  const projectVoteFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: PR.projectRegistryAddress,
+    topics: [web3.sha3('LogProjectVote(address,bool)')]
+  })
+  projectVoteFilter.watch(async (err, result) => {
+    if (err) console.error(err)
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let projectAddress = eventParamArr[0]
+    projectAddress = '0x' + projectAddress.substr(-40)
+    let flag = eventParamArr[1]
+    console.log(projectAddress, flag)
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        netStatus.save((err, returned) => {
+          if (err) throw Error
+        })
+        if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
+          Project.findOne({address: projectAddress}).exec((error, project) => {
+            if (error) console.error(error)
+            if (project) {
+              project.state = 5
+              Task.find({project: project.id}).exec((error, tasks) => {
+                if (error) console.error(error)
+                tasks.map((task, i) => {
+                  task.state = 5
+                  task.save(err => {
+                    if (err) console.error(error)
+                    console.log('tasks are ready to be voted on')
+                  })
+                })
+              })
+              project.save(err => {
+                if (err) console.error(error)
+                console.log('project moves to state voting')
+              })
+            }
+          })
+        }
+      }
+    })
+  })
 }
