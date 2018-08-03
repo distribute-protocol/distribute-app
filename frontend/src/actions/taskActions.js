@@ -121,12 +121,13 @@ export function validationsReceived (projectAddress, index, result) {
   }
 }
 
-export function rewardValidator (projectAddress, index, amount) {
+export function rewardValidator (projectAddress, index, amount, txObj) {
   return {
     type: REWARD_VALIDATOR,
     projectAddress,
     index,
-    amount
+    amount,
+    txObj
   }
 }
 

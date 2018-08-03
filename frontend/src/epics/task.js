@@ -170,16 +170,16 @@ const rewardValidatorEpic = action$ => {
     mergeMap(action => {
       address = action.address
       index = action.taskIndex
+      console.log(action)
       return Observable.from(tr.rewardValidator(address, index))
     }),
     map(result =>
-      validatorRewarded(address, index)
+      validatorRewarded(address, index, result.logs[0].args)
     )
   )
 }
 
 // reward task claimers epic
-
 export default (action$, store) => merge(
   submitFinalTaskListEpic(action$, store),
   claimTaskEpic(action$, store),

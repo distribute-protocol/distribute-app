@@ -197,4 +197,69 @@ module.exports = function () {
       }
     })
   })
+  const rewardValidatorFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: TR.projectLibraryAddress,
+    topics: [web3.sha3('LogRewardValidator(address,uint256,uint256,uint256,address)')]
+  })
+  rewardValidatorFilter.watch(async (err, result) => {
+    if (err) console.error(err)
+    let txHash = result.transactionHash
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let projectAddress = result.data.topics
+    projectAddress = '0x' + projectAddress.substr(-40)
+    let index = parseInt(eventParamArr[0], 16)
+    let weiReward = parseInt(eventParamArr[1], 16)
+    let tokenReturnAmount = parseInt(eventParamArr[2], 16)
+    let validator = eventParamArr[3]
+    validator = '0x' + validator.substr(-40)
+    console.log(eventParamArr)
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        netStatus.save((err, returned) => {
+          if (err) throw Error
+        })
+      }
+      User.findOne({account: validator}).exec((error, user) => {
+        if (error) console.log(error)
+        if (user) {
+          user.tokenBalance += tokenReturnAmount
+          user.weiBalance += weiReward
+        }
+        if (user) {
+          Project.findOne({address: projectAddress}).exec((error, doc) => {
+            if (error) console.error(error)
+            if (doc) {
+              Task.findOne({project: doc.id, index: index}).exec((error, task) => {
+                if (error) console.error(error)
+                task.validationRewardClaimable = false
+                task.save(err => {
+                  if (err) console.error(err)
+                })
+              })
+              Validation.findOne({project: doc.id, index: index}).exec((error, validation) => {
+                if (error) console.error(error)
+                validation.rewarded = true
+                validation.save(err => {
+                  if (err) console.error(err)
+                })
+              })
+              doc.save(err => {
+                if (err) console.error(error)
+              })
+              user.save(err => {
+                if (err) console.error(error)
+                console.log('validator successfully rewarded')
+              })
+            }
+          })
+        }
+      })
+    })
+  })
 }

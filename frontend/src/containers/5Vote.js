@@ -67,10 +67,10 @@ class Vote extends React.Component {
           index={i}
           address={address}
           project={this.props.projects[address]}
+          validations={(address) => this.getValidations(address)}
         />
       })
       : []
-
     return (
       <div>
         <Sidebar />

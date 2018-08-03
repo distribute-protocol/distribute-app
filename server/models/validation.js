@@ -6,7 +6,8 @@ let validatorSchema = mongoose.Schema({
   state: Boolean,
   task: mongoose.Schema.Types.ObjectId,
   user: String,
-  address: String
+  address: String,
+  rewarded: Boolean
 })
 
 const Validator = mongoose.model('Validator', validatorSchema)

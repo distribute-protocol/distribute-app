@@ -143,6 +143,7 @@ const typeDefs = `
     user: String
     state: Boolean
     address: String
+    rewarded: [Boolean]
   }
 
   type Vote {
