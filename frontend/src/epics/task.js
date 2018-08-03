@@ -151,7 +151,7 @@ const getValidationsEpic = action$ => {
       )
     }),
     map(result =>
-      validationsReceived(address, index, result.data.tokenBalance)
+      validationsReceived(address, index, result.data.getValidations)
     )
   )
 }
