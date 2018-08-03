@@ -457,7 +457,7 @@ module.exports = function () {
       }
     })
   })
-  // filter for project tasks ready to be validated
+  // filter for project tasks ready to be voted on
   const projectVoteFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
