@@ -166,4 +166,61 @@ module.exports = function () {
       })
     })
   })
+  const rewardTaskCompleteFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: PL.projectLibraryAddress,
+    topics: [web3.sha3('LogClaimTaskReward(address,uint256,address,uint256,uint256)')]
+  })
+  rewardTaskCompleteFilter.watch(async (err, result) => {
+    if (err) console.error(err)
+    let txHash = result.transactionHash
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let projectAddress = eventParamArr[0]
+    projectAddress = '0x' + projectAddress.substr(-40)
+    let index = parseInt(eventParamArr[1], 16)
+    let taskClaimer = eventParamArr[4]
+    taskClaimer = '0x' + taskClaimer.substr(-40)
+    let weiReward = parseInt(eventParamArr[2], 16)
+    let reputationReward = parseInt(eventParamArr[3], 16)
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        netStatus.save((err, returned) => {
+          if (err) throw Error
+        })
+      }
+      User.findOne({account: taskClaimer}).exec((error, user) => {
+        if (error) console.log('you are not the taskClaimer')
+        if (user) {
+          user.reputationBalance += reputationReward
+          user.weiBalance += weiReward
+        }
+        if (user) {
+          Project.findOne({address: projectAddress}).exec((error, doc) => {
+            if (error) console.error(error)
+            if (doc) {
+              Task.findOne({project: doc.id, index: index}).exec((error, task) => {
+                if (error) console.error(error)
+                task.workerRewardClaimable = false
+                task.save(err => {
+                  if (err) console.error(err)
+                })
+              })
+              doc.save(err => {
+                if (err) console.error(error)
+              })
+            }
+            user.save(err => {
+              if (err) console.error(error)
+              console.log('task completer successfully rewarded')
+            })
+          })
+        }
+      })
+    })
+  })
 }
