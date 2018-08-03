@@ -4,6 +4,7 @@ const PL = require('../../frontend/src/abi/ProjectLibrary')
 const Project = require('../models/project')
 const Task = require('../models/task')
 const Network = require('../models/network')
+const User = require('../models/user')
 
 module.exports = function () {
   // filter for tasks validated, no vote needed
@@ -135,21 +136,33 @@ module.exports = function () {
           if (err) throw Error
         })
       }
-      Project.findOne({address: projectAddress}).exec((err, doc) => {
-        if (err) console.error(err)
-        doc.save(err => {
-          if (err) console.error(err)
-          console.log('project in voting stage')
-        })
-        Task.findOne({address: taskAddress}).exec((err, task) => {
-          if (err) console.error(err)
-          task.state = 5
-          task.pollNonce = pollNonce
-          task.save(err => {
-            if (err) console.error(err)
-            console.log('task completion unconfirmed, poll created')
+      User.findOne({account: validator}).exec((error, user) => {
+        if (error) console.log('you are not the validator')
+        if (user) {
+          user.tokenBalance += tokenReturnAmount
+          user.weiBalance += weiReward
+        }
+        if (user) {
+          Project.findOne({address: projectAddress}).exec((error, doc) => {
+            if (error) console.error(error)
+            if (doc) {
+              Task.findOne({project: doc.id, index: index}).exec((error, task) => {
+                if (error) console.error(error)
+                task.validationRewardClaimable = false
+                task.save(err => {
+                  if (err) console.error(err)
+                })
+              })
+              doc.save(err => {
+                if (err) console.error(error)
+              })
+            }
+            user.save(err => {
+              if (err) console.error(error)
+              console.log('validator successfully rewarded')
+            })
           })
-        })
+        }
       })
     })
   })

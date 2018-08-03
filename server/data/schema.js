@@ -133,6 +133,7 @@ const typeDefs = `
     tokenChanges: [Token]
     validations: [Validation]
     votes: [Vote]
+    weiBalance: Int
   }
 
   type Validation {
