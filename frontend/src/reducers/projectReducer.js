@@ -70,7 +70,7 @@ export default function projectReducer (state = initialState, action) {
       projects = Object.assign({}, state[2], {[action.address]: project})
       return Object.assign({}, state, {2: projects})
     case FINAL_TASK_LIST_SUBMITTED:
-      project = Object.assign({}, state[3][action.address], {taskList: action.tasks, listSubmitted: true})
+      project = Object.assign({}, state[3][action.address], {tasks: action.tasks, listSubmitted: true})
       projects = Object.assign({}, state[3], {[action.address]: project})
       return Object.assign({}, state, {3: projects})
     case TASKS_RECEIVED:
