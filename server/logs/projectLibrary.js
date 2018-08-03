@@ -68,7 +68,7 @@ module.exports = function () {
     fromBlock: 0,
     toBlock: 'latest',
     address: PL.projectLibraryAddress,
-    topics: [web3.sha3('LogTaskVote(address,address,uint)')]
+    topics: [web3.sha3('LogTaskVote(address,address,uint256)')]
   })
   taskVoteFilter.watch(async (err, result) => {
     if (err) console.error(err)
@@ -102,7 +102,52 @@ module.exports = function () {
           task.pollNonce = pollNonce
           task.save(err => {
             if (err) console.error(err)
-            console.log('task completion uncomfirmed, poll created')
+            console.log('task completion unconfirmed, poll created')
+          })
+        })
+      })
+    })
+  })
+  const rewardValidatorFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: PL.projectLibraryAddress,
+    topics: [web3.sha3('LogRewardValidator(address,uint256,uint256,uint256,address)')]
+  })
+  rewardValidatorFilter.watch(async (err, result) => {
+    if (err) console.error(err)
+    let txHash = result.transactionHash
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let projectAddress = eventParamArr[0]
+    projectAddress = '0x' + projectAddress.substr(-40)
+    let index = parseInt(eventParamArr[1], 16)
+    let weiReward = parseInt(eventParamArr[2], 16)
+    let tokenReturnAmount = parseInt(eventParamArr[3], 16)
+    let validator = eventParamArr[4]
+    validator = '0x' + validator.substr(-40)
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        netStatus.save((err, returned) => {
+          if (err) throw Error
+        })
+      }
+      Project.findOne({address: projectAddress}).exec((err, doc) => {
+        if (err) console.error(err)
+        doc.save(err => {
+          if (err) console.error(err)
+          console.log('project in voting stage')
+        })
+        Task.findOne({address: taskAddress}).exec((err, task) => {
+          if (err) console.error(err)
+          task.state = 5
+          task.pollNonce = pollNonce
+          task.save(err => {
+            if (err) console.error(err)
+            console.log('task completion unconfirmed, poll created')
           })
         })
       })

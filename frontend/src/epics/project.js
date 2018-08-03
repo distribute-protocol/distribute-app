@@ -216,6 +216,18 @@ const checkVotingStatus = action$ =>
     map(result => votingStatusChecked(result))
   )
 
+const getVotingProjectsEpic = action$ => {
+  let state
+  return action$.ofType(GET_PROJECTS).pipe(
+    mergeMap(action => {
+      state = action.state
+      return client.query({query: action.query}
+      )
+    }),
+    map(result => projectsReceived(state, result.data.allProjectsinState))
+  )
+}
+
 export default (action$, store) => merge(
   getProposedProjectsEpic(action$, store),
   getStakedProjectsEpic(action$, store),
@@ -230,5 +242,6 @@ export default (action$, store) => merge(
   getActiveProjectsEpic(action$, store),
   checkValidateStatus(action$, store),
   getValidateProjectsEpic(action$, store),
-  checkVotingStatus(action$, store)
+  checkVotingStatus(action$, store),
+  getVotingProjectsEpic(action$, store)
 )

@@ -10,7 +10,9 @@ import {
   GET_TASKS,
   TASKS_RECEIVED,
   GET_VALIDATIONS,
-  VALIDATIONS_RECEIVED
+  VALIDATIONS_RECEIVED,
+  REWARD_VALIDATOR,
+  VALIDATOR_REWARDED
 } from '../constants/TaskActionTypes'
 // task actions start at submitFinalTaskList because task contract initialized in this action
 
@@ -114,5 +116,23 @@ export function validationsReceived (projectAddress, index, result) {
     projectAddress,
     index,
     result
+  }
+}
+
+export function rewardValidator (projectAddress, index, amount) {
+  return {
+    type: REWARD_VALIDATOR,
+    projectAddress,
+    index,
+    amount
+  }
+}
+
+export function validatorRewarded (projectAddress, index, amount) {
+  return {
+    type: VALIDATOR_REWARDED,
+    projectAddress,
+    index,
+    amount
   }
 }

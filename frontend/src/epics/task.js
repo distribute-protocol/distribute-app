@@ -1,5 +1,5 @@
-import { SUBMIT_FINAL_TASK_LIST, CLAIM_TASK, GET_TASKS, SUBMIT_TASK_COMPLETE, VALIDATE_TASK, GET_VALIDATIONS } from '../constants/TaskActionTypes'
-import { finalTaskListSubmitted, taskClaimed, tasksReceived, taskCompleted, taskValidated, validationsReceived } from '../actions/taskActions'
+import { SUBMIT_FINAL_TASK_LIST, CLAIM_TASK, GET_TASKS, SUBMIT_TASK_COMPLETE, VALIDATE_TASK, GET_VALIDATIONS, REWARD_VALIDATOR } from '../constants/TaskActionTypes'
+import { finalTaskListSubmitted, taskClaimed, tasksReceived, taskCompleted, taskValidated, validationsReceived, validatorRewarded } from '../actions/taskActions'
 import { map, mergeMap, concatMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { client } from '../index'
@@ -151,7 +151,22 @@ const getValidationsEpic = action$ => {
       )
     }),
     map(result =>
-      validationsReceived(address, index, result.data.getValidations)
+      validationsReceived(address, index, result.data.tokenBalance)
+    )
+  )
+}
+
+const rewardValidatorsEpic = action$ => {
+  let address
+  let index
+  return action$.ofType(REWARD_VALIDATOR).pipe(
+    mergeMap(action => {
+      address = action.address
+      index = action.taskIndex
+      return Observable.from(tr.rewardValidator(address, index, action.txObj))
+    }),
+    map(result =>
+      validatorRewarded(address, index, result.data)
     )
   )
 }
@@ -162,5 +177,6 @@ export default (action$, store) => merge(
   getTasksEpic(action$, store),
   submitTaskCompleteEpic(action$, store),
   validateTaskEpic(action$, store),
-  getValidationsEpic(action$, store)
+  getValidationsEpic(action$, store),
+  rewardValidatorsEpic(action$, store)
 )
