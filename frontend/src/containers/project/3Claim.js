@@ -48,7 +48,6 @@ class ClaimProject extends React.Component {
       let reputationCost = this.props.project.reputationCost
       let weiCost = this.props.project.weiCost
       tasks = JSON.parse(this.props.project.taskList).map((task, i) => {
-        console.log(this.props.tasks[i], this.props.tasks)
         let weiReward = Math.floor(weiCost * task.percentage / 100)
         return {
           key: i,

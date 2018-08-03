@@ -59,12 +59,13 @@ export function validateTask (address, taskIndex, validationState, txObj) {
   }
 }
 
-export function taskValidated (address, taskIndex, validationState) {
+export function taskValidated (address, taskIndex, validationState, validator) {
   return {
     type: TASK_VALIDATED,
     address,
     taskIndex,
-    validationState
+    validationState,
+    validator
   }
 }
 

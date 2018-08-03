@@ -1,5 +1,5 @@
 import { PROJECTS_RECEIVED, TASK_LIST_SET, HASHED_TASK_LIST_SUBMITTED, PROJECT_STAKED, PROJECT_UNSTAKED, VERIFIED_TASK_LISTS_RECEIVED } from '../constants/ProjectActionTypes'
-import { FINAL_TASK_LIST_SUBMITTED, TASKS_RECEIVED, VALIDATIONS_RECEIVED, TASK_CLAIMED, TASK_COMPLETED } from '../constants/TaskActionTypes'
+import { FINAL_TASK_LIST_SUBMITTED, TASKS_RECEIVED, VALIDATIONS_RECEIVED, TASK_CLAIMED, TASK_COMPLETED, TASK_VALIDATED } from '../constants/TaskActionTypes'
 
 const initialState = {
 }
@@ -107,6 +107,21 @@ export default function projectReducer (state = initialState, action) {
       tasks = Object.assign([], state[4][action.projectAddress].tasks, {[action.index]: task})
       project = Object.assign({}, state[4][action.projectAddress], {tasks: tasks})
       projects = Object.assign({}, state[4], {[action.projectAddress]: project})
+      return Object.assign({}, state, {4: projects})
+    case TASK_VALIDATED:
+      console.log(state)
+      console.log('made it here')
+      validation = Object.assign([], state[4][action.address].tasks[action.taskIndex].validations, {[state[4][action.address].tasks[action.taskIndex].validations.length]: {amount: 'will get this later', state: action.validationState, user: action.validator}})
+      console.log(validation)
+      task = Object.assign({}, state[4][action.address].tasks[action.taskIndex], {validations: validation})
+      console.log(task)
+      tasks = Object.assign([], state[4][action.address].tasks, {[action.taskIndex]: task})
+      console.log(tasks)
+      project = Object.assign({}, state[4][action.address], {tasks: tasks})
+      console.log(project)
+      projects = Object.assign({}, state[4], {[action.address]: project})
+      console.log(projects)
+      console.log(Object.assign({}, state, {4: projects}))
       return Object.assign({}, state, {4: projects})
     default:
   }

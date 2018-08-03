@@ -20,9 +20,11 @@ class ValidateTasks extends React.Component {
   }
 
   render () {
+    console.log(typeof this.props.validations, this.props.validations)
     let validations
     if (typeof this.props.validations !== 'undefined') {
       validations = this.props.validations.map((validation, i) => {
+        console.log(validation, i)
         return {
           key: i,
           address: validation.user,
@@ -31,9 +33,10 @@ class ValidateTasks extends React.Component {
         }
       })
     } else {
+      console.log('else')
       validations = []
     }
-
+    console.log('return?')
     return (
       <ValidateTaskComponent
         validations={validations}
