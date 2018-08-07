@@ -18,6 +18,7 @@ class VoteTasks extends React.Component {
     this.voteTask = this.voteTask.bind(this)
     this.checkEnd = this.checkEnd.bind(this)
     this.rewardValidator = this.rewardValidator.bind(this)
+    this.rewardTask = this.rewardTask.bind(this)
   }
 
   componentWillMount () {
@@ -211,11 +212,7 @@ class VoteTasks extends React.Component {
 
   // Doesn't work because project needs to be in complete state, instatiating a task doesn't seem to work
   rewardTask (i) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        await rr.rewardTask(this.props.address, i, {from: accounts[0]})
-      }
-    })
+    this.props.rewardTask(this.props.address, i)
   }
 
   checkEnd () {
@@ -338,6 +335,7 @@ class VoteTasks extends React.Component {
         tasks={tasks}
         checkVoting={this.checkEnd}
         rewardValidator={this.rewardValidator}
+        rewardTask={this.rewardTask}
       />
     )
   }

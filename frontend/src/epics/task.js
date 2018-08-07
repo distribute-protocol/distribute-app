@@ -1,5 +1,5 @@
-import { SUBMIT_FINAL_TASK_LIST, CLAIM_TASK, GET_TASKS, SUBMIT_TASK_COMPLETE, VALIDATE_TASK, GET_VALIDATIONS, REWARD_VALIDATOR } from '../constants/TaskActionTypes'
-import { finalTaskListSubmitted, taskClaimed, tasksReceived, taskCompleted, taskValidated, validationsReceived, validatorRewarded } from '../actions/taskActions'
+import { SUBMIT_FINAL_TASK_LIST, CLAIM_TASK, GET_TASKS, SUBMIT_TASK_COMPLETE, VALIDATE_TASK, GET_VALIDATIONS, REWARD_VALIDATOR, REWARD_TASK } from '../constants/TaskActionTypes'
+import { finalTaskListSubmitted, taskClaimed, tasksReceived, taskCompleted, taskValidated, validationsReceived, validatorRewarded, taskRewarded } from '../actions/taskActions'
 import { map, mergeMap, concatMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { client } from '../index'
@@ -172,7 +172,6 @@ const rewardValidatorEpic = action$ => {
       address = action.projectAddress
       index = action.index
       txObj = action.txObj
-      console.log(address, index, txObj)
       return Observable.from(tr.rewardValidator(address, index, txObj))
     }),
     map(result =>
@@ -181,23 +180,22 @@ const rewardValidatorEpic = action$ => {
   )
 }
 
-// const rewardTaskEpic = action$ => {
-//   let address
-//   let index
-//   let txObj
-//   return action$.ofType(REWARD_VALIDATOR).pipe(
-//     mergeMap(action => {
-//       address = action.projectAddress
-//       index = action.index
-//       txObj = action.txObj
-//       console.log(address, index, txObj)
-//       return Observable.from(tr.rewardValidator(address, index, txObj))
-//     }),
-//     map(result =>
-//       validatorRewarded(address, index, result.logs[0].args)
-//     )
-//   )
-// }
+const rewardTaskEpic = action$ => {
+  let address
+  let index
+  let txObj
+  return action$.ofType(REWARD_TASK).pipe(
+    mergeMap(action => {
+      address = action.projectAddress
+      index = action.index
+      txObj = action.txObj
+      return Observable.from(rr.rewardTask(address, index, txObj))
+    }),
+    map(result =>
+      taskRewarded(address, index, result)
+    )
+  )
+}
 
 export default (action$, store) => merge(
   submitFinalTaskListEpic(action$, store),
@@ -206,5 +204,6 @@ export default (action$, store) => merge(
   submitTaskCompleteEpic(action$, store),
   validateTaskEpic(action$, store),
   getValidationsEpic(action$, store),
-  rewardValidatorEpic(action$, store)
+  rewardValidatorEpic(action$, store),
+  rewardTaskEpic(action$, store)
 )

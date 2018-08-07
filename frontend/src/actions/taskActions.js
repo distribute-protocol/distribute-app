@@ -150,7 +150,7 @@ export function rewardTask (projectAddress, index, txObj) {
   }
 }
 
-export function taskRewarded (projectAddress, index, amount) {
+export function taskRewarded (projectAddress, index, amount, claimer) {
   return {
     type: TASK_REWARDED,
     projectAddress,

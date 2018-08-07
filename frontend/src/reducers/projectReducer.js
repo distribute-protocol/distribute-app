@@ -1,5 +1,5 @@
 import { PROJECTS_RECEIVED, TASK_LIST_SET, HASHED_TASK_LIST_SUBMITTED, PROJECT_STAKED, PROJECT_UNSTAKED, VERIFIED_TASK_LISTS_RECEIVED } from '../constants/ProjectActionTypes'
-import { FINAL_TASK_LIST_SUBMITTED, TASKS_RECEIVED, VALIDATIONS_RECEIVED, TASK_CLAIMED, TASK_COMPLETED, TASK_VALIDATED, VALIDATOR_REWARDED } from '../constants/TaskActionTypes'
+import { FINAL_TASK_LIST_SUBMITTED, TASKS_RECEIVED, VALIDATIONS_RECEIVED, TASK_CLAIMED, TASK_COMPLETED, TASK_VALIDATED, VALIDATOR_REWARDED, TASK_REWARDED } from '../constants/TaskActionTypes'
 
 const initialState = {
 }
@@ -109,6 +109,8 @@ export default function projectReducer (state = initialState, action) {
       projects = Object.assign({}, state[4], {[action.projectAddress]: project})
       return Object.assign({}, state, {4: projects})
     case TASK_VALIDATED:
+    // check to see if taskIndex is correct
+      console.log(action)
       validation = Object.assign([], state[4][action.address].tasks[action.taskIndex].validations, {[state[4][action.address].tasks[action.taskIndex].validations.length]: {amount: action.valFee.toNumber(), state: action.validationState, user: action.validator}})
       task = Object.assign({}, state[4][action.address].tasks[action.taskIndex], {validations: validation})
       tasks = Object.assign([], state[4][action.address].tasks, {[action.taskIndex]: task})
@@ -116,8 +118,14 @@ export default function projectReducer (state = initialState, action) {
       projects = Object.assign({}, state[4], {[action.address]: project})
       return Object.assign({}, state, {4: projects})
     case VALIDATOR_REWARDED:
-      console.log(action)
       task = Object.assign({}, state[5][action.projectAddress].tasks[action.index], {validatorsRewarded: {[action.validator]: true}})
+      tasks = Object.assign([], state[5][action.projectAddress].tasks, {[action.index]: task})
+      project = Object.assign({}, state[5][action.projectAddress], {tasks: tasks})
+      projects = Object.assign({}, state[5], {[action.projectAddress]: project})
+      return Object.assign({}, state, {5: projects})
+    case TASK_REWARDED:
+      console.log(action)
+      task = Object.assign({}, state[5][action.projectAddress].tasks[action.index], {taskRewarded: {[action.claimer]: true}})
       tasks = Object.assign([], state[5][action.projectAddress].tasks, {[action.index]: task})
       project = Object.assign({}, state[5][action.projectAddress], {tasks: tasks})
       projects = Object.assign({}, state[5], {[action.projectAddress]: project})
