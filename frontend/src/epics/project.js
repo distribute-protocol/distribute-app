@@ -34,7 +34,7 @@ const proposeProject = action$ =>
   )
 
 const stakeProject = action$ => {
-  let collateralType, projectAddress, stakeResult, state, currentPrice
+  let collateralType, projectAddress, stakeResult, state
   return action$.ofType(STAKE_PROJECT).pipe(
     mergeMap(action => {
       collateralType = action.collateralType
