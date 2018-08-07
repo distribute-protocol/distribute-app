@@ -6,7 +6,6 @@ import { push } from 'react-router-redux'
 import { client } from '../index'
 import { merge } from 'rxjs/observable/merge'
 import { rr, tr, pr, dt, P } from '../utilities/blockchain'
-// import { hashTasksArray, hashTasks } from '../utilities/hashing'
 import gql from 'graphql-tag'
 
 const getProposedProjectsEpic = action$ => {
