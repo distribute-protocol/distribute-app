@@ -182,7 +182,10 @@ const checkActiveStatus = action$ =>
     mergeMap(action => {
       return Observable.from(pr.checkActive(action.projectAddress, action.txObj))
     }),
-    map(result => activeStatusChecked(result))
+    map(result => activeStatusChecked(result)),
+    mergeMap(result => Observable.concat(
+      Observable.of(push('/claim'))
+    ))
   )
 
 const getActiveProjectsEpic = action$ => {
@@ -202,7 +205,10 @@ const checkValidateStatus = action$ => {
     mergeMap(action => {
       return Observable.from(pr.checkValidate(action.projectAddress, action.txObj))
     }),
-    map(result => validateStatusChecked(result))
+    map(result => validateStatusChecked(result)),
+    mergeMap(result => Observable.concat(
+      Observable.of(push('/validate'))
+    ))
   )
 }
 
@@ -223,7 +229,10 @@ const checkVotingStatus = action$ =>
     mergeMap(action => {
       return Observable.from(pr.checkVoting(action.projectAddress, action.txObj))
     }),
-    map(result => votingStatusChecked(result))
+    map(result => votingStatusChecked(result)),
+    mergeMap(result => Observable.concat(
+      Observable.of(push('/vote'))
+    ))
   )
 
 const getVotingProjectsEpic = action$ => {
