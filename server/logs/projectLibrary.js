@@ -153,13 +153,10 @@ module.exports = function () {
             if (doc) {
               Task.findOne({project: doc.id, index: index}).exec((error, task) => {
                 if (error) console.error(error)
-                task.workerRewardClaimable = false
+                task.workerRewarded = true
                 task.save(err => {
-                  if (err) console.error(err)
+                  if (err) console.error(error)
                 })
-              })
-              doc.save(err => {
-                if (err) console.error(error)
               })
             }
             user.save(err => {

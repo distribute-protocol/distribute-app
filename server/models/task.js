@@ -18,6 +18,7 @@ let taskSchema = mongoose.Schema({
   validationRewardClaimable: Boolean, // reward claimable by validator
   validations: [],
   weighting: Number,
+  workerRewarded: Boolean,
   workerRewardClaimable: Boolean // reward claimable by worker who completed the task
 })
 

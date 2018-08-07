@@ -110,6 +110,7 @@ const typeDefs = `
     validationRewardClaimable: Boolean
     votes: [Vote]
     weighting: Int
+    workerRewarded: Boolean
     workerRewardClaimable: Boolean
   }
 

@@ -192,7 +192,7 @@ const rewardTaskEpic = action$ => {
       return Observable.from(rr.rewardTask(address, index, txObj))
     }),
     map(result =>
-      taskRewarded(address, index, result)
+      taskRewarded(address, index, result, txObj.from)
     )
   )
 }

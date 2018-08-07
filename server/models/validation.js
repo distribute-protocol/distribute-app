@@ -10,6 +10,6 @@ let validatorSchema = mongoose.Schema({
   rewarded: Boolean
 })
 
-const Validator = mongoose.model('Validator', validatorSchema)
+const Validation = mongoose.model('Validation', validatorSchema)
 
-module.exports = Validator
+module.exports = Validation

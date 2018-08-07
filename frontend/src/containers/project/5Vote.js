@@ -231,8 +231,10 @@ class VoteTasks extends React.Component {
       tasks = this.props.tasks.map((task, i) => {
         let rewardVal, rewardWork, needsVote
         if (this.props.tasks[i].validationRewardClaimable) {
-          if (this.props.tasks[i].workerRewardClaimable) {
+          if (this.props.tasks[i].workerRewardClaimable) { // change to be user specific
             // validators and workers can claim
+            // check to see if user can claim, then once they claim turn off the button
+            // pull validations from task, filter by current metamask address
             rewardVal =
               <div>
                 <Button
