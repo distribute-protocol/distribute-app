@@ -122,18 +122,16 @@ module.exports = function () {
   })
   rewardTaskCompleteFilter.watch(async (err, result) => {
     if (err) console.error(err)
-    console.log('come here')
     let txHash = result.transactionHash
     let eventParams = result.data
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
     let index = parseInt(eventParamArr[1], 16)
-    let taskClaimer = eventParamArr[4]
+    let taskClaimer = eventParamArr[2]
     taskClaimer = '0x' + taskClaimer.substr(-40)
-    let weiReward = parseInt(eventParamArr[2], 16)
-    let reputationReward = parseInt(eventParamArr[3], 16)
-    console.log(taskClaimer, projectAddress, index, weiReward, reputationReward)
+    let weiReward = parseInt(eventParamArr[3], 16)
+    let reputationReward = parseInt(eventParamArr[4], 16)
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
@@ -148,7 +146,6 @@ module.exports = function () {
         if (user) {
           user.reputationBalance += reputationReward
           user.weiBalance += weiReward
-          console.log('here')
         }
         if (user) {
           Project.findOne({address: projectAddress}).exec((error, doc) => {
@@ -159,12 +156,10 @@ module.exports = function () {
                 task.workerRewardClaimable = false
                 task.save(err => {
                   if (err) console.error(err)
-                  console.log('here again')
                 })
               })
               doc.save(err => {
                 if (err) console.error(error)
-                console.log('hereeeee')
               })
             }
             user.save(err => {

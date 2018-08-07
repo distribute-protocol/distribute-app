@@ -28,11 +28,9 @@ module.exports = function () {
     let weiChange = parseInt(eventParamArr[1], 16)
     let account = eventParamArr[2]
     account = '0x' + account.substr(-40)
-    console.log('hello', tokensStaked)
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
       console.log(txHash)
-      console.log(typeof netStatus.processedTxs[txHash], 'GOOBI')
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
         netStatus.processedTxs[txHash] = true
         netStatus.markModified('processedTxs')
@@ -172,7 +170,7 @@ module.exports = function () {
             })
             ValidationEvent.save(err => {
               if (err) console.error(err)
-              console.log('new validation event saved')
+              console.log('new validation event saved', validationState)
             })
             // add validation to user
             User.findOne({account: validator}).exec((error, userStatus) => {
@@ -183,7 +181,7 @@ module.exports = function () {
               })
             })
             taskStatus.validations.push(ValidationEvent.id)
-            console.log(taskStatus, ValidationEvent, ValidationEvent.id)
+            // console.log(taskStatus, ValidationEvent, ValidationEvent.id)
             taskStatus.save(err => {
               if (err) console.error(err)
             })
@@ -197,6 +195,7 @@ module.exports = function () {
       }
     })
   })
+  // filter for validator retrieving award
   const rewardValidatorFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
@@ -208,15 +207,14 @@ module.exports = function () {
     let txHash = result.transactionHash
     let eventParams = result.data
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
-    console.log(eventParamArr)
-    let projectAddress = result.data.topics
+    let projectAddress = result.topics[1]
     projectAddress = '0x' + projectAddress.substr(-40)
     let index = parseInt(eventParamArr[0], 16)
     let weiReward = parseInt(eventParamArr[1], 16)
     let tokenReturnAmount = parseInt(eventParamArr[2], 16)
     let validator = eventParamArr[3]
     validator = '0x' + validator.substr(-40)
-    console.log(eventParamArr)
+    // console.log(projectAddress, index, weiReward, tokenReturnAmount, validator)
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
@@ -238,16 +236,19 @@ module.exports = function () {
             if (doc) {
               Task.findOne({project: doc.id, index: index}).exec((error, task) => {
                 if (error) console.error(error)
-                task.validationRewardClaimable = false
+                // task.validationRewardClaimable = false
                 task.save(err => {
                   if (err) console.error(err)
                 })
-              })
-              Validation.findOne({project: doc.id, index: index}).exec((error, validation) => {
-                if (error) console.error(error)
-                validation.rewarded = true
-                validation.save(err => {
-                  if (err) console.error(err)
+                Validation.findOne({task: task.id}).exec((error, validation) => {
+                  if (error) console.error(error)
+                  if (validation) {
+                    validation.rewarded = true
+                    // console.log('here 2', validation)
+                    validation.save(err => {
+                      if (err) console.error(err)
+                    })
+                  }
                 })
               })
               doc.save(err => {
