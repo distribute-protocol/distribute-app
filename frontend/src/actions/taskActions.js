@@ -155,6 +155,7 @@ export function taskRewarded (projectAddress, index, amount, claimer) {
     type: TASK_REWARDED,
     projectAddress,
     index,
-    amount
+    amount,
+    claimer
   }
 }
