@@ -5,8 +5,7 @@ import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
 import { client } from '../index'
 import { merge } from 'rxjs/observable/merge'
-import { rr, tr, pr, dt } from '../utilities/blockchain'
-// import { hashTasksArray, hashTasks } from '../utilities/hashing'
+import { rr, tr, pr, dt, P } from '../utilities/blockchain'
 import gql from 'graphql-tag'
 
 const getProposedProjectsEpic = action$ => {
@@ -34,19 +33,30 @@ const proposeProject = action$ =>
   )
 
 const stakeProject = action$ => {
-  let collateralType, stakeResult
+  let collateralType, projectAddress, stakeResult, state
   return action$.ofType(STAKE_PROJECT).pipe(
     mergeMap(action => {
       collateralType = action.collateralType
+      projectAddress = action.projectAddress
       return action.collateralType === 'tokens'
         ? Observable.from(tr.stakeTokens(action.projectAddress, parseInt(action.value), action.txObj))
         : Observable.from(rr.stakeReputation(action.projectAddress, parseInt(action.value), action.txObj))
     }),
     mergeMap(result => {
       stakeResult = result
+      return Observable.from(P.at(projectAddress).state())
+    }),
+    mergeMap(result => {
+      state = result
       return Observable.from(dt.currentPrice())
     }),
-    map(result => projectStaked(collateralType, stakeResult.logs[0].args, result))
+    mergeMap(result => {
+      if (state.toNumber() === 2) {
+        return Observable.of(push('/add'))
+      } else {
+        return Observable.of(projectStaked(collateralType, stakeResult.logs[0].args, result))
+      }
+    })
   )
 }
 
@@ -172,7 +182,10 @@ const checkActiveStatus = action$ =>
     mergeMap(action => {
       return Observable.from(pr.checkActive(action.projectAddress, action.txObj))
     }),
-    map(result => activeStatusChecked(result))
+    map(result => activeStatusChecked(result)),
+    mergeMap(result => Observable.concat(
+      Observable.of(push('/claim'))
+    ))
   )
 
 const getActiveProjectsEpic = action$ => {
@@ -192,7 +205,10 @@ const checkValidateStatus = action$ => {
     mergeMap(action => {
       return Observable.from(pr.checkValidate(action.projectAddress, action.txObj))
     }),
-    map(result => validateStatusChecked(result))
+    map(result => validateStatusChecked(result)),
+    mergeMap(result => Observable.concat(
+      Observable.of(push('/validate'))
+    ))
   )
 }
 
@@ -213,7 +229,10 @@ const checkVotingStatus = action$ =>
     mergeMap(action => {
       return Observable.from(pr.checkVoting(action.projectAddress, action.txObj))
     }),
-    map(result => votingStatusChecked(result))
+    map(result => votingStatusChecked(result)),
+    mergeMap(result => Observable.concat(
+      Observable.of(push('/vote'))
+    ))
   )
 
 const getVotingProjectsEpic = action$ => {
