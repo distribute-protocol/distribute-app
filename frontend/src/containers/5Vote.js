@@ -7,6 +7,7 @@ import fastforward from '../utilities/fastforward'
 import { connect } from 'react-redux'
 import { eth } from '../utilities/blockchain'
 import { getProjects } from '../actions/projectActions'
+import { rewardValidator } from '../actions/taskActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -37,6 +38,7 @@ class Vote extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
+    this.rewardValidator = this.rewardValidator.bind(this)
   }
 
   componentWillMount () {
@@ -55,6 +57,15 @@ class Vote extends React.Component {
     })
   }
 
+  async rewardValidator (address, index) {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        this.props.rewardValidator(address, index, {from: accounts[0]})
+        // await tr.rewardValidator(this.props.address, i, {from: accounts[0]})
+      }
+    })
+  }
+
   async fastForward () {
     await fastforward(7 * 24 * 60 * 60)
   }
@@ -67,6 +78,7 @@ class Vote extends React.Component {
           index={i}
           address={address}
           project={this.props.projects[address]}
+          rewardValidator={this.rewardValidator}
           validations={(address) => this.getValidations(address)}
         />
       })
@@ -99,7 +111,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
-    getProjects: () => dispatch(getProjects(5, projQuery))
+    getProjects: () => dispatch(getProjects(5, projQuery)),
+    rewardValidator: (address, index, txObj) => dispatch(rewardValidator(address, index, txObj))
   }
 }
 

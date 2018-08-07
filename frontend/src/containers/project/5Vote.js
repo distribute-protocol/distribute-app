@@ -17,6 +17,7 @@ class VoteTasks extends React.Component {
     }
     this.voteTask = this.voteTask.bind(this)
     this.checkEnd = this.checkEnd.bind(this)
+    this.rewardValidator = this.rewardValidator.bind(this)
   }
 
   componentWillMount () {
@@ -183,7 +184,7 @@ class VoteTasks extends React.Component {
   }
 
   getPrevPollID (numTokens, user) {
-    let pollInfo = this.props.users[user]   // get object of poll data w/pollID's as keys
+    let pollInfo = this.props.users[user] // get object of poll data w/pollID's as keys
     if (typeof pollInfo === 'undefined') return 0
     let keys = Object.keys(pollInfo)
     let currPollID = 0
@@ -199,11 +200,13 @@ class VoteTasks extends React.Component {
 
   // Works - need to check all related state
   rewardValidator (i) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        await tr.rewardValidator(this.props.address, i, {from: accounts[0]})
-      }
-    })
+    this.props.rewardValidator(this.props.address, i)
+    // eth.getAccounts(async (err, accounts) => {
+    //   if (!err) {
+    //     this.props.rewardValidator(address, index, {from: accounts[0]})
+    //     // await tr.rewardValidator(this.props.address, i, {from: accounts[0]})
+    //   }
+    // })
   }
 
   // Doesn't work because project needs to be in complete state, instatiating a task doesn't seem to work
@@ -334,6 +337,7 @@ class VoteTasks extends React.Component {
         date={moment(this.state.nextDeadline)}
         tasks={tasks}
         checkVoting={this.checkEnd}
+        rewardValidator={this.rewardValidator}
       />
     )
   }

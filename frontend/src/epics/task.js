@@ -166,12 +166,14 @@ const getValidationsEpic = action$ => {
 const rewardValidatorEpic = action$ => {
   let address
   let index
+  let txObj
   return action$.ofType(REWARD_VALIDATOR).pipe(
     mergeMap(action => {
-      address = action.address
-      index = action.taskIndex
-      console.log(action)
-      return Observable.from(tr.rewardValidator(address, index))
+      address = action.projectAddress
+      index = action.index
+      txObj = action.txObj
+      console.log(address, index, txObj)
+      return Observable.from(tr.rewardValidator(address, index, txObj))
     }),
     map(result =>
       validatorRewarded(address, index, result.logs[0].args)
@@ -179,7 +181,24 @@ const rewardValidatorEpic = action$ => {
   )
 }
 
-// reward task claimers epic
+// const rewardTaskEpic = action$ => {
+//   let address
+//   let index
+//   let txObj
+//   return action$.ofType(REWARD_VALIDATOR).pipe(
+//     mergeMap(action => {
+//       address = action.projectAddress
+//       index = action.index
+//       txObj = action.txObj
+//       console.log(address, index, txObj)
+//       return Observable.from(tr.rewardValidator(address, index, txObj))
+//     }),
+//     map(result =>
+//       validatorRewarded(address, index, result.logs[0].args)
+//     )
+//   )
+// }
+
 export default (action$, store) => merge(
   submitFinalTaskListEpic(action$, store),
   claimTaskEpic(action$, store),

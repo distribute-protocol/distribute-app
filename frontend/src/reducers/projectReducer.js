@@ -116,10 +116,11 @@ export default function projectReducer (state = initialState, action) {
       projects = Object.assign({}, state[4], {[action.address]: project})
       return Object.assign({}, state, {4: projects})
     case VALIDATOR_REWARDED:
-      task = Object.assign({}, state[5][action.address].tasks[action.index], {validationRewardClaimable: false, validatorsRewarded: {[action.validator]: true}})
-      tasks = Object.assign([], state[5][action.address].tasks, {[action.index]: task})
-      project = Object.assign({}, state[5][action.address], {tasks: tasks})
-      projects = Object.assign({}, state[5], {[action.address]: project})
+      console.log(action)
+      task = Object.assign({}, state[5][action.projectAddress].tasks[action.index], {validatorsRewarded: {[action.validator]: true}})
+      tasks = Object.assign([], state[5][action.projectAddress].tasks, {[action.index]: task})
+      project = Object.assign({}, state[5][action.projectAddress], {tasks: tasks})
+      projects = Object.assign({}, state[5], {[action.projectAddress]: project})
       return Object.assign({}, state, {5: projects})
     default:
   }
