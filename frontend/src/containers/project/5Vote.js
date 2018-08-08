@@ -216,7 +216,6 @@ class VoteTasks extends React.Component {
   }
 
   render () {
-    console.log(this.props.tasks, this.props.project)
     let tasks
     if (typeof this.props.tasks !== 'undefined') {
       tasks = this.props.tasks.map((task, i) => {
