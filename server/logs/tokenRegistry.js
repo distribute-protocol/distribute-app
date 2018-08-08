@@ -201,7 +201,7 @@ module.exports = function () {
   const rewardValidatorFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
-    address: TR.projectLibraryAddress,
+    address: TR.TokenRegistryAddress,
     topics: [web3.sha3('LogRewardValidator(address,uint256,uint256,uint256,address)')]
   })
   rewardValidatorFilter.watch(async (err, result) => {
@@ -239,18 +239,18 @@ module.exports = function () {
               Task.findOne({project: doc.id, index: index}).exec((error, task) => {
                 if (error) console.error(error)
                 // task.validationRewardClaimable = false
-                task.save(err => {
-                  if (err) console.error(err)
-                })
-                Validation.findOne({task: task.id}).exec((error, validation) => {
+                Validation.findOne({task: task.id, user: validator}).exec((error, validation) => {
                   if (error) console.error(error)
                   if (validation) {
                     validation.rewarded = true
-                    // console.log('here 2', validation)
+                    console.log('here 2', validation)
                     validation.save(err => {
                       if (err) console.error(err)
                     })
                   }
+                })
+                task.save(err => {
+                  if (err) console.error(err)
                 })
               })
               doc.save(err => {

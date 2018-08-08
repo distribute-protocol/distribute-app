@@ -62,7 +62,6 @@ class Vote extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         this.props.rewardValidator(address, index, {from: accounts[0]})
-        // await tr.rewardValidator(this.props.address, i, {from: accounts[0]})
       }
     })
   }

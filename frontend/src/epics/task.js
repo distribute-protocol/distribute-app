@@ -83,6 +83,9 @@ const getTasksEpic = action$ => {
         allTasksinProject(address: $address) {
           id,
           address,
+          claimer {
+            account
+          },
           claimed,
           claimedAt,
           complete,
@@ -203,7 +206,7 @@ const rewardValidatorEpic = action$ => {
       return Observable.from(tr.rewardValidator(address, index, txObj))
     }),
     map(result =>
-      validatorRewarded(address, index, result.logs[0].args)
+      validatorRewarded(address, index, result)
     )
   )
 }

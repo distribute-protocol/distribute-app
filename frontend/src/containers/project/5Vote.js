@@ -196,15 +196,8 @@ class VoteTasks extends React.Component {
     return currPollID
   }
 
-  // Works - need to check all related state
   rewardValidator (i) {
     this.props.rewardValidator(this.props.address, i)
-    // eth.getAccounts(async (err, accounts) => {
-    //   if (!err) {
-    //     this.props.rewardValidator(address, index, {from: accounts[0]})
-    //     // await tr.rewardValidator(this.props.address, i, {from: accounts[0]})
-    //   }
-    // })
   }
 
   // Doesn't work because project needs to be in complete state, instatiating a task doesn't seem to work
@@ -223,6 +216,7 @@ class VoteTasks extends React.Component {
   }
 
   render () {
+    console.log(this.props.tasks, this.props.project)
     let tasks
     if (typeof this.props.tasks !== 'undefined') {
       tasks = this.props.tasks.map((task, i) => {
@@ -234,12 +228,12 @@ class VoteTasks extends React.Component {
             // pull validations from task, filter by current metamask address
             rewardVal =
               <div>
-                <Button
+                <Button disabled={this.props.project.valRewarded === undefined || this.props.project.valRewarded[i] === undefined || this.props.project.valRewarded[i].state === false || this.props.project.valRewarded[i].rewarded === true}
                   type='danger' onClick={() => this.rewardValidator(i)}> Reward Yes Validator </Button>
               </div>
             rewardWork =
               <div>
-                <Button
+                <Button disabled={this.props.tasks[i].claimer.account !== eth.accounts[0]}
                   type='danger' onClick={() => this.rewardTask(i)}> Reward Task </Button>
               </div>
             needsVote = <Icon type='close' />
@@ -247,16 +241,16 @@ class VoteTasks extends React.Component {
             // validators can claim, task fails
             rewardVal =
               <div>
-                <Button
+                <Button disabled={this.props.project.valRewarded === undefined || this.props.project.valRewarded[i] === undefined || this.props.project.valRewarded[i].state === true || this.props.project.valRewarded[i].rewarded === true}
                   type='danger' onClick={() => this.rewardValidator(i)}> Reward No Validator </Button>
               </div>
-            rewardWork = <div>ineligible</div>
+            rewardWork = <Icon type='close' />
             needsVote = <Icon type='close' />
           }
         } else {
           // vote needs to happen
-          rewardVal = <div>nope, not yet</div>
-          rewardWork = <div>nope, not yet</div>
+          rewardVal = <Icon type='clock-circle-o' />
+          rewardWork = <Icon type='clock-circle-o' />
           needsVote =
             <div>
               <div>

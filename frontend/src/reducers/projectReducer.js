@@ -108,11 +108,11 @@ export default function projectReducer (state = initialState, action) {
       projects = Object.assign({}, state[4], {[action.projectAddress]: project})
       return Object.assign({}, state, {4: projects})
     case USER_VALIDATIONS_RECEIVED:
-      tasks = []
+      let valRewarded = []
       for (let i = 0; i < action.result.length; i++) {
-        tasks.push(Object.assign({}, state[5][action.projectAddress].tasks[action.result[i].task.index], {validations: {rewarded: action.result[i].rewarded}}))
+        valRewarded = Object.assign(valRewarded, {[action.result[i].task.index]: {state: action.result[i].state, rewarded: action.result[i].rewarded}})
       }
-      project = Object.assign({}, state[5][action.projectAddress], {tasks: tasks})
+      project = Object.assign({}, state[5][action.projectAddress], {valRewarded: valRewarded})
       projects = Object.assign({}, state[5], {[action.projectAddress]: project})
       return Object.assign({}, state, {5: projects})
     case TASK_VALIDATED:
@@ -124,9 +124,8 @@ export default function projectReducer (state = initialState, action) {
       return Object.assign({}, state, {4: projects})
     case VALIDATOR_REWARDED:
       console.log(action)
-      task = Object.assign({}, state[5][action.projectAddress].tasks[action.index], {validatorsRewarded: {[action.validator]: true}})
-      tasks = Object.assign([], state[5][action.projectAddress].tasks, {[action.index]: task})
-      project = Object.assign({}, state[5][action.projectAddress], {tasks: tasks})
+      valRewarded = Object.assign(state[5][action.projectAddress].valRewarded[action.index], {rewarded: true})
+      project = Object.assign({}, state[5][action.projectAddress], {valRewarded: valRewarded})
       projects = Object.assign({}, state[5], {[action.projectAddress]: project})
       return Object.assign({}, state, {5: projects})
     case TASK_REWARDED:
