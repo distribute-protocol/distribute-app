@@ -110,17 +110,18 @@ export default function projectReducer (state = initialState, action) {
       return Object.assign({}, state, {4: projects})
     case USER_VALIDATIONS_RECEIVED:
       console.log(action)
-      // address, user, result --> user was rewarded or not
-      // // action.result.length is the number of validations for this task
-      // validation = []
-      // for (let i = 0; i < action.result.length; i++) {
-      //   validation = Object.assign(validation, {[i]: {amount: action.result[i].amount, state: action.result[i].state, user: action.result[i].user}})
-      // }
-      // task = Object.assign({}, state[4][action.projectAddress].tasks[action.index], {validations: validation})
-      // tasks = Object.assign([], state[4][action.projectAddress].tasks, {[action.index]: task})
-      // project = Object.assign({}, state[4][action.projectAddress], {tasks: tasks})
-      // projects = Object.assign({}, state[4], {[action.projectAddress]: project})
-      // return Object.assign({}, state, {4: projects})
+      tasks = []
+      for (let i = 0; i < action.result.length; i++) {
+        tasks.push(Object.assign({}, state[5][action.projectAddress].tasks[action.result[i].task.index], {validations: {rewarded: action.result[i].rewarded}}))
+        console.log(task)
+      }
+      // tasks = Object.assign([], state[5][action.projectAddress].tasks, {[action.result[i].task.index]: task})
+      // console.log(tasks)
+      project = Object.assign({}, state[5][action.projectAddress], {tasks: tasks})
+      // console.log(project)
+      projects = Object.assign({}, state[5], {[action.projectAddress]: project})
+      console.log(Object.assign({}, state, {5: projects}))
+      // return Object.assign({}, state, {5: projects})
       return state
     case TASK_VALIDATED:
       validation = Object.assign([], state[4][action.address].tasks[action.taskIndex].validations, {[state[4][action.address].tasks[action.taskIndex].validations.length]: {amount: action.valFee.toNumber(), state: action.validationState, user: action.validator}})
