@@ -228,12 +228,12 @@ class VoteTasks extends React.Component {
             // pull validations from task, filter by current metamask address
             rewardVal =
               <div>
-                <Button disabled={this.props.project.valRewarded === undefined || this.props.project.valRewarded[i] === undefined || this.props.project.valRewarded[i].state === false || this.props.project.valRewarded[i].rewarded === true}
+                <Button disabled={this.props.project.valRewarded === undefined || this.props.project.valRewarded[i] === undefined || !this.props.project.valRewarded[i].state || this.props.project.valRewarded[i].rewarded}
                   type='danger' onClick={() => this.rewardValidator(i)}> Reward Yes Validator </Button>
               </div>
             rewardWork =
               <div>
-                <Button disabled={this.props.tasks[i].claimer.account !== eth.accounts[0]}
+                <Button disabled={this.props.tasks[i].claimer.account !== eth.accounts[0] || this.props.tasks[i].workerRewarded}
                   type='danger' onClick={() => this.rewardTask(i)}> Reward Task </Button>
               </div>
             needsVote = <Icon type='close' />
@@ -241,7 +241,7 @@ class VoteTasks extends React.Component {
             // validators can claim, task fails
             rewardVal =
               <div>
-                <Button disabled={this.props.project.valRewarded === undefined || this.props.project.valRewarded[i] === undefined || this.props.project.valRewarded[i].state === true || this.props.project.valRewarded[i].rewarded === true}
+                <Button disabled={this.props.project.valRewarded === undefined || this.props.project.valRewarded[i] === undefined || this.props.project.valRewarded[i].state || this.props.project.valRewarded[i].rewarded}
                   type='danger' onClick={() => this.rewardValidator(i)}> Reward No Validator </Button>
               </div>
             rewardWork = <Icon type='close' />

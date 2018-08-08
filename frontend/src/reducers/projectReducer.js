@@ -124,13 +124,15 @@ export default function projectReducer (state = initialState, action) {
       return Object.assign({}, state, {4: projects})
     case VALIDATOR_REWARDED:
       console.log(action)
-      valRewarded = Object.assign(state[5][action.projectAddress].valRewarded[action.index], {rewarded: true})
+      valRewarded = Object.assign(state[5][action.projectAddress].valRewarded, {[action.index]: {rewarded: true}})
+      console.log(valRewarded)
       project = Object.assign({}, state[5][action.projectAddress], {valRewarded: valRewarded})
+      console.log(project)
       projects = Object.assign({}, state[5], {[action.projectAddress]: project})
       return Object.assign({}, state, {5: projects})
     case TASK_REWARDED:
       console.log(action)
-      task = Object.assign({}, state[5][action.projectAddress].tasks[action.index], {taskRewarded: {[action.claimer]: true}})
+      task = Object.assign({}, state[5][action.projectAddress].tasks[action.index], {workerRewarded: true})
       tasks = Object.assign([], state[5][action.projectAddress].tasks, {[action.index]: task})
       project = Object.assign({}, state[5][action.projectAddress], {tasks: tasks})
       projects = Object.assign({}, state[5], {[action.projectAddress]: project})

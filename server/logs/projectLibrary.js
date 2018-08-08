@@ -146,8 +146,6 @@ module.exports = function () {
         if (user) {
           user.reputationBalance += reputationReward
           user.weiBalance += weiReward
-        }
-        if (user) {
           Project.findOne({address: projectAddress}).exec((error, doc) => {
             if (error) console.error(error)
             if (doc) {

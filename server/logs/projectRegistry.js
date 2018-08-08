@@ -288,7 +288,8 @@ module.exports = function () {
                     validations: [],
                     validationRewardClaimable: false,
                     weighting: taskContent[0].percentage,
-                    workerRewardClaimable: false
+                    workerRewardClaimable: false,
+                    workerRewarded: false
                   })
                   finalTask.save(err => {
                     if (err) console.error(error)
