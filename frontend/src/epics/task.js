@@ -1,5 +1,5 @@
-import { SUBMIT_FINAL_TASK_LIST, CLAIM_TASK, GET_TASKS, SUBMIT_TASK_COMPLETE, VALIDATE_TASK, GET_VALIDATIONS, REWARD_VALIDATOR, REWARD_TASK } from '../constants/TaskActionTypes'
-import { finalTaskListSubmitted, taskClaimed, tasksReceived, taskCompleted, taskValidated, validationsReceived, validatorRewarded, taskRewarded } from '../actions/taskActions'
+import { SUBMIT_FINAL_TASK_LIST, CLAIM_TASK, GET_TASKS, SUBMIT_TASK_COMPLETE, VALIDATE_TASK, GET_VALIDATIONS, REWARD_VALIDATOR, REWARD_TASK, GET_USER_VALIDATIONS } from '../constants/TaskActionTypes'
+import { finalTaskListSubmitted, taskClaimed, tasksReceived, taskCompleted, taskValidated, validationsReceived, validatorRewarded, taskRewarded, userValidationsReceived } from '../actions/taskActions'
 import { map, mergeMap, concatMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { client } from '../index'
@@ -163,6 +163,34 @@ const getValidationsEpic = action$ => {
   )
 }
 
+const getUserValidationsEpic = action$ => {
+  let address, user
+  return action$.ofType(GET_USER_VALIDATIONS).pipe(
+    mergeMap(action => {
+      address = action.projectAddress
+      user = action.user
+      let query = gql`
+      query($address: String!, $user: String!) {
+        getUserValidationsinProject(address: $address, user: $user) {
+          id,
+          amount,
+          user,
+          task {
+            address,
+            index
+          },
+          state,
+          address,
+          rewarded
+        }
+      }`
+      return client.query({query: query, variables: {address: address, user: user}}
+      )
+    }),
+    map(result => userValidationsReceived(address, user, result.data.getUserValidationsinProject))
+  )
+}
+
 const rewardValidatorEpic = action$ => {
   let address
   let index
@@ -204,6 +232,7 @@ export default (action$, store) => merge(
   submitTaskCompleteEpic(action$, store),
   validateTaskEpic(action$, store),
   getValidationsEpic(action$, store),
+  getUserValidationsEpic(action$, store),
   rewardValidatorEpic(action$, store),
   rewardTaskEpic(action$, store)
 )

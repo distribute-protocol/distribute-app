@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import VoteComponent from '../../components/project/5Vote'
 import { Button, Icon } from 'antd'
 import {eth, pr, tr, rr, web3, P, T} from '../../utilities/blockchain'
-import { getTasks, getValidations } from '../../actions/taskActions'
+import { getTasks, getUserValidations } from '../../actions/taskActions'
 import { voteCommitted, voteRevealed } from '../../actions/pollActions'
 import moment from 'moment'
 import { utils } from 'ethers'
@@ -24,18 +24,7 @@ class VoteTasks extends React.Component {
   componentWillMount () {
     this.getProjectStatus()
     this.getTasks()
-    // this.getProjectStatus()
-    // this.props.project.taskList.map(async (task, i) => {
-    //   let claimable, claimableByRep
-    //   let p = await P.at(this.props.address)
-    //   let index = await p.tasks(i)
-    //   let t = T.at(index)
-    //   claimable = await t.claimable()
-    //   claimableByRep = await t.claimableByRep()
-    //   let stateTasks = this.state.tasks
-    //   stateTasks[i] = {claimable, claimableByRep}
-    //   this.setState({tasks: stateTasks})
-    // })
+    this.getUserValidations()
   }
 
   // let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
@@ -45,6 +34,14 @@ class VoteTasks extends React.Component {
 
   async getTasks () {
     this.props.getTasks(this.props.address, 5)
+  }
+
+  async getUserValidations () {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        this.props.getUserValidations(this.props.address, accounts[0])
+      }
+    })
   }
 
   onChange (e) {
@@ -231,7 +228,7 @@ class VoteTasks extends React.Component {
       tasks = this.props.tasks.map((task, i) => {
         let rewardVal, rewardWork, needsVote
         if (this.props.tasks[i].validationRewardClaimable) {
-          if (this.props.tasks[i].workerRewardClaimable) { // change to be user specific
+          if (this.props.tasks[i].workerRewardClaimable) {
             // validators and workers can claim
             // check to see if user can claim, then once they claim turn off the button
             // pull validations from task, filter by current metamask address
@@ -355,7 +352,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     voteCommitted: (voteDetails) => dispatch(voteCommitted(voteDetails)),
     voteRevealed: (voteDetails) => dispatch(voteCommitted(voteDetails)),
-    getTasks: (address, state) => dispatch(getTasks(address, state))
+    getTasks: (address, state) => dispatch(getTasks(address, state)),
+    getUserValidations: (address, user) => dispatch(getUserValidations(address, user))
   }
 }
 

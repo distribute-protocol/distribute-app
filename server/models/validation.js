@@ -1,15 +1,16 @@
 const mongoose = require('mongoose')
 
-let validatorSchema = mongoose.Schema({
+let validationSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   amount: Number,
   state: Boolean,
   task: mongoose.Schema.Types.ObjectId,
   user: String,
   address: String,
-  rewarded: Boolean
+  rewarded: Boolean, // did this validator pull their reward if they were allowed to?
+  projAddress: String
 })
 
-const Validation = mongoose.model('Validation', validatorSchema)
+const Validation = mongoose.model('Validation', validationSchema)
 
 module.exports = Validation

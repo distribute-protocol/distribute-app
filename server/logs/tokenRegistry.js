@@ -166,7 +166,9 @@ module.exports = function () {
               task: taskStatus.id,
               user: validator,
               state: validationState,
-              address: taskStatus.address
+              address: taskStatus.address,
+              projAddress: projectAddress,
+              rewarded: false
             })
             ValidationEvent.save(err => {
               if (err) console.error(err)

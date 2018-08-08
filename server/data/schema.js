@@ -187,6 +187,7 @@ const typeDefs = `
     findTaskByIndex(address: String, index: Int): Task
     allTasksinProject(address: String): [Task]
     getValidations(address: String, index: Int): [Validation]
+    getUserValidationsinProject(address: String, user: String): [Validation]
   }
 
   input AvatarInput {

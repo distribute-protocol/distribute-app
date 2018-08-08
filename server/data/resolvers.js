@@ -55,7 +55,7 @@ const resolvers = {
     votes: (user) => Vote.find({userId: user.id}).then(votes => votes)
   },
   Validation: {
-    task: (validation) => Task.findById(validation.taskId).then(task => task)
+    task: (validation) => Task.findById(validation.task).then(task => task)
   },
   Vote: {
     task: (vote) => Task.findById(vote.taskId).then(vote => vote),
@@ -69,25 +69,26 @@ const resolvers = {
     allTokens: () => [{}],
     reputation: (_, args) => [{}],
     allReputations: () => [{}],
-    project: (_, args) => Project.findOne({address: args.address}).then(project => project),
+    project: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => project),
     allProjects: () => Project.find({}).then(projects => projects),
     allProjectsinState: (_, args) => Project.find({state: args.state}).then(projects => projects),
     allStakes: () => Stake.find({}).then(stakes => stakes),
-    userStakes: (_, args) => Stake.find({userId: args.account}).then(stakes => stakes),
-    projectStakes: (_, args) => Stake.find({projectId: args.address}).then(stakes => stakes),
-    task: (_, args) => Task.find({address: args.address}).then(task => task),
+    userStakes: (_, args) => Stake.find({userId: args.account.toLowerCase()}).then(stakes => stakes),
+    projectStakes: (_, args) => Stake.find({projectId: args.address.toLowerCase()}).then(stakes => stakes),
+    task: (_, args) => Task.find({address: args.address.toLowerCase()}).then(task => task),
     allTasks: () => Task.find({}).then(tasks => tasks),
-    userTasks: (_, args) => User.findOne({account: args.account}).then(user => Task.find({claimer: user.id})).then(tasks => tasks),
-    projectTasks: (_, args) => Project.findOne({address: args.address}).then(project => Task.find({project: project.id})).then(tasks => tasks),
-    verifiedPrelimTaskLists: (_, args) => PrelimTaskList.find({address: args.address, verified: true}).then(prelimTaskLists => prelimTaskLists),
-    userPrelimTaskLists: (_, args) => PrelimTaskList.findOne({submitter: args.account}).then(prelimTaskLists => prelimTaskLists),
-    taskValidations: (_, args) => Project.findOne({address: args.address}).then(project => Task.find({project: project.id}).then(task => Validation.find({task: task.id})).then(validations => validations)),
+    userTasks: (_, args) => User.findOne({account: args.account.toLowerCase()}).then(user => Task.find({claimer: user.id})).then(tasks => tasks),
+    projectTasks: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => Task.find({project: project.id})).then(tasks => tasks),
+    verifiedPrelimTaskLists: (_, args) => PrelimTaskList.find({address: args.address.toLowerCase(), verified: true}).then(prelimTaskLists => prelimTaskLists),
+    userPrelimTaskLists: (_, args) => PrelimTaskList.findOne({submitter: args.account.toLowerCase()}).then(prelimTaskLists => prelimTaskLists),
+    taskValidations: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => Task.find({project: project.id}).then(task => Validation.find({task: task.id})).then(validations => validations)),
     userVotes: (account) => [{}],
     taskVotes: (address) => [{}],
-    findFinalTaskHash: (_, args) => PrelimTaskList.findOne({hash: args.topTaskHash, address: args.address}).then(prelimTaskList => prelimTaskList),
-    findTaskByIndex: (_, args) => Project.findOne({address: args.address}).then(project => Task.findOne({project: project.id, index: args.index})).then(task => task),
-    allTasksinProject: (_, args) => Project.findOne({address: args.address}).then(project => Task.find({project: project.id})).then(tasks => tasks),
-    getValidations: (_, args) => Project.findOne({address: args.address}).then(project => Task.findOne({project: project.id, index: args.index})).then(task => Validation.find({task: task.id})).then(validations => validations)
+    findFinalTaskHash: (_, args) => PrelimTaskList.findOne({hash: args.topTaskHash, address: args.address.toLowerCase()}).then(prelimTaskList => prelimTaskList),
+    findTaskByIndex: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => Task.findOne({project: project.id, index: args.index})).then(task => task),
+    allTasksinProject: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => Task.find({project: project.id})).then(tasks => tasks),
+    getValidations: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => Task.findOne({project: project.id, index: args.index})).then(task => Validation.find({task: task.id})).then(validations => validations),
+    getUserValidationsinProject: (_, args) => Validation.find({projAddress: args.address.toLowerCase(), user: args.user.toLowerCase()}).then(validations => validations)
   },
   Mutation: {
     addUser: (obj, args) => {
