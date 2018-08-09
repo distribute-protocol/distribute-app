@@ -15,7 +15,7 @@ module.exports = function () {
     fromBlock: 0,
     toBlock: 'latest',
     address: TR.TokenRegistryAddress,
-    topics: [web3.sha3('LogStakedTokens(address,uint256,uint256,address)')]
+    topics: [web3.sha3('LogStakedTokens(address,uint256,uint256,address,bool)')]
   })
   stakedTokensFilter.watch(async (error, result) => {
     if (error) console.error(error)

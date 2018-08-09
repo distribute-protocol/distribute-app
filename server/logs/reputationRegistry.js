@@ -55,7 +55,7 @@ module.exports = function () {
     fromBlock: 0,
     toBlock: 'latest',
     address: RR.ReputationRegistryAddress,
-    topics: [web3.sha3('LogStakedReputation(address,uint256,address)')]
+    topics: [web3.sha3('LogStakedReputation(address,uint256,address,bool)')]
   })
   stakedReputationFilter.watch(async (error, result) => {
     if (error) console.error(error)

@@ -33,25 +33,20 @@ const proposeProject = action$ =>
   )
 
 const stakeProject = action$ => {
-  let collateralType, projectAddress, stakeResult, state
+  let collateralType, stakeResult
   return action$.ofType(STAKE_PROJECT).pipe(
     mergeMap(action => {
       collateralType = action.collateralType
-      projectAddress = action.projectAddress
       return action.collateralType === 'tokens'
         ? Observable.from(tr.stakeTokens(action.projectAddress, parseInt(action.value), action.txObj))
         : Observable.from(rr.stakeReputation(action.projectAddress, parseInt(action.value), action.txObj))
     }),
     mergeMap(result => {
       stakeResult = result
-      return Observable.from(P.at(projectAddress).state())
-    }),
-    mergeMap(result => {
-      state = result
       return Observable.from(dt.currentPrice())
     }),
     mergeMap(result => {
-      if (state.toNumber() === 2) {
+      if (stakeResult.logs[0].args.staked === true) {
         return Observable.of(push('/add'))
       } else {
         return Observable.of(projectStaked(collateralType, stakeResult.logs[0].args, result))
