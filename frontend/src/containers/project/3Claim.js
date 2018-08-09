@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import ClaimComponent from '../../components/project/3Claim'
 import { Button } from 'antd'
 import { web3 } from '../../utilities/blockchain'
-import { getTasks } from '../../actions/taskActions'
 import moment from 'moment'
 
 const ButtonGroup = Button.Group
@@ -19,12 +18,7 @@ class ClaimProject extends React.Component {
   }
 
   componentWillMount () {
-    // this.getTasks()
   }
-
-  // async getTasks () {
-  //   this.props.getTasks(this.props.address, this.props.project.state)
-  // }
 
   async submitFinalTaskList () {
     this.props.submitFinalTaskList(this.props.address)
@@ -96,10 +90,4 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getTasks: (address, state) => dispatch(getTasks(address, state))
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ClaimProject)
+export default connect(mapStateToProps)(ClaimProject)

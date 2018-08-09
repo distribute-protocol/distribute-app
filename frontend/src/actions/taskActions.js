@@ -91,23 +91,6 @@ export function submitTaskComplete (address, index, txObj) {
   }
 }
 
-export function getTasks (projectAddress, state) {
-  return {
-    type: GET_TASKS,
-    projectAddress,
-    state
-  }
-}
-
-export function tasksReceived (projectAddress, taskDetails, state) {
-  return {
-    type: TASKS_RECEIVED,
-    projectAddress,
-    taskDetails,
-    state
-  }
-}
-
 export function getValidations (projectAddress, index) {
   return {
     type: GET_VALIDATIONS,

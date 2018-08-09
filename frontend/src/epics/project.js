@@ -76,18 +76,6 @@ const checkStakedStatus = action$ =>
     map(result => stakedStatusChecked(result))
   )
 
-// const getStakedProjectsEpic = action$ => {
-//   let state
-//   return action$.ofType(GET_PROJECTS).pipe(
-//     mergeMap(action => {
-//       state = action.state
-//       return client.query({query: action.query}
-//       )
-//     }),
-//     map(result => projectsReceived(state, result.data.allProjectsinState))
-//   )
-// }
-
 // set task list on the frontend
 const setTaskList = action$ => {
   let taskDetails
@@ -177,74 +165,34 @@ const checkActiveStatus = action$ =>
     mergeMap(action => {
       return Observable.from(pr.checkActive(action.projectAddress, action.txObj))
     }),
-    map(result => activeStatusChecked(result)),
     mergeMap(result => Observable.concat(
       Observable.of(push('/claim'))
     ))
   )
-
-// const getActiveProjectsEpic = action$ => {
-//   let state
-//   return action$.ofType(GET_PROJECTS).pipe(
-//     mergeMap(action => {
-//       state = action.state
-//       return client.query({query: action.query}
-//       )
-//     }),
-//     map(result => projectsReceived(state, result.data.allProjectsinState))
-//   )
-// }
 
 const checkValidateStatus = action$ => {
   return action$.ofType(CHECK_VALIDATE_STATUS).pipe(
     mergeMap(action => {
       return Observable.from(pr.checkValidate(action.projectAddress, action.txObj))
     }),
-    map(result => validateStatusChecked(result)),
     mergeMap(result => Observable.concat(
       Observable.of(push('/validate'))
     ))
   )
 }
 
-// const getValidateProjectsEpic = action$ => {
-//   let state
-//   return action$.ofType(GET_PROJECTS).pipe(
-//     mergeMap(action => {
-//       state = action.state
-//       return client.query({query: action.query}
-//       )
-//     }),
-//     map(result => projectsReceived(state, result.data.allProjectsinState))
-//   )
-// }
-
 const checkVotingStatus = action$ =>
   action$.ofType(CHECK_VOTING_STATUS).pipe(
     mergeMap(action => {
       return Observable.from(pr.checkVoting(action.projectAddress, action.txObj))
     }),
-    // map(result => votingStatusChecked(result)),
     mergeMap(result => Observable.concat(
       Observable.of(push('/vote'))
     ))
   )
 
-// const getVotingProjectsEpic = action$ => {
-//   let state
-//   return action$.ofType(GET_PROJECTS).pipe(
-//     mergeMap(action => {
-//       state = action.state
-//       return client.query({query: action.query}
-//       )
-//     }),
-//     map(result => projectsReceived(state, result.data.allProjectsinState))
-//   )
-// }
-
 export default (action$, store) => merge(
   getProjectsEpic(action$, store),
-  // getStakedProjectsEpic(action$, store),
   proposeProject(action$, store),
   stakeProject(action$, store),
   unstakeProject(action$, store),
@@ -253,9 +201,6 @@ export default (action$, store) => merge(
   submitHashedTaskList(action$, store),
   setTaskList(action$, store),
   getVerifiedTaskListsEpic(action$, store),
-  // getActiveProjectsEpic(action$, store),
   checkValidateStatus(action$, store),
-  // getValidateProjectsEpic(action$, store),
   checkVotingStatus(action$, store),
-  // getVotingProjectsEpic(action$, store)
 )

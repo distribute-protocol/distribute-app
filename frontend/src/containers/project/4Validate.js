@@ -4,7 +4,6 @@ import ValidateComponent from '../../components/project/4Validate'
 import ValidateTask from '../task/4Validate'
 import { Button } from 'antd'
 import { web3 } from '../../utilities/blockchain'
-import { getTasks } from '../../actions/taskActions'
 import moment from 'moment'
 
 class ValidateTasks extends React.Component {
@@ -35,7 +34,6 @@ class ValidateTasks extends React.Component {
   }
 
   render () {
-    console.log(this.props.tasks)
     let tasks
     let returnInput = (i) => (
       <div>
@@ -95,10 +93,5 @@ const mapStateToProps = (state, ownProps) => {
     tasks: state.projects[4][ownProps.address].tasks
   }
 }
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getTasks: (address, state) => dispatch(getTasks(address, state))
-  }
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(ValidateTasks)
+export default connect(mapStateToProps)(ValidateTasks)

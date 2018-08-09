@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import VoteComponent from '../../components/project/5Vote'
 import { Button, Icon } from 'antd'
 import {eth, pr, tr, rr, web3, P, T} from '../../utilities/blockchain'
-import { getTasks, getUserValidations } from '../../actions/taskActions'
+import { getUserValidations } from '../../actions/taskActions'
 import { voteCommitted, voteRevealed } from '../../actions/pollActions'
 import moment from 'moment'
 import { utils } from 'ethers'
@@ -343,7 +343,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     voteCommitted: (voteDetails) => dispatch(voteCommitted(voteDetails)),
     voteRevealed: (voteDetails) => dispatch(voteCommitted(voteDetails)),
-    getTasks: (address, state) => dispatch(getTasks(address, state)),
     getUserValidations: (address, user) => dispatch(getUserValidations(address, user))
   }
 }
