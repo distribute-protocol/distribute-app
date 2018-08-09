@@ -213,10 +213,13 @@ class VoteTasks extends React.Component {
   render () {
     let tasks
     if (typeof this.props.tasks !== 'undefined') {
-      tasks = this.props.tasks.map((task, i) => {
+      tasks = this.props.tasks.slice(0).sort(function (a, b) {
+        return a.index - b.index
+      })
+      tasks = tasks.map((task, i) => {
         let rewardVal, rewardWork, needsVote
-        if (this.props.tasks[i].validationRewardClaimable) {
-          if (this.props.tasks[i].workerRewardClaimable) {
+        if (tasks[i].validationRewardClaimable) {
+          if (tasks[i].workerRewardClaimable) {
             // validators and workers can claim
             // check to see if user can claim, then once they claim turn off the button
             // pull validations from task, filter by current metamask address
@@ -227,7 +230,7 @@ class VoteTasks extends React.Component {
               </div>
             rewardWork =
               <div>
-                <Button disabled={this.props.tasks[i].claimer.account !== eth.accounts[0] || this.props.tasks[i].workerRewarded}
+                <Button disabled={tasks[i].claimer.account !== eth.accounts[0] || tasks[i].workerRewarded}
                   type='danger' onClick={() => this.rewardTask(i)}> Reward Task </Button>
               </div>
             needsVote = <Icon type='close' />

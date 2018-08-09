@@ -19,12 +19,12 @@ class ClaimProject extends React.Component {
   }
 
   componentWillMount () {
-    this.getTasks()
+    // this.getTasks()
   }
 
-  async getTasks () {
-    this.props.getTasks(this.props.address, this.props.project.state)
-  }
+  // async getTasks () {
+  //   this.props.getTasks(this.props.address, this.props.project.state)
+  // }
 
   async submitFinalTaskList () {
     this.props.submitFinalTaskList(this.props.address)
@@ -56,7 +56,6 @@ class ClaimProject extends React.Component {
           repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' && typeof weiReward !== 'undefined' ? `${Math.floor(reputationCost * weiReward / weiCost)} rep` : '',
           buttons: <ButtonGroup>
             <Button
-            // somehow figure out to augment this for this.props.tasks yet to be defined
               disabled={!this.props.project.listSubmitted || this.props.tasks[i] === undefined || this.props.tasks[i].claimed}
               type='danger' onClick={() => this.claimTask(i)}>Claim</Button>
             <Button

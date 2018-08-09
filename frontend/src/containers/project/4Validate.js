@@ -57,7 +57,10 @@ class ValidateTasks extends React.Component {
         </div>
       </div>)
     if (typeof this.props.tasks !== 'undefined') {
-      tasks = this.props.tasks.map((task, i) => {
+      tasks = this.props.tasks.slice(0).sort(function (a, b) {
+        return a.index - b.index
+      })
+      tasks = tasks.map((task, i) => {
         return {
           key: i,
           description: task.description,
