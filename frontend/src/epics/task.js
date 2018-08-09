@@ -71,39 +71,42 @@ const claimTaskEpic = action$ => {
   )
 }
 
-const getTasksEpic = action$ => {
-  let address
-  let state
-  return action$.ofType(GET_TASKS).pipe(
-    mergeMap(action => {
-      address = action.projectAddress
-      state = action.state
-      let query = gql`
-      query($address: String!) {
-        allTasksinProject(address: $address) {
-          id,
-          address,
-          claimer {
-            account
-          },
-          claimed,
-          claimedAt,
-          complete,
-          description,
-          index,
-          hash,
-          weighting,
-          validationRewardClaimable,
-          workerRewardClaimable,
-          workerRewarded
-        }
-      }`
-      return client.query({query: query, variables: {address: address}}
-      )
-    }),
-    map(result => tasksReceived(address, result.data.allTasksinProject, state))
-  )
-}
+// const getTasksEpic = action$ => {
+//   let address
+//   let state
+//   return action$.ofType(GET_TASKS).pipe(
+//     mergeMap(action => {
+//       address = action.projectAddress
+//       state = action.state
+//       let query = gql`
+//       query($address: String!) {
+//         allTasksinProject(address: $address) {
+//           id,
+//           address,
+//           claimer {
+//             account
+//           },
+//           claimed,
+//           claimedAt,
+//           complete,
+//           description,
+//           index,
+//           hash,
+//           weighting,
+//           validationRewardClaimable,
+//           workerRewardClaimable,
+//           workerRewarded
+//         }
+//       }`
+//       return client.query({query: query, variables: {address: address}}
+//       )
+//     }),
+//     map(result => {
+//       console.log(result)
+//       return tasksReceived(address, result.data.allTasksinProject, state)
+//     })
+//   )
+// }
 
 const submitTaskCompleteEpic = action$ => {
   let address
@@ -232,7 +235,7 @@ const rewardTaskEpic = action$ => {
 export default (action$, store) => merge(
   submitFinalTaskListEpic(action$, store),
   claimTaskEpic(action$, store),
-  getTasksEpic(action$, store),
+  // getTasksEpic(action$, store),
   submitTaskCompleteEpic(action$, store),
   validateTaskEpic(action$, store),
   getValidationsEpic(action$, store),

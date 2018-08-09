@@ -19,7 +19,24 @@ let projQuery = gql`
         lat,
         lng
       },
-      name
+      name,
+      tasks {
+        id,
+        address,
+        claimer {
+          account
+        },
+        claimed,
+        claimedAt,
+        complete,
+        description,
+        index,
+        hash,
+        weighting,
+        validationRewardClaimable,
+        workerRewardClaimable,
+        workerRewarded
+      }
       nextDeadline,
       photo,
       reputationBalance,
@@ -79,6 +96,7 @@ class Vote extends React.Component {
   }
 
   render () {
+    console.log(this.props.projects)
     const projects = typeof this.props.projects !== `undefined`
       ? Object.keys(this.props.projects).map((address, i) => {
         return <Project

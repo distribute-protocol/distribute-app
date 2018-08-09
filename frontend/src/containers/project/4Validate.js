@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import ValidateComponent from '../../components/project/4Validate'
 import ValidateTask from '../task/4Validate'
 import { Button } from 'antd'
-import {eth, pr, web3} from '../../utilities/blockchain'
+import { web3 } from '../../utilities/blockchain'
 import { getTasks } from '../../actions/taskActions'
 import moment from 'moment'
 
@@ -15,16 +15,11 @@ class ValidateTasks extends React.Component {
 
   componentWillMount () {
     this.getProjectStatus()
-    this.getTasks()
   }
 
   // let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
   async getProjectStatus () {
     this.setState(this.props.project)
-  }
-
-  async getTasks () {
-    this.props.getTasks(this.props.address, this.props.project.state)
   }
 
   onChange (e) {
@@ -35,15 +30,12 @@ class ValidateTasks extends React.Component {
     this.props.validateTask(this.props.address, index, validationState)
   }
 
-  // async getValidations (address, index, validationState) {
-  //   this.props.getValidations(this.props.address, index, validationState)
-  // }
-
   checkVotingStatus () {
     this.props.checkVotingStatus(this.props.address)
   }
 
   render () {
+    console.log(this.props.tasks)
     let tasks
     let returnInput = (i) => (
       <div>

@@ -23,17 +23,12 @@ class VoteTasks extends React.Component {
 
   componentWillMount () {
     this.getProjectStatus()
-    this.getTasks()
     this.getUserValidations()
   }
 
   // let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
   async getProjectStatus () {
     this.setState(this.props.project)
-  }
-
-  async getTasks () {
-    this.props.getTasks(this.props.address, 5)
   }
 
   async getUserValidations () {
