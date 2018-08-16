@@ -178,7 +178,7 @@ module.exports = function () {
           PrelimTaskList.findOne({submitter: submitter}).exec((error, prelimTaskList) => {
             if (error) console.error(error)
             if (prelimTaskList !== null && prelimTaskList.hash === taskHash) {
-              console.log(prelimTaskList)
+              // console.log(prelimTaskList)
               prelimTaskList.verified = true
               prelimTaskList.weighting = weighting
               prelimTaskList.save(error => {
@@ -226,7 +226,7 @@ module.exports = function () {
                 project.state = 3
                 project.topTaskHash = topTaskHash
                 project.taskList = prelimTaskList.content
-                console.log('final tasks:', project.taskList)
+                // console.log('final tasks:', project.taskList)
                 project.save(err => {
                   if (err) console.error(error)
                   console.log('active project with topTaskHash')
@@ -424,7 +424,7 @@ module.exports = function () {
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
     let flag = eventParamArr[1]
-    console.log(projectAddress, flag)
+    // console.log(projectAddress, flag)
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
@@ -434,7 +434,7 @@ module.exports = function () {
           if (err) throw Error
         })
       }
-      if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
+      if (parseInt(flag) === 1) {
         Project.findOne({address: projectAddress}).exec((error, project) => {
           if (error) console.error(error)
           if (project) {
@@ -472,7 +472,7 @@ module.exports = function () {
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
     let flag = eventParamArr[1]
-    console.log(projectAddress, flag)
+    // console.log(projectAddress, flag)
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
@@ -482,7 +482,7 @@ module.exports = function () {
           if (err) throw Error
         })
       }
-      if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
+      if (parseInt(flag) === 1) {
         Project.findOne({address: projectAddress}).exec((error, project) => {
           if (error) console.error(error)
           if (project) {

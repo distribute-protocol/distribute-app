@@ -8,6 +8,7 @@ const Project = require('../models/project')
 const User = require('../models/user')
 const Task = require('../models/task')
 const Validation = require('../models/validation')
+const Vote = require('../models/vote')
 
 module.exports = function () {
   // filter staked tokens
@@ -30,7 +31,6 @@ module.exports = function () {
     account = '0x' + account.substr(-40)
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
-      console.log(txHash)
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
         netStatus.processedTxs[txHash] = true
         netStatus.markModified('processedTxs')
@@ -38,7 +38,7 @@ module.exports = function () {
           if (err) console.log(err)
         })
       }
-      User.findOne({account: account}).exec((err, userStatus) => {
+      User.findOne({account}).exec((err, userStatus) => {
         if (err) console.error(error)
         if (userStatus !== null) {
           userStatus.tokenBalance -= tokensStaked
@@ -183,6 +183,7 @@ module.exports = function () {
               })
             })
             taskStatus.validations.push(ValidationEvent.id)
+            taskStatus.markModified('validations')
             // console.log(taskStatus, ValidationEvent, ValidationEvent.id)
             taskStatus.save(err => {
               if (err) console.error(err)
@@ -222,48 +223,206 @@ module.exports = function () {
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
         netStatus.processedTxs[txHash] = true
         netStatus.markModified('processedTxs')
+        User.findOne({account: validator}).exec((error, user) => {
+          if (error) console.log(error)
+          if (user) {
+            user.tokenBalance += tokenReturnAmount
+            user.weiBalance += weiReward
+          }
+          if (user) {
+            Project.findOne({address: projectAddress}).exec((error, doc) => {
+              if (error) console.error(error)
+              if (doc) {
+                Task.findOne({project: doc.id, index: index}).exec((error, task) => {
+                  if (error) console.error(error)
+                  // task.validationRewardClaimable = false
+                  Validation.findOne({task: task.id, user: validator}).exec((error, validation) => {
+                    if (error) console.error(error)
+                    if (validation) {
+                      validation.rewarded = true
+                      console.log('here 2', validation)
+                      validation.save(err => {
+                        if (err) console.error(err)
+                      })
+                    }
+                  })
+                  task.save(err => {
+                    if (err) console.error(err)
+                  })
+                })
+                doc.save(err => {
+                  if (err) console.error(error)
+                })
+                user.save(err => {
+                  if (err) console.error(error)
+                  console.log('validator successfully rewarded')
+                })
+              }
+            })
+          }
+        })
         netStatus.save((err, returned) => {
           if (err) throw Error
         })
       }
-      User.findOne({account: validator}).exec((error, user) => {
-        if (error) console.log(error)
-        if (user) {
-          user.tokenBalance += tokenReturnAmount
-          user.weiBalance += weiReward
-        }
-        if (user) {
-          Project.findOne({address: projectAddress}).exec((error, doc) => {
-            if (error) console.error(error)
-            if (doc) {
-              Task.findOne({project: doc.id, index: index}).exec((error, task) => {
-                if (error) console.error(error)
-                // task.validationRewardClaimable = false
-                Validation.findOne({task: task.id, user: validator}).exec((error, validation) => {
-                  if (error) console.error(error)
-                  if (validation) {
-                    validation.rewarded = true
-                    console.log('here 2', validation)
-                    validation.save(err => {
+    })
+  })
+
+  const tokenVoteCommitedFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: TR.TokenRegistryAddress,
+    topics: [web3.sha3('LogTokenVoteCommitted(address,uint256,uint256,bytes32,uint256,uint256,address)')]
+  })
+
+  tokenVoteCommitedFilter.watch(async (error, result) => {
+    if (error) console.error(error)
+    let txHash = result.transactionHash
+    let projectAddress = result.topics[1]
+    projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
+    let eventParamArr = result.data.slice(2).match(/.{1,64}/g)
+    let taskIndex = parseInt(eventParamArr[0], 16)
+    let stakeAmount = parseInt(eventParamArr[1], 16)
+    let secretHash = eventParamArr[2]
+    let pollID = parseInt(eventParamArr[3], 16)
+    let account = eventParamArr[4]
+    account = '0x' + account.substr(-40)
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        User.findOne({account}).exec((err, user) => {
+          if (err) console.error(error)
+          if (user !== null) {
+            Project.findOne({address: projectAddress}).exec((err, project) => {
+              if (err) console.error(error, 'Project not found')
+              Task.findOne({project: project.id, index: taskIndex}).exec((err, task) => {
+                if (err) console.error(error, 'Task not found')
+                if (task) {
+                  let vote = new Vote({
+                    _id: new mongoose.Types.ObjectId(),
+                    amount: stakeAmount,
+                    revealed: false,
+                    rescued: false,
+                    hash: secretHash,
+                    type: 'tokens',
+                    pollID,
+                    taskId: task.id,
+                    user: user.id
+                  })
+                  vote.save((err, saved) => {
+                    if (err) console.error(err)
+                    console.log('token vote saved')
+                  })
+                }
+              })
+            })
+          }
+        })
+        netStatus.save(err => {
+          if (err) console.log(err)
+        })
+      }
+    })
+  })
+
+  const tokenVoteRevealedFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: TR.TokenRegistryAddress,
+    topics: [web3.sha3('LogTokenVoteRevealed(address,uint256,uint256,uint256,address)')]
+  })
+
+  tokenVoteRevealedFilter.watch(async (error, result) => {
+    if (error) console.error(error)
+    let txHash = result.transactionHash
+    let projectAddress = result.topics[1]
+    projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
+    let eventParamArr = result.data.slice(2).match(/.{1,64}/g)
+    let taskIndex = parseInt(eventParamArr[0], 16)
+    let voteOption = parseInt(eventParamArr[1], 16)
+    let salt = parseInt(eventParamArr[2], 16)
+    let account = eventParamArr[3]
+    account = '0x' + account.substr(-40)
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        User.findOne({account}).exec((err, user) => {
+          if (err) console.error(error)
+          if (user !== null) {
+            Task.findOne({project: projectAddress, index: taskIndex}).exec((err, task) => {
+              if (err) console.error(error)
+              if (task !== null) {
+                Vote.findOne({taskId: task.id, userId: user.id, type: 'tokens'}).exec((err, vote) => {
+                  if (err) console.error(error)
+                  if (vote !== null) {
+                    vote.revealed = true
+                    vote.save((err, saved) => {
                       if (err) console.error(err)
+                      console.log('token vote revealed')
                     })
                   }
                 })
-                task.save(err => {
-                  if (err) console.error(err)
+              }
+            })
+          }
+        })
+        netStatus.save(err => {
+          if (err) console.log(err)
+        })
+      }
+    })
+  })
+
+  const tokenVoteRescuedFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: TR.TokenRegistryAddress,
+    topics: [web3.sha3('LogTokenVoteRescued(address,uint256,uint256,address)')]
+  })
+
+  tokenVoteRescuedFilter.watch(async (error, result) => {
+    if (error) console.error(error)
+    let txHash = result.transactionHash
+    let projectAddress = result.topics[1]
+    projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
+    let eventParamArr = result.data.slice(2).match(/.{1,64}/g)
+    let taskIndex = parseInt(eventParamArr[0], 16)
+    let pollId = parseInt(eventParamArr[1], 16)
+    let account = eventParamArr[2]
+    account = '0x' + account.substr(-40)
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        netStatus.processedTxs[txHash] = true
+        User.findOne({account}).exec((err, user) => {
+          if (err) console.error(error)
+          if (user !== null) {
+            Task.findOne({project: projectAddress, index: taskIndex}).exec((err, task) => {
+              if (err) console.error(error)
+              if (task !== null) {
+                Vote.findOne({taskId: task.id, userId: user.id, type: 'token'}).exec((err, vote) => {
+                  if (err) console.error(error)
+                  if (vote !== null) {
+                    vote.rescued = true
+                    vote.save((err, saved) => {
+                      if (err) console.error(err)
+                      console.log('rep vote rescued')
+                    })
+                  }
                 })
-              })
-              doc.save(err => {
-                if (err) console.error(error)
-              })
-              user.save(err => {
-                if (err) console.error(error)
-                console.log('validator successfully rewarded')
-              })
-            }
-          })
-        }
-      })
+              }
+            })
+          }
+        })
+        netStatus.markModified('processedTxs')
+        netStatus.save(err => {
+          if (err) console.log(err)
+        })
+      }
     })
   })
 }

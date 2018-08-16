@@ -2,9 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import VoteComponent from '../../components/project/5Vote'
 import { Button, Icon } from 'antd'
-import {eth, pr, tr, rr, web3, P, T} from '../../utilities/blockchain'
+import {eth, web3, P, T} from '../../utilities/blockchain'
 import { getUserValidations } from '../../actions/taskActions'
-import { voteCommitted, voteRevealed } from '../../actions/pollActions'
+// import { voteCommitted, voteRevealed } from '../../actions/pollActions'
 import moment from 'moment'
 import { utils } from 'ethers'
 
@@ -41,14 +41,13 @@ class VoteTasks extends React.Component {
 
   onChange (e) {
     this.setState({[e.target.name]: e.target.value})
-    console.log(e.target)
   }
 
   // Can Vote Commit...Vote Reveal is another beast, need to think about UI
-  voteTask (i, type, status) {
-    // let salt = Math.floor(Math.random() * Math.floor(10000)).toString()   // get random salt between 0 and 10000
+  async voteTask (i, type, status) {
+    let salt = Math.floor(Math.random() * Math.floor(1000000000000000000000)).toString()   // get random salt between 0 and 10000
     // convert status and salt to strings
-    let salt = 10000
+    // let salt = 10000
     // let salt = ethUtil.bufferToHex(ethUtil.setLengthLeft(10000, 32))
     status
       ? status = 1
@@ -56,15 +55,20 @@ class VoteTasks extends React.Component {
     // status = ethUtil.bufferToHex(ethUtil.setLengthLeft(status, 32))
     // console.log(status + salt)
     // this.props.storeVote(i, status, salt)
-    let vote = {key: i, status, salt, revealed: false, rescued: false}
-    this.setState({votes: Object.assign({}, this.state.votes, {[i]: vote})})
-
+    // let vote = {key: i, status, salt, revealed: false, rescued: false}
+    // this.setState({votes: Object.assign({}, this.state.votes, {[i]: vote})})
     let secretHash = utils.solidityKeccak256(['int', 'int'], [status, salt])
     // console.log(i, type, status, this.state['tokVal' + i], this.state['repVal' + i])
     // console.log(this.props.users)
+    let value
     type === 'tokens'
-      ? this.commitToken(i, secretHash, status, salt)
-      : this.commitReputation(i, secretHash, status, salt)
+      ? value = this.state['tokVal' + i]
+      : value = this.state['repVal' + i]
+    let taskAddr = await P.at(this.props.address).tasks(i)
+    let task = await T.at(taskAddr)
+    let pollID = await task.pollId()
+    this.props.voteCommit(type, this.props.address, i, value, secretHash, status, salt, pollID)
+    // this.props.voteCommitted({status: status, salt: salt, pollID: pollID, user: accounts[0], numTokens: numTokens, revealed: false})
   }
 
   revealTask (i, type, status) {
@@ -79,116 +83,24 @@ class VoteTasks extends React.Component {
     // let hash = web3.fromAscii(this.state.votes[i].status + salt, 32)
     // let hash = utils.keccak256(status + salt)
     // if (hash === utils.keccak256(status + salt)) {
-    type === 'tokens'
-      ? this.revealToken(i, status, salt)
-      : this.revealReputation(i, status, salt)
-    // }
+    this.props.voteReveal(type, this.props.address, i, status, salt)
+    // this.props.voteRevealed({i, user: accounts[0]})
+    // this.setState({
+    //   votes: Object.assign({}, this.state.votes,
+    //     {[i]: Object.assign({}, this.state.votes[i],
+    //       { revealed: true }
+    //     )})
+    // })
   }
 
   rescueVote (i, type) {
-    type === 'tokens'
-      ? this.rescueTokens()
-      : this.rescueReputation()
-  }
-
-  commitToken (i, hash, status, salt) {
-    let numTokens = this.state['tokVal' + i]
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        let prevPollID = this.getPrevPollID(numTokens, accounts[0])
-        let taskAddr = await P.at(this.props.address).tasks(i)
-        // console.log(taskAddr)
-        let pollID = await T.at(taskAddr).pollId()
-        await tr.voteCommit(this.props.address, i, numTokens, hash, prevPollID, {from: accounts[0]})
-        this.props.voteCommitted({status: status, salt: salt, pollID: pollID, user: accounts[0], numTokens: numTokens, revealed: false})
-      }
-    })
-  }
-
-  revealToken (i, status, salt) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        await tr.voteReveal(this.props.address, i, status, salt, {from: accounts[0]})
-        this.props.voteRevealed({i, user: accounts[0]})
-        this.setState({
-          votes: Object.assign({}, this.state.votes,
-            {[i]: Object.assign({}, this.state.votes[i],
-              { revealed: true }
-            )})
-        })
-      }
-    })
-  }
-
-  rescueToken (i) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        await tr.rescueTokens(this.props.address, i, {from: accounts[0]})
-        this.setState({
-          votes: Object.assign({}, this.state.votes,
-            {[i]: Object.assign({}, this.state.votes[i],
-              { rescued: true }
-            )})
-        })
-      }
-    })
-  }
-
-  commitReputation (i, hash, status, salt) {
-    let numRep = this.state['repVal' + i]
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        let prevPollID = this.getPrevPollID(numRep, accounts[0])
-        let taskAddr = await P.at(this.props.address).tasks(i)
-        let task = await T.at(taskAddr)
-        let pollID = await task.pollID()
-        await rr.voteCommit(this.props.address, i, numRep, hash, prevPollID, {from: accounts[0]})
-        this.props.voteCommitted({status: status, salt: salt, pollID: pollID, user: accounts[0], numTokens: numRep})
-      }
-    })
-  }
-
-  revealReputation (i, status, salt) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        await rr.voteReveal(this.props.address, i, status, salt, {from: accounts[0]})
-        this.props.voteRevealed({i, user: accounts[0]})
-        this.setState({
-          votes: Object.assign({}, this.state.votes,
-            {[i]: Object.assign({}, this.state.votes[i],
-              { revealed: true })})
-        })
-      }
-    })
-  }
-
-  rescueReputation (i) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        await tr.rescueTokens(this.props.address, i, {from: accounts[0]})
-        this.setState({
-          votes: Object.assign({}, this.state.votes,
-            {[i]: Object.assign({}, this.state.votes[i],
-              { rescued: true }
-            )})
-        })
-      }
-    })
-  }
-
-  getPrevPollID (numTokens, user) {
-    let pollInfo = this.props.users[user] // get object of poll data w/pollID's as keys
-    if (typeof pollInfo === 'undefined') return 0
-    let keys = Object.keys(pollInfo)
-    let currPollID = 0
-    let currNumTokens = 0
-    for (let i = 0; i < keys.length; i++) {
-      if ((pollInfo[keys[i]].numTokens <= numTokens) && (pollInfo[keys[i]].numTokens > currNumTokens)) {
-        currNumTokens = pollInfo[keys[i]].numTokens
-        currPollID = keys[i]
-      }
-    }
-    return currPollID
+    this.props.voteRescue(type, this.props.address, i)
+    // this.setState({
+    //   votes: Object.assign({}, this.state.votes,
+    //     {[i]: Object.assign({}, this.state.votes[i],
+    //       { rescued: true }
+    //     )})
+    // })
   }
 
   rewardValidator (i) {
@@ -201,13 +113,7 @@ class VoteTasks extends React.Component {
   }
 
   checkEnd () {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        await pr.checkEnd(this.props.address, {from: accounts[0]}).then((res) => {
-          return res
-        })
-      }
-    })
+    this.props.checkEnd(this.props.address)
   }
 
   render () {
@@ -341,8 +247,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    voteCommitted: (voteDetails) => dispatch(voteCommitted(voteDetails)),
-    voteRevealed: (voteDetails) => dispatch(voteCommitted(voteDetails)),
     getUserValidations: (address, user) => dispatch(getUserValidations(address, user))
   }
 }

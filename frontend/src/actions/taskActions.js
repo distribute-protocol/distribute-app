@@ -16,7 +16,10 @@ import {
   REWARD_TASK,
   TASK_REWARDED,
   GET_USER_VALIDATIONS,
-  USER_VALIDATIONS_RECEIVED
+  USER_VALIDATIONS_RECEIVED,
+  COMMIT_VOTE,
+  REVEAL_VOTE,
+  RESCUE_VOTE
 } from '../constants/TaskActionTypes'
 // task actions start at submitFinalTaskList because task contract initialized in this action
 
@@ -159,5 +162,43 @@ export function taskRewarded (projectAddress, index, amount, claimer) {
     index,
     amount,
     claimer
+  }
+}
+
+export function commitVote (collateralType, projectAddress, taskIndex, value, secretHash, prevPollID, vote, salt, pollID, txObj) {
+  return {
+    type: COMMIT_VOTE,
+    collateralType,
+    projectAddress,
+    taskIndex,
+    value,
+    secretHash,
+    prevPollID,
+    vote,
+    salt,
+    pollID,
+    txObj
+  }
+}
+
+export function revealVote (collateralType, projectAddress, taskIndex, vote, salt, txObj) {
+  return {
+    type: REVEAL_VOTE,
+    collateralType,
+    projectAddress,
+    taskIndex,
+    vote,
+    salt,
+    txObj
+  }
+}
+
+export function rescueVote (collateralType, projectAddress, taskIndex, txObj) {
+  return {
+    type: RESCUE_VOTE,
+    collateralType,
+    projectAddress,
+    taskIndex,
+    txObj
   }
 }

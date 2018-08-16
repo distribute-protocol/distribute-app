@@ -12,6 +12,7 @@ const User = require('../models/user')
 const Validation = require('../models/validation')
 const Vote = require('../models/vote')
 const PrelimTaskList = require('../models/prelimTaskList')
+const UserVote = require('../models/userVote')
 const _ = require('lodash')
 // The resolvers
 const resolvers = {
@@ -52,7 +53,11 @@ const resolvers = {
     tasks: (user) => Task.find({claimer: user.id}).then(tasks => tasks),
     tokenChanges: (user) => Token.find({userId: user.id}).then(tokens => tokens),
     validations: (user) => Validation.find({userId: user.id}).then(validations => validations),
-    votes: (user) => Vote.find({userId: user.id}).then(votes => votes)
+    votes: (user) => Vote.find({userId: user.id}).then(votes => votes),
+    voteRecords: (user) => UserVote.find({voter: user.account})
+  },
+  UserVote: {
+    voter: (vote) => User.findOne({account: vote.voter}).then(user => user)
   },
   Validation: {
     task: (validation) => Task.findById(validation.task).then(task => task)
@@ -158,6 +163,26 @@ const resolvers = {
                 return prelimTaskList
               })
             }
+          })
+        }
+      })
+    },
+    addVote: (obj, args) => {
+      User.findOne({account: args.voter}).exec((err, user) => {
+        if (err) {
+          console.error(err)
+        } else {
+          let userVoteObj = new UserVote({
+            _id: new mongoose.Types.ObjectId(),
+            projectAddress: args.projectAddress,
+            taskIndex: args.taskIndex,
+            vote: args.vote,
+            salt: args.salt,
+            voter: user.id
+          })
+          userVoteObj.save((err, vote) => {
+            if (err) return console.log(err)
+            return vote
           })
         }
       })

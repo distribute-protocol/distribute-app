@@ -2,7 +2,7 @@ import { LOGGED_IN_USER, LOGOUT_USER, USER_STATUS_RECEIVED, REGISTERED_USER } fr
 import { TOKENS_MINTED, TOKENS_SOLD } from '../constants/TokenActionTypes'
 const initialState = {
   userTokens: 0,
-  userReputation: 0
+  userReputation: 0,
 }
 
 export default function userReducer (state = initialState, action) {

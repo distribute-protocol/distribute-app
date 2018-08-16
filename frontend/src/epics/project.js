@@ -1,11 +1,34 @@
-import { GET_PROJECTS, PROPOSE_PROJECT, STAKE_PROJECT, UNSTAKE_PROJECT, CHECK_STAKED_STATUS, CHECK_ACTIVE_STATUS, SUBMIT_HASHED_TASK_LIST, SET_TASK_LIST, GET_VERIFIED_TASK_LISTS, CHECK_VALIDATE_STATUS, CHECK_VOTING_STATUS } from '../constants/ProjectActionTypes'
-import { projectsReceived, projectStaked, projectUnstaked, hashedTaskListSubmitted, stakedStatusChecked, activeStatusChecked, taskListSet, verifiedTaskListsReceived, validateStatusChecked, votingStatusChecked } from '../actions/projectActions'
+import {
+  GET_PROJECTS,
+  PROPOSE_PROJECT,
+  STAKE_PROJECT,
+  UNSTAKE_PROJECT,
+  CHECK_STAKED_STATUS,
+  CHECK_ACTIVE_STATUS,
+  SUBMIT_HASHED_TASK_LIST,
+  SET_TASK_LIST,
+  GET_VERIFIED_TASK_LISTS,
+  CHECK_VALIDATE_STATUS,
+  CHECK_VOTING_STATUS
+} from '../constants/ProjectActionTypes'
+import {
+  projectsReceived,
+  projectStaked,
+  projectUnstaked,
+  hashedTaskListSubmitted,
+  stakedStatusChecked,
+  // activeStatusChecked,
+  taskListSet,
+  verifiedTaskListsReceived
+  // validateStatusChecked,
+  // votingStatusChecked
+} from '../actions/projectActions'
 import { map, mergeMap, concatMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
 import { client } from '../index'
 import { merge } from 'rxjs/observable/merge'
-import { rr, tr, pr, dt, P } from '../utilities/blockchain'
+import { rr, tr, pr, dt } from '../utilities/blockchain'
 import gql from 'graphql-tag'
 
 const getProjectsEpic = action$ => {
@@ -202,5 +225,5 @@ export default (action$, store) => merge(
   setTaskList(action$, store),
   getVerifiedTaskListsEpic(action$, store),
   checkValidateStatus(action$, store),
-  checkVotingStatus(action$, store),
+  checkVotingStatus(action$, store)
 )
