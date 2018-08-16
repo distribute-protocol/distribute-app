@@ -1,5 +1,5 @@
-import { LOGIN_USER, REGISTER_USER, GET_USER_STATUS } from '../constants/UserActionTypes'
-import { userStatusReceived, loggedInUser, registerUser, registeredUser } from '../actions/userActions'
+import { LOGIN_USER, REGISTER_USER, GET_USER_STATUS, GET_USER_VOTES } from '../constants/UserActionTypes'
+import { userStatusReceived, loggedInUser, registerUser, registeredUser, userVotesReceived } from '../actions/userActions'
 import { map, mergeMap, flatMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { merge } from 'rxjs/observable/merge'
@@ -82,8 +82,36 @@ const getUserStatusEpic = action$ =>
     map(result => userStatusReceived(result))
   )
 
+const getUserVotesEpic = action$ =>
+  action$.ofType(GET_USER_VOTES).pipe(
+  // pull value from database
+    mergeMap(action => {
+      let query = gql`
+        query ($account: String!) {
+          userVoteRecords(account: $account) {
+            id
+            pollID
+            amount
+            rescued
+            revealed
+            salt
+            type
+            vote
+            task {
+              id
+              index
+            }
+          }
+        }
+      `
+      return client.query({query: query, variables: {account: action.account}})
+    }),
+    map(result => userVotesReceived(result.data.userVoteRecords))
+  )
+
 export default (action$, store) => merge(
   getUserEpic(action$, store),
   getUserStatusEpic(action$, store),
-  registerUserEpic(action$, store)
+  registerUserEpic(action$, store),
+  getUserVotesEpic(action$, store)
 )

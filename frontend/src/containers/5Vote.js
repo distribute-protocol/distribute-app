@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import { eth, pr } from '../utilities/blockchain'
 import { getProjects } from '../actions/projectActions'
 import { rewardValidator, rewardTask, commitVote, revealVote, rescueVote } from '../actions/taskActions'
+import { getUserVotes } from '../actions/userActions'
 
 import gql from 'graphql-tag'
 
@@ -57,6 +58,7 @@ class Vote extends React.Component {
     }
     this.fastForward = this.fastForward.bind(this)
     this.rewardValidator = this.rewardValidator.bind(this)
+    this.getVotes = this.getVotes.bind(this)
     this.rewardTask = this.rewardTask.bind(this)
     this.voteCommit = this.voteCommit.bind(this)
     this.voteReveal = this.voteReveal.bind(this)
@@ -65,6 +67,7 @@ class Vote extends React.Component {
 
   componentWillMount () {
     this.getProjects()
+    this.getVotes()
   }
 
   async getProjects () {
@@ -72,6 +75,18 @@ class Vote extends React.Component {
       if (!err) {
         if (result.length) {
           this.props.getProjects()
+        } else {
+          console.log('Please Unlock MetaMask')
+        }
+      }
+    })
+  }
+
+  getVotes () {
+    eth.getAccounts(async (err, result) => {
+      if (!err) {
+        if (result.length) {
+          this.props.getUserVotes(result[0])
         } else {
           console.log('Please Unlock MetaMask')
         }
@@ -210,7 +225,8 @@ const mapDispatchToProps = (dispatch) => {
     },
     voteRescue: (collateralType, projectAddress, taskIndex, txObj) => {
       return dispatch(rescueVote(collateralType, projectAddress, taskIndex, txObj))
-    }
+    },
+    getUserVotes: (account) => dispatch(getUserVotes(account))
   }
 }
 

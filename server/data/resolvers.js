@@ -58,7 +58,8 @@ const resolvers = {
     // voteRecords: (user) => VoteRecord.find({voter: user.id}).
   },
   VoteRecord: {
-    voter: (vote) => User.findOne({account: vote.voter}).then(user => user)
+    voter: (vote) => User.findOne({account: vote.voter}).then(user => user),
+    task: (vote) => Task.findById(vote.task).then(voteRecord => voteRecord)
   },
   Validation: {
     task: (validation) => Task.findById(validation.task).then(task => task)
@@ -89,6 +90,7 @@ const resolvers = {
     userPrelimTaskLists: (_, args) => PrelimTaskList.findOne({submitter: args.account.toLowerCase()}).then(prelimTaskLists => prelimTaskLists),
     taskValidations: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => Task.find({project: project.id}).then(task => Validation.find({task: task.id})).then(validations => validations)),
     userVotes: (account) => [{}],
+    userVoteRecords: (_, args) => User.findOne({account: args.account}).then(user => user.voteRecords),
     taskVotes: (address) => [{}],
     findFinalTaskHash: (_, args) => PrelimTaskList.findOne({hash: args.topTaskHash, address: args.address.toLowerCase()}).then(prelimTaskList => prelimTaskList),
     findTaskByIndex: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => Task.findOne({project: project.id, index: args.index})).then(task => task),

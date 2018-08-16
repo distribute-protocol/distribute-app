@@ -194,6 +194,7 @@ const typeDefs = `
     userValidations(account: String): [Validation]
     taskValidations(address: String): [Validation]
     userVotes(account: String): [Vote]
+    userVoteRecords(account: String): [VoteRecord]
     taskVotes(address: String): [Vote]
     verifiedPrelimTaskLists(address: String): [PrelimTaskList]
     userPrelimTaskLists(address: String): [PrelimTaskList]

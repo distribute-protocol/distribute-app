@@ -22,6 +22,10 @@ const columns = [{
   title: 'Task Needs Vote?',
   dataIndex: 'taskNeedsVote',
   key: 'taskNeedsVote'
+}, {
+  title: 'Pending Votes',
+  dataIndex: 'votes',
+  key: 'votes'
 }]
 
 export default ({
@@ -34,7 +38,8 @@ export default ({
   reputationCost,
   date,
   tasks,
-  checkVoting
+  checkVoting,
+  votes
 }) => {
   return (
     <div style={{backgroundColor: '#DDE4E5', marginBottom: 30}}>
@@ -57,6 +62,7 @@ export default ({
           <Table dataSource={tasks} columns={columns} pagination={false} />
         </div>
       </div>
+      {votes}
       <Button
         style={{margin: 20}}
         onClick={() => checkVoting()}>

@@ -7,6 +7,7 @@ import { getUserValidations } from '../../actions/taskActions'
 // import { voteCommitted, voteRevealed } from '../../actions/pollActions'
 import moment from 'moment'
 import { utils } from 'ethers'
+import * as _ from 'lodash'
 
 class VoteTasks extends React.Component {
   constructor () {
@@ -71,11 +72,10 @@ class VoteTasks extends React.Component {
     // this.props.voteCommitted({status: status, salt: salt, pollID: pollID, user: accounts[0], numTokens: numTokens, revealed: false})
   }
 
-  revealTask (i, type, status) {
+  revealTask (i, type, status, salt) {
     // let salt = this.state.votes[i].salt
     // convert status and salt to strings
     // let salt = ethUtil.bufferToHex(ethUtil.setLengthLeft(10000, 32))
-    let salt = 10000
     status
       ? status = 1
       : status = 0
@@ -117,12 +117,15 @@ class VoteTasks extends React.Component {
   }
 
   render () {
-    let tasks
+    let tasks, votes
     if (typeof this.props.tasks !== 'undefined') {
       tasks = this.props.tasks.slice(0).sort(function (a, b) {
         return a.index - b.index
       })
+      // console.log(this.props.votes, 'votes')
+      // console.log(tasks, 'tasks')
       tasks = tasks.map((task, i) => {
+        votes = _.filter(this.props.votes, (vote) => { return vote.task.id === task.id ? vote : null })
         let rewardVal, rewardWork, needsVote
         if (tasks[i].validationRewardClaimable) {
           if (tasks[i].workerRewardClaimable) {
@@ -154,6 +157,39 @@ class VoteTasks extends React.Component {
           // vote needs to happen
           rewardVal = <Icon type='clock-circle-o' />
           rewardWork = <Icon type='clock-circle-o' />
+          votes = votes.map((vote, i) => {
+            return <div key={i}>
+              {/* {JSON.stringify(vote)} */}
+              <div>
+                <div>{`Poll ID: ${vote.pollID}`}</div>
+                <div>{`Amount: ${vote.amount}`}</div>
+                <div>{`Salt: ${vote.salt}`}</div>
+                <div>{`Vote: ${parseInt(vote.vote, 10) ? 'Approve' : 'Deny'}`}</div>
+                {
+                  vote.type === 'tokens'
+                    ? parseInt(vote.vote, 10)
+                      ? (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'tokens', true)}>
+                        Reveal Vote (T)
+                      </Button>)
+                      : (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'tokens', false)}>
+                        Reveal Vote (TA)
+                      </Button>)
+                    : parseInt(vote.vote, 10)
+                      ? (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'reputation', true)}>
+                        Reveal Vote (R)
+                      </Button>)
+                      : (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'reputation', false)}>
+                        Reveal Vote (RA)
+                      </Button>)
+                }
+                {/* <Button
+                  type='danger' onClick={() => this.rescueVote(vote.task.index, 'tokens')}> Rescue (T)
+                </Button> */}
+              </div>
+
+            </div>
+          })
+          // console.log(votes, 'hihi')
           needsVote =
             <div>
               <div>
@@ -169,7 +205,7 @@ class VoteTasks extends React.Component {
                 <Button
                   type='danger' onClick={() => this.voteTask(i, 'tokens', false)}> No
                 </Button>
-                <Button
+                {/* <Button
                   type='danger' onClick={() => this.revealTask(i, 'tokens', true)}> Reveal Vote (T)
                 </Button>
                 <Button
@@ -177,7 +213,7 @@ class VoteTasks extends React.Component {
                 </Button>
                 <Button
                   type='danger' onClick={() => this.rescueVote(i, 'tokens')}> Rescue (T)
-                </Button>
+                </Button> */}
               </div>
               <div>
                 <input
@@ -192,7 +228,7 @@ class VoteTasks extends React.Component {
                 <Button
                   type='danger' onClick={() => this.voteTask(i, 'rep', false)}> No
                 </Button>
-                <Button
+                {/* <Button
                   type='danger' onClick={() => this.revealTask(i, 'reputation', true)}> Reveal Vote (R)
                 </Button>
                 <Button
@@ -200,7 +236,7 @@ class VoteTasks extends React.Component {
                 </Button>
                 <Button
                   type='danger' onClick={() => this.rescueVote(i, 'reputation')}> Rescue (R)
-                </Button>
+                </Button> */}
               </div>
             </div>
         }
@@ -211,7 +247,8 @@ class VoteTasks extends React.Component {
           ethReward: `${web3.fromWei(this.props.project.weiCost) * (task.weighting / 100)} ETH`,
           rewardValidator: rewardVal,
           rewardWorker: rewardWork,
-          taskNeedsVote: needsVote
+          taskNeedsVote: needsVote,
+          votes: votes
         }
       })
     } else {
@@ -241,7 +278,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     project: state.projects[5][ownProps.address],
     tasks: state.projects[5][ownProps.address].tasks,
-    users: state.polls.allUsers
+    votes: state.user.votes
   }
 }
 
