@@ -61,8 +61,8 @@ const stakeProject = action$ => {
     mergeMap(action => {
       collateralType = action.collateralType
       return action.collateralType === 'tokens'
-        ? Observable.from(tr.stakeTokens(action.projectAddress, parseInt(action.value), action.txObj))
-        : Observable.from(rr.stakeReputation(action.projectAddress, parseInt(action.value), action.txObj))
+        ? Observable.from(tr.stakeTokens(action.projectAddress, parseInt(action.value, 10), action.txObj))
+        : Observable.from(rr.stakeReputation(action.projectAddress, parseInt(action.value, 10), action.txObj))
     }),
     mergeMap(result => {
       stakeResult = result
@@ -84,8 +84,8 @@ const unstakeProject = action$ => {
     mergeMap(action => {
       collateralType = action.collateralType
       return action.collateralType === 'tokens'
-        ? Observable.from(tr.unstakeTokens(action.projectAddress, parseInt(action.value), action.txObj))
-        : Observable.from(rr.unstakeReputation(action.projectAddress, parseInt(action.value), action.txObj))
+        ? Observable.from(tr.unstakeTokens(action.projectAddress, parseInt(action.value, 10), action.txObj))
+        : Observable.from(rr.unstakeReputation(action.projectAddress, parseInt(action.value, 10), action.txObj))
     }),
     map(result => projectUnstaked(collateralType, result.logs[0].args))
   )

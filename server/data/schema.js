@@ -132,7 +132,7 @@ const typeDefs = `
     tasks: [Task]
     tokenBalance: Int
     tokenChanges: [Token]
-    voteRecords: [UserVote]
+    voteRecords: [VoteRecord]
     validations: [Validation]
     votes: [Vote]
     weiBalance: Int
@@ -153,7 +153,6 @@ const typeDefs = `
     amount: Int
     revealed: Boolean
     rescued: Boolean
-    prevPollID: Int
     pollID: Int
     hash: String
     task: Task
@@ -161,11 +160,16 @@ const typeDefs = `
     user: User
   }
 
-  type UserVote {
+  type VoteRecord {
     id: ID
-    task: Task
-    vote: String
+    amount: Int
+    pollID: Int
+    revealed: Boolean
+    rescued: Boolean
     salt: String
+    task: Task
+    type: String
+    vote: String
     voter: User
   }
 
@@ -219,7 +223,7 @@ const typeDefs = `
     addUser(input: CredentialInput, account: String): User
     addTaskList(input: String, address: String): Project
     addPrelimTaskList(address: String, taskHash: String, submitter: String): Project
-    addVote(projectAddress: String, taskIndex: Int, vote: String, salt: String, voter: String): UserVote
+    addVote(type: String, projectAddress: String, taskIndex: Int, amount: Int, vote: String, salt: String, pollID: Int, voter: String): VoteRecord
   }
 `
 // Put together a schema

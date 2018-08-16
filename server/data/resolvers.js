@@ -12,7 +12,7 @@ const User = require('../models/user')
 const Validation = require('../models/validation')
 const Vote = require('../models/vote')
 const PrelimTaskList = require('../models/prelimTaskList')
-const UserVote = require('../models/userVote')
+const { VoteRecord } = require('../models/voteRecord')
 const _ = require('lodash')
 // The resolvers
 const resolvers = {
@@ -54,9 +54,9 @@ const resolvers = {
     tokenChanges: (user) => Token.find({userId: user.id}).then(tokens => tokens),
     validations: (user) => Validation.find({userId: user.id}).then(validations => validations),
     votes: (user) => Vote.find({userId: user.id}).then(votes => votes),
-    voteRecords: (user) => UserVote.find({voter: user.account})
+    voteRecords: (user) => VoteRecord.find({voter: user.account})
   },
-  UserVote: {
+  VoteRecord: {
     voter: (vote) => User.findOne({account: vote.voter}).then(user => user)
   },
   Validation: {
@@ -172,18 +172,42 @@ const resolvers = {
         if (err) {
           console.error(err)
         } else {
-          let userVoteObj = new UserVote({
-            _id: new mongoose.Types.ObjectId(),
-            projectAddress: args.projectAddress,
-            taskIndex: args.taskIndex,
-            vote: args.vote,
-            salt: args.salt,
-            voter: user.id
+          Project.findOne({address: args.projectAddress}).exec((err, project) => {
+            if (err) { console.error(err) }
+            Task.findOne({project: project.id, index: args.taskIndex}).exec((err, task) => {
+              if (err) { console.error(err) }
+              let userVoteObj = new VoteRecord({
+                _id: new mongoose.Types.ObjectId(),
+                amount: args.amount,
+                pollID: args.pollID,
+                revealed: false,
+                rescued: false,
+                salt: args.salt,
+                task: task.id,
+                type: args.type,
+                vote: args.vote,
+                voter: user.id
+              })
+              let index = _.sortedIndexBy(user.voteRecords, userVoteObj, (o) => o.amount)
+              user.voteRecords.splice(index, 0, userVoteObj)
+              user.markModified('voteRecords')
+              user.save(err => {
+                if (err) return console.log(err)
+                return userVoteObj
+              })
+            })
           })
-          userVoteObj.save((err, vote) => {
-            if (err) return console.log(err)
-            return vote
-          })
+
+          // userVoteObj.save((err, vote) => {
+          //   if (err) return console.log(err)
+          //   let index = _.sortedIndexBy(user.voteRecords, vote, (o) => o.amount)
+          //   user.voteRecords.splice(index, 0, vote)
+          //   user.markModified('voteRecords')
+          //   user.save((err) => {
+          //     if (err) return console.log(err)
+          //     return vote
+          //   })
+          // })
         }
       })
     }

@@ -43,11 +43,11 @@ export default function projectReducer (state = initialState, action) {
       return Object.assign({}, state, {2: projects})
     case PROJECT_STAKED:
       if (action.collateralType === 'tokens') {
-        let weiBal = parseInt(state[1][action.result.projectAddress].weiBal)
-        let weiChange = parseInt(action.result.weiChange)
+        let weiBal = parseInt(state[1][action.result.projectAddress].weiBal, 10)
+        let weiChange = parseInt(action.result.weiChange, 10)
         project = Object.assign({}, state[1][action.result.projectAddress], {weiBal: weiBal + weiChange, currentPrice: action.currentPrice})
       } else if (action.collateralType === 'reputation') {
-        let repBalance = parseInt(state[1][action.result.projectAddress].reputationBalance)
+        let repBalance = parseInt(state[1][action.result.projectAddress].reputationBalance, 10)
         let repStaked = action.result.reputation.toNumber()
         project = Object.assign({}, state[1][action.result.projectAddress], {reputationBalance: repBalance + repStaked, currentPrice: action.currentPrice})
       }
@@ -55,11 +55,11 @@ export default function projectReducer (state = initialState, action) {
       return Object.assign({}, state, {1: projects})
     case PROJECT_UNSTAKED:
       if (action.collateralType === 'tokens') {
-        let weiBal = parseInt(state[1][action.result.projectAddress].weiBal)
-        let weiChange = parseInt(action.result.weiChange)
+        let weiBal = parseInt(state[1][action.result.projectAddress].weiBal, 10)
+        let weiChange = parseInt(action.result.weiChange, 10)
         project = Object.assign({}, state[1][action.result.projectAddress], {weiBal: weiBal - weiChange, currentPrice: action.currentPrice})
       } else if (action.collateralType === 'reputation') {
-        let repBalance = parseInt(state[1][action.result.projectAddress].reputationBalance)
+        let repBalance = parseInt(state[1][action.result.projectAddress].reputationBalance, 10)
         let repStaked = action.result.reputation.toNumber()
         project = Object.assign({}, state[1][action.result.projectAddress], {reputationBalance: repBalance - repStaked, currentPrice: action.currentPrice})
       }

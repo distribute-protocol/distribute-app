@@ -220,26 +220,28 @@ const rewardTaskEpic = action$ => {
 }
 
 const commitVoteEpic = action$ => {
-  let projectAddress, taskIndex, value, secretHash, prevPollID, txReceipt, txObj, vote, salt
+  let projectAddress, taskIndex, value, secretHash, prevPollID, txReceipt, txObj, vote, salt, pollID, type
   return action$.ofType(COMMIT_VOTE).pipe(
     mergeMap(action => {
       projectAddress = action.projectAddress
       taskIndex = action.taskIndex
       value = action.value
       secretHash = action.secretHash
+      pollID = action.pollID
       prevPollID = action.prevPollID
       txObj = action.txObj
       vote = action.vote
       salt = action.salt
-      return action.collateralType === 'tokens'
+      type = action.collateralType
+      return type === 'tokens'
         ? Observable.from(tr.voteCommit(projectAddress, taskIndex, value, secretHash, prevPollID, action.txObj))
         : Observable.from(rr.voteCommit(projectAddress, taskIndex, value, secretHash, prevPollID, action.txObj))
     }),
     mergeMap(result => {
       txReceipt = result
       let mutation = gql`
-        mutation addVote($projectAddress: String!, $taskIndex: Int!, $vote: String!, $salt: String!, $voter: String!) {
-          addVote(projectAddress: $projectAddress, taskIndex: $taskIndex, vote: $vote, salt: $salt, voter: $voter) {
+        mutation addVote($type: String!, $projectAddress: String!, $taskIndex: Int!, $amount: Int!, $vote: String!, $salt: String!, $pollID: Int!, $voter: String!) {
+          addVote(type: $type, projectAddress: $projectAddress, taskIndex: $taskIndex, amount: $amount, vote: $vote, salt: $salt, pollID: $pollID, voter: $voter) {
             id
           }
         }
@@ -249,9 +251,12 @@ const commitVoteEpic = action$ => {
         variables: {
           projectAddress: projectAddress,
           taskIndex: taskIndex,
+          amount: value,
           vote: vote,
           salt: salt,
-          voter: txObj.from
+          pollID: pollID,
+          voter: txObj.from,
+          type: type
         }
       })
     }),
