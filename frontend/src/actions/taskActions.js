@@ -165,7 +165,7 @@ export function taskRewarded (projectAddress, index, amount, claimer) {
   }
 }
 
-export function commitVote (collateralType, projectAddress, taskIndex, value, secretHash, prevPollID, vote, salt, pollID, txObj) {
+export function commitVote (collateralType, projectAddress, taskIndex, value, secretHash, vote, salt, pollID, txObj) {
   return {
     type: COMMIT_VOTE,
     collateralType,
@@ -173,7 +173,6 @@ export function commitVote (collateralType, projectAddress, taskIndex, value, se
     taskIndex,
     value,
     secretHash,
-    prevPollID,
     vote,
     salt,
     pollID,

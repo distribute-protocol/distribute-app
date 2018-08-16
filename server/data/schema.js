@@ -202,6 +202,7 @@ const typeDefs = `
     allTasksinProject(address: String): [Task]
     getValidations(address: String, index: Int): [Validation]
     getUserValidationsinProject(address: String, user: String): [Validation]
+    getPrevPollID(account: String, amount: Int): Int
   }
 
   input AvatarInput {

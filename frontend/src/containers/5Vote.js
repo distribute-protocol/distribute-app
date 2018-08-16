@@ -104,8 +104,7 @@ class Vote extends React.Component {
       if (!err) {
         // Need to use doubly linked list on the server to find the proper poll position
         // let prevPollID = this.getPrevPollID(value, accounts[0])
-        let prevPollID = 0
-        await this.props.voteCommit(type, projAddress, taskIndex, value, secretHash, prevPollID, status.toString(), salt, pollID, {from: accounts[0]})
+        await this.props.voteCommit(type, projAddress, taskIndex, value, secretHash, status.toString(), salt, pollID, {from: accounts[0]})
       }
     })
   }
@@ -192,7 +191,8 @@ class Vote extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    projects: state.projects[5]
+    projects: state.projects[5],
+    pollID: state.polls.pollID
   }
 }
 
@@ -202,8 +202,8 @@ const mapDispatchToProps = (dispatch) => {
     getProjects: () => dispatch(getProjects(5, projQuery)),
     rewardValidator: (address, index, txObj) => dispatch(rewardValidator(address, index, txObj)),
     rewardTask: (address, index, txObj) => dispatch(rewardTask(address, index, txObj)),
-    voteCommit: (collateralType, projectAddress, taskIndex, value, secretHash, prevPollID, vote, salt, pollID, txObj) => {
-      return dispatch(commitVote(collateralType, projectAddress, taskIndex, value, secretHash, prevPollID, vote, salt, pollID, txObj))
+    voteCommit: (collateralType, projectAddress, taskIndex, value, secretHash, vote, salt, pollID, txObj) => {
+      return dispatch(commitVote(collateralType, projectAddress, taskIndex, value, secretHash, vote, salt, pollID, txObj))
     },
     voteReveal: (collateralType, projectAddress, taskIndex, vote, salt, txObj) => {
       return dispatch(revealVote(collateralType, projectAddress, taskIndex, vote, salt, txObj))

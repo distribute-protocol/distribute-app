@@ -272,7 +272,7 @@ module.exports = function () {
     fromBlock: 0,
     toBlock: 'latest',
     address: TR.TokenRegistryAddress,
-    topics: [web3.sha3('LogTokenVoteCommitted(address,uint256,uint256,bytes32,uint256,uint256,address)')]
+    topics: [web3.sha3('LogTokenVoteCommitted(address,uint256,uint256,bytes32,uint256,address)')]
   })
 
   tokenVoteCommitedFilter.watch(async (error, result) => {

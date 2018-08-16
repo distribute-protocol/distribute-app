@@ -165,7 +165,7 @@ module.exports = function () {
     fromBlock: 0,
     toBlock: 'latest',
     address: RR.ReputationRegistryAddress,
-    topics: [web3.sha3('LogReputationVoteCommitted(address,uint256,uint256,bytes32,uint256,uint256,address)')]
+    topics: [web3.sha3('LogReputationVoteCommitted(address,uint256,uint256,bytes32,uint256,address)')]
   })
 
   reputationVoteCommitedFilter.watch(async (error, result) => {

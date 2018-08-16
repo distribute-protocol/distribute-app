@@ -220,7 +220,7 @@ const rewardTaskEpic = action$ => {
 }
 
 const commitVoteEpic = action$ => {
-  let projectAddress, taskIndex, value, secretHash, prevPollID, txReceipt, txObj, vote, salt, pollID, type
+  let projectAddress, taskIndex, value, secretHash, txReceipt, txObj, vote, salt, pollID, type
   return action$.ofType(COMMIT_VOTE).pipe(
     mergeMap(action => {
       projectAddress = action.projectAddress
@@ -228,14 +228,21 @@ const commitVoteEpic = action$ => {
       value = action.value
       secretHash = action.secretHash
       pollID = action.pollID
-      prevPollID = action.prevPollID
       txObj = action.txObj
       vote = action.vote
       salt = action.salt
       type = action.collateralType
+      let query = gql`
+      query($account: String!, $amount: Int!) {
+        getPrevPollID(account: $account, amount: $amount)
+      }`
+      return client.query({query: query, variables: {account: txObj.from, amount: value}}
+      )
+    }),
+    mergeMap(result => {
       return type === 'tokens'
-        ? Observable.from(tr.voteCommit(projectAddress, taskIndex, value, secretHash, prevPollID, action.txObj))
-        : Observable.from(rr.voteCommit(projectAddress, taskIndex, value, secretHash, prevPollID, action.txObj))
+        ? Observable.from(tr.voteCommit(projectAddress, taskIndex, value, secretHash, result.data.getPrevPollID, txObj))
+        : Observable.from(rr.voteCommit(projectAddress, taskIndex, value, secretHash, result.data.getPrevPollID, txObj))
     }),
     mergeMap(result => {
       txReceipt = result
@@ -261,7 +268,7 @@ const commitVoteEpic = action$ => {
       })
     }),
     map(result =>
-      voteCommitted({projectAddress, taskIndex, value, secretHash, prevPollID, voter: txObj.from, txReceipt})
+      voteCommitted({projectAddress, taskIndex, value, secretHash, voter: txObj.from, txReceipt})
     )
   )
 }
@@ -352,5 +359,4 @@ export default (action$, store) => merge(
   commitVoteEpic(action$, store),
   revealVoteEpic(action$, store),
   rescueVoteEpic(action$, store)
-
 )

@@ -54,7 +54,8 @@ const resolvers = {
     tokenChanges: (user) => Token.find({userId: user.id}).then(tokens => tokens),
     validations: (user) => Validation.find({userId: user.id}).then(validations => validations),
     votes: (user) => Vote.find({userId: user.id}).then(votes => votes),
-    voteRecords: (user) => VoteRecord.find({voter: user.account})
+    voteRecords: (user) => User.findOne({_id: user.id}).then(userDoc => userDoc.voteRecords)
+    // voteRecords: (user) => VoteRecord.find({voter: user.id}).
   },
   VoteRecord: {
     voter: (vote) => User.findOne({account: vote.voter}).then(user => user)
@@ -93,7 +94,12 @@ const resolvers = {
     findTaskByIndex: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => Task.findOne({project: project.id, index: args.index})).then(task => task),
     allTasksinProject: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => Task.find({project: project.id})).then(tasks => tasks),
     getValidations: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => Task.findOne({project: project.id, index: args.index})).then(task => Validation.find({task: task.id})).then(validations => validations),
-    getUserValidationsinProject: (_, args) => Validation.find({projAddress: args.address.toLowerCase(), user: args.user.toLowerCase()}).then(validations => validations)
+    getUserValidationsinProject: (_, args) => Validation.find({projAddress: args.address.toLowerCase(), user: args.user.toLowerCase()}).then(validations => validations),
+    getPrevPollID: (obj, args) => User.findOne({account: args.account}).then((user) => {
+      let insertIndex = _.sortedIndexBy(user.voteRecords, {amount: args.amount}, (o) => o.amount)
+      let prevPollID = insertIndex < 1 ? 0 : user.voteRecords[insertIndex - 1].pollID
+      return prevPollID
+    })
   },
   Mutation: {
     addUser: (obj, args) => {
