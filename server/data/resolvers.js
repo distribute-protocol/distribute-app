@@ -66,7 +66,7 @@ const resolvers = {
   },
   Vote: {
     task: (vote) => Task.findById(vote.taskId).then(vote => vote),
-    user: (vote) => User.findById(vote.taskId).then(user => user)
+    user: (vote) => User.findById(vote.userId).then(user => user)
   },
   Query: {
     network: () => Network.findOne({}).then(status => status),

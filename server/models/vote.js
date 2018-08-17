@@ -10,7 +10,7 @@ let voteSchema = mongoose.Schema({
   pollID: Number,
   prevPollID: Number,
   taskId: mongoose.Schema.Types.ObjectId,
-  userid: mongoose.Schema.Types.ObjectId
+  userId: mongoose.Schema.Types.ObjectId
 })
 
 const Vote = mongoose.model('Vote', voteSchema)

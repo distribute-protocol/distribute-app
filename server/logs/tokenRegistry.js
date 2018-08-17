@@ -34,38 +34,38 @@ module.exports = function () {
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
         netStatus.processedTxs[txHash] = true
         netStatus.markModified('processedTxs')
+        User.findOne({account}).exec((err, userStatus) => {
+          if (err) console.error(error)
+          if (userStatus !== null) {
+            userStatus.tokenBalance -= tokensStaked
+            userStatus.save(err => {
+              if (err) console.error(error)
+            })
+          }
+          Project.findOne({address: projectAddress}).exec((error, doc) => {
+            if (error) console.error(error)
+            let StakeEvent = new Stake({
+              _id: new mongoose.Types.ObjectId(),
+              amount: tokensStaked,
+              project: doc.id,
+              type: 'token',
+              userId: userStatus.id
+            })
+            doc.tokenBalance += tokensStaked
+            doc.weiBal += weiChange
+            doc.save((error, saved) => {
+              if (error) console.error(error)
+            })
+            StakeEvent.save((error, saved) => {
+              if (error) console.error(error)
+              console.log('tokens staked')
+            })
+          })
+        })
         netStatus.save(err => {
           if (err) console.log(err)
         })
       }
-      User.findOne({account}).exec((err, userStatus) => {
-        if (err) console.error(error)
-        if (userStatus !== null) {
-          userStatus.tokenBalance -= tokensStaked
-          userStatus.save(err => {
-            if (err) console.error(error)
-          })
-        }
-        Project.findOne({address: projectAddress}).exec((error, doc) => {
-          if (error) console.error(error)
-          let StakeEvent = new Stake({
-            _id: new mongoose.Types.ObjectId(),
-            amount: tokensStaked,
-            project: doc.id,
-            type: 'token',
-            userId: userStatus.id
-          })
-          doc.tokenBalance += tokensStaked
-          doc.weiBal += weiChange
-          doc.save((error, saved) => {
-            if (error) console.error(error)
-          })
-          StakeEvent.save((error, saved) => {
-            if (error) console.error(error)
-            console.log('tokens staked')
-          })
-        })
-      })
     })
   })
   // filter unstaked tokens
@@ -299,7 +299,7 @@ module.exports = function () {
               if (err) console.error(error, 'Project not found')
               Task.findOne({project: project.id, index: taskIndex}).exec((err, task) => {
                 if (err) console.error(error, 'Task not found')
-                if (task) {
+                if (task !== null) {
                   let vote = new Vote({
                     _id: new mongoose.Types.ObjectId(),
                     amount: stakeAmount,
@@ -309,7 +309,7 @@ module.exports = function () {
                     type: 'tokens',
                     pollID,
                     taskId: task.id,
-                    user: user.id
+                    userId: user.id
                   })
                   vote.save((err, saved) => {
                     if (err) console.error(err)
@@ -353,16 +353,21 @@ module.exports = function () {
         User.findOne({account}).exec((err, user) => {
           if (err) console.error(error)
           if (user !== null) {
-            Task.findOne({project: projectAddress, index: taskIndex}).exec((err, task) => {
+            Project.findOne({address: projectAddress}).exec((err, project) => {
               if (err) console.error(error)
-              if (task !== null) {
-                Vote.findOne({taskId: task.id, userId: user.id, type: 'tokens'}).exec((err, vote) => {
+              if (project !== null) {
+                Task.findOne({project: project.id, index: taskIndex}).exec((err, task) => {
                   if (err) console.error(error)
-                  if (vote !== null) {
-                    vote.revealed = true
-                    vote.save((err, saved) => {
-                      if (err) console.error(err)
-                      console.log('token vote revealed')
+                  if (task !== null) {
+                    Vote.findOne({taskId: task.id, userId: user.id, type: 'tokens'}).exec((err, vote) => {
+                      if (err) console.error(error)
+                      if (vote !== null) {
+                        vote.revealed = true
+                        vote.save((err, saved) => {
+                          if (err) console.error(err)
+                          console.log('token vote revealed')
+                        })
+                      }
                     })
                   }
                 })

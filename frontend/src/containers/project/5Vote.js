@@ -50,6 +50,7 @@ class VoteTasks extends React.Component {
     // convert status and salt to strings
     // let salt = 10000
     // let salt = ethUtil.bufferToHex(ethUtil.setLengthLeft(10000, 32))
+    // console.log(salt, 'waw')
     status
       ? status = 1
       : status = 0
@@ -83,6 +84,7 @@ class VoteTasks extends React.Component {
     // let hash = web3.fromAscii(this.state.votes[i].status + salt, 32)
     // let hash = utils.keccak256(status + salt)
     // if (hash === utils.keccak256(status + salt)) {
+    // console.log(type, this.props.address, i, status, salt)
     this.props.voteReveal(type, this.props.address, i, status, salt)
     // this.props.voteRevealed({i, user: accounts[0]})
     // this.setState({
@@ -168,17 +170,17 @@ class VoteTasks extends React.Component {
                 {
                   vote.type === 'tokens'
                     ? parseInt(vote.vote, 10)
-                      ? (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'tokens', true)}>
+                      ? (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'tokens', true, parseInt(vote.salt, 10))}>
                         Reveal Vote (T)
                       </Button>)
-                      : (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'tokens', false)}>
+                      : (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'tokens', false, parseInt(vote.salt, 10))}>
                         Reveal Vote (TA)
                       </Button>)
                     : parseInt(vote.vote, 10)
-                      ? (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'reputation', true)}>
+                      ? (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'reputation', true, parseInt(vote.salt, 10))}>
                         Reveal Vote (R)
                       </Button>)
-                      : (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'reputation', false)}>
+                      : (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'reputation', false, parseInt(vote.salt, 10))}>
                         Reveal Vote (RA)
                       </Button>)
                 }

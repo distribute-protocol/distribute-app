@@ -127,22 +127,22 @@ module.exports = function () {
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
         netStatus.processedTxs[txHash] = true
         netStatus.markModified('processedTxs')
+        if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
+          Project.findOne({address: projectAddress}).exec((error, doc) => {
+            if (error) console.error(error)
+            if (doc !== null) {
+              if (doc.state === 1) {
+                doc.state = 2
+              }
+              doc.save(err => {
+                if (err) console.error(error)
+                console.log('project fully staked')
+              })
+            }
+          })
+        }
         netStatus.save((err, returned) => {
           if (err) throw Error
-        })
-      }
-      if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
-        Project.findOne({address: projectAddress}).exec((error, doc) => {
-          if (error) console.error(error)
-          if (doc !== null) {
-            if (doc.state === 1) {
-              doc.state = 2
-            }
-            doc.save(err => {
-              if (err) console.error(error)
-              console.log('project fully staked')
-            })
-          }
         })
       }
     })
@@ -212,28 +212,28 @@ module.exports = function () {
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
         netStatus.processedTxs[txHash] = true
         netStatus.markModified('processedTxs')
+        if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
+          PrelimTaskList.findOne({address: projectAddress, hash: topTaskHash}).exec((error, prelimTaskList) => {
+            if (error) console.error(error)
+            if (prelimTaskList !== null) {
+              Project.findOne({address: projectAddress}).exec((error, project) => {
+                if (error) console.error(error)
+                if (project) {
+                  project.state = 3
+                  project.topTaskHash = topTaskHash
+                  project.taskList = prelimTaskList.content
+                  // console.log('final tasks:', project.taskList)
+                  project.save(err => {
+                    if (err) console.error(error)
+                    console.log('active project with topTaskHash')
+                  })
+                }
+              })
+            }
+          })
+        }
         netStatus.save((err, returned) => {
           if (err) throw Error
-        })
-      }
-      if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
-        PrelimTaskList.findOne({address: projectAddress, hash: topTaskHash}).exec((error, prelimTaskList) => {
-          if (error) console.error(error)
-          if (prelimTaskList !== null) {
-            Project.findOne({address: projectAddress}).exec((error, project) => {
-              if (error) console.error(error)
-              if (project) {
-                project.state = 3
-                project.topTaskHash = topTaskHash
-                project.taskList = prelimTaskList.content
-                // console.log('final tasks:', project.taskList)
-                project.save(err => {
-                  if (err) console.error(error)
-                  console.log('active project with topTaskHash')
-                })
-              }
-            })
-          }
         })
       }
     })
@@ -430,30 +430,30 @@ module.exports = function () {
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
         netStatus.processedTxs[txHash] = true
         netStatus.markModified('processedTxs')
-        netStatus.save((err, returned) => {
-          if (err) throw Error
-        })
-      }
-      if (parseInt(flag) === 1) {
-        Project.findOne({address: projectAddress}).exec((error, project) => {
-          if (error) console.error(error)
-          if (project) {
-            project.state = 4
-            Task.find({project: project.id}).exec((error, tasks) => {
-              if (error) console.error(error)
-              tasks.map((task, i) => {
-                task.state = 4
-                task.save(err => {
-                  if (err) console.error(error)
-                  console.log('validate tasks')
+        if (parseInt(flag) === 1) {
+          Project.findOne({address: projectAddress}).exec((error, project) => {
+            if (error) console.error(error)
+            if (project) {
+              project.state = 4
+              Task.find({project: project.id}).exec((error, tasks) => {
+                if (error) console.error(error)
+                tasks.map((task, i) => {
+                  task.state = 4
+                  task.save(err => {
+                    if (err) console.error(error)
+                    console.log('validate tasks')
+                  })
                 })
               })
-            })
-            project.save(err => {
-              if (err) console.error(error)
-              console.log('validate project')
-            })
-          }
+              project.save(err => {
+                if (err) console.error(error)
+                console.log('validate project')
+              })
+            }
+          })
+        }
+        netStatus.save((err, returned) => {
+          if (err) throw Error
         })
       }
     })
