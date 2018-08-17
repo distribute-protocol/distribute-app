@@ -9,6 +9,8 @@ const User = require('../models/user')
 const Task = require('../models/task')
 const Validation = require('../models/validation')
 const Vote = require('../models/vote')
+const { VoteRecord } = require('../models/voteRecord')
+const _ = require('lodash')
 
 module.exports = function () {
   // filter staked tokens
@@ -345,11 +347,11 @@ module.exports = function () {
     let salt = parseInt(eventParamArr[2], 16)
     let account = eventParamArr[3]
     account = '0x' + account.substr(-40)
-    Network.findOne({}).exec((err, netStatus) => {
-      if (err) console.error(err)
-      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-        netStatus.processedTxs[txHash] = true
-        netStatus.markModified('processedTxs')
+    // Network.findOne({}).exec((err, netStatus) => {
+    //   if (err) console.error(err)
+    //   if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+    //     netStatus.processedTxs[txHash] = true
+    //     netStatus.markModified('processedTxs')
         User.findOne({account}).exec((err, user) => {
           if (err) console.error(error)
           if (user !== null) {
@@ -359,9 +361,24 @@ module.exports = function () {
                 Task.findOne({project: project.id, index: taskIndex}).exec((err, task) => {
                   if (err) console.error(error)
                   if (task !== null) {
+
                     Vote.findOne({taskId: task.id, userId: user.id, type: 'tokens'}).exec((err, vote) => {
                       if (err) console.error(error)
                       if (vote !== null) {
+                        let changeIndex = _.findIndex(user.voteRecords, (vR) => vR.pollID == vote.pollID && vR.task == task.id && vR.voter == user.id && vR.type == 'tokens')
+                        let voteRecords = user.voteRecords
+                        let userVote = voteRecords[changeIndex]
+                        userVote.revealed = true
+                        voteRecords[changeIndex] = userVote
+                        user.voteRecords = voteRecords
+                        // user.markModified('voteRecords')
+                        user.save((err, saved) => {
+                          if (err) {
+                            console.error(err)
+                          } else {
+                            console.log('user vote record updated')
+                          }
+                        })
                         vote.revealed = true
                         vote.save((err, saved) => {
                           if (err) console.error(err)
@@ -375,11 +392,11 @@ module.exports = function () {
             })
           }
         })
-        netStatus.save(err => {
-          if (err) console.log(err)
-        })
-      }
-    })
+        // netStatus.save(err => {
+        //   if (err) console.log(err)
+        // })
+      // }
+    // })
   })
 
   const tokenVoteRescuedFilter = web3.eth.filter({

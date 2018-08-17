@@ -8,6 +8,8 @@ let VoteRecordSchema = mongoose.Schema({
   vote: String,
   salt: String,
   type: String,
+  revealed: Boolean,
+  rescued: Boolean,
   voter: mongoose.Schema.Types.ObjectId
 })
 

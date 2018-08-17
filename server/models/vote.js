@@ -8,7 +8,6 @@ let voteSchema = mongoose.Schema({
   hash: String,
   type: String,
   pollID: Number,
-  prevPollID: Number,
   taskId: mongoose.Schema.Types.ObjectId,
   userId: mongoose.Schema.Types.ObjectId
 })

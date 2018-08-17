@@ -9,6 +9,7 @@ const Stake = require('../models/stake')
 const Project = require('../models/project')
 const User = require('../models/user')
 const Vote = require('../models/vote')
+const VoteRecord = require('../models/voteRecord')
 const Task = require('../models/task')
 
 module.exports = function () {
@@ -242,19 +243,25 @@ module.exports = function () {
       if (err) console.error(err)
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
         netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
         User.findOne({account}).exec((err, user) => {
           if (err) console.error(error)
           if (user !== null) {
-            Task.findOne({project: projectAddress, index: taskIndex}).exec((err, task) => {
+            Project.findOne({address: projectAddress}).exec((err, project) => {
               if (err) console.error(error)
-              if (task !== null) {
-                Vote.findOne({taskId: task.id, userId: user.id, type: 'reputation'}).exec((err, vote) => {
+              if (project !== null) {
+                Task.findOne({project: project.id, index: taskIndex}).exec((err, task) => {
                   if (err) console.error(error)
-                  if (vote !== null) {
-                    vote.revealed = true
-                    vote.save((err, saved) => {
-                      if (err) console.error(err)
-                      console.log('rep vote revealed')
+                  if (task !== null) {
+                    Vote.findOne({taskId: task.id, userId: user.id, type: 'reputation'}).exec((err, vote) => {
+                      if (err) console.error(error)
+                      if (vote !== null) {
+                        vote.revealed = true
+                        vote.save((err, saved) => {
+                          if (err) console.error(err)
+                          console.log('reputation vote revealed')
+                        })
+                      }
                     })
                   }
                 })
@@ -262,7 +269,6 @@ module.exports = function () {
             })
           }
         })
-        netStatus.markModified('processedTxs')
         netStatus.save(err => {
           if (err) console.log(err)
         })

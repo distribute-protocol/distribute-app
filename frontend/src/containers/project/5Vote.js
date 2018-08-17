@@ -160,15 +160,14 @@ class VoteTasks extends React.Component {
           rewardVal = <Icon type='clock-circle-o' />
           rewardWork = <Icon type='clock-circle-o' />
           votes = votes.map((vote, i) => {
-            return <div key={i}>
-              {/* {JSON.stringify(vote)} */}
-              <div>
-                <div>{`Poll ID: ${vote.pollID}`}</div>
-                <div>{`Amount: ${vote.amount}`}</div>
-                <div>{`Salt: ${vote.salt}`}</div>
-                <div>{`Vote: ${parseInt(vote.vote, 10) ? 'Approve' : 'Deny'}`}</div>
-                {
-                  vote.type === 'tokens'
+            return !vote.revealed
+              ? <div key={i}>
+                <div>
+                  <div>{`Poll ID: ${vote.pollID}`}</div>
+                  <div>{`Amount: ${vote.amount}`}</div>
+                  <div>{`Salt: ${vote.salt}`}</div>
+                  <div>{`Vote: ${parseInt(vote.vote, 10) ? 'Approve' : 'Deny'}`}</div>
+                  { vote.type === 'tokens'
                     ? parseInt(vote.vote, 10)
                       ? (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'tokens', true, parseInt(vote.salt, 10))}>
                         Reveal Vote (T)
@@ -183,15 +182,13 @@ class VoteTasks extends React.Component {
                       : (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'reputation', false, parseInt(vote.salt, 10))}>
                         Reveal Vote (RA)
                       </Button>)
-                }
-                {/* <Button
-                  type='danger' onClick={() => this.rescueVote(vote.task.index, 'tokens')}> Rescue (T)
-                </Button> */}
-              </div>
-
-            </div>
+                  }
+                  {/* <Button
+                    type='danger' onClick={() => this.rescueVote(vote.task.index, 'tokens')}> Rescue (T)
+                  </Button> */}
+                </div>
+              </div> : null
           })
-          // console.log(votes, 'hihi')
           needsVote =
             <div>
               <div>
