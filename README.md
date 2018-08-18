@@ -297,8 +297,6 @@ yarn start
 ```
 The frontend should open up in a browser tab and be running on localhost 3000. Make sure that it runs on a browser that has the MetaMask extension installed.
 
-<<<<<<< HEAD
-=======
 ### Known Issues
 
 *Mongo Fails to Start:*       
@@ -340,7 +338,6 @@ echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo s
 ```
 in the same terminal window.
 
->>>>>>> edited for clarity and grammar
 ## Authors
 Ashoka Finley (ashoka [dot] finley [at] consensys [dot] net)  
 Jessica Marshall (jessica [dot] marshall [at] consensys [dot] net)
