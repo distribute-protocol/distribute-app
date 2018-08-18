@@ -6,7 +6,7 @@ import Project from './project/5Vote'
 import fastforward from '../utilities/fastforward'
 import { connect } from 'react-redux'
 import { eth, pr } from '../utilities/blockchain'
-import { getProjects } from '../actions/projectActions'
+import { getProjects, checkFinalStatus } from '../actions/projectActions'
 import { rewardValidator, rewardTask, commitVote, revealVote, rescueVote } from '../actions/taskActions'
 import { getUserVotes } from '../actions/userActions'
 
@@ -63,6 +63,7 @@ class Vote extends React.Component {
     this.voteCommit = this.voteCommit.bind(this)
     this.voteReveal = this.voteReveal.bind(this)
     this.voteRescue = this.voteRescue.bind(this)
+    this.checkEnd = this.checkEnd.bind(this)
   }
 
   componentWillMount () {
@@ -141,11 +142,9 @@ class Vote extends React.Component {
   }
 
   checkEnd (projectAddress) {
-    eth.getAccounts(async (err, accounts) => {
+    eth.getAccounts((err, accounts) => {
       if (!err) {
-        await pr.checkEnd(projectAddress, {from: accounts[0]}).then((res) => {
-          return res
-        })
+        this.props.checkFinalStatus(projectAddress, {from: accounts[0]})
       }
     })
   }
@@ -226,7 +225,8 @@ const mapDispatchToProps = (dispatch) => {
     voteRescue: (collateralType, projectAddress, taskIndex, txObj) => {
       return dispatch(rescueVote(collateralType, projectAddress, taskIndex, txObj))
     },
-    getUserVotes: (account) => dispatch(getUserVotes(account))
+    getUserVotes: (account) => dispatch(getUserVotes(account)),
+    checkFinalStatus: (address, txObj) => dispatch(checkFinalStatus(address, txObj))
   }
 }
 

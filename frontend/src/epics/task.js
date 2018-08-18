@@ -315,7 +315,7 @@ const revealVoteEpic = action$ => {
 const rescueVoteEpic = action$ => {
   let projectAddress, taskIndex, txReceipt, txObj
   return action$.ofType(RESCUE_VOTE).pipe(
-    mergeMap(action => {
+    map(action => {
       projectAddress = action.projectAddress
       taskIndex = action.taskIndex
       txObj = action.txObj

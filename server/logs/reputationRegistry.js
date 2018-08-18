@@ -256,10 +256,30 @@ module.exports = function () {
                     Vote.findOne({taskId: task.id, userId: user.id, type: 'reputation'}).exec((err, vote) => {
                       if (err) console.error(error)
                       if (vote !== null) {
+                        let changeIndex = _.findIndex(
+                          user.voteRecords,
+                          (vR) => vR.pollID === vote.pollID &&
+                          vR.task === task.id &&
+                          vR.voter === user.id &&
+                          vR.type === 'reputation'
+                        )
+                        let voteRecords = user.voteRecords
+                        let userVote = voteRecords[changeIndex]
+                        userVote.revealed = true
+                        voteRecords[changeIndex] = userVote
+                        user.voteRecords = voteRecords
+                        // user.markModified('voteRecords')
+                        user.save((err, saved) => {
+                          if (err) {
+                            console.error(err)
+                          } else {
+                            console.log('user vote record updated')
+                          }
+                        })
                         vote.revealed = true
                         vote.save((err, saved) => {
                           if (err) console.error(err)
-                          console.log('reputation vote revealed')
+                          console.log('token vote revealed')
                         })
                       }
                     })

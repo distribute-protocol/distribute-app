@@ -9,7 +9,8 @@ import {
   SET_TASK_LIST,
   GET_VERIFIED_TASK_LISTS,
   CHECK_VALIDATE_STATUS,
-  CHECK_VOTING_STATUS
+  CHECK_VOTING_STATUS,
+  CHECK_FINAL_STATUS
 } from '../constants/ProjectActionTypes'
 import {
   projectsReceived,
@@ -19,7 +20,8 @@ import {
   stakedStatusChecked,
   // activeStatusChecked,
   taskListSet,
-  verifiedTaskListsReceived
+  verifiedTaskListsReceived,
+  finalStatusChecked
   // validateStatusChecked,
   // votingStatusChecked
 } from '../actions/projectActions'
@@ -209,9 +211,25 @@ const checkVotingStatus = action$ =>
     mergeMap(action => {
       return Observable.from(pr.checkVoting(action.projectAddress, action.txObj))
     }),
-    mergeMap(result => Observable.concat(
-      Observable.of(push('/vote'))
-    ))
+    mergeMap(result => {
+      console.log(result)
+      return Observable.concat(
+        Observable.of(push('/vote'))
+      )
+    })
+  )
+
+const checkFinalStatus = action$ =>
+  action$.ofType(CHECK_FINAL_STATUS).pipe(
+    mergeMap(action => {
+      return Observable.from(pr.checkEnd(action.projectAddress, action.txObj))
+    }),
+    mergeMap(result => {
+      console.log(result)
+      return Observable.concat(
+        Observable.of(push('/complete'))
+      )
+    })
   )
 
 export default (action$, store) => merge(
@@ -225,5 +243,6 @@ export default (action$, store) => merge(
   setTaskList(action$, store),
   getVerifiedTaskListsEpic(action$, store),
   checkValidateStatus(action$, store),
-  checkVotingStatus(action$, store)
+  checkVotingStatus(action$, store),
+  checkFinalStatus(action$, store)
 )

@@ -21,7 +21,9 @@ import {
   CHECK_VALIDATE_STATUS,
   VALIDATE_STATUS_CHECKED,
   CHECK_VOTING_STATUS,
-  VOTING_STATUS_CHECKED
+  VOTING_STATUS_CHECKED,
+  CHECK_FINAL_STATUS,
+  FINAL_STATUS_CHECKED
 } from '../constants/ProjectActionTypes'
 
 export function proposeProject (collateralType, projObj, txObj) {
@@ -208,6 +210,21 @@ export function checkVotingStatus (projectAddress, txObj) {
 export function votingStatusChecked (receipt) {
   return {
     type: VOTING_STATUS_CHECKED,
+    receipt
+  }
+}
+
+export function checkFinalStatus (projectAddress, txObj) {
+  return {
+    type: CHECK_FINAL_STATUS,
+    projectAddress,
+    txObj
+  }
+}
+
+export function finalStatusChecked (receipt) {
+  return {
+    type: FINAL_STATUS_CHECKED,
     receipt
   }
 }
