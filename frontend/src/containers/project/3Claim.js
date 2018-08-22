@@ -26,10 +26,6 @@ class ClaimProject extends React.Component {
     this.props.getTasks(this.props.address, this.props.project.state)
   }
 
-  async submitFinalTaskList () {
-    this.props.submitFinalTaskList(this.props.address)
-  }
-
   async claimTask (i) {
     this.props.claimTask(this.props.address, i)
   }
@@ -82,8 +78,6 @@ class ClaimProject extends React.Component {
         reputationCost={this.props.project.reputationCost}
         date={moment(this.props.project.nextDeadline)}
         tasks={tasks}
-        listSubmitted={this.props.project.listSubmitted}
-        submitFinalTaskList={this.submitFinalTaskList}
         claimTask={this.claimTask}
         checkValidateStatus={this.checkValidateStatus}
       />

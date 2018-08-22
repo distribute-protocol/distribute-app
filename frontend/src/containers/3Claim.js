@@ -7,7 +7,7 @@ import { eth } from '../utilities/blockchain'
 import Project from './project/3Claim'
 import fastforward from '../utilities/fastforward'
 import { getProjects, checkValidateStatus } from '../actions/projectActions'
-import { submitFinalTaskList, claimTask, submitTaskComplete } from '../actions/taskActions'
+import { claimTask, submitTaskComplete } from '../actions/taskActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -110,7 +110,6 @@ class Claim extends React.Component {
           index={i}
           address={address}
           project={this.props.projects[address]}
-          submitFinalTaskList={this.submitFinalTaskList}
           claimTask={this.claimTask}
           submitTaskComplete={this.submitTaskComplete}
           checkValidateStatus={this.checkValidateStatus}
@@ -146,7 +145,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
     getProjects: () => dispatch(getProjects(3, projQuery)),
-    submitFinalTaskList: (address, txObj) => dispatch(submitFinalTaskList(address, txObj)),
     claimTask: (address, index, txObj) => dispatch(claimTask(address, index, txObj)),
     submitTaskComplete: (address, index, txObj) => dispatch(submitTaskComplete(address, index, txObj)),
     checkValidateStatus: (address, txObj) => dispatch(checkValidateStatus(address, txObj))
