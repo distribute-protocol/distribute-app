@@ -109,7 +109,6 @@ class Status extends Component {
   }
 
   render () {
-    console.log(this.state.ethToRefund)
     return (
       <StatusComponent
         totalTokenSupply={this.props.network.totalTokens}

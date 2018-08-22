@@ -3,6 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import mapboxgl from 'mapbox-gl'
+import { getNetworkStatus } from '../actions/networkActions'
 import { proposeProject } from '../actions/projectActions'
 import ProposeForm from '../components/Propose'
 import Sidebar from '../components/shared/Sidebar'
@@ -35,10 +36,8 @@ class Propose extends Component {
   }
 
   componentWillMount () {
-    // if (_.isEmpty(this.props.user)) {
-    //   // this.props.reroute()
-    // }
     this.getContractValues()
+    this.getNetworkStatus()
     this.timer = null
   }
 
@@ -65,14 +64,17 @@ class Propose extends Component {
     this.state.map.remove()
   }
 
+  getNetworkStatus () {
+    this.props.getNetworkStatus()
+    this.getContractValues()
+  }
+
   async getContractValues () {
     let currPrice = (await dt.currentPrice()).toNumber()
     let weiBal = (await dt.weiBal()).toNumber()
-    let totalReputationSupply = (await rr.totalSupply()).toNumber()
     this.setState({
       currPrice,
-      weiBal,
-      totalReputationSupply
+      weiBal
     })
   }
 
@@ -161,6 +163,7 @@ class Propose extends Component {
   }
 
   render () {
+    console.log(this.props.network)
     return (
       <div>
         <Sidebar />
@@ -173,7 +176,7 @@ class Propose extends Component {
             : Math.ceil(this.state.cost / 20 / this.state.currPrice)}
           reputationCost={typeof this.state.cost === 'undefined'
             ? 0
-            : Math.ceil(this.state.cost / this.state.weiBal * this.state.totalReputationSupply / 20)}
+            : Math.ceil(this.state.cost / this.state.weiBal * this.props.network.totalReputation / 20)}
           handlePriceChange={this.handlePriceChange}
           handleLocationChange={this.handleLocationChange}
           proposeProject={this.proposeProject}
@@ -186,6 +189,7 @@ class Propose extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    network: state.network,
     user: state.user.user
   }
 }
@@ -193,6 +197,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     proposeProject: (type, projObj, txObj) => dispatch(proposeProject(type, projObj, txObj)),
+    getNetworkStatus: () => dispatch(getNetworkStatus()),
     reroute: () => dispatch(push('/'))
   }
 }
