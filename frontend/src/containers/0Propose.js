@@ -8,7 +8,7 @@ import { proposeProject } from '../actions/projectActions'
 import ProposeForm from '../components/Propose'
 import Sidebar from '../components/shared/Sidebar'
 import { push } from 'react-router-redux'
-import {eth, web3, rr, dt} from '../utilities/blockchain'
+import {eth, web3, dt} from '../utilities/blockchain'
 import ipfs from '../utilities/ipfs'
 import MapboxClient from 'mapbox/lib/services/geocoding'
 const client = new MapboxClient('pk.eyJ1IjoiY29uc2Vuc3lzIiwiYSI6ImNqOHBmY2w0NjBmcmYyd3F1NHNmOXJwMWgifQ.8-GlTlTTUHLL8bJSnK2xIA')
@@ -163,7 +163,6 @@ class Propose extends Component {
   }
 
   render () {
-    console.log(this.props.network)
     return (
       <div>
         <Sidebar />
