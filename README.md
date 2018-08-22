@@ -48,7 +48,7 @@ npm is distributed with Node.js, which means that when you download Node.js, you
 ```
 npm install npm@latest -g
 ```
-Check that npm has been installed by typing this in terminal
+Check that npm has been installed by running this in terminal
 ```
 npm -v
 ```
@@ -63,7 +63,7 @@ npm install -g ganache-cli
 ```
 
 #### Installing MongoDB
-Open Terminal and enter
+Open terminal and enter
 ```
 brew update
 brew install mongodb
@@ -89,12 +89,12 @@ To check that the Go language has downloaded successfully, run
 ```
 go version
 ```
-To get the ipfs daemon running, type the following in Terminal
+To get the ipfs daemon running, run the following in terminal
 ```
 go get -u -d github.com/ipfs/go-ipfs
 ```
 Then cd into the directory where `go-ipfs` was downloaded.  
-Once you have done this, in Terminal, type
+Once you have done this, in terminal, run
 ```
 make install
 ```
@@ -111,7 +111,7 @@ Enter the command they say starting with
 ```
 ipfs cat /ipfs/
 ```
-To test that it is working, type
+To test that it is working, run
 ```
 ipfs help
 ```
@@ -174,7 +174,6 @@ Please remember to make sure that you are running `glibc 2.23`. To make sure, ru
 
 Follow the steps from the [following manual.](https://hevodata.com/blog/install-mongodb-on-ubuntu/).
 
-
 #### Installing the IPFS daemon
 We use IPFS (more information about this alternative to http found [here](https://ipfs.io/#why)) because ...
 
@@ -195,7 +194,7 @@ Move the `ipfs` binary in your local path.
 sudo mv go-ipfs/ipfs /usr/local/bin/ipfs
 ```
 
-To test that it is working, type
+To test that it is working, run
 ```
 ipfs help
 ```
@@ -231,7 +230,7 @@ In `distribute-app` (you should not have to change folders), install the node mo
 yarn
 ```
 *Step 3*:   
-Open a new terminal window. Type
+Open a new terminal window and run
 ```
 ganache-cli
 ```
@@ -245,7 +244,7 @@ From the dropdown menu at the top, select the `Localhost 8545` network. Click th
 To reset the account, confirm that you are on Localhost 8545, then navigate to Settings from the three bars on the top right. Scroll down and select "Reset Account". This forces MetaMask to believe that this network ID is a clean network in a fresh state (**ordinary users of MetaMask should never have to do this!**).
 
 *Step 5:*   
-In a new Terminal window, navigate to the `contracts` folder you cloned from GitHub in Step 1. Deploy it to the local blockchain running in ganache by typing:
+In a new terminal window, navigate to the `contracts` folder you cloned from GitHub in Step 1. Deploy it to the local blockchain running in ganache by running:
 ```
 cd contracts
 truffle migrate
@@ -254,7 +253,7 @@ Then enter the Truffle console.
 ```
 truffle console
 ```
-Send ether from your local blockchain to your account in MetaMask by typing the following in `truffle console`:
+Send ether from your local blockchain to your account in MetaMask by running the following in `truffle console`:
 ```
 web3.eth.sendTransaction({to:'<MetaMask_address>', from: web3.eth.accounts[<i>], value: web3.toWei(90, 'ether')})
 ```
@@ -263,14 +262,14 @@ For <MetaMask_address\>: Paste (Ctrl-Shift-V) the address you copied to clipboar
 For <i\>: Type any number between 0 and 9. This is a reference to the 10 accounts in your locally running 10 accounts.
 
 *Step 6:*
-In a new Terminal window, clear your database by typing:
+In a new terminal window, clear your database by running
 ```
 mongo
 use distribute
 db.dropDatabase()
 ```
 *Step 7*:   
-You are now ready to take Distribute Protocol online. Open another Terminal window. Run
+You are now ready to take Distribute Protocol online. Open another terminal window. Run
 ```
 ipfs daemon
 ```
@@ -282,7 +281,7 @@ Gateway server listening on /ip4/127.0.0.1/tcp/8080
 ```
 *Step 8:*   
 mongoDB must be running before this step.  
-Cd into `distribute-app/server`, then install the necessary node modules and start up the server by typing:
+cd into `distribute-app/server`, then install the necessary node modules and start up the server by running
 ```
 npm install
 npm start
@@ -291,12 +290,53 @@ The server should be running at localhost 3001.
 
 *Step 9:*  
 Your MetaMask account needs to be on localhost 8545, and reset (as described in Step 2 if it has been used before).
-Cd into `distribute-app/frontend`, then install the necessary node modules and start up the frontend by typing:
+cd into `distribute-app/frontend`, then install the necessary node modules and start up the frontend by running
 ```
 yarn
 yarn start
 ```
 The frontend should open up in a browser tab and be running on localhost 3000. Make sure that it runs on a browser that has the MetaMask extension installed.
+
+### Known Issues
+
+*Mongo Fails to Start:*       
+If mongo fails to start when running `mongo` in a terminal window, open a new terminal tab and run
+```
+mongod
+```
+leave that process running, then run
+```
+mongo
+```
+in the original terminal window.
+
+*Localhost Already in Use:*    
+When starting the server, if it does not start up and returns `error="listen tcp :3001: bind: address already in use"` then you will need to terminate whatever process is on port 3001. To do that, run
+```
+lsof -i :3001
+```
+see the engine running on port 3001 and kill the process.
+
+`lsof -i :3001` returns something of this form:
+```
+COMMAND     PID   USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+enginepro 28813 Ariana    4u  IPv6 0xe86d79c77aad86ad      0t0  TCP *:redwood-broker (LISTEN)
+```
+To kill the process above, copy the `PID` number and run
+```
+kill 28813
+```
+Then the server should be able to start normally.   
+
+*Javascript Out of Memory:*    
+After running the frontend for an extended period of time, the process may occasionally quit and return an `Out of Memory` error. To restart the frontend, run `yarn start` in the same terminal window. No extra precautions need to be taken.
+
+*ENOSPC error: Run*
+If the frontend fails to run with `exit code 1` and returns `ENOSPC error: run`, run
+```
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+```
+in the same terminal window.
 
 ## Authors
 Ashoka Finley (ashoka [dot] finley [at] consensys [dot] net)  
