@@ -145,8 +145,8 @@ const submitHashedTaskList = action$ => {
     mergeMap(result => {
       txReceipt = result
       let mutation = gql`
-        mutation addPrelimTaskList($address: String!, $taskHash: String!, $submitter: String!) {
-          addPrelimTaskList(address: $address, taskHash: $taskHash, submitter: $submitter) {
+        mutation addPrelimTaskList($address: String!, $taskHash: String!, $submitter: String!, $weighting: Int!) {
+          addPrelimTaskList(address: $address, taskHash: $taskHash, submitter: $submitter, weighting: $weighting) {
             id
           }
         }
@@ -157,7 +157,8 @@ const submitHashedTaskList = action$ => {
           address: projectAddress,
           taskHash: taskHash,
           submitter: txObj.from,
-          content: tasks
+          content: tasks,
+          weighting: txReceipt.logs[1].args.weighting.toNumber()
         }
       })
     }),
@@ -212,7 +213,6 @@ const checkVotingStatus = action$ =>
       return Observable.from(pr.checkVoting(action.projectAddress, action.txObj))
     }),
     mergeMap(result => {
-      console.log(result)
       return Observable.concat(
         Observable.of(push('/vote'))
       )
@@ -225,7 +225,6 @@ const checkFinalStatus = action$ =>
       return Observable.from(pr.checkEnd(action.projectAddress, action.txObj))
     }),
     mergeMap(result => {
-      console.log(result)
       return Observable.concat(
         Observable.of(push('/complete'))
       )

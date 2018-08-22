@@ -163,6 +163,7 @@ const resolvers = {
                 address: args.address,
                 submitter: args.submitter,
                 content: project.taskList,
+                weighting: args.weighting,
                 verified: true
               })
               prelimTaskList.save((err, doc) => {
