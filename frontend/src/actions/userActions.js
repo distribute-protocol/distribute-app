@@ -1,4 +1,14 @@
-import { LOGIN_USER, LOGGED_IN_USER, LOGOUT_USER, REGISTER_USER, REGISTERED_USER, GET_USER_STATUS, USER_STATUS_RECEIVED } from '../constants/UserActionTypes'
+import {
+  LOGIN_USER,
+  LOGGED_IN_USER,
+  LOGOUT_USER,
+  REGISTER_USER,
+  REGISTERED_USER,
+  GET_USER_STATUS,
+  USER_STATUS_RECEIVED,
+  GET_USER_VOTES,
+  USER_VOTES_RECEIVED
+} from '../constants/UserActionTypes'
 
 export function registerUser (credentials, account) {
   return {
@@ -45,5 +55,19 @@ export function userStatusReceived (responseDetails) {
   return {
     type: USER_STATUS_RECEIVED,
     responseDetails
+  }
+}
+
+export function getUserVotes (account) {
+  return {
+    type: GET_USER_VOTES,
+    account
+  }
+}
+
+export function userVotesReceived (votes) {
+  return {
+    type: USER_VOTES_RECEIVED,
+    votes
   }
 }

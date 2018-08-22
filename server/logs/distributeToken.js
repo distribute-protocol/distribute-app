@@ -8,11 +8,6 @@ const User = require('../models/user')
 const Token = require('../models/token')
 
 module.exports = function () {
-  // setup --> check to make sure filter running appropriately by logging ganache accounts
-  // eth.accounts().then(accountsArr => {
-  //   console.log('accountsArr:', accountsArr)
-  // })
-
   // initialize network model --> ONLY DO THIS ONCE
   Network.findOne({}).exec((err, doc) => {
     if (err) console.error(err)

@@ -110,6 +110,7 @@ const typeDefs = `
     validationRewardClaimable: Boolean
     votes: [Vote]
     weighting: Int
+    workerRewarded: Boolean
     workerRewardClaimable: Boolean
   }
 
@@ -131,8 +132,10 @@ const typeDefs = `
     tasks: [Task]
     tokenBalance: Int
     tokenChanges: [Token]
+    voteRecords: [VoteRecord]
     validations: [Validation]
     votes: [Vote]
+    weiBalance: Int
   }
 
   type Validation {
@@ -142,18 +145,32 @@ const typeDefs = `
     user: String
     state: Boolean
     address: String
+    rewarded: Boolean
   }
 
   type Vote {
     id: ID
     amount: Int
-    commit: Boolean
-    reveal: Boolean
-    pulled: Boolean
-    state: Boolean
+    revealed: Boolean
+    rescued: Boolean
+    pollID: Int
+    hash: String
     task: Task
     type: String
     user: User
+  }
+
+  type VoteRecord {
+    id: ID
+    amount: Int
+    pollID: Int
+    revealed: Boolean
+    rescued: Boolean
+    salt: String
+    task: Task
+    type: String
+    vote: String
+    voter: User
   }
 
   type Query {
@@ -177,6 +194,7 @@ const typeDefs = `
     userValidations(account: String): [Validation]
     taskValidations(address: String): [Validation]
     userVotes(account: String): [Vote]
+    userVoteRecords(account: String): [VoteRecord]
     taskVotes(address: String): [Vote]
     verifiedPrelimTaskLists(address: String): [PrelimTaskList]
     userPrelimTaskLists(address: String): [PrelimTaskList]
@@ -184,6 +202,8 @@ const typeDefs = `
     findTaskByIndex(address: String, index: Int): Task
     allTasksinProject(address: String): [Task]
     getValidations(address: String, index: Int): [Validation]
+    getUserValidationsinProject(address: String, user: String): [Validation]
+    getPrevPollID(account: String, amount: Int): Int
   }
 
   input AvatarInput {
@@ -205,6 +225,7 @@ const typeDefs = `
     addUser(input: CredentialInput, account: String): User
     addTaskList(input: String, address: String): Project
     addPrelimTaskList(address: String, taskHash: String, submitter: String): Project
+    addVote(type: String, projectAddress: String, taskIndex: Int, amount: Int, vote: String, salt: String, pollID: Int, voter: String): VoteRecord
   }
 `
 // Put together a schema

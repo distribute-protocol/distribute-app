@@ -1,8 +1,9 @@
-import { LOGGED_IN_USER, LOGOUT_USER, USER_STATUS_RECEIVED, REGISTERED_USER } from '../constants/UserActionTypes'
+import { LOGGED_IN_USER, LOGOUT_USER, USER_STATUS_RECEIVED, REGISTERED_USER, USER_VOTES_RECEIVED } from '../constants/UserActionTypes'
 import { TOKENS_MINTED, TOKENS_SOLD } from '../constants/TokenActionTypes'
 const initialState = {
   userTokens: 0,
-  userReputation: 0
+  userReputation: 0,
+  votes: []
 }
 
 export default function userReducer (state = initialState, action) {
@@ -26,6 +27,8 @@ export default function userReducer (state = initialState, action) {
       return Object.assign({}, state, {userTokens: state.userTokens + action.receipt.amountMinted.toNumber()})
     case TOKENS_SOLD:
       return Object.assign({}, state, {userTokens: state.userTokens - action.receipt.amountWithdrawn.toNumber()})
+    case USER_VOTES_RECEIVED:
+      return Object.assign({}, state, {votes: action.votes})
     default:
   }
   return state

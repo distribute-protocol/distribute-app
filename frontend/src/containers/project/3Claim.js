@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import ClaimComponent from '../../components/project/3Claim'
 import { Button } from 'antd'
 import { web3 } from '../../utilities/blockchain'
-import { getTasks } from '../../actions/taskActions'
 import moment from 'moment'
 
 const ButtonGroup = Button.Group
@@ -19,11 +18,6 @@ class ClaimProject extends React.Component {
   }
 
   componentWillMount () {
-    this.getTasks()
-  }
-
-  async getTasks () {
-    this.props.getTasks(this.props.address, this.props.project.state)
   }
 
   async submitFinalTaskList () {
@@ -48,7 +42,6 @@ class ClaimProject extends React.Component {
       let reputationCost = this.props.project.reputationCost
       let weiCost = this.props.project.weiCost
       tasks = JSON.parse(this.props.project.taskList).map((task, i) => {
-        console.log(this.props.tasks[i], this.props.tasks)
         let weiReward = Math.floor(weiCost * task.percentage / 100)
         return {
           key: i,
@@ -57,7 +50,6 @@ class ClaimProject extends React.Component {
           repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' && typeof weiReward !== 'undefined' ? `${Math.floor(reputationCost * weiReward / weiCost)} rep` : '',
           buttons: <ButtonGroup>
             <Button
-            // somehow figure out to augment this for this.props.tasks yet to be defined
               disabled={!this.props.project.listSubmitted || this.props.tasks[i] === undefined || this.props.tasks[i].claimed}
               type='danger' onClick={() => this.claimTask(i)}>Claim</Button>
             <Button
@@ -98,10 +90,4 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getTasks: (address, state) => dispatch(getTasks(address, state))
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ClaimProject)
+export default connect(mapStateToProps)(ClaimProject)

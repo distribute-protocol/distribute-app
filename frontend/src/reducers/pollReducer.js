@@ -1,4 +1,5 @@
 import { VOTE_COMMITTED, VOTE_REVEALED } from '../constants/PollActionTypes'
+
 const initialState = {
   allUsers: {}
 }

@@ -7,7 +7,7 @@ import {web3} from '../../utilities/blockchain'
 import { hashTasksArray } from '../../utilities/hashing'
 import update from 'immutability-helper'
 import moment from 'moment'
-import * as _ from 'lodash'
+// import * as _ from 'lodash'
 
 class AddProject extends React.Component {
   constructor () {

@@ -122,30 +122,30 @@ module.exports = function () {
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
     let flag = eventParamArr[1]
-    Network.findOne({}).exec((err, netStatus) => {
-      if (err) console.error(err)
-      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-        netStatus.processedTxs[txHash] = true
-        netStatus.markModified('processedTxs')
-        netStatus.save((err, returned) => {
-          if (err) throw Error
-        })
-      }
-      if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
-        Project.findOne({address: projectAddress}).exec((error, doc) => {
-          if (error) console.error(error)
-          if (doc !== null) {
-            if (doc.state === 1) {
-              doc.state = 2
+    // Network.findOne({}).exec((err, netStatus) => {
+    //   if (err) console.error(err)
+    //   if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+    //     netStatus.processedTxs[txHash] = true
+    //     netStatus.markModified('processedTxs')
+        if (parseInt(flag) === 1) {
+          Project.findOne({address: projectAddress}).exec((error, doc) => {
+            if (error) console.error(error)
+            if (doc !== null) {
+              if (doc.state === 1) {
+                doc.state = 2
+              }
+              doc.save(err => {
+                if (err) console.error(error)
+                console.log('project fully staked')
+              })
             }
-            doc.save(err => {
-              if (err) console.error(error)
-              console.log('project fully staked')
-            })
-          }
-        })
-      }
-    })
+          })
+        }
+    //     netStatus.save((err, returned) => {
+    //       if (err) throw Error
+    //     })
+    //   }
+    // })
   })
   // filter for task hash submissions
   const taskHashSubmittedFilter = web3.eth.filter({
@@ -178,7 +178,7 @@ module.exports = function () {
           PrelimTaskList.findOne({submitter: submitter}).exec((error, prelimTaskList) => {
             if (error) console.error(error)
             if (prelimTaskList !== null && prelimTaskList.hash === taskHash) {
-              console.log(prelimTaskList)
+              // console.log(prelimTaskList)
               prelimTaskList.verified = true
               prelimTaskList.weighting = weighting
               prelimTaskList.save(error => {
@@ -212,28 +212,28 @@ module.exports = function () {
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
         netStatus.processedTxs[txHash] = true
         netStatus.markModified('processedTxs')
+        if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
+          PrelimTaskList.findOne({address: projectAddress, hash: topTaskHash}).exec((error, prelimTaskList) => {
+            if (error) console.error(error)
+            if (prelimTaskList !== null) {
+              Project.findOne({address: projectAddress}).exec((error, project) => {
+                if (error) console.error(error)
+                if (project) {
+                  project.state = 3
+                  project.topTaskHash = topTaskHash
+                  project.taskList = prelimTaskList.content
+                  // console.log('final tasks:', project.taskList)
+                  project.save(err => {
+                    if (err) console.error(error)
+                    console.log('active project with topTaskHash')
+                  })
+                }
+              })
+            }
+          })
+        }
         netStatus.save((err, returned) => {
           if (err) throw Error
-        })
-      }
-      if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
-        PrelimTaskList.findOne({address: projectAddress, hash: topTaskHash}).exec((error, prelimTaskList) => {
-          if (error) console.error(error)
-          if (prelimTaskList !== null) {
-            Project.findOne({address: projectAddress}).exec((error, project) => {
-              if (error) console.error(error)
-              if (project) {
-                project.state = 3
-                project.topTaskHash = topTaskHash
-                project.taskList = prelimTaskList.content
-                console.log('final tasks:', project.taskList)
-                project.save(err => {
-                  if (err) console.error(error)
-                  console.log('active project with topTaskHash')
-                })
-              }
-            })
-          }
         })
       }
     })
@@ -268,8 +268,8 @@ module.exports = function () {
           if (error) console.error(error)
           if (!task) {
             Project.findOne({address: projectAddress}).exec((error, doc) => {
+              if (error) console.error(error)
               if (doc) {
-                if (error) console.error(error)
                 let taskListArr = JSON.parse(doc.taskList)
                 let taskContent = [taskListArr[index]]
                 let taskHash = hashTasks(taskContent)
@@ -284,11 +284,12 @@ module.exports = function () {
                     complete: false,
                     description: taskContent[0].description,
                     index,
-                    state: 3,
+                    state: true,
                     validations: [],
                     validationRewardClaimable: false,
                     weighting: taskContent[0].percentage,
-                    workerRewardClaimable: false
+                    workerRewardClaimable: false,
+                    workerRewarded: false
                   })
                   finalTask.save(err => {
                     if (err) console.error(error)
@@ -423,38 +424,114 @@ module.exports = function () {
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
     let flag = eventParamArr[1]
-    console.log(projectAddress, flag)
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
         netStatus.processedTxs[txHash] = true
         netStatus.markModified('processedTxs')
+        if (parseInt(flag) === 1) {
+          Project.findOne({address: projectAddress}).exec((error, project) => {
+            if (error) console.error(error)
+            if (project) {
+              project.state = 4
+              project.save(err => {
+                if (err) console.error(error)
+                console.log('validate project')
+              })
+            }
+          })
+        }
         netStatus.save((err, returned) => {
           if (err) throw Error
         })
       }
-      if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
+    })
+  })
+  // filter for project tasks ready to be voted on
+  const projectVoteFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: PR.projectRegistryAddress,
+    topics: [web3.sha3('LogProjectVoting(address,bool)')]
+  })
+  projectVoteFilter.watch(async (err, result) => {
+    if (err) console.error(err)
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let projectAddress = eventParamArr[0]
+    projectAddress = '0x' + projectAddress.substr(-40)
+    let flag = parseInt(eventParamArr[1])
+    // Network.findOne({}).exec((err, netStatus) => {
+    //   if (err) console.error(err)
+    //   if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+    //     netStatus.processedTxs[txHash] = true
+    //     netStatus.markModified('processedTxs')
+        if (flag === 1) {
+          Project.findOne({address: projectAddress}).exec((error, project) => {
+            if (error) console.error(error)
+            if (project) {
+              project.state = 5
+              project.save(err => {
+                if (err) console.error(error)
+                console.log('move to stage voting')
+              })
+            }
+          })
+        }
+    //     netStatus.save((err, returned) => {
+    //       if (err) throw Error
+    //     })
+    //   }
+    // })
+  })
+  // filter for project ended
+  const projectEndFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: PR.projectRegistryAddress,
+    topics: [web3.sha3('LogProjectEnd(address,uint256)')]
+  })
+
+  projectEndFilter.watch(async (err, result) => {
+    if (err) console.error(err)
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let projectAddress = eventParamArr[0]
+    projectAddress = '0x' + projectAddress.substr(-40)
+    // let flag = eventParamArr[1]
+    let flag = parseInt(eventParamArr[1])
+    // console.log(projectAddress, flag)
+    // Network.findOne({}).exec((err, netStatus) => {
+    //   if (err) console.error(err)
+    //   if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+    //     netStatus.processedTxs[txHash] = true
+    //     netStatus.markModified('processedTxs')
+      if (parseInt(flag) === 1 || parseInt(flag) === 2) {
         Project.findOne({address: projectAddress}).exec((error, project) => {
           if (error) console.error(error)
           if (project) {
-            project.state = 4
+            flag < 2 ? project.state = 6 : project.state = 7
             Task.find({project: project.id}).exec((error, tasks) => {
               if (error) console.error(error)
               tasks.map((task, i) => {
-                task.state = 4
+                task.state = false
                 task.save(err => {
                   if (err) console.error(error)
-                  console.log('validate tasks')
+                  console.log('task moved to final state')
                 })
               })
             })
             project.save(err => {
               if (err) console.error(error)
-              console.log('validate project')
+              console.log(`move to stage ${flag < 2 ? 'completed' : 'failed'}`)
             })
           }
         })
       }
-    })
+        //   netStatus.save((err, returned) => {
+        //     if (err) throw Error
+        //   })
+        // }
+    // })
   })
 }

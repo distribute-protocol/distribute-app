@@ -33,7 +33,6 @@ class ValidateTasks extends React.Component {
     } else {
       validations = []
     }
-
     return (
       <ValidateTaskComponent
         validations={validations}

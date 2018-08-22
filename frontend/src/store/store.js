@@ -2,7 +2,7 @@ import { compose, createStore, applyMiddleware } from 'redux'
 import createHistory from 'history/createBrowserHistory'
 import { createEpicMiddleware } from 'redux-observable'
 import { routerMiddleware } from 'react-router-redux'
-import { autoRehydrate, persistStore } from 'redux-persist'
+import { autoRehydrate } from 'redux-persist'
 
 import reducers from '../reducers'
 import epics from '../epics'
