@@ -1,7 +1,6 @@
 import {
   SUBMIT_FINAL_TASK_LIST,
   CLAIM_TASK,
-  // GET_TASKS,
   SUBMIT_TASK_COMPLETE,
   VALIDATE_TASK,
   GET_VALIDATIONS,
@@ -15,7 +14,6 @@ import {
 import {
   finalTaskListSubmitted,
   taskClaimed,
-  // tasksReceived,
   taskCompleted,
   taskValidated,
   validationsReceived,
