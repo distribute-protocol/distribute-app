@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { getEthPriceNow } from 'get-eth-price'
-import {eth, web3, dt} from '../utilities/blockchain'
+import { eth, web3, dt } from '../utilities/blockchain'
 import * as _ from 'lodash'
 import StatusComponent from '../components/Status'
 import { getNetworkStatus } from '../actions/networkActions'
@@ -25,7 +25,6 @@ class Status extends Component {
     if (_.isEmpty(this.props.user)) {
     } else {}
     this.getNetworkStatus()
-    this.getPriceData()
   }
 
   componentWillReceiveProps () {
@@ -52,6 +51,7 @@ class Status extends Component {
         if (accounts.length) {
           // get user token balance
           this.props.getUserStatus(accounts[0])
+          this.setState({user: accounts[0]})
         } else {
           alert('Please Unlock MetaMask')
         }
@@ -63,7 +63,7 @@ class Status extends Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
-          this.props.mintTokens(this.tokensToBuy.value, {value: web3.toWei(Math.ceil(this.state.ethToSend * 100000) / 100000, 'ether'), from: accounts[0]})
+          // this.props.mintTokens(this.tokensToBuy.value, {value: web3.toWei(Math.ceil(this.state.ethToSend * 100000) / 100000, 'ether'), from: accounts[0]})
           this.setState({
             tokensToBuy: ''
           })
@@ -132,8 +132,9 @@ class Status extends Component {
         ethToRefund={typeof this.state.ethToRefund === 'undefined'
           ? 'n/a'
           : Math.round(this.state.ethToRefund * 100000) / 100000}
+        tokensToBuy={this.state.tokensToBuy}
+        user={this.state.user}
         getNetworkStatus={this.getNetworkStatus}
-        mintTokens={this.mintTokens}
         sellTokens={this.sellTokens}
         input={
           <input ref={(input) => (this.tokensToBuy = input)}
