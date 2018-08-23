@@ -13,15 +13,10 @@ class ClaimProject extends React.Component {
     this.state = {
       tasks: []
     }
-    this.submitFinalTaskList = this.submitFinalTaskList.bind(this)
     this.checkValidateStatus = this.checkValidateStatus.bind(this)
   }
 
   componentWillMount () {
-  }
-
-  async submitFinalTaskList () {
-    this.props.submitFinalTaskList(this.props.address)
   }
 
   async claimTask (i) {
@@ -66,6 +61,7 @@ class ClaimProject extends React.Component {
     return (
       <ClaimComponent
         name={this.props.project.name}
+        user={this.props.user}
         address={this.props.address}
         photo={this.props.project.photo}
         summary={this.props.project.summary}
@@ -74,8 +70,6 @@ class ClaimProject extends React.Component {
         reputationCost={this.props.project.reputationCost}
         date={moment(this.props.project.nextDeadline)}
         tasks={tasks}
-        listSubmitted={this.props.project.listSubmitted}
-        submitFinalTaskList={this.submitFinalTaskList}
         claimTask={this.claimTask}
         checkValidateStatus={this.checkValidateStatus}
       />

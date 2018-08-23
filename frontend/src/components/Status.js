@@ -1,6 +1,8 @@
 import React from 'react'
 import Button from 'antd/lib/button'
 import Sidebar from './shared/Sidebar'
+import ButtonMintTokens from '../contractComponents/buttons/MintTokens'
+import ButtonSellTokens from '../contractComponents/buttons/SellTokens'
 const ButtonGroup = Button.Group
 export default ({
   totalTokenSupply,
@@ -15,9 +17,9 @@ export default ({
   ethToSend,
   ethToRefund,
   getNetworkStatus,
-  mintTokens,
-  sellTokens,
   input,
+  user,
+  tokensToBuy,
   notRegistered,
   register,
   openFaucet,
@@ -76,12 +78,15 @@ export default ({
             </div>
             <div style={{marginTop: 20}}>
               <ButtonGroup>
-                <Button icon='plus-circle-o' color='primary' onClick={mintTokens}>
-                  Buy
-                </Button>
-                <Button icon='minus-circle-o' color='warning' onClick={sellTokens}>
-                  Sell
-                </Button>
+                <ButtonMintTokens
+                  user={user}
+                  ethToSend={ethToSend}
+                  tokensToBuy={tokensToBuy}
+                />
+                <ButtonSellTokens
+                  user={user}
+                  tokensToBuy={tokensToBuy}
+                />
               </ButtonGroup>
             </div>
           </div>

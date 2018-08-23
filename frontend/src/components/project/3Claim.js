@@ -1,5 +1,6 @@
 import React from 'react'
 import ProjectHeader from '../shared/ProjectHeader'
+import ButtonSubmitFinalTaskList from '../../contractComponents/buttons/SubmitFinalTaskList'
 import { Button, Table } from 'antd'
 
 const columns = [{
@@ -24,14 +25,13 @@ export default ({
   name,
   address,
   photo,
+  user,
   summary,
   location,
   cost,
   reputationCost,
   date,
   tasks,
-  listSubmitted,
-  submitFinalTaskList,
   checkValidateStatus
 }) => {
   return (
@@ -56,11 +56,10 @@ export default ({
         </div>
       </div>
       <div style={{margin: 20}}>
-        <Button
-          disabled={listSubmitted}
-          onClick={() => submitFinalTaskList()}>
-            Submit Winning Hash List
-        </Button>
+        <ButtonSubmitFinalTaskList
+          address={address}
+          user={user}
+        />
         <Button onClick={() => checkValidateStatus()}>
           Check Validate
         </Button>
