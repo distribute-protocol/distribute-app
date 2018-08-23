@@ -97,8 +97,8 @@ class Status extends Component {
         if (totalSupply === 0) {
           refund = ethRequired
         } else {
-          await dt.weiBal().then(result => {
-            refund = web3.fromWei((result.toNumber() / totalSupply * val), 'ether')
+          await dt.currentPrice().then(result => {
+            refund = web3.fromWei((result.toNumber() * val), 'ether')
           })
         }
         this.setState({ethToSend: ethRequired, ethToRefund: refund})
