@@ -1,10 +1,32 @@
-import { SUBMIT_FINAL_TASK_LIST, CLAIM_TASK, GET_TASKS, SUBMIT_TASK_COMPLETE, VALIDATE_TASK, GET_VALIDATIONS } from '../constants/TaskActionTypes'
-import { finalTaskListSubmitted, taskClaimed, tasksReceived, taskCompleted, taskValidated, validationsReceived } from '../actions/taskActions'
+import {
+  SUBMIT_FINAL_TASK_LIST,
+  CLAIM_TASK,
+  SUBMIT_TASK_COMPLETE,
+  VALIDATE_TASK,
+  GET_VALIDATIONS,
+  REWARD_VALIDATOR,
+  REWARD_TASK,
+  GET_USER_VALIDATIONS,
+  COMMIT_VOTE,
+  REVEAL_VOTE,
+  RESCUE_VOTE
+} from '../constants/TaskActionTypes'
+import {
+  finalTaskListSubmitted,
+  taskClaimed,
+  taskCompleted,
+  taskValidated,
+  validationsReceived,
+  validatorRewarded,
+  taskRewarded,
+  userValidationsReceived
+} from '../actions/taskActions'
+import { voteCommitted, voteRevealed, voteRescued } from '../actions/pollActions'
 import { map, mergeMap, concatMap } from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { client } from '../index'
 import { merge } from 'rxjs/observable/merge'
-import { tr, rr, pr } from '../utilities/blockchain'
+import { tr, rr, pr, T, P } from '../utilities/blockchain'
 import { hashTasks } from '../utilities/hashing'
 import gql from 'graphql-tag'
 
@@ -52,7 +74,6 @@ const claimTaskEpic = action$ => {
   let index
   return action$.ofType(CLAIM_TASK).pipe(
     mergeMap(action => {
-      console.log(action)
       address = action.address
       txObj = action.txObj
       index = action.index
@@ -69,36 +90,6 @@ const claimTaskEpic = action$ => {
       return Observable.from(rr.claimTask(address, index, result.data.findTaskByIndex.description, result.data.findTaskByIndex.weighting, txObj))
     }),
     map(result => taskClaimed(address, index))
-  )
-}
-
-const getTasksEpic = action$ => {
-  let address
-  let state
-  return action$.ofType(GET_TASKS).pipe(
-    mergeMap(action => {
-      address = action.projectAddress
-      state = action.state
-      let query = gql`
-      query($address: String!) {
-        allTasksinProject(address: $address) {
-          id,
-          address,
-          claimed,
-          claimedAt,
-          complete,
-          description,
-          index,
-          hash,
-          weighting,
-          validationRewardClaimable,
-          workerRewardClaimable
-        }
-      }`
-      return client.query({query: query, variables: {address: address}}
-      )
-    }),
-    map(result => tasksReceived(address, result.data.allTasksinProject, state))
   )
 }
 
@@ -119,14 +110,22 @@ const validateTaskEpic = action$ => {
   let address
   let index
   let validationState
+  let txObj
   return action$.ofType(VALIDATE_TASK).pipe(
     mergeMap(action => {
       address = action.address
       index = action.taskIndex
       validationState = action.validationState
+      txObj = action.txObj
       return Observable.from(tr.validateTask(address, index, validationState, action.txObj))
     }),
-    map(result => taskValidated(address, index, validationState))
+    mergeMap(result => {
+      return Observable.from(P.at(address).tasks(index))
+    }),
+    mergeMap(result => {
+      return Observable.from(T.at(result).validationEntryFee())
+    }),
+    map(result => taskValidated(address, index, validationState, result, txObj.from))
   )
 }
 
@@ -156,11 +155,206 @@ const getValidationsEpic = action$ => {
   )
 }
 
+const getUserValidationsEpic = action$ => {
+  let address, user
+  return action$.ofType(GET_USER_VALIDATIONS).pipe(
+    mergeMap(action => {
+      address = action.projectAddress
+      user = action.user
+      let query = gql`
+      query($address: String!, $user: String!) {
+        getUserValidationsinProject(address: $address, user: $user) {
+          id,
+          amount,
+          user,
+          task {
+            address,
+            index
+          },
+          state,
+          address,
+          rewarded
+        }
+      }`
+      return client.query({query: query, variables: {address: address, user: user}}
+      )
+    }),
+    map(result => userValidationsReceived(address, user, result.data.getUserValidationsinProject))
+  )
+}
+
+const rewardValidatorEpic = action$ => {
+  let address
+  let index
+  let txObj
+  return action$.ofType(REWARD_VALIDATOR).pipe(
+    mergeMap(action => {
+      address = action.projectAddress
+      index = action.index
+      txObj = action.txObj
+      return Observable.from(tr.rewardValidator(address, index, txObj))
+    }),
+    map(result =>
+      validatorRewarded(address, index, result)
+    )
+  )
+}
+
+const rewardTaskEpic = action$ => {
+  let address
+  let index
+  let txObj
+  return action$.ofType(REWARD_TASK).pipe(
+    mergeMap(action => {
+      address = action.projectAddress
+      index = action.index
+      txObj = action.txObj
+      return Observable.from(rr.rewardTask(address, index, txObj))
+    }),
+    map(result =>
+      taskRewarded(address, index, result, txObj.from)
+    )
+  )
+}
+
+const commitVoteEpic = action$ => {
+  let projectAddress, taskIndex, value, secretHash, txReceipt, txObj, vote, salt, pollID, type
+  return action$.ofType(COMMIT_VOTE).pipe(
+    mergeMap(action => {
+      projectAddress = action.projectAddress
+      taskIndex = action.taskIndex
+      value = action.value
+      secretHash = action.secretHash
+      pollID = action.pollID
+      txObj = action.txObj
+      vote = action.vote
+      salt = action.salt
+      type = action.collateralType
+      let query = gql`
+      query($account: String!, $amount: Int!) {
+        getPrevPollID(account: $account, amount: $amount)
+      }`
+      return client.query({query: query, variables: {account: txObj.from, amount: value}}
+      )
+    }),
+    mergeMap(result => {
+      return type === 'tokens'
+        ? Observable.from(tr.voteCommit(projectAddress, taskIndex, value, secretHash, result.data.getPrevPollID, txObj))
+        : Observable.from(rr.voteCommit(projectAddress, taskIndex, value, secretHash, result.data.getPrevPollID, txObj))
+    }),
+    mergeMap(result => {
+      txReceipt = result
+      let mutation = gql`
+        mutation addVote($type: String!, $projectAddress: String!, $taskIndex: Int!, $amount: Int!, $vote: String!, $salt: String!, $pollID: Int!, $voter: String!) {
+          addVote(type: $type, projectAddress: $projectAddress, taskIndex: $taskIndex, amount: $amount, vote: $vote, salt: $salt, pollID: $pollID, voter: $voter) {
+            id
+          }
+        }
+      `
+      return client.mutate({
+        mutation: mutation,
+        variables: {
+          projectAddress: projectAddress,
+          taskIndex: taskIndex,
+          amount: value,
+          vote: vote,
+          salt: salt,
+          pollID: pollID,
+          voter: txObj.from,
+          type: type
+        }
+      })
+    }),
+    map(result =>
+      voteCommitted({projectAddress, taskIndex, value, secretHash, voter: txObj.from, txReceipt})
+    )
+  )
+}
+
+const revealVoteEpic = action$ => {
+  let projectAddress, taskIndex, vote, salt, txObj, txReceipt
+  return action$.ofType(REVEAL_VOTE).pipe(
+    mergeMap(action => {
+      projectAddress = action.projectAddress
+      taskIndex = action.taskIndex
+      vote = action.vote
+      salt = action.salt
+      txObj = action.txObj
+      return action.collateralType === 'tokens'
+        ? Observable.from(tr.voteReveal(projectAddress, taskIndex, vote, salt, action.txObj))
+        : Observable.from(rr.voteReveal(projectAddress, taskIndex, vote, salt, action.txObj))
+    }),
+    // mergeMap(result => {
+    //   txReceipt = result
+    //   let mutation = gql`
+    //     mutation revealVote($address: String!, $taskIndex: String!, $vote: String!, $salt: String!, $voter: String!) {
+    //       revealVote(address: $address, taskIndex: $taskIndex, vote: $vote, salt: $salt, voter: $voter) {
+    //         id
+    //       }
+    //     }
+    //   `
+    //   return client.mutate({
+    //     mutation: mutation,
+    //     variables: {
+    //       address: projectAddress,
+    //       taskIndex: taskIndex,
+    //       vote: vote,
+    //       salt: salt,
+    //       voter: txObj.from
+    //     }
+    //   })
+    // }),
+    map(result =>
+      voteRevealed({projectAddress, taskIndex, voter: txObj.from, txReceipt})
+    )
+  )
+}
+
+const rescueVoteEpic = action$ => {
+  let projectAddress, taskIndex, txReceipt, txObj
+  return action$.ofType(RESCUE_VOTE).pipe(
+    map(action => {
+      projectAddress = action.projectAddress
+      taskIndex = action.taskIndex
+      txObj = action.txObj
+      return action.collateralType === 'tokens'
+        ? Observable.from(tr.rescueTokens(projectAddress, taskIndex, action.txObj))
+        : Observable.from(rr.rescueTokens(projectAddress, taskIndex, action.txObj))
+    }),
+    // mergeMap(result => {
+    //   txReceipt = result
+    //   let mutation = gql`
+    //     mutation rescueVote($address: String!, $taskIndex: String!, $vote: String!, $salt: String!, $voter: String!) {
+    //       rescueVote(address: $address, taskIndex: $taskIndex, voter: $voter) {
+    //         id
+    //       }
+    //     }
+    //   `
+    //   return client.mutate({
+    //     mutation: mutation,
+    //     variables: {
+    //       address: projectAddress,
+    //       taskIndex: taskIndex,
+    //       voter: txObj.from
+    //     }
+    //   })
+    // }),
+    map(result =>
+      voteRescued({projectAddress, taskIndex, voter: txObj.from, txReceipt})
+    )
+  )
+}
+
 export default (action$, store) => merge(
   submitFinalTaskListEpic(action$, store),
   claimTaskEpic(action$, store),
-  getTasksEpic(action$, store),
   submitTaskCompleteEpic(action$, store),
   validateTaskEpic(action$, store),
-  getValidationsEpic(action$, store)
+  getValidationsEpic(action$, store),
+  getUserValidationsEpic(action$, store),
+  rewardValidatorEpic(action$, store),
+  rewardTaskEpic(action$, store),
+  commitVoteEpic(action$, store),
+  revealVoteEpic(action$, store),
+  rescueVoteEpic(action$, store)
 )

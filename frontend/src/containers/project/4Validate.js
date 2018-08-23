@@ -3,8 +3,7 @@ import { connect } from 'react-redux'
 import ValidateComponent from '../../components/project/4Validate'
 import ValidateTask from '../task/4Validate'
 import { Button } from 'antd'
-import {eth, pr, web3} from '../../utilities/blockchain'
-import { getTasks } from '../../actions/taskActions'
+import { web3 } from '../../utilities/blockchain'
 import moment from 'moment'
 
 class ValidateTasks extends React.Component {
@@ -15,16 +14,11 @@ class ValidateTasks extends React.Component {
 
   componentWillMount () {
     this.getProjectStatus()
-    this.getTasks()
   }
 
   // let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
   async getProjectStatus () {
     this.setState(this.props.project)
-  }
-
-  async getTasks () {
-    this.props.getTasks(this.props.address, this.props.project.state)
   }
 
   onChange (e) {
@@ -34,10 +28,6 @@ class ValidateTasks extends React.Component {
   validateTask (index, validationState) {
     this.props.validateTask(this.props.address, index, validationState)
   }
-
-  // async getValidations (address, index, validationState) {
-  //   this.props.getValidations(this.props.address, index, validationState)
-  // }
 
   checkVotingStatus () {
     this.props.checkVotingStatus(this.props.address)
@@ -65,7 +55,10 @@ class ValidateTasks extends React.Component {
         </div>
       </div>)
     if (typeof this.props.tasks !== 'undefined') {
-      tasks = this.props.tasks.map((task, i) => {
+      tasks = this.props.tasks.slice(0).sort(function (a, b) {
+        return a.index - b.index
+      })
+      tasks = tasks.map((task, i) => {
         return {
           key: i,
           description: task.description,
@@ -100,10 +93,5 @@ const mapStateToProps = (state, ownProps) => {
     tasks: state.projects[4][ownProps.address].tasks
   }
 }
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getTasks: (address, state) => dispatch(getTasks(address, state))
-  }
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(ValidateTasks)
+export default connect(mapStateToProps)(ValidateTasks)

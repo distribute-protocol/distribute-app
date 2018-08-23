@@ -12,6 +12,7 @@ const User = require('../models/user')
 const Validation = require('../models/validation')
 const Vote = require('../models/vote')
 const PrelimTaskList = require('../models/prelimTaskList')
+const { VoteRecord } = require('../models/voteRecord')
 const _ = require('lodash')
 // The resolvers
 const resolvers = {
@@ -25,7 +26,7 @@ const resolvers = {
   Project: {
     proposer: (project) => User.findOne({account: project.proposer}).then(user => user),
     stakes: (project) => Stake.find({projectId: project.id}).then(stakes => stakes),
-    tasks: (project) => Task.find({projectId: project.id}).then(tasks => tasks),
+    tasks: (project) => Task.find({project: project.id}).then(tasks => tasks),
     location: (project) => Project.findById(project.id, 'location').then(project => project.location)
   },
   Reputation: {
@@ -52,14 +53,20 @@ const resolvers = {
     tasks: (user) => Task.find({claimer: user.id}).then(tasks => tasks),
     tokenChanges: (user) => Token.find({userId: user.id}).then(tokens => tokens),
     validations: (user) => Validation.find({userId: user.id}).then(validations => validations),
-    votes: (user) => Vote.find({userId: user.id}).then(votes => votes)
+    votes: (user) => Vote.find({userId: user.id}).then(votes => votes),
+    voteRecords: (user) => User.findOne({_id: user.id}).then(userDoc => userDoc.voteRecords)
+    // voteRecords: (user) => VoteRecord.find({voter: user.id}).
+  },
+  VoteRecord: {
+    voter: (vote) => User.findOne({account: vote.voter}).then(user => user),
+    task: (vote) => Task.findById(vote.task).then(voteRecord => voteRecord)
   },
   Validation: {
-    task: (validation) => Task.findById(validation.taskId).then(task => task)
+    task: (validation) => Task.findById(validation.task).then(task => task)
   },
   Vote: {
     task: (vote) => Task.findById(vote.taskId).then(vote => vote),
-    user: (vote) => User.findById(vote.taskId).then(user => user)
+    user: (vote) => User.findById(vote.userId).then(user => user)
   },
   Query: {
     network: () => Network.findOne({}).then(status => status),
@@ -69,25 +76,32 @@ const resolvers = {
     allTokens: () => [{}],
     reputation: (_, args) => [{}],
     allReputations: () => [{}],
-    project: (_, args) => Project.findOne({address: args.address}).then(project => project),
+    project: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => project),
     allProjects: () => Project.find({}).then(projects => projects),
     allProjectsinState: (_, args) => Project.find({state: args.state}).then(projects => projects),
     allStakes: () => Stake.find({}).then(stakes => stakes),
-    userStakes: (_, args) => Stake.find({userId: args.account}).then(stakes => stakes),
-    projectStakes: (_, args) => Stake.find({projectId: args.address}).then(stakes => stakes),
-    task: (_, args) => Task.find({address: args.address}).then(task => task),
+    userStakes: (_, args) => Stake.find({userId: args.account.toLowerCase()}).then(stakes => stakes),
+    projectStakes: (_, args) => Stake.find({projectId: args.address.toLowerCase()}).then(stakes => stakes),
+    task: (_, args) => Task.find({address: args.address.toLowerCase()}).then(task => task),
     allTasks: () => Task.find({}).then(tasks => tasks),
-    userTasks: (_, args) => User.findOne({account: args.account}).then(user => Task.find({claimer: user.id})).then(tasks => tasks),
-    projectTasks: (_, args) => Project.findOne({address: args.address}).then(project => Task.find({project: project.id})).then(tasks => tasks),
-    verifiedPrelimTaskLists: (_, args) => PrelimTaskList.find({address: args.address, verified: true}).then(prelimTaskLists => prelimTaskLists),
-    userPrelimTaskLists: (_, args) => PrelimTaskList.findOne({submitter: args.account}).then(prelimTaskLists => prelimTaskLists),
-    taskValidations: (_, args) => Project.findOne({address: args.address}).then(project => Task.find({project: project.id}).then(task => Validation.find({task: task.id})).then(validations => validations)),
+    userTasks: (_, args) => User.findOne({account: args.account.toLowerCase()}).then(user => Task.find({claimer: user.id})).then(tasks => tasks),
+    projectTasks: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => Task.find({project: project.id})).then(tasks => tasks),
+    verifiedPrelimTaskLists: (_, args) => PrelimTaskList.find({address: args.address.toLowerCase(), verified: true}).then(prelimTaskLists => prelimTaskLists),
+    userPrelimTaskLists: (_, args) => PrelimTaskList.findOne({submitter: args.account.toLowerCase()}).then(prelimTaskLists => prelimTaskLists),
+    taskValidations: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => Task.find({project: project.id}).then(task => Validation.find({task: task.id})).then(validations => validations)),
     userVotes: (account) => [{}],
+    userVoteRecords: (_, args) => User.findOne({account: args.account}).then(user => user.voteRecords),
     taskVotes: (address) => [{}],
-    findFinalTaskHash: (_, args) => PrelimTaskList.findOne({hash: args.topTaskHash, address: args.address}).then(prelimTaskList => prelimTaskList),
-    findTaskByIndex: (_, args) => Project.findOne({address: args.address}).then(project => Task.findOne({project: project.id, index: args.index})).then(task => task),
-    allTasksinProject: (_, args) => Project.findOne({address: args.address}).then(project => Task.find({project: project.id})).then(tasks => tasks),
-    getValidations: (_, args) => Project.findOne({address: args.address}).then(project => Task.findOne({project: project.id, index: args.index})).then(task => Validation.find({task: task.id})).then(validations => validations)
+    findFinalTaskHash: (_, args) => PrelimTaskList.findOne({hash: args.topTaskHash, address: args.address.toLowerCase()}).then(prelimTaskList => prelimTaskList),
+    findTaskByIndex: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => Task.findOne({project: project.id, index: args.index})).then(task => task),
+    allTasksinProject: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => Task.find({project: project.id})).then(tasks => tasks),
+    getValidations: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => Task.findOne({project: project.id, index: args.index})).then(task => Validation.find({task: task.id})).then(validations => validations),
+    getUserValidationsinProject: (_, args) => Validation.find({projAddress: args.address.toLowerCase(), user: args.user.toLowerCase()}).then(validations => validations),
+    getPrevPollID: (obj, args) => User.findOne({account: args.account}).then((user) => {
+      let insertIndex = _.sortedIndexBy(user.voteRecords, {amount: args.amount}, (o) => o.amount)
+      let prevPollID = insertIndex < 1 ? 0 : user.voteRecords[insertIndex - 1].pollID
+      return prevPollID
+    })
   },
   Mutation: {
     addUser: (obj, args) => {
@@ -149,6 +163,7 @@ const resolvers = {
                 address: args.address,
                 submitter: args.submitter,
                 content: project.taskList,
+                weighting: args.weighting,
                 verified: true
               })
               prelimTaskList.save((err, doc) => {
@@ -158,6 +173,50 @@ const resolvers = {
               })
             }
           })
+        }
+      })
+    },
+    addVote: (obj, args) => {
+      User.findOne({account: args.voter}).exec((err, user) => {
+        if (err) {
+          console.error(err)
+        } else {
+          Project.findOne({address: args.projectAddress}).exec((err, project) => {
+            if (err) { console.error(err) }
+            Task.findOne({project: project.id, index: args.taskIndex}).exec((err, task) => {
+              if (err) { console.error(err) }
+              let userVoteObj = new VoteRecord({
+                _id: new mongoose.Types.ObjectId(),
+                amount: args.amount,
+                pollID: args.pollID,
+                revealed: false,
+                rescued: false,
+                salt: args.salt,
+                task: task.id,
+                type: args.type,
+                vote: args.vote,
+                voter: user.id
+              })
+              let index = _.sortedIndexBy(user.voteRecords, userVoteObj, (o) => o.amount)
+              user.voteRecords.splice(index, 0, userVoteObj)
+              user.markModified('voteRecords')
+              user.save(err => {
+                if (err) return console.log(err)
+                return userVoteObj
+              })
+            })
+          })
+
+          // userVoteObj.save((err, vote) => {
+          //   if (err) return console.log(err)
+          //   let index = _.sortedIndexBy(user.voteRecords, vote, (o) => o.amount)
+          //   user.voteRecords.splice(index, 0, vote)
+          //   user.markModified('voteRecords')
+          //   user.save((err) => {
+          //     if (err) return console.log(err)
+          //     return vote
+          //   })
+          // })
         }
       })
     }
