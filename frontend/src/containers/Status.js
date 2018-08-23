@@ -17,8 +17,8 @@ class Status extends Component {
     }
     this.getNetworkStatus = this.getNetworkStatus.bind(this)
     this.getPriceData = this.getPriceData.bind(this)
-    this.mintTokens = this.mintTokens.bind(this)
-    this.sellTokens = this.sellTokens.bind(this)
+    // this.mintTokens = this.mintTokens.bind(this)
+    // this.sellTokens = this.sellTokens.bind(this)
   }
 
   componentWillMount () {
@@ -59,31 +59,31 @@ class Status extends Component {
     })
   }
 
-  mintTokens () {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        if (accounts.length) {
-          // this.props.mintTokens(this.tokensToBuy.value, {value: web3.toWei(Math.ceil(this.state.ethToSend * 100000) / 100000, 'ether'), from: accounts[0]})
-          this.setState({
-            tokensToBuy: ''
-          })
-        }
-      }
-    })
-  }
+  // mintTokens () {
+  //   eth.getAccounts(async (err, accounts) => {
+  //     if (!err) {
+  //       if (accounts.length) {
+  //         // this.props.mintTokens(this.tokensToBuy.value, {value: web3.toWei(Math.ceil(this.state.ethToSend * 100000) / 100000, 'ether'), from: accounts[0]})
+  //         this.setState({
+  //           tokensToBuy: ''
+  //         })
+  //       }
+  //     }
+  //   })
+  // }
 
-  sellTokens () {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        if (accounts.length) {
-          this.props.sellTokens(this.tokensToBuy.value, {from: accounts[0]})
-          this.setState({
-            tokensToBuy: ''
-          })
-        }
-      }
-    })
-  }
+  // sellTokens () {
+  //   eth.getAccounts(async (err, accounts) => {
+  //     if (!err) {
+  //       if (accounts.length) {
+  //         this.props.sellTokens(this.tokensToBuy.value, {from: accounts[0]})
+  //         this.setState({
+  //           tokensToBuy: ''
+  //         })
+  //       }
+  //     }
+  //   })
+  // }
 
   async onChange (val) {
     this.setState({tokensToBuy: val})
@@ -135,7 +135,6 @@ class Status extends Component {
         tokensToBuy={this.state.tokensToBuy}
         user={this.state.user}
         getNetworkStatus={this.getNetworkStatus}
-        sellTokens={this.sellTokens}
         input={
           <input ref={(input) => (this.tokensToBuy = input)}
             placeholder='Number of Tokens'
