@@ -7,7 +7,6 @@ import * as _ from 'lodash'
 import StatusComponent from '../components/Status'
 import { getNetworkStatus } from '../actions/networkActions'
 import { getUserStatus } from '../actions/userActions'
-import { mintTokens, sellTokens } from '../actions/tokenActions'
 
 class Status extends Component {
   constructor () {
@@ -17,8 +16,6 @@ class Status extends Component {
     }
     this.getNetworkStatus = this.getNetworkStatus.bind(this)
     this.getPriceData = this.getPriceData.bind(this)
-    // this.mintTokens = this.mintTokens.bind(this)
-    // this.sellTokens = this.sellTokens.bind(this)
   }
 
   componentWillMount () {
@@ -59,42 +56,15 @@ class Status extends Component {
     })
   }
 
-  // mintTokens () {
-  //   eth.getAccounts(async (err, accounts) => {
-  //     if (!err) {
-  //       if (accounts.length) {
-  //         // this.props.mintTokens(this.tokensToBuy.value, {value: web3.toWei(Math.ceil(this.state.ethToSend * 100000) / 100000, 'ether'), from: accounts[0]})
-  //         this.setState({
-  //           tokensToBuy: ''
-  //         })
-  //       }
-  //     }
-  //   })
-  // }
-
-  // sellTokens () {
-  //   eth.getAccounts(async (err, accounts) => {
-  //     if (!err) {
-  //       if (accounts.length) {
-  //         this.props.sellTokens(this.tokensToBuy.value, {from: accounts[0]})
-  //         this.setState({
-  //           tokensToBuy: ''
-  //         })
-  //       }
-  //     }
-  //   })
-  // }
-
   async onChange (val) {
     this.setState({tokensToBuy: val})
     if (val > 0) {
       try {
-        let ethRequired, totalSupply, refund
+        let ethRequired, refund
         await dt.weiRequired(val).then(result => {
           ethRequired = web3.fromWei(result.toNumber(), 'ether')
         })
-        totalSupply = this.props.totalSupply
-        if (totalSupply === 0) {
+        if (this.props.totalSupply === 0) {
           refund = ethRequired
         } else {
           await dt.currentPrice().then(result => {
@@ -139,7 +109,8 @@ class Status extends Component {
           <input ref={(input) => (this.tokensToBuy = input)}
             placeholder='Number of Tokens'
             onChange={(e) => this.onChange(this.tokensToBuy.value)}
-            value={this.state.tokensToBuy} type='number'
+            value={this.state.tokensToBuy}
+            type='number'
           />}
       />
     )
@@ -157,9 +128,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
     getNetworkStatus: () => dispatch(getNetworkStatus()),
-    getUserStatus: (userAccount) => dispatch(getUserStatus(userAccount)),
-    mintTokens: (amount, txObj) => dispatch(mintTokens(amount, txObj)),
-    sellTokens: (amount, txObj) => dispatch(sellTokens(amount, txObj))
+    getUserStatus: (userAccount) => dispatch(getUserStatus(userAccount))
   }
 }
 
