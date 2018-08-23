@@ -43,7 +43,6 @@ class Claim extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
-    this.submitFinalTaskList = this.submitFinalTaskList.bind(this)
     this.claimTask = this.claimTask.bind(this)
     this.submitTaskComplete = this.submitTaskComplete.bind(this)
     this.checkValidateStatus = this.checkValidateStatus.bind(this)
@@ -58,17 +57,10 @@ class Claim extends React.Component {
       if (!err) {
         if (result.length) {
           this.props.getProjects()
+          this.setState({user: result[0]})
         } else {
           console.log('Please Unlock MetaMask')
         }
-      }
-    })
-  }
-
-  async submitFinalTaskList (address) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        this.props.submitFinalTaskList(address, {from: accounts[0]})
       }
     })
   }
@@ -97,7 +89,7 @@ class Claim extends React.Component {
     })
   }
 
-  // fast forward Ganache 1 week
+  // fast forward Ganache 2 weeks
   async fastForward () {
     await fastforward(2 * 7 * 24 * 60 * 60)
   }
@@ -109,6 +101,7 @@ class Claim extends React.Component {
           key={i}
           index={i}
           address={address}
+          user={this.state.user}
           project={this.props.projects[address]}
           claimTask={this.claimTask}
           submitTaskComplete={this.submitTaskComplete}

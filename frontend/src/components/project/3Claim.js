@@ -25,6 +25,7 @@ export default ({
   name,
   address,
   photo,
+  user,
   summary,
   location,
   cost,
@@ -55,7 +56,10 @@ export default ({
         </div>
       </div>
       <div style={{margin: 20}}>
-        <ButtonSubmitFinalTaskList address={address} />
+        <ButtonSubmitFinalTaskList
+          address={address}
+          user={user}
+        />
         <Button onClick={() => checkValidateStatus()}>
           Check Validate
         </Button>

@@ -1,12 +1,12 @@
 import React from 'react'
-import { connect } from 'redux'
+import { connect } from 'react-redux'
 import { Button } from 'antd'
-import { submitFinalTaskList } from '../actions/taskActions'
+import { submitFinalTaskList } from '../../actions/taskActions'
 
 const ButtonSubmitFinalTaskList = (props) => {
   return (<Button
     disabled={props.project.listSubmitted}
-    onClick={() => props.submitFinalTaskList(props.address)}>
+    onClick={() => props.submitFinalTaskList(props.address, {from: props.user})}>
       Submit Winning Hash List
   </Button>)
 }
@@ -19,7 +19,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    submitFinalTaskList: (address) => dispatch(submitFinalTaskList(address))
+    submitFinalTaskList: (address, txObj) => dispatch(submitFinalTaskList(address, txObj))
   }
 }
 

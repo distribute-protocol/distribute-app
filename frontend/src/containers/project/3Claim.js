@@ -14,7 +14,6 @@ class ClaimProject extends React.Component {
     this.state = {
       tasks: []
     }
-    this.submitFinalTaskList = this.submitFinalTaskList.bind(this)
     this.checkValidateStatus = this.checkValidateStatus.bind(this)
   }
 
@@ -70,6 +69,7 @@ class ClaimProject extends React.Component {
     return (
       <ClaimComponent
         name={this.props.project.name}
+        user={this.props.user}
         address={this.props.address}
         photo={this.props.project.photo}
         summary={this.props.project.summary}
