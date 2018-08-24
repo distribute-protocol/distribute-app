@@ -23,7 +23,8 @@ const ButtonSubmitTaskList = (props) => {
       props.submitHashedTaskList(tasks, taskHash, props.address, {from: props.user})
     }
   }
-  return (<Button style={{marginTop: 10}}
+  return (<Button
+    style={{marginTop: 10}}
     onClick={() => submitHashedTaskList()}>
     Submit Tasks
   </Button>)

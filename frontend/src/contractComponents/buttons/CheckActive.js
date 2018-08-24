@@ -5,8 +5,9 @@ import { checkActiveStatus } from '../../actions/projectActions'
 
 const ButtonCheckActive = (props) => {
   return (<Button
+    style={{marginTop: 10}}
     onClick={() => props.checkActiveStatus(props.address, {from: props.user})}>
-      Submit Winning Hash List
+      Check Active
   </Button>)
 }
 

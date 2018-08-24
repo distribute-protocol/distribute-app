@@ -6,7 +6,6 @@ import ButtonTaskComplete from '../../contractComponents/buttons/TaskComplete'
 import { Button } from 'antd'
 import { web3 } from '../../utilities/blockchain'
 import moment from 'moment'
-
 const ButtonGroup = Button.Group
 
 class ClaimProject extends React.Component {
@@ -15,11 +14,6 @@ class ClaimProject extends React.Component {
     this.state = {
       tasks: []
     }
-    this.checkValidateStatus = this.checkValidateStatus.bind(this)
-  }
-
-  checkValidateStatus () {
-    this.props.checkValidateStatus(this.props.address)
   }
 
   render () {
@@ -64,8 +58,6 @@ class ClaimProject extends React.Component {
         reputationCost={this.props.project.reputationCost}
         date={moment(this.props.project.nextDeadline)}
         tasks={tasks}
-        claimTask={this.claimTask}
-        checkValidateStatus={this.checkValidateStatus}
       />
     )
   }

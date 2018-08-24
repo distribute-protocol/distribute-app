@@ -429,22 +429,22 @@ module.exports = function () {
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
         netStatus.processedTxs[txHash] = true
         netStatus.markModified('processedTxs')
-        if (parseInt(flag) === 1) {
-          Project.findOne({address: projectAddress}).exec((error, project) => {
-            if (error) console.error(error)
-            if (project) {
-              project.state = 4
-              project.save(err => {
-                if (err) console.error(error)
-                console.log('validate project')
-              })
-            }
-          })
-        }
-        netStatus.save((err, returned) => {
-          if (err) throw Error
+      }
+      if (parseInt(flag) === 1) {
+        Project.findOne({address: projectAddress}).exec((error, project) => {
+          if (error) console.error(error)
+          if (project) {
+            project.state = 4
+            project.save(err => {
+              if (err) console.error(error)
+              console.log('validate project')
+            })
+          }
         })
       }
+      netStatus.save((err, returned) => {
+        if (err) throw Error
+      })
     })
   })
   // filter for project tasks ready to be voted on
