@@ -6,7 +6,7 @@ import { push } from 'react-router-redux'
 import { eth } from '../utilities/blockchain'
 import Project from './project/2Add'
 import fastforward from '../utilities/fastforward'
-import { getProjects, checkActiveStatus, setTaskList, getVerifiedTaskLists } from '../actions/projectActions'
+import { getProjects, setTaskList, getVerifiedTaskLists } from '../actions/projectActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -68,6 +68,7 @@ class Add extends React.Component {
     this.props.getVerifiedTaskLists(address)
     return 0
   }
+
   // fast forward Ganache 1 week
   async fastForward () {
     await fastforward(7 * 24 * 60 * 60)
@@ -117,8 +118,6 @@ const mapDispatchToProps = (dispatch) => {
     reroute: () => dispatch(push('/')),
     getProjects: () => dispatch(getProjects(2, projQuery)),
     getVerifiedTaskLists: (projectAddress) => dispatch(getVerifiedTaskLists(projectAddress)),
-    checkActiveStatus: (projectAddress, txObj) => dispatch(checkActiveStatus(projectAddress, txObj)),
-    // submitHashedTaskList: (tasks, taskHash, projectAddress, txObj) => dispatch(submitHashedTaskList(tasks, taskHash, projectAddress, txObj)),
     setTaskList: (taskDetails, projectAddress) => dispatch(setTaskList(taskDetails, projectAddress))
   }
 }
