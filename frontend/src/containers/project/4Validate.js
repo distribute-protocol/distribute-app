@@ -3,16 +3,10 @@ import { connect } from 'react-redux'
 import ValidateComponent from '../../components/project/4Validate'
 import ValidateTask from '../task/4Validate'
 import ButtonValidateTask from '../../contractComponents/buttons/ValidateTask'
-import { Button } from 'antd'
 import { web3 } from '../../utilities/blockchain'
 import moment from 'moment'
 
 class ValidateTasks extends React.Component {
-  constructor () {
-    super()
-    this.checkVotingStatus = this.checkVotingStatus.bind(this)
-  }
-
   componentWillMount () {
     this.getProjectStatus()
   }
@@ -24,14 +18,6 @@ class ValidateTasks extends React.Component {
 
   onChange (e) {
     this.setState({[e.target.name]: e.target.value})
-  }
-
-  // validateTask (index, validationState) {
-  //   this.props.validateTask(this.props.address, index, validationState)
-  // }
-
-  checkVotingStatus () {
-    this.props.checkVotingStatus(this.props.address)
   }
 
   render () {
@@ -86,7 +72,7 @@ class ValidateTasks extends React.Component {
         reputationCost={this.state.reputationCost}
         date={moment(this.state.nextDeadline)}
         tasks={tasks}
-        checkVotingStatus={this.checkVotingStatus}
+        user={this.props.user}
       />
     )
   }

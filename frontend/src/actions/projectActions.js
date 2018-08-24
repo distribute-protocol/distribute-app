@@ -199,6 +199,7 @@ export function validateStatusChecked (receipt) {
 }
 
 export function checkVotingStatus (projectAddress, txObj) {
+  console.log(projectAddress, txObj)
   return {
     type: CHECK_VOTING_STATUS,
     projectAddress,
