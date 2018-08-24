@@ -56,7 +56,7 @@ class Validate extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
-    this.validateTask = this.validateTask.bind(this)
+    // this.validateTask = this.validateTask.bind(this)
     this.checkVotingStatus = this.checkVotingStatus.bind(this)
   }
 
@@ -64,13 +64,13 @@ class Validate extends React.Component {
     this.getProjects()
   }
 
-  async validateTask (address, index, status) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        this.props.validateTask(address, index, status, {from: accounts[0]})
-      }
-    })
-  }
+  // async validateTask (address, index, status) {
+  //   eth.getAccounts(async (err, accounts) => {
+  //     if (!err) {
+  //       this.props.validateTask(address, index, status, {from: accounts[0]})
+  //     }
+  //   })
+  // }
 
   async checkVotingStatus (address) {
     eth.getAccounts(async (err, accounts) => {
@@ -85,6 +85,7 @@ class Validate extends React.Component {
       if (!err) {
         if (result.length) {
           this.props.getProjects()
+          this.setState({user: result[0]})
         } else {
           console.log('Please Unlock MetaMask')
         }
@@ -104,7 +105,7 @@ class Validate extends React.Component {
           index={i}
           address={address}
           project={this.props.projects[address]}
-          validateTask={this.validateTask}
+          user={this.state.user}
           checkVotingStatus={this.checkVotingStatus}
         />
       })
@@ -139,7 +140,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
     getProjects: () => dispatch(getProjects(4, projQuery)),
-    validateTask: (address, taskIndex, status, txObj) => dispatch(validateTask(address, taskIndex, status, txObj)),
+    // validateTask: (address, taskIndex, status, txObj) => dispatch(validateTask(address, taskIndex, status, txObj)),
     checkVotingStatus: (address, txObj) => dispatch(checkVotingStatus(address, txObj))
   }
 }
