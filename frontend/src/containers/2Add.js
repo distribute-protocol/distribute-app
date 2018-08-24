@@ -40,8 +40,6 @@ class Add extends React.Component {
     }
     this.fastForward = this.fastForward.bind(this)
     this.setTaskList = this.setTaskList.bind(this)
-    this.checkActiveStatus = this.checkActiveStatus.bind(this)
-    // this.submitHashedTaskList = this.submitHashedTaskList.bind(this)
     this.getVerifiedTaskLists = this.getVerifiedTaskLists.bind(this)
   }
 
@@ -58,14 +56,6 @@ class Add extends React.Component {
         } else {
           console.log('Please Unlock MetaMask')
         }
-      }
-    })
-  }
-
-  async checkActiveStatus (address) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        this.props.checkActiveStatus(address, {from: accounts[0]})
       }
     })
   }
@@ -93,8 +83,6 @@ class Add extends React.Component {
           project={this.props.projects[address]}
           setTaskList={(taskDetails, address) => this.setTaskList(taskDetails, address)}
           getVerifiedTaskLists={(address) => this.getVerifiedTaskLists(address)}
-          // submitHashedTaskList={(tasks, taskHash, address) => this.submitHashedTaskList(tasks, taskHash, address)}
-          checkActiveStatus={(address) => this.checkActiveStatus(address)}
           user={this.state.user}
         />
       })

@@ -1,7 +1,8 @@
 import React from 'react'
-import { Button, Table } from 'antd'
+import { Table } from 'antd'
 import ProjectHeader from '../shared/ProjectHeader'
 import ButtonSubmitTaskList from '../../contractComponents/buttons/SubmitTaskList'
+import ButtonCheckActive from '../../contractComponents/buttons/CheckActive'
 import DraggableTable from '../shared/DraggableTable'
 
 const columns = [{
@@ -47,7 +48,6 @@ export default ({
   date,
   submission,
   tasks,
-  checkActive,
   submissionTasks,
   moveRow,
   user
@@ -82,7 +82,10 @@ export default ({
             <Table style={{backgroundColor: '#ffffff'}} dataSource={submissionTasks} columns={submissionColumns} pagination={false} />
           </div>
         </div>
-        <Button style={{margin: 20}} onClick={() => checkActive()} >Check Active</Button>
+        <ButtonCheckActive
+          user={user}
+          address={address}
+        />
       </div>
     </div>
   )

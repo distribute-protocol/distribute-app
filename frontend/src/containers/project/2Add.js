@@ -16,7 +16,6 @@ class AddProject extends React.Component {
     this.getVerifiedTaskLists = this.getVerifiedTaskLists.bind(this)
     this.handleTaskInput = this.handleTaskInput.bind(this)
     this.moveRow = this.moveRow.bind(this)
-    this.checkActive = this.checkActive.bind(this)
   }
 
   componentWillMount () {
@@ -71,10 +70,6 @@ class AddProject extends React.Component {
     tempTaskList.push({description, percentage})
     this.props.setTaskList({taskList: tempTaskList}, this.props.address)
     this.setState({tempTask: {}})
-  }
-
-  checkActive () {
-    this.props.checkActiveStatus(this.props.address)
   }
 
   render () {
@@ -133,8 +128,6 @@ class AddProject extends React.Component {
         reputationCost={this.props.project.reputationCost}
         date={moment(this.props.project.nextDeadline)}
         tasks={tasks}
-        submitTaskList={this.submitTaskList}
-        checkActive={this.checkActive}
         submission={submission}
         submissionTasks={verifiedSubmissions}
         moveRow={this.moveRow}
