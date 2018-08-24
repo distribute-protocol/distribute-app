@@ -5,7 +5,6 @@ import { stakeProject } from '../../actions/projectActions'
 
 const ButtonStakeProject = (props) => {
   let style
-  console.log(props)
   props.type === 'tokens'
     ? style = {backgroundColor: '#0B1899', color: 'white'}
     : style = {backgroundColor: '#08734E', color: 'white'}

@@ -4,7 +4,7 @@ import Sidebar from '../components/shared/Sidebar'
 import Project from './project/1Stake'
 import { push } from 'react-router-redux'
 import { eth, dt } from '../utilities/blockchain'
-import { getProjects, stakeProject, unstakeProject } from '../actions/projectActions'
+import { getProjects } from '../actions/projectActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
