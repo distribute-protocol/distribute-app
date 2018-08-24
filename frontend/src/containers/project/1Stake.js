@@ -11,8 +11,6 @@ class StakeProject extends Component {
     this.state = {
       stake: ''
     }
-    this.tokens = this.tokens.bind(this)
-    this.reputation = this.reputation.bind(this)
   }
 
   onChange (val) {
@@ -21,20 +19,6 @@ class StakeProject extends Component {
     } catch (error) {
       throw new Error(error)
     }
-  }
-
-  tokens (bool) {
-    bool
-      ? this.props.stakeProject('tokens', this.state.stake)
-      : this.props.unstakeProject('tokens', this.state.stake)
-    this.setState({stake: ''})
-  }
-
-  reputation (bool) {
-    bool
-      ? this.props.stakeProject('reputation', this.state.stake)
-      : this.props.unstakeProject('reputation', this.state.stake)
-    this.setState({stake: ''})
   }
 
   render () {
@@ -71,8 +55,8 @@ class StakeProject extends Component {
             style={{height: 30, marginRight: 15}}
           />
         }
-        tokens={this.tokens}
-        reputation={this.reputation}
+        user={this.props.user}
+        value={this.state.stake}
       />
     )
   }

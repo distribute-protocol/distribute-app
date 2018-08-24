@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Sidebar from '../components/shared/Sidebar'
-import Project from './project/1ProjectStake'
+import Project from './project/1Stake'
 import { push } from 'react-router-redux'
 import { eth, dt } from '../utilities/blockchain'
 import { getProjects, stakeProject, unstakeProject } from '../actions/projectActions'
@@ -38,8 +38,6 @@ class Stake extends React.Component {
       tempProject: {},
       currPrice: 0
     }
-    this.stakeProject = this.stakeProject.bind(this)
-    this.unstakeProject = this.unstakeProject.bind(this)
   }
 
   componentWillMount () {
@@ -52,26 +50,10 @@ class Stake extends React.Component {
         if (result.length) {
           let currentPrice = (await dt.currentPrice()).toNumber()
           this.props.getProjects()
-          this.setState({currentPrice})
+          this.setState({currentPrice, user: result[0]})
         } else {
           console.log('Please Unlock MetaMask')
         }
-      }
-    })
-  }
-
-  stakeProject (type, address, val) {
-    eth.getAccounts((err, accounts) => {
-      if (!err) {
-        this.props.stakeProject(type, address, val, {from: accounts[0]})
-      }
-    })
-  }
-
-  unstakeProject (type, address, val) {
-    eth.getAccounts((err, accounts) => {
-      if (!err) {
-        this.props.unstakeProject(type, address, val, {from: accounts[0]})
       }
     })
   }
@@ -87,6 +69,7 @@ class Stake extends React.Component {
           project={this.props.projects[address]}
           stakeProject={(type, val) => this.stakeProject(type, address, val)}
           unstakeProject={(type, val) => this.unstakeProject(type, address, val)}
+          user={this.state.user}
         />
       })
       : []
@@ -115,9 +98,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
-    getProjects: () => dispatch(getProjects(1, projQuery)),
-    stakeProject: (collateralType, projectAddress, value, txObj) => dispatch(stakeProject(collateralType, projectAddress, value, txObj)),
-    unstakeProject: (collateralType, projectAddress, value, txObj) => dispatch(unstakeProject(collateralType, projectAddress, value, txObj)),
+    getProjects: () => dispatch(getProjects(1, projQuery))
   }
 }
 
