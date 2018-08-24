@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import ClaimComponent from '../../components/project/3Claim'
+import ButtonClaimTask from '../../contractComponents/buttons/ClaimTask'
 import { Button } from 'antd'
 import { web3 } from '../../utilities/blockchain'
 import moment from 'moment'
@@ -19,9 +20,9 @@ class ClaimProject extends React.Component {
   componentWillMount () {
   }
 
-  async claimTask (i) {
-    this.props.claimTask(this.props.address, i)
-  }
+  // async claimTask (i) {
+  //   this.props.claimTask(this.props.address, i)
+  // }
 
   submitTaskComplete (i) {
     this.props.submitTaskComplete(this.props.address, i)
@@ -32,6 +33,7 @@ class ClaimProject extends React.Component {
   }
 
   render () {
+    console.log(this.props.user)
     let tasks
     if (this.props.project.taskList !== null && typeof this.props.tasks !== 'undefined') {
       let reputationCost = this.props.project.reputationCost
@@ -44,9 +46,11 @@ class ClaimProject extends React.Component {
           ethReward: `${web3.fromWei(weiReward, 'ether')} ETH`,
           repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' && typeof weiReward !== 'undefined' ? `${Math.floor(reputationCost * weiReward / weiCost)} rep` : '',
           buttons: <ButtonGroup>
-            <Button
-              disabled={!this.props.project.listSubmitted || this.props.tasks[i] === undefined || this.props.tasks[i].claimed}
-              type='danger' onClick={() => this.claimTask(i)}>Claim</Button>
+            <ButtonClaimTask
+              user={this.props.user}
+              i={i}
+              address={this.props.address}
+            />
             <Button
               disabled={!this.props.project.listSubmitted || this.props.tasks[i] === undefined || !this.props.tasks[i].claimed || (this.props.tasks[i].claimed && this.props.tasks[i].complete)
               }

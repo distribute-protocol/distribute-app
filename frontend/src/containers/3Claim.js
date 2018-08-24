@@ -155,7 +155,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
     getProjects: () => dispatch(getProjects(3, projQuery)),
-    claimTask: (address, index, txObj) => dispatch(claimTask(address, index, txObj)),
     submitTaskComplete: (address, index, txObj) => dispatch(submitTaskComplete(address, index, txObj)),
     checkValidateStatus: (address, txObj) => dispatch(checkValidateStatus(address, txObj))
   }
