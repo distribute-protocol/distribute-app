@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button, Table } from 'antd'
 import ProjectHeader from '../shared/ProjectHeader'
+import ButtonSubmitTaskList from '../../contractComponents/buttons/SubmitTaskList'
 import DraggableTable from '../shared/DraggableTable'
 
 const columns = [{
@@ -46,10 +47,10 @@ export default ({
   date,
   submission,
   tasks,
-  submitTaskList,
   checkActive,
   submissionTasks,
-  moveRow
+  moveRow,
+  user
 }) => {
   return (
     <div style={{backgroundColor: '#DDE4E5', marginBottom: 30}}>
@@ -72,13 +73,15 @@ export default ({
         <div style={{display: 'flex', flexDirection: 'column', backgroundColor: '#FCFCFC', marginTop: 30}}>
           <DraggableTable address={address} data={tasks} columns={columns} moveRow={moveRow} />
         </div>
-        <Button style={{marginTop: 10}} onClick={() => submitTaskList()}>Submit Tasks</Button>
+        <ButtonSubmitTaskList
+          user={user}
+          address={address}
+        />
         <div>
           <div style={{display: 'flex', flexDirection: 'column', backgroundColor: '#FCFCFC', marginTop: 30}}>
             <Table style={{backgroundColor: '#ffffff'}} dataSource={submissionTasks} columns={submissionColumns} pagination={false} />
           </div>
         </div>
-        {/* disabled={Date.now() < date.valueOf()} */}
         <Button style={{margin: 20}} onClick={() => checkActive()} >Check Active</Button>
       </div>
     </div>

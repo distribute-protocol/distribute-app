@@ -6,7 +6,7 @@ import { push } from 'react-router-redux'
 import { eth } from '../utilities/blockchain'
 import Project from './project/2Add'
 import fastforward from '../utilities/fastforward'
-import { getProjects, checkActiveStatus, submitHashedTaskList, setTaskList, getVerifiedTaskLists } from '../actions/projectActions'
+import { getProjects, checkActiveStatus, setTaskList, getVerifiedTaskLists } from '../actions/projectActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -41,7 +41,7 @@ class Add extends React.Component {
     this.fastForward = this.fastForward.bind(this)
     this.setTaskList = this.setTaskList.bind(this)
     this.checkActiveStatus = this.checkActiveStatus.bind(this)
-    this.submitHashedTaskList = this.submitHashedTaskList.bind(this)
+    // this.submitHashedTaskList = this.submitHashedTaskList.bind(this)
     this.getVerifiedTaskLists = this.getVerifiedTaskLists.bind(this)
   }
 
@@ -54,6 +54,7 @@ class Add extends React.Component {
       if (!err) {
         if (result.length) {
           this.props.getProjects()
+          this.setState({user: result[0]})
         } else {
           console.log('Please Unlock MetaMask')
         }
@@ -71,14 +72,6 @@ class Add extends React.Component {
 
   async setTaskList (taskDetails, address) {
     this.props.setTaskList(taskDetails, address)
-  }
-
-  async submitHashedTaskList (tasks, taskHash, address) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        this.props.submitHashedTaskList(tasks, taskHash, address, {from: accounts[0]})
-      }
-    })
   }
 
   getVerifiedTaskLists (address) {
@@ -100,8 +93,9 @@ class Add extends React.Component {
           project={this.props.projects[address]}
           setTaskList={(taskDetails, address) => this.setTaskList(taskDetails, address)}
           getVerifiedTaskLists={(address) => this.getVerifiedTaskLists(address)}
-          submitHashedTaskList={(tasks, taskHash, address) => this.submitHashedTaskList(tasks, taskHash, address)}
+          // submitHashedTaskList={(tasks, taskHash, address) => this.submitHashedTaskList(tasks, taskHash, address)}
           checkActiveStatus={(address) => this.checkActiveStatus(address)}
+          user={this.state.user}
         />
       })
       : []
@@ -136,7 +130,7 @@ const mapDispatchToProps = (dispatch) => {
     getProjects: () => dispatch(getProjects(2, projQuery)),
     getVerifiedTaskLists: (projectAddress) => dispatch(getVerifiedTaskLists(projectAddress)),
     checkActiveStatus: (projectAddress, txObj) => dispatch(checkActiveStatus(projectAddress, txObj)),
-    submitHashedTaskList: (tasks, taskHash, projectAddress, txObj) => dispatch(submitHashedTaskList(tasks, taskHash, projectAddress, txObj)),
+    // submitHashedTaskList: (tasks, taskHash, projectAddress, txObj) => dispatch(submitHashedTaskList(tasks, taskHash, projectAddress, txObj)),
     setTaskList: (taskDetails, projectAddress) => dispatch(setTaskList(taskDetails, projectAddress))
   }
 }
