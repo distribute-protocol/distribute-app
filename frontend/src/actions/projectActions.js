@@ -151,13 +151,6 @@ export function taskListSet (taskDetails, projectAddress) {
   }
 }
 
-// export function taskCompleted (taskDetails) {
-//   return {
-//     type: TASK_COMPLETED,
-//     taskDetails
-//   }
-// }
-
 export function hashedTaskListSubmitted (tasks, submitterAddress, projectAddress, receipt) {
   return {
     type: HASHED_TASK_LIST_SUBMITTED,
@@ -199,7 +192,6 @@ export function validateStatusChecked (receipt) {
 }
 
 export function checkVotingStatus (projectAddress, txObj) {
-  console.log(projectAddress, txObj)
   return {
     type: CHECK_VOTING_STATUS,
     projectAddress,
