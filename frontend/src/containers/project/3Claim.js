@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import ClaimComponent from '../../components/project/3Claim'
 import ButtonClaimTask from '../../contractComponents/buttons/ClaimTask'
+import ButtonTaskComplete from '../../contractComponents/buttons/TaskComplete'
 import { Button } from 'antd'
 import { web3 } from '../../utilities/blockchain'
 import moment from 'moment'
@@ -17,25 +18,13 @@ class ClaimProject extends React.Component {
     this.checkValidateStatus = this.checkValidateStatus.bind(this)
   }
 
-  componentWillMount () {
-  }
-
-  // async claimTask (i) {
-  //   this.props.claimTask(this.props.address, i)
-  // }
-
-  submitTaskComplete (i) {
-    this.props.submitTaskComplete(this.props.address, i)
-  }
-
   checkValidateStatus () {
     this.props.checkValidateStatus(this.props.address)
   }
 
   render () {
-    console.log(this.props.user)
     let tasks
-    if (this.props.project.taskList !== null && typeof this.props.tasks !== 'undefined') {
+    if (this.props.project.taskList !== null && typeof this.props.project.tasks !== 'undefined') {
       let reputationCost = this.props.project.reputationCost
       let weiCost = this.props.project.weiCost
       tasks = JSON.parse(this.props.project.taskList).map((task, i) => {
@@ -51,10 +40,11 @@ class ClaimProject extends React.Component {
               i={i}
               address={this.props.address}
             />
-            <Button
-              disabled={!this.props.project.listSubmitted || this.props.tasks[i] === undefined || !this.props.tasks[i].claimed || (this.props.tasks[i].claimed && this.props.tasks[i].complete)
-              }
-              type='danger' onClick={() => this.submitTaskComplete(i)}>Task Complete</Button>
+            <ButtonTaskComplete
+              user={this.props.user}
+              i={i}
+              address={this.props.address}
+            />
           </ButtonGroup>
         }
       })
@@ -83,8 +73,7 @@ class ClaimProject extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    project: state.projects[3][ownProps.address],
-    tasks: state.projects[3][ownProps.address].tasks
+    project: state.projects[3][ownProps.address]
   }
 }
 

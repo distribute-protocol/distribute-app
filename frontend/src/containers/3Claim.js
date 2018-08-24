@@ -60,8 +60,6 @@ class Claim extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
-    this.claimTask = this.claimTask.bind(this)
-    this.submitTaskComplete = this.submitTaskComplete.bind(this)
     this.checkValidateStatus = this.checkValidateStatus.bind(this)
   }
 
@@ -78,22 +76,6 @@ class Claim extends React.Component {
         } else {
           console.log('Please Unlock MetaMask')
         }
-      }
-    })
-  }
-
-  async claimTask (address, index) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        this.props.claimTask(address, index, {from: accounts[0]})
-      }
-    })
-  }
-
-  async submitTaskComplete (address, index) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        this.props.submitTaskComplete(address, index, {from: accounts[0]})
       }
     })
   }
@@ -155,7 +137,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     reroute: () => dispatch(push('/')),
     getProjects: () => dispatch(getProjects(3, projQuery)),
-    submitTaskComplete: (address, index, txObj) => dispatch(submitTaskComplete(address, index, txObj)),
     checkValidateStatus: (address, txObj) => dispatch(checkValidateStatus(address, txObj))
   }
 }

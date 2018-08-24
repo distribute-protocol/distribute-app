@@ -4,7 +4,6 @@ import { Button } from 'antd'
 import { claimTask } from '../../actions/taskActions'
 
 const ButtonClaimTask = (props) => {
-  console.log(props)
   return (<Button
     disabled={!props.project.listSubmitted || props.tasks[props.i] === undefined || props.tasks[props.i].claimed}
     type='danger'
