@@ -6,7 +6,7 @@ import fastforward from '../utilities/fastforward'
 import { connect } from 'react-redux'
 import { eth } from '../utilities/blockchain'
 import { getProjects } from '../actions/projectActions'
-import { rewardTask, commitVote, revealVote, rescueVote } from '../actions/taskActions'
+import { commitVote, revealVote, rescueVote } from '../actions/taskActions'
 import { getUserVotes } from '../actions/userActions'
 
 import gql from 'graphql-tag'
@@ -57,7 +57,6 @@ class Vote extends React.Component {
     }
     this.fastForward = this.fastForward.bind(this)
     this.getVotes = this.getVotes.bind(this)
-    this.rewardTask = this.rewardTask.bind(this)
     this.voteCommit = this.voteCommit.bind(this)
     this.voteReveal = this.voteReveal.bind(this)
     this.voteRescue = this.voteRescue.bind(this)
@@ -89,22 +88,6 @@ class Vote extends React.Component {
         } else {
           console.log('Please Unlock MetaMask')
         }
-      }
-    })
-  }
-
-  async rewardValidator (address, index) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        this.props.rewardValidator(address, index, {from: accounts[0]})
-      }
-    })
-  }
-
-  async rewardTask (address, index) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        this.props.rewardTask(address, index, {from: accounts[0]})
       }
     })
   }
@@ -164,8 +147,6 @@ class Vote extends React.Component {
           index={i}
           address={address}
           project={this.props.projects[address]}
-          rewardValidator={this.rewardValidator}
-          rewardTask={this.rewardTask}
           validations={(address) => this.getValidations(address)}
           voteCommit={this.voteCommit}
           voteReveal={this.voteReveal}
@@ -203,7 +184,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getProjects: () => dispatch(getProjects(5, projQuery)),
-    rewardTask: (address, index, txObj) => dispatch(rewardTask(address, index, txObj)),
     voteCommit: (collateralType, projectAddress, taskIndex, value, secretHash, vote, salt, pollID, txObj) => {
       return dispatch(commitVote(collateralType, projectAddress, taskIndex, value, secretHash, vote, salt, pollID, txObj))
     },

@@ -5,6 +5,7 @@ import { Button, Icon } from 'antd'
 import {eth, web3, P, T} from '../../utilities/blockchain'
 import { getUserValidations } from '../../actions/taskActions'
 import ButtonRewardValidator from '../../contractComponents/buttons/RewardValidator'
+import ButtonRewardTask from '../../contractComponents/buttons/RewardTask'
 // import { voteCommitted, voteRevealed } from '../../actions/pollActions'
 import moment from 'moment'
 import { utils } from 'ethers'
@@ -18,7 +19,6 @@ class VoteTasks extends React.Component {
       votes: {}
     }
     this.voteTask = this.voteTask.bind(this)
-    this.rewardTask = this.rewardTask.bind(this)
   }
 
   componentWillMount () {
@@ -104,11 +104,6 @@ class VoteTasks extends React.Component {
     // })
   }
 
-  // Doesn't work because project needs to be in complete state, instatiating a task doesn't seem to work
-  rewardTask (i) {
-    this.props.rewardTask(this.props.address, i)
-  }
-
   render () {
     let tasks, votes
     if (typeof this.props.tasks !== 'undefined') {
@@ -136,8 +131,12 @@ class VoteTasks extends React.Component {
               </div>
             rewardWork =
               <div>
-                <Button disabled={tasks[i].claimer.account !== eth.accounts[0] || tasks[i].workerRewarded}
-                  type='danger' onClick={() => this.rewardTask(i)}> Reward Task </Button>
+                <ButtonRewardTask
+                  user={this.props.user}
+                  address={this.props.address}
+                  tasks={tasks}
+                  i={i}
+                />
               </div>
             needsVote = <Icon type='close' />
           } else {
@@ -265,7 +264,6 @@ class VoteTasks extends React.Component {
         date={moment(this.state.nextDeadline)}
         tasks={tasks}
         user={this.props.user}
-        rewardTask={this.rewardTask}
       />
     )
   }
