@@ -5,8 +5,8 @@ import Project from './project/5Vote'
 import fastforward from '../utilities/fastforward'
 import { connect } from 'react-redux'
 import { eth } from '../utilities/blockchain'
-import { getProjects, checkFinalStatus } from '../actions/projectActions'
-import { rewardValidator, rewardTask, commitVote, revealVote, rescueVote } from '../actions/taskActions'
+import { getProjects } from '../actions/projectActions'
+import { rewardTask, commitVote, revealVote, rescueVote } from '../actions/taskActions'
 import { getUserVotes } from '../actions/userActions'
 
 import gql from 'graphql-tag'
@@ -56,13 +56,11 @@ class Vote extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
-    this.rewardValidator = this.rewardValidator.bind(this)
     this.getVotes = this.getVotes.bind(this)
     this.rewardTask = this.rewardTask.bind(this)
     this.voteCommit = this.voteCommit.bind(this)
     this.voteReveal = this.voteReveal.bind(this)
     this.voteRescue = this.voteRescue.bind(this)
-    // this.checkEnd = this.checkEnd.bind(this)
   }
 
   componentWillMount () {
@@ -141,14 +139,6 @@ class Vote extends React.Component {
     })
   }
 
-  // checkEnd (projectAddress) {
-  //   eth.getAccounts((err, accounts) => {
-  //     if (!err) {
-  //       this.props.checkFinalStatus(projectAddress, {from: accounts[0]})
-  //     }
-  //   })
-  // }
-
   getPrevPollID (numTokens, user) {
     let pollInfo = this.props.users[user] // get object of poll data w/pollID's as keys
     if (typeof pollInfo === 'undefined') return 0
@@ -213,7 +203,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getProjects: () => dispatch(getProjects(5, projQuery)),
-    rewardValidator: (address, index, txObj) => dispatch(rewardValidator(address, index, txObj)),
     rewardTask: (address, index, txObj) => dispatch(rewardTask(address, index, txObj)),
     voteCommit: (collateralType, projectAddress, taskIndex, value, secretHash, vote, salt, pollID, txObj) => {
       return dispatch(commitVote(collateralType, projectAddress, taskIndex, value, secretHash, vote, salt, pollID, txObj))
@@ -225,7 +214,6 @@ const mapDispatchToProps = (dispatch) => {
       return dispatch(rescueVote(collateralType, projectAddress, taskIndex, txObj))
     },
     getUserVotes: (account) => dispatch(getUserVotes(account))
-    // checkFinalStatus: (address, txObj) => dispatch(checkFinalStatus(address, txObj))
   }
 }
 

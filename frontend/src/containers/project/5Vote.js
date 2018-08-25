@@ -4,6 +4,7 @@ import VoteComponent from '../../components/project/5Vote'
 import { Button, Icon } from 'antd'
 import {eth, web3, P, T} from '../../utilities/blockchain'
 import { getUserValidations } from '../../actions/taskActions'
+import ButtonRewardValidator from '../../contractComponents/buttons/RewardValidator'
 // import { voteCommitted, voteRevealed } from '../../actions/pollActions'
 import moment from 'moment'
 import { utils } from 'ethers'
@@ -17,8 +18,6 @@ class VoteTasks extends React.Component {
       votes: {}
     }
     this.voteTask = this.voteTask.bind(this)
-    // this.checkEnd = this.checkEnd.bind(this)
-    this.rewardValidator = this.rewardValidator.bind(this)
     this.rewardTask = this.rewardTask.bind(this)
   }
 
@@ -105,18 +104,10 @@ class VoteTasks extends React.Component {
     // })
   }
 
-  rewardValidator (i) {
-    this.props.rewardValidator(this.props.address, i)
-  }
-
   // Doesn't work because project needs to be in complete state, instatiating a task doesn't seem to work
   rewardTask (i) {
     this.props.rewardTask(this.props.address, i)
   }
-
-  // checkEnd () {
-  //   this.props.checkEnd(this.props.address)
-  // }
 
   render () {
     let tasks, votes
@@ -136,8 +127,12 @@ class VoteTasks extends React.Component {
             // pull validations from task, filter by current metamask address
             rewardVal =
               <div>
-                <Button disabled={this.props.project.valRewarded === undefined || this.props.project.valRewarded[i] === undefined || !this.props.project.valRewarded[i].state || this.props.project.valRewarded[i].rewarded}
-                  type='danger' onClick={() => this.rewardValidator(i)}> Reward Yes Validator </Button>
+                <ButtonRewardValidator
+                  type='Yes'
+                  user={this.props.user}
+                  address={this.props.address}
+                  i={i}
+                />
               </div>
             rewardWork =
               <div>
@@ -149,8 +144,12 @@ class VoteTasks extends React.Component {
             // validators can claim, task fails
             rewardVal =
               <div>
-                <Button disabled={this.props.project.valRewarded === undefined || this.props.project.valRewarded[i] === undefined || this.props.project.valRewarded[i].state || this.props.project.valRewarded[i].rewarded}
-                  type='danger' onClick={() => this.rewardValidator(i)}> Reward No Validator </Button>
+                <ButtonRewardValidator
+                  type='No'
+                  user={this.props.user}
+                  address={this.props.address}
+                  i={i}
+                />
               </div>
             rewardWork = <Icon type='close' />
             needsVote = <Icon type='close' />
@@ -266,7 +265,6 @@ class VoteTasks extends React.Component {
         date={moment(this.state.nextDeadline)}
         tasks={tasks}
         user={this.props.user}
-        rewardValidator={this.rewardValidator}
         rewardTask={this.rewardTask}
       />
     )
