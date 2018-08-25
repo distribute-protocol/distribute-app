@@ -1,6 +1,7 @@
 import React from 'react'
 import ProjectHeader from '../shared/ProjectHeader'
-import { Button, Table } from 'antd'
+import { Table } from 'antd'
+import ButtonCheckFinal from '../../contractComponents/buttons/CheckFinal'
 
 const columns = [{
   title: 'Task Description',
@@ -38,7 +39,7 @@ export default ({
   reputationCost,
   date,
   tasks,
-  checkVoting,
+  user,
   votes
 }) => {
   return (
@@ -63,11 +64,10 @@ export default ({
         </div>
       </div>
       {votes}
-      <Button
-        style={{margin: 20}}
-        onClick={() => checkVoting()}>
-        Check End
-      </Button>
+      <ButtonCheckFinal
+        user={user}
+        address={address}
+      />
     </div>
   )
 }

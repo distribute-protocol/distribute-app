@@ -17,7 +17,7 @@ class VoteTasks extends React.Component {
       votes: {}
     }
     this.voteTask = this.voteTask.bind(this)
-    this.checkEnd = this.checkEnd.bind(this)
+    // this.checkEnd = this.checkEnd.bind(this)
     this.rewardValidator = this.rewardValidator.bind(this)
     this.rewardTask = this.rewardTask.bind(this)
   }
@@ -114,9 +114,9 @@ class VoteTasks extends React.Component {
     this.props.rewardTask(this.props.address, i)
   }
 
-  checkEnd () {
-    this.props.checkEnd(this.props.address)
-  }
+  // checkEnd () {
+  //   this.props.checkEnd(this.props.address)
+  // }
 
   render () {
     let tasks, votes
@@ -265,7 +265,7 @@ class VoteTasks extends React.Component {
         reputationCost={this.state.reputationCost}
         date={moment(this.state.nextDeadline)}
         tasks={tasks}
-        checkVoting={this.checkEnd}
+        user={this.props.user}
         rewardValidator={this.rewardValidator}
         rewardTask={this.rewardTask}
       />

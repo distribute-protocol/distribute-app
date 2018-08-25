@@ -62,7 +62,7 @@ class Vote extends React.Component {
     this.voteCommit = this.voteCommit.bind(this)
     this.voteReveal = this.voteReveal.bind(this)
     this.voteRescue = this.voteRescue.bind(this)
-    this.checkEnd = this.checkEnd.bind(this)
+    // this.checkEnd = this.checkEnd.bind(this)
   }
 
   componentWillMount () {
@@ -75,6 +75,7 @@ class Vote extends React.Component {
       if (!err) {
         if (result.length) {
           this.props.getProjects()
+          this.setState({user: result[0]})
         } else {
           console.log('Please Unlock MetaMask')
         }
@@ -140,13 +141,13 @@ class Vote extends React.Component {
     })
   }
 
-  checkEnd (projectAddress) {
-    eth.getAccounts((err, accounts) => {
-      if (!err) {
-        this.props.checkFinalStatus(projectAddress, {from: accounts[0]})
-      }
-    })
-  }
+  // checkEnd (projectAddress) {
+  //   eth.getAccounts((err, accounts) => {
+  //     if (!err) {
+  //       this.props.checkFinalStatus(projectAddress, {from: accounts[0]})
+  //     }
+  //   })
+  // }
 
   getPrevPollID (numTokens, user) {
     let pollInfo = this.props.users[user] // get object of poll data w/pollID's as keys
@@ -179,7 +180,7 @@ class Vote extends React.Component {
           voteCommit={this.voteCommit}
           voteReveal={this.voteReveal}
           voteRescue={this.voteRescue}
-          checkEnd={this.checkEnd}
+          user={this.state.user}
         />
       })
       : []
@@ -223,8 +224,8 @@ const mapDispatchToProps = (dispatch) => {
     voteRescue: (collateralType, projectAddress, taskIndex, txObj) => {
       return dispatch(rescueVote(collateralType, projectAddress, taskIndex, txObj))
     },
-    getUserVotes: (account) => dispatch(getUserVotes(account)),
-    checkFinalStatus: (address, txObj) => dispatch(checkFinalStatus(address, txObj))
+    getUserVotes: (account) => dispatch(getUserVotes(account))
+    // checkFinalStatus: (address, txObj) => dispatch(checkFinalStatus(address, txObj))
   }
 }
 
