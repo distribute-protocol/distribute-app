@@ -1,13 +1,12 @@
 /* global FileReader */
 
-import React, { Component } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import mapboxgl from 'mapbox-gl'
 import { getNetworkStatus } from '../actions/networkActions'
 import { proposeProject } from '../actions/projectActions'
 import ProposeForm from '../components/Propose'
 import Sidebar from '../components/shared/Sidebar'
-import { push } from 'react-router-redux'
 import {eth, web3, dt} from '../utilities/blockchain'
 import ipfs from '../utilities/ipfs'
 import MapboxClient from 'mapbox/lib/services/geocoding'
@@ -16,7 +15,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiY29uc2Vuc3lzIiwiYSI6ImNqOHBmY2w0NjBmcmYyd3F1N
 
 const WAIT_INTERVAL = 1500
 
-class Propose extends Component {
+class Propose extends React.Component {
   constructor () {
     super()
     this.state = {
@@ -196,8 +195,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     proposeProject: (type, projObj, txObj) => dispatch(proposeProject(type, projObj, txObj)),
-    getNetworkStatus: () => dispatch(getNetworkStatus()),
-    reroute: () => dispatch(push('/'))
+    getNetworkStatus: () => dispatch(getNetworkStatus())
   }
 }
 

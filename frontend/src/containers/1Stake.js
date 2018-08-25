@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import Sidebar from '../components/shared/Sidebar'
 import Project from './project/1Stake'
-import { push } from 'react-router-redux'
 import { eth, dt } from '../utilities/blockchain'
 import { getProjects } from '../actions/projectActions'
 import gql from 'graphql-tag'
@@ -97,7 +96,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    reroute: () => dispatch(push('/')),
     getProjects: () => dispatch(getProjects(1, projQuery))
   }
 }

@@ -1,11 +1,10 @@
 import React from 'react'
 import { Button } from 'antd'
-import { push } from 'react-router-redux'
 import Sidebar from '../components/shared/Sidebar'
 import Project from './project/5Vote'
 import fastforward from '../utilities/fastforward'
 import { connect } from 'react-redux'
-import { eth, pr } from '../utilities/blockchain'
+import { eth } from '../utilities/blockchain'
 import { getProjects, checkFinalStatus } from '../actions/projectActions'
 import { rewardValidator, rewardTask, commitVote, revealVote, rescueVote } from '../actions/taskActions'
 import { getUserVotes } from '../actions/userActions'
@@ -212,7 +211,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    reroute: () => dispatch(push('/')),
     getProjects: () => dispatch(getProjects(5, projQuery)),
     rewardValidator: (address, index, txObj) => dispatch(rewardValidator(address, index, txObj)),
     rewardTask: (address, index, txObj) => dispatch(rewardTask(address, index, txObj)),

@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import StakeComponent from '../../components/project/1Stake'
 import moment from 'moment'
 import { web3 } from '../../utilities/blockchain'
 import { BigNumber } from 'bignumber.js'
 
-class StakeProject extends Component {
+class StakeProject extends React.Component {
   constructor () {
     super()
     this.state = {

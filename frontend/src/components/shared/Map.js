@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
+import React from 'react'
 import mapboxgl from 'mapbox-gl'
 mapboxgl.accessToken = 'pk.eyJ1IjoiY29uc2Vuc3lzIiwiYSI6ImNqOHBmY2w0NjBmcmYyd3F1NHNmOXJwMWgifQ.8-GlTlTTUHLL8bJSnK2xIA'
 
-class Map extends Component {
+class Map extends React.Component {
   constructor () {
     super()
     this.state = {}

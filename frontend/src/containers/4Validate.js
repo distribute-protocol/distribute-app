@@ -3,7 +3,6 @@ import { Button } from 'antd'
 import Sidebar from '../components/shared/Sidebar'
 import Project from './project/4Validate'
 import fastforward from '../utilities/fastforward'
-import { push } from 'react-router-redux'
 import { connect } from 'react-redux'
 import { eth } from '../utilities/blockchain'
 import { getProjects } from '../actions/projectActions'
@@ -118,7 +117,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    reroute: () => dispatch(push('/')),
     getProjects: () => dispatch(getProjects(4, projQuery))
   }
 }

@@ -1,5 +1,4 @@
 import React from 'react'
-import { push } from 'react-router-redux'
 import Sidebar from '../../components/shared/Sidebar'
 import Project from '../project/Finished'
 import { connect } from 'react-redux'
@@ -16,7 +15,6 @@ class Expired extends React.Component {
 
   componentWillMount () {
     if (_.isEmpty(this.props.user)) {
-      // this.props.reroute()
     }
   }
 
@@ -80,10 +78,4 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    reroute: () => dispatch(push('/'))
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Expired)
+export default connect(mapStateToProps)(Expired)
