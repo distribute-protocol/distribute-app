@@ -56,7 +56,6 @@ class Vote extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
-    this.getVotes = this.getVotes.bind(this)
     this.voteCommit = this.voteCommit.bind(this)
     this.voteReveal = this.voteReveal.bind(this)
     this.voteRescue = this.voteRescue.bind(this)
