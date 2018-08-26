@@ -6,7 +6,7 @@ import fastforward from '../utilities/fastforward'
 import { connect } from 'react-redux'
 import { eth } from '../utilities/blockchain'
 import { getProjects } from '../actions/projectActions'
-import { commitVote, revealVote, rescueVote } from '../actions/taskActions'
+import { revealVote, rescueVote } from '../actions/taskActions'
 import { getUserVotes } from '../actions/userActions'
 
 import gql from 'graphql-tag'
@@ -56,7 +56,6 @@ class Vote extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
-    this.voteCommit = this.voteCommit.bind(this)
     this.voteReveal = this.voteReveal.bind(this)
     this.voteRescue = this.voteRescue.bind(this)
   }
@@ -93,16 +92,6 @@ class Vote extends React.Component {
 
   async fastForward () {
     await fastforward(7 * 24 * 60 * 60)
-  }
-
-  async voteCommit (type, projAddress, taskIndex, value, secretHash, status, salt, pollID) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        // Need to use doubly linked list on the server to find the proper poll position
-        // let prevPollID = this.getPrevPollID(value, accounts[0])
-        await this.props.voteCommit(type, projAddress, taskIndex, value, secretHash, status.toString(), salt, pollID, {from: accounts[0]})
-      }
-    })
   }
 
   async voteReveal (type, projectAddress, taskIndex, status, salt) {
@@ -147,7 +136,6 @@ class Vote extends React.Component {
           address={address}
           project={this.props.projects[address]}
           validations={(address) => this.getValidations(address)}
-          voteCommit={this.voteCommit}
           voteReveal={this.voteReveal}
           voteRescue={this.voteRescue}
           user={this.state.user}
@@ -183,9 +171,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getProjects: () => dispatch(getProjects(5, projQuery)),
-    voteCommit: (collateralType, projectAddress, taskIndex, value, secretHash, vote, salt, pollID, txObj) => {
-      return dispatch(commitVote(collateralType, projectAddress, taskIndex, value, secretHash, vote, salt, pollID, txObj))
-    },
     voteReveal: (collateralType, projectAddress, taskIndex, vote, salt, txObj) => {
       return dispatch(revealVote(collateralType, projectAddress, taskIndex, vote, salt, txObj))
     },
