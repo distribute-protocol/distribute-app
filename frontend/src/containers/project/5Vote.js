@@ -1,12 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import VoteComponent from '../../components/project/5Vote'
-import { Button, Icon } from 'antd'
+import { Icon } from 'antd'
 import { eth, web3 } from '../../utilities/blockchain'
 import { getUserValidations } from '../../actions/taskActions'
 import ButtonRewardValidator from '../../contractComponents/buttons/RewardValidator'
 import ButtonRewardTask from '../../contractComponents/buttons/RewardTask'
 import ButtonCommitVote from '../../contractComponents/buttons/CommitVote'
+import ButtonRevealVote from '../../contractComponents/buttons/RevealVote'
 import moment from 'moment'
 import * as _ from 'lodash'
 
@@ -39,28 +40,6 @@ class VoteTasks extends React.Component {
 
   onChange (e) {
     this.setState({[e.target.name]: e.target.value})
-  }
-
-  revealTask (i, type, status, salt) {
-    // let salt = this.state.votes[i].salt
-    // convert status and salt to strings
-    // let salt = ethUtil.bufferToHex(ethUtil.setLengthLeft(10000, 32))
-    status
-      ? status = 1
-      : status = 0
-    // status = ethUtil.bufferToHex(ethUtil.setLengthLeft(status, 32))
-    // let hash = web3.fromAscii(this.state.votes[i].status + salt, 32)
-    // let hash = utils.keccak256(status + salt)
-    // if (hash === utils.keccak256(status + salt)) {
-    // console.log(type, this.props.address, i, status, salt)
-    this.props.voteReveal(type, this.props.address, i, status, salt)
-    // this.props.voteRevealed({i, user: accounts[0]})
-    // this.setState({
-    //   votes: Object.assign({}, this.state.votes,
-    //     {[i]: Object.assign({}, this.state.votes[i],
-    //       { revealed: true }
-    //     )})
-    // })
   }
 
   rescueVote (i, type) {
@@ -136,19 +115,39 @@ class VoteTasks extends React.Component {
                   <div>{`Vote: ${parseInt(vote.vote, 10) ? 'Approve' : 'Deny'}`}</div>
                   { vote.type === 'tokens'
                     ? parseInt(vote.vote, 10)
-                      ? (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'tokens', true, parseInt(vote.salt, 10))}>
-                        Reveal Vote (T)
-                      </Button>)
-                      : (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'tokens', false, parseInt(vote.salt, 10))}>
-                        Reveal Vote (TA)
-                      </Button>)
+                      ? (<ButtonRevealVote
+                        user={this.props.user}
+                        address={this.props.address}
+                        i={vote.task.index}
+                        type='tokens'
+                        status={1}
+                        salt={vote.salt}
+                      />)
+                      : (<ButtonRevealVote
+                        user={this.props.user}
+                        address={this.props.address}
+                        i={vote.task.index}
+                        type='tokens'
+                        status={0}
+                        salt={vote.salt}
+                      />)
                     : parseInt(vote.vote, 10)
-                      ? (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'reputation', true, parseInt(vote.salt, 10))}>
-                        Reveal Vote (R)
-                      </Button>)
-                      : (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'reputation', false, parseInt(vote.salt, 10))}>
-                        Reveal Vote (RA)
-                      </Button>)
+                      ? (<ButtonRevealVote
+                        user={this.props.user}
+                        address={this.props.address}
+                        i={vote.task.index}
+                        type='reputation'
+                        status={1}
+                        salt={vote.salt}
+                      />)
+                      : (<ButtonRevealVote
+                        user={this.props.user}
+                        address={this.props.address}
+                        i={vote.task.index}
+                        type='reputation'
+                        status={0}
+                        salt={vote.salt}
+                      />)
                   }
                   {/* <Button
                     type='danger' onClick={() => this.rescueVote(vote.task.index, 'tokens')}> Rescue (T)
