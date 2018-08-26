@@ -6,7 +6,6 @@ import fastforward from '../utilities/fastforward'
 import { connect } from 'react-redux'
 import { eth } from '../utilities/blockchain'
 import { getProjects } from '../actions/projectActions'
-import { rescueVote } from '../actions/taskActions'
 import { getUserVotes } from '../actions/userActions'
 
 import gql from 'graphql-tag'
@@ -56,7 +55,6 @@ class Vote extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
-    this.voteRescue = this.voteRescue.bind(this)
   }
 
   componentWillMount () {
@@ -93,14 +91,6 @@ class Vote extends React.Component {
     await fastforward(7 * 24 * 60 * 60)
   }
 
-  async voteRescue (type, projectAddress, taskIndex) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        await this.props.voteRescue(type, projectAddress, taskIndex, {from: accounts[0]})
-      }
-    })
-  }
-
   getPrevPollID (numTokens, user) {
     let pollInfo = this.props.users[user] // get object of poll data w/pollID's as keys
     if (typeof pollInfo === 'undefined') return 0
@@ -127,7 +117,6 @@ class Vote extends React.Component {
           address={address}
           project={this.props.projects[address]}
           validations={(address) => this.getValidations(address)}
-          voteRescue={this.voteRescue}
           user={this.state.user}
         />
       })
@@ -161,9 +150,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getProjects: () => dispatch(getProjects(5, projQuery)),
-    voteRescue: (collateralType, projectAddress, taskIndex, txObj) => {
-      return dispatch(rescueVote(collateralType, projectAddress, taskIndex, txObj))
-    },
     getUserVotes: (account) => dispatch(getUserVotes(account))
   }
 }

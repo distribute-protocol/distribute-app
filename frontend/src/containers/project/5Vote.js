@@ -8,6 +8,7 @@ import ButtonRewardValidator from '../../contractComponents/buttons/RewardValida
 import ButtonRewardTask from '../../contractComponents/buttons/RewardTask'
 import ButtonCommitVote from '../../contractComponents/buttons/CommitVote'
 import ButtonRevealVote from '../../contractComponents/buttons/RevealVote'
+import ButtonRescueVote from '../../contractComponents/buttons/RescueVote'
 import moment from 'moment'
 import * as _ from 'lodash'
 
@@ -40,16 +41,6 @@ class VoteTasks extends React.Component {
 
   onChange (e) {
     this.setState({[e.target.name]: e.target.value})
-  }
-
-  rescueVote (i, type) {
-    this.props.voteRescue(type, this.props.address, i)
-    // this.setState({
-    //   votes: Object.assign({}, this.state.votes,
-    //     {[i]: Object.assign({}, this.state.votes[i],
-    //       { rescued: true }
-    //     )})
-    // })
   }
 
   render () {
@@ -149,9 +140,12 @@ class VoteTasks extends React.Component {
                         salt={vote.salt}
                       />)
                   }
-                  {/* <Button
-                    type='danger' onClick={() => this.rescueVote(vote.task.index, 'tokens')}> Rescue (T)
-                  </Button> */}
+                  {/*   <ButtonRescueVote
+                    user={this.props.user}
+                    address={this.props.address}
+                    i={vote.task.index}
+                    type='reputation'
+                    /> */}
                 </div>
               </div> : null
           })
@@ -186,9 +180,12 @@ class VoteTasks extends React.Component {
                 <Button
                   type='danger' onClick={() => this.revealTask(i, 'tokens', false)}> Reveal Vote (TF)
                 </Button>
-                <Button
-                  type='danger' onClick={() => this.rescueVote(i, 'tokens')}> Rescue (T)
-                </Button> */}
+                <ButtonRescueVote
+                user={this.props.user}
+                address={this.props.address}
+                i={i}
+                type='tokens'
+                /> */}
               </div>
               <div>
                 <input
@@ -219,9 +216,12 @@ class VoteTasks extends React.Component {
                 <Button
                   type='danger' onClick={() => this.revealTask(i, 'reputation', false)}> Reveal Vote (RF)
                 </Button>
-                <Button
-                  type='danger' onClick={() => this.rescueVote(i, 'reputation')}> Rescue (R)
-                </Button> */}
+                <ButtonRescueVote
+                user={this.props.user}
+                address={this.props.address}
+                i={i}
+                type='reputation'
+                /> */}
               </div>
             </div>
         }
