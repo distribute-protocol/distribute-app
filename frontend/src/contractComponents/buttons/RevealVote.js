@@ -4,10 +4,9 @@ import { Button } from 'antd'
 import { revealVote } from '../../actions/taskActions'
 
 const ButtonRevealVote = (props) => {
-  console.log(props.status)
   return (<Button
     type='danger'
-    onClick={() => props.voteReveal(props.type, props.address, props.i, props.status, parseInt(props.salt, 10), {from: props.user})}>
+    onClick={() => props.revealVote(props.type, props.address, props.i, props.status, parseInt(props.salt, 10), {from: props.user})}>
     {`Reveal Vote (${props.type === 'tokens' ? 'T' : 'R'}${props.status ? '' : 'A'})`}
   </Button>)
 }
