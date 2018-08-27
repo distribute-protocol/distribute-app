@@ -1,8 +1,8 @@
 import React from 'react'
 import Button from 'antd/lib/button'
 import Sidebar from './shared/Sidebar'
-import ButtonMintTokens from '../contractComponents/buttons/MintTokens'
-import ButtonSellTokens from '../contractComponents/buttons/SellTokens'
+import ButtonMintTokens from '../contractComponents/stage0/MintTokens'
+import ButtonSellTokens from '../contractComponents/stage0/SellTokens'
 const ButtonGroup = Button.Group
 export default ({
   totalTokenSupply,

@@ -1,7 +1,7 @@
 import React from 'react'
 import ProjectHeader from '../shared/ProjectHeader'
 import { Table } from 'antd'
-import ButtonCheckFinal from '../../contractComponents/buttons/CheckFinal'
+import ButtonCheckFinal from '../../contractComponents/stage5/CheckFinal'
 
 const columns = [{
   title: 'Task Description',

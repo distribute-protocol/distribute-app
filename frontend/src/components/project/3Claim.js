@@ -1,7 +1,7 @@
 import React from 'react'
 import ProjectHeader from '../shared/ProjectHeader'
-import ButtonSubmitFinalTaskList from '../../contractComponents/buttons/SubmitFinalTaskList'
-import ButtonCheckValidate from '../../contractComponents/buttons/CheckValidate'
+import ButtonSubmitFinalTaskList from '../../contractComponents/stage3/SubmitFinalTaskList'
+import ButtonCheckValidate from '../../contractComponents/stage3/CheckValidate'
 import { Table } from 'antd'
 
 const columns = [{

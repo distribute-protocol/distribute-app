@@ -1,8 +1,8 @@
 import React from 'react'
 import { Table } from 'antd'
 import ProjectHeader from '../shared/ProjectHeader'
-import ButtonSubmitTaskList from '../../contractComponents/buttons/SubmitTaskList'
-import ButtonCheckActive from '../../contractComponents/buttons/CheckActive'
+import ButtonSubmitTaskList from '../../contractComponents/stage2/SubmitTaskList'
+import ButtonCheckActive from '../../contractComponents/stage2/CheckActive'
 import DraggableTable from '../shared/DraggableTable'
 
 const columns = [{
