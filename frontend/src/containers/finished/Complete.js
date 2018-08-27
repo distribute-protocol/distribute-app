@@ -1,11 +1,9 @@
 import React from 'react'
-import { Button } from 'antd'
 import { push } from 'react-router-redux'
 import Sidebar from '../../components/shared/Sidebar'
 import Project from '../project/Finished'
-import fastforward from '../../utilities/fastforward'
 import { connect } from 'react-redux'
-import { eth, pr } from '../../utilities/blockchain'
+import { eth } from '../../utilities/blockchain'
 import { getProjects } from '../../actions/projectActions'
 
 import gql from 'graphql-tag'
@@ -54,13 +52,6 @@ class Vote extends React.Component {
     this.state = {
       projects: []
     }
-    // this.fastForward = this.fastForward.bind(this)
-    // this.rewardValidator = this.rewardValidator.bind(this)
-    // this.getVotes = this.getVotes.bind(this)
-    // this.rewardTask = this.rewardTask.bind(this)
-    // this.voteCommit = this.voteCommit.bind(this)
-    // this.voteReveal = this.voteReveal.bind(this)
-    // this.voteRescue = this.voteRescue.bind(this)
   }
 
   componentWillMount () {
@@ -78,7 +69,6 @@ class Vote extends React.Component {
       }
     })
   }
-
 
   render () {
     const projects = typeof this.props.projects !== `undefined`
@@ -115,7 +105,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    reroute: () => dispatch(push('/')),
     getProjects: () => dispatch(getProjects(6, projQuery))
   }
 }

@@ -2,16 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 import ValidateComponent from '../../components/project/4Validate'
 import ValidateTask from '../task/4Validate'
-import { Button } from 'antd'
+import ButtonValidateTask from '../../contractComponents/buttons/ValidateTask'
 import { web3 } from '../../utilities/blockchain'
 import moment from 'moment'
 
 class ValidateTasks extends React.Component {
-  constructor () {
-    super()
-    this.checkVotingStatus = this.checkVotingStatus.bind(this)
-  }
-
   componentWillMount () {
     this.getProjectStatus()
   }
@@ -25,27 +20,23 @@ class ValidateTasks extends React.Component {
     this.setState({[e.target.name]: e.target.value})
   }
 
-  validateTask (index, validationState) {
-    this.props.validateTask(this.props.address, index, validationState)
-  }
-
-  checkVotingStatus () {
-    this.props.checkVotingStatus(this.props.address)
-  }
-
   render () {
     let tasks
     let returnInput = (i) => (
       <div>
         <div>
-          <Button
-            type='danger'
-            // disabled={this.props.tasks[i].validated[eth.accounts[0]]}
-            onClick={() => this.validateTask(i, true)} >Yes</Button>
-          <Button
-            type='danger'
-            // disabled={this.props.tasks[i].validated[eth.accounts[0]]}
-            onClick={() => this.validateTask(i, false)} >No</Button>
+          <ButtonValidateTask
+            user={this.props.user}
+            address={this.props.address}
+            state='Yes'
+            i={i}
+          />
+          <ButtonValidateTask
+            user={this.props.user}
+            address={this.props.address}
+            state='No'
+            i={i}
+          />
         </div>
         <div>
           <ValidateTask
@@ -81,7 +72,7 @@ class ValidateTasks extends React.Component {
         reputationCost={this.state.reputationCost}
         date={moment(this.state.nextDeadline)}
         tasks={tasks}
-        checkVotingStatus={this.checkVotingStatus}
+        user={this.props.user}
       />
     )
   }

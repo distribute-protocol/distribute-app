@@ -9,23 +9,23 @@ function increaseTime (seconds) {
       params: [seconds],
       id: 0
     }, (err, res) => {
-    if (!err) {
-      eth.getAccounts(async (err, accounts) => {
-        if (!err) {
-          // console.log(accounts)
-          web3.eth.sendTransaction({from: accounts[0], to: accounts[0], value: 0}, (err, res) => {
-            if (!err) {
-              web3.eth.getBlock('latest', (err, res) => {
-                if (!err) {
-                  console.log('time after', res.timestamp)
-                }
-              })
-            }
-          })
-        }
-      })
+      if (!err) {
+        eth.getAccounts(async (err, accounts) => {
+          if (!err) {
+            web3.eth.sendTransaction({from: accounts[0], to: accounts[0], value: 0}, (err, res) => {
+              if (!err) {
+                web3.eth.getBlock('latest', (err, res) => {
+                  if (!err) {
+                    console.log('time after', res.timestamp)
+                  }
+                })
+              }
+            })
+          }
+        })
+      }
     }
-  })
+  )
 }
 
 async function waitTime (seconds) {
@@ -44,14 +44,11 @@ async function waitTime (seconds) {
 function fastForward (seconds) {
   web3.eth.getBlock('latest', (err, res) => {
     if (!err) {
-      console.log('time before', res.timestamp)
       const netver = web3.version.getNetwork((err, res) => {
         if (!err) {
           if (netver !== '234') {
-            console.log('increaseTime')
             return increaseTime(seconds)
           } else {
-            console.log('waitTime')
             return waitTime(seconds)
           }
         }

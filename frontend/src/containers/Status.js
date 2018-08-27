@@ -1,6 +1,5 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
 import { getEthPriceNow } from 'get-eth-price'
 import { eth, web3, dt } from '../utilities/blockchain'
 import * as _ from 'lodash'
@@ -8,7 +7,7 @@ import StatusComponent from '../components/Status'
 import { getNetworkStatus } from '../actions/networkActions'
 import { getUserStatus } from '../actions/userActions'
 
-class Status extends Component {
+class Status extends React.Component {
   constructor () {
     super()
     this.state = {
@@ -126,7 +125,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    reroute: () => dispatch(push('/')),
     getNetworkStatus: () => dispatch(getNetworkStatus()),
     getUserStatus: (userAccount) => dispatch(getUserStatus(userAccount))
   }

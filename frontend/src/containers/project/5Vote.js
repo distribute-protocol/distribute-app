@@ -1,12 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import VoteComponent from '../../components/project/5Vote'
-import { Button, Icon } from 'antd'
-import {eth, web3, P, T} from '../../utilities/blockchain'
+import { Icon } from 'antd'
+import { eth, web3 } from '../../utilities/blockchain'
 import { getUserValidations } from '../../actions/taskActions'
-// import { voteCommitted, voteRevealed } from '../../actions/pollActions'
+import ButtonRewardValidator from '../../contractComponents/buttons/RewardValidator'
+import ButtonRewardTask from '../../contractComponents/buttons/RewardTask'
+import ButtonCommitVote from '../../contractComponents/buttons/CommitVote'
+import ButtonRevealVote from '../../contractComponents/buttons/RevealVote'
+import ButtonRescueVote from '../../contractComponents/buttons/RescueVote'
 import moment from 'moment'
-import { utils } from 'ethers'
 import * as _ from 'lodash'
 
 class VoteTasks extends React.Component {
@@ -16,10 +19,6 @@ class VoteTasks extends React.Component {
       tasks: [],
       votes: {}
     }
-    this.voteTask = this.voteTask.bind(this)
-    this.checkEnd = this.checkEnd.bind(this)
-    this.rewardValidator = this.rewardValidator.bind(this)
-    this.rewardTask = this.rewardTask.bind(this)
   }
 
   componentWillMount () {
@@ -44,80 +43,6 @@ class VoteTasks extends React.Component {
     this.setState({[e.target.name]: e.target.value})
   }
 
-  // Can Vote Commit...Vote Reveal is another beast, need to think about UI
-  async voteTask (i, type, status) {
-    let salt = Math.floor(Math.random() * Math.floor(1000000000000000000000)).toString()   // get random salt between 0 and 10000
-    // convert status and salt to strings
-    // let salt = 10000
-    // let salt = ethUtil.bufferToHex(ethUtil.setLengthLeft(10000, 32))
-    // console.log(salt, 'waw')
-    status
-      ? status = 1
-      : status = 0
-    // status = ethUtil.bufferToHex(ethUtil.setLengthLeft(status, 32))
-    // console.log(status + salt)
-    // this.props.storeVote(i, status, salt)
-    // let vote = {key: i, status, salt, revealed: false, rescued: false}
-    // this.setState({votes: Object.assign({}, this.state.votes, {[i]: vote})})
-    let secretHash = utils.solidityKeccak256(['int', 'int'], [status, salt])
-    // console.log(i, type, status, this.state['tokVal' + i], this.state['repVal' + i])
-    // console.log(this.props.users)
-    let value
-    type === 'tokens'
-      ? value = this.state['tokVal' + i]
-      : value = this.state['repVal' + i]
-    let taskAddr = await P.at(this.props.address).tasks(i)
-    let task = await T.at(taskAddr)
-    let pollID = await task.pollId()
-    this.props.voteCommit(type, this.props.address, i, value, secretHash, status, salt, pollID)
-    // this.props.voteCommitted({status: status, salt: salt, pollID: pollID, user: accounts[0], numTokens: numTokens, revealed: false})
-  }
-
-  revealTask (i, type, status, salt) {
-    // let salt = this.state.votes[i].salt
-    // convert status and salt to strings
-    // let salt = ethUtil.bufferToHex(ethUtil.setLengthLeft(10000, 32))
-    status
-      ? status = 1
-      : status = 0
-    // status = ethUtil.bufferToHex(ethUtil.setLengthLeft(status, 32))
-    // let hash = web3.fromAscii(this.state.votes[i].status + salt, 32)
-    // let hash = utils.keccak256(status + salt)
-    // if (hash === utils.keccak256(status + salt)) {
-    // console.log(type, this.props.address, i, status, salt)
-    this.props.voteReveal(type, this.props.address, i, status, salt)
-    // this.props.voteRevealed({i, user: accounts[0]})
-    // this.setState({
-    //   votes: Object.assign({}, this.state.votes,
-    //     {[i]: Object.assign({}, this.state.votes[i],
-    //       { revealed: true }
-    //     )})
-    // })
-  }
-
-  rescueVote (i, type) {
-    this.props.voteRescue(type, this.props.address, i)
-    // this.setState({
-    //   votes: Object.assign({}, this.state.votes,
-    //     {[i]: Object.assign({}, this.state.votes[i],
-    //       { rescued: true }
-    //     )})
-    // })
-  }
-
-  rewardValidator (i) {
-    this.props.rewardValidator(this.props.address, i)
-  }
-
-  // Doesn't work because project needs to be in complete state, instatiating a task doesn't seem to work
-  rewardTask (i) {
-    this.props.rewardTask(this.props.address, i)
-  }
-
-  checkEnd () {
-    this.props.checkEnd(this.props.address)
-  }
-
   render () {
     let tasks, votes
     if (typeof this.props.tasks !== 'undefined') {
@@ -136,21 +61,33 @@ class VoteTasks extends React.Component {
             // pull validations from task, filter by current metamask address
             rewardVal =
               <div>
-                <Button disabled={this.props.project.valRewarded === undefined || this.props.project.valRewarded[i] === undefined || !this.props.project.valRewarded[i].state || this.props.project.valRewarded[i].rewarded}
-                  type='danger' onClick={() => this.rewardValidator(i)}> Reward Yes Validator </Button>
+                <ButtonRewardValidator
+                  type='Yes'
+                  user={this.props.user}
+                  address={this.props.address}
+                  i={i}
+                />
               </div>
             rewardWork =
               <div>
-                <Button disabled={tasks[i].claimer.account !== eth.accounts[0] || tasks[i].workerRewarded}
-                  type='danger' onClick={() => this.rewardTask(i)}> Reward Task </Button>
+                <ButtonRewardTask
+                  user={this.props.user}
+                  address={this.props.address}
+                  tasks={tasks}
+                  i={i}
+                />
               </div>
             needsVote = <Icon type='close' />
           } else {
             // validators can claim, task fails
             rewardVal =
               <div>
-                <Button disabled={this.props.project.valRewarded === undefined || this.props.project.valRewarded[i] === undefined || this.props.project.valRewarded[i].state || this.props.project.valRewarded[i].rewarded}
-                  type='danger' onClick={() => this.rewardValidator(i)}> Reward No Validator </Button>
+                <ButtonRewardValidator
+                  type='No'
+                  user={this.props.user}
+                  address={this.props.address}
+                  i={i}
+                />
               </div>
             rewardWork = <Icon type='close' />
             needsVote = <Icon type='close' />
@@ -169,23 +106,46 @@ class VoteTasks extends React.Component {
                   <div>{`Vote: ${parseInt(vote.vote, 10) ? 'Approve' : 'Deny'}`}</div>
                   { vote.type === 'tokens'
                     ? parseInt(vote.vote, 10)
-                      ? (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'tokens', true, parseInt(vote.salt, 10))}>
-                        Reveal Vote (T)
-                      </Button>)
-                      : (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'tokens', false, parseInt(vote.salt, 10))}>
-                        Reveal Vote (TA)
-                      </Button>)
+                      ? (<ButtonRevealVote
+                        user={this.props.user}
+                        address={this.props.address}
+                        i={vote.task.index}
+                        type='tokens'
+                        status={1}
+                        salt={vote.salt}
+                      />)
+                      : (<ButtonRevealVote
+                        user={this.props.user}
+                        address={this.props.address}
+                        i={vote.task.index}
+                        type='tokens'
+                        status={0}
+                        salt={vote.salt}
+                      />)
                     : parseInt(vote.vote, 10)
-                      ? (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'reputation', true, parseInt(vote.salt, 10))}>
-                        Reveal Vote (R)
-                      </Button>)
-                      : (<Button type='danger' onClick={() => this.revealTask(vote.task.index, 'reputation', false, parseInt(vote.salt, 10))}>
-                        Reveal Vote (RA)
-                      </Button>)
+                      ? (<ButtonRevealVote
+                        user={this.props.user}
+                        address={this.props.address}
+                        i={vote.task.index}
+                        type='reputation'
+                        status={1}
+                        salt={vote.salt}
+                      />)
+                      : (<ButtonRevealVote
+                        user={this.props.user}
+                        address={this.props.address}
+                        i={vote.task.index}
+                        type='reputation'
+                        status={0}
+                        salt={vote.salt}
+                      />)
                   }
-                  {/* <Button
-                    type='danger' onClick={() => this.rescueVote(vote.task.index, 'tokens')}> Rescue (T)
-                  </Button> */}
+                  {/*   <ButtonRescueVote
+                    user={this.props.user}
+                    address={this.props.address}
+                    i={vote.task.index}
+                    type='reputation'
+                    /> */}
                 </div>
               </div> : null
           })
@@ -198,21 +158,34 @@ class VoteTasks extends React.Component {
                   onChange={(e) => this.onChange(e)}
                   value={this.state['tokVal' + i] || ''}
                 />
-                <Button
-                  type='danger' onClick={() => this.voteTask(i, 'tokens', true)}> Yes
-                </Button>
-                <Button
-                  type='danger' onClick={() => this.voteTask(i, 'tokens', false)}> No
-                </Button>
+                <ButtonCommitVote
+                  user={this.props.user}
+                  address={this.props.address}
+                  i={i}
+                  status='Yes'
+                  type='tokens'
+                  input={this.state['tokVal' + i]}
+                />
+                <ButtonCommitVote
+                  user={this.props.user}
+                  address={this.props.address}
+                  i={i}
+                  status='No'
+                  type='tokens'
+                  input={this.state['tokVal' + i]}
+                />
                 {/* <Button
                   type='danger' onClick={() => this.revealTask(i, 'tokens', true)}> Reveal Vote (T)
                 </Button>
                 <Button
                   type='danger' onClick={() => this.revealTask(i, 'tokens', false)}> Reveal Vote (TF)
                 </Button>
-                <Button
-                  type='danger' onClick={() => this.rescueVote(i, 'tokens')}> Rescue (T)
-                </Button> */}
+                <ButtonRescueVote
+                user={this.props.user}
+                address={this.props.address}
+                i={i}
+                type='tokens'
+                /> */}
               </div>
               <div>
                 <input
@@ -221,21 +194,34 @@ class VoteTasks extends React.Component {
                   onChange={(e) => this.onChange(e)}
                   value={this.state['repVal' + i] || ''}
                 />
-                <Button
-                  type='danger' onClick={() => this.voteTask(i, 'rep', true)}> Yes
-                </Button>
-                <Button
-                  type='danger' onClick={() => this.voteTask(i, 'rep', false)}> No
-                </Button>
+                <ButtonCommitVote
+                  user={this.props.user}
+                  address={this.props.address}
+                  i={i}
+                  status='Yes'
+                  type='reputation'
+                  input={this.state['repVal' + i]}
+                />
+                <ButtonCommitVote
+                  user={this.props.user}
+                  address={this.props.address}
+                  i={i}
+                  status='No'
+                  type='reputation'
+                  input={this.state['repVal' + i]}
+                />
                 {/* <Button
                   type='danger' onClick={() => this.revealTask(i, 'reputation', true)}> Reveal Vote (R)
                 </Button>
                 <Button
                   type='danger' onClick={() => this.revealTask(i, 'reputation', false)}> Reveal Vote (RF)
                 </Button>
-                <Button
-                  type='danger' onClick={() => this.rescueVote(i, 'reputation')}> Rescue (R)
-                </Button> */}
+                <ButtonRescueVote
+                user={this.props.user}
+                address={this.props.address}
+                i={i}
+                type='reputation'
+                /> */}
               </div>
             </div>
         }
@@ -265,9 +251,7 @@ class VoteTasks extends React.Component {
         reputationCost={this.state.reputationCost}
         date={moment(this.state.nextDeadline)}
         tasks={tasks}
-        checkVoting={this.checkEnd}
-        rewardValidator={this.rewardValidator}
-        rewardTask={this.rewardTask}
+        user={this.props.user}
       />
     )
   }

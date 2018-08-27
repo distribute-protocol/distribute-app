@@ -1,6 +1,8 @@
 import React from 'react'
 import { Button } from 'antd'
 import ProjectHeader from '../shared/ProjectHeader'
+import ButtonStakeProject from '../../contractComponents/buttons/StakeProject'
+import ButtonUnstakeProject from '../../contractComponents/buttons/UnstakeProject'
 const ButtonGroup = Button.Group
 
 export default ({
@@ -15,6 +17,8 @@ export default ({
   totalReputationStaked,
   date,
   stakeInput,
+  user,
+  value,
   tokens,
   reputation
 }) => {
@@ -38,30 +42,34 @@ export default ({
           <div>
             <div>
               <ButtonGroup>
-                <Button
-                  style={{backgroundColor: '#0B1899', color: 'white'}}
-                  icon='up-circle-o'
-                  color='primary'
-                  onClick={() => tokens(true)}>
-                  Tokens
-                </Button>
-                <Button
-                  style={{backgroundColor: '#08734E', color: 'white'}}
-                  icon='up-circle-o'
-                  color='primary'
-                  onClick={() => reputation(true)}>
-                  Reputation
-                </Button>
+                <ButtonStakeProject
+                  address={address}
+                  type='tokens'
+                  user={user}
+                  val={value}
+                />
+                <ButtonStakeProject
+                  address={address}
+                  type='reputation'
+                  user={user}
+                  val={value}
+                />
               </ButtonGroup>
             </div>
             <div style={{marginTop: 5}}>
               <ButtonGroup>
-                <Button style={{backgroundColor: '#1FA9FF', color: 'white'}} icon='down-circle-o' color='primary' onClick={() => tokens(false)}>
-                  Tokens
-                </Button>
-                <Button style={{backgroundColor: '#0BA16D', color: 'white'}} icon='down-circle-o' color='primary' onClick={() => reputation(false)}>
-                  Reputation
-                </Button>
+                <ButtonUnstakeProject
+                  address={address}
+                  type='tokens'
+                  user={user}
+                  val={value}
+                />
+                <ButtonUnstakeProject
+                  address={address}
+                  type='reputation'
+                  user={user}
+                  val={value}
+                />
               </ButtonGroup>
             </div>
           </div>

@@ -10,7 +10,6 @@ import {
   SET_TASK_LIST,
   SUBMIT_HASHED_TASK_LIST,
   TASK_LIST_SET,
-  // UPDATE_PROJECT,
   GET_PROJECTS,
   PROJECTS_RECEIVED,
   STAKED_STATUS_CHECKED,
@@ -151,13 +150,6 @@ export function taskListSet (taskDetails, projectAddress) {
     projectAddress
   }
 }
-
-// export function taskCompleted (taskDetails) {
-//   return {
-//     type: TASK_COMPLETED,
-//     taskDetails
-//   }
-// }
 
 export function hashedTaskListSubmitted (tasks, submitterAddress, projectAddress, receipt) {
   return {

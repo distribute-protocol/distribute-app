@@ -2,12 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Button } from 'antd'
 import Sidebar from '../components/shared/Sidebar'
-import { push } from 'react-router-redux'
 import { eth } from '../utilities/blockchain'
 import Project from './project/3Claim'
 import fastforward from '../utilities/fastforward'
-import { getProjects, checkValidateStatus } from '../actions/projectActions'
-import { claimTask, submitTaskComplete } from '../actions/taskActions'
+import { getProjects } from '../actions/projectActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -60,9 +58,6 @@ class Claim extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
-    this.claimTask = this.claimTask.bind(this)
-    this.submitTaskComplete = this.submitTaskComplete.bind(this)
-    this.checkValidateStatus = this.checkValidateStatus.bind(this)
   }
 
   componentWillMount () {
@@ -82,30 +77,6 @@ class Claim extends React.Component {
     })
   }
 
-  async claimTask (address, index) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        this.props.claimTask(address, index, {from: accounts[0]})
-      }
-    })
-  }
-
-  async submitTaskComplete (address, index) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        this.props.submitTaskComplete(address, index, {from: accounts[0]})
-      }
-    })
-  }
-
-  async checkValidateStatus (address) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        this.props.checkValidateStatus(address, {from: accounts[0]})
-      }
-    })
-  }
-
   // fast forward Ganache 2 weeks
   async fastForward () {
     await fastforward(2 * 7 * 24 * 60 * 60)
@@ -120,9 +91,6 @@ class Claim extends React.Component {
           address={address}
           user={this.state.user}
           project={this.props.projects[address]}
-          claimTask={this.claimTask}
-          submitTaskComplete={this.submitTaskComplete}
-          checkValidateStatus={this.checkValidateStatus}
         />
       })
       : []
@@ -153,11 +121,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    reroute: () => dispatch(push('/')),
-    getProjects: () => dispatch(getProjects(3, projQuery)),
-    claimTask: (address, index, txObj) => dispatch(claimTask(address, index, txObj)),
-    submitTaskComplete: (address, index, txObj) => dispatch(submitTaskComplete(address, index, txObj)),
-    checkValidateStatus: (address, txObj) => dispatch(checkValidateStatus(address, txObj))
+    getProjects: () => dispatch(getProjects(3, projQuery))
   }
 }
 

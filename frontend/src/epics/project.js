@@ -20,8 +20,8 @@ import {
   stakedStatusChecked,
   // activeStatusChecked,
   taskListSet,
-  verifiedTaskListsReceived,
-  finalStatusChecked
+  verifiedTaskListsReceived
+  // finalStatusChecked
   // validateStatusChecked,
   // votingStatusChecked
 } from '../actions/projectActions'

@@ -1,7 +1,8 @@
 import React from 'react'
 import ProjectHeader from '../shared/ProjectHeader'
 import ButtonSubmitFinalTaskList from '../../contractComponents/buttons/SubmitFinalTaskList'
-import { Button, Table } from 'antd'
+import ButtonCheckValidate from '../../contractComponents/buttons/CheckValidate'
+import { Table } from 'antd'
 
 const columns = [{
   title: 'Task Description',
@@ -60,9 +61,10 @@ export default ({
           address={address}
           user={user}
         />
-        <Button onClick={() => checkValidateStatus()}>
-          Check Validate
-        </Button>
+        <ButtonCheckValidate
+          address={address}
+          user={user}
+        />
       </div>
     </div>
   )

@@ -1,13 +1,10 @@
-/* global alert */
 import React from 'react'
 import { connect } from 'react-redux'
 import { Button } from 'antd'
 import AddComponent from '../../components/project/2Add'
 import {web3} from '../../utilities/blockchain'
-import { hashTasksArray } from '../../utilities/hashing'
 import update from 'immutability-helper'
 import moment from 'moment'
-// import * as _ from 'lodash'
 
 class AddProject extends React.Component {
   constructor () {
@@ -18,9 +15,7 @@ class AddProject extends React.Component {
     }
     this.getVerifiedTaskLists = this.getVerifiedTaskLists.bind(this)
     this.handleTaskInput = this.handleTaskInput.bind(this)
-    this.submitTaskList = this.submitTaskList.bind(this)
     this.moveRow = this.moveRow.bind(this)
-    this.checkActive = this.checkActive.bind(this)
   }
 
   componentWillMount () {
@@ -75,27 +70,6 @@ class AddProject extends React.Component {
     tempTaskList.push({description, percentage})
     this.props.setTaskList({taskList: tempTaskList}, this.props.address)
     this.setState({tempTask: {}})
-  }
-
-  submitTaskList () {
-    let tasks = JSON.parse(this.props.taskList)
-    let sumTotal = tasks.map(el => el.percentage).reduce((prev, curr) => {
-      return prev + curr
-    }, 0)
-    if (sumTotal !== 100) {
-      alert('percentages must add up to 100!')
-    } else {
-      let taskArray = tasks.map(task => ({
-        description: task.description,
-        percentage: task.percentage
-      }))
-      let taskHash = hashTasksArray(taskArray)
-      this.props.submitHashedTaskList(tasks, taskHash, this.props.address)
-    }
-  }
-
-  checkActive () {
-    this.props.checkActiveStatus(this.props.address)
   }
 
   render () {
@@ -154,11 +128,10 @@ class AddProject extends React.Component {
         reputationCost={this.props.project.reputationCost}
         date={moment(this.props.project.nextDeadline)}
         tasks={tasks}
-        submitTaskList={this.submitTaskList}
-        checkActive={this.checkActive}
         submission={submission}
         submissionTasks={verifiedSubmissions}
         moveRow={this.moveRow}
+        user={this.props.user}
       />
     )
   }

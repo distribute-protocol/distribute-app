@@ -3,7 +3,6 @@ import { FINAL_TASK_LIST_SUBMITTED, VALIDATIONS_RECEIVED, TASK_CLAIMED, TASK_COM
 
 const initialState = {
 }
-
 // let receiptHandler = (tx, multiHash) => {
 //   let txReceipt = tx.receipt
 //   let projectAddress = txReceipt.logs[0].address

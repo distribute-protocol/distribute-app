@@ -1,10 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import ClaimComponent from '../../components/project/3Claim'
+import ButtonClaimTask from '../../contractComponents/buttons/ClaimTask'
+import ButtonTaskComplete from '../../contractComponents/buttons/TaskComplete'
 import { Button } from 'antd'
 import { web3 } from '../../utilities/blockchain'
 import moment from 'moment'
-
 const ButtonGroup = Button.Group
 
 class ClaimProject extends React.Component {
@@ -13,27 +14,11 @@ class ClaimProject extends React.Component {
     this.state = {
       tasks: []
     }
-    this.checkValidateStatus = this.checkValidateStatus.bind(this)
-  }
-
-  componentWillMount () {
-  }
-
-  async claimTask (i) {
-    this.props.claimTask(this.props.address, i)
-  }
-
-  submitTaskComplete (i) {
-    this.props.submitTaskComplete(this.props.address, i)
-  }
-
-  checkValidateStatus () {
-    this.props.checkValidateStatus(this.props.address)
   }
 
   render () {
     let tasks
-    if (this.props.project.taskList !== null && typeof this.props.tasks !== 'undefined') {
+    if (this.props.project.taskList !== null && typeof this.props.project.tasks !== 'undefined') {
       let reputationCost = this.props.project.reputationCost
       let weiCost = this.props.project.weiCost
       tasks = JSON.parse(this.props.project.taskList).map((task, i) => {
@@ -44,13 +29,16 @@ class ClaimProject extends React.Component {
           ethReward: `${web3.fromWei(weiReward, 'ether')} ETH`,
           repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' && typeof weiReward !== 'undefined' ? `${Math.floor(reputationCost * weiReward / weiCost)} rep` : '',
           buttons: <ButtonGroup>
-            <Button
-              disabled={!this.props.project.listSubmitted || this.props.tasks[i] === undefined || this.props.tasks[i].claimed}
-              type='danger' onClick={() => this.claimTask(i)}>Claim</Button>
-            <Button
-              disabled={!this.props.project.listSubmitted || this.props.tasks[i] === undefined || !this.props.tasks[i].claimed || (this.props.tasks[i].claimed && this.props.tasks[i].complete)
-              }
-              type='danger' onClick={() => this.submitTaskComplete(i)}>Task Complete</Button>
+            <ButtonClaimTask
+              user={this.props.user}
+              i={i}
+              address={this.props.address}
+            />
+            <ButtonTaskComplete
+              user={this.props.user}
+              i={i}
+              address={this.props.address}
+            />
           </ButtonGroup>
         }
       })
@@ -70,8 +58,6 @@ class ClaimProject extends React.Component {
         reputationCost={this.props.project.reputationCost}
         date={moment(this.props.project.nextDeadline)}
         tasks={tasks}
-        claimTask={this.claimTask}
-        checkValidateStatus={this.checkValidateStatus}
       />
     )
   }
@@ -79,8 +65,7 @@ class ClaimProject extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    project: state.projects[3][ownProps.address],
-    tasks: state.projects[3][ownProps.address].tasks
+    project: state.projects[3][ownProps.address]
   }
 }
 

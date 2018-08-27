@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
+import React from 'react'
 import Main from './containers/Main'
 // import logo from './logo.svg';
 import './App.css'
 
-class App extends Component {
+class App extends React.Component {
   render () {
     return (
       <div style={{backgroundColor: '#FCFCFC'}}>

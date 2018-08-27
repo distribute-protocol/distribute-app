@@ -4,7 +4,9 @@ import { Button } from 'antd'
 import { sellTokens } from '../../actions/tokenActions'
 
 const ButtonSellTokens = (props) => {
-  return (<Button icon='plus-circle-o' color='primary'
+  return (<Button
+    icon='plus-circle-o'
+    color='primary'
     onClick={() => props.sellTokens(props.tokensToBuy, {from: props.user})}>
       Sell
   </Button>)

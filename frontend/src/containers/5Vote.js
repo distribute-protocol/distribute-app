@@ -1,13 +1,11 @@
 import React from 'react'
 import { Button } from 'antd'
-import { push } from 'react-router-redux'
 import Sidebar from '../components/shared/Sidebar'
 import Project from './project/5Vote'
 import fastforward from '../utilities/fastforward'
 import { connect } from 'react-redux'
-import { eth, pr } from '../utilities/blockchain'
-import { getProjects, checkFinalStatus } from '../actions/projectActions'
-import { rewardValidator, rewardTask, commitVote, revealVote, rescueVote } from '../actions/taskActions'
+import { eth } from '../utilities/blockchain'
+import { getProjects } from '../actions/projectActions'
 import { getUserVotes } from '../actions/userActions'
 
 import gql from 'graphql-tag'
@@ -57,13 +55,6 @@ class Vote extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
-    this.rewardValidator = this.rewardValidator.bind(this)
-    this.getVotes = this.getVotes.bind(this)
-    this.rewardTask = this.rewardTask.bind(this)
-    this.voteCommit = this.voteCommit.bind(this)
-    this.voteReveal = this.voteReveal.bind(this)
-    this.voteRescue = this.voteRescue.bind(this)
-    this.checkEnd = this.checkEnd.bind(this)
   }
 
   componentWillMount () {
@@ -76,6 +67,7 @@ class Vote extends React.Component {
       if (!err) {
         if (result.length) {
           this.props.getProjects()
+          this.setState({user: result[0]})
         } else {
           console.log('Please Unlock MetaMask')
         }
@@ -95,58 +87,8 @@ class Vote extends React.Component {
     })
   }
 
-  async rewardValidator (address, index) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        this.props.rewardValidator(address, index, {from: accounts[0]})
-      }
-    })
-  }
-
-  async rewardTask (address, index) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        this.props.rewardTask(address, index, {from: accounts[0]})
-      }
-    })
-  }
-
   async fastForward () {
     await fastforward(7 * 24 * 60 * 60)
-  }
-
-  async voteCommit (type, projAddress, taskIndex, value, secretHash, status, salt, pollID) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        // Need to use doubly linked list on the server to find the proper poll position
-        // let prevPollID = this.getPrevPollID(value, accounts[0])
-        await this.props.voteCommit(type, projAddress, taskIndex, value, secretHash, status.toString(), salt, pollID, {from: accounts[0]})
-      }
-    })
-  }
-
-  async voteReveal (type, projectAddress, taskIndex, status, salt) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        await this.props.voteReveal(type, projectAddress, taskIndex, status, salt, {from: accounts[0]})
-      }
-    })
-  }
-
-  async voteRescue (type, projectAddress, taskIndex) {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        await this.props.voteRescue(type, projectAddress, taskIndex, {from: accounts[0]})
-      }
-    })
-  }
-
-  checkEnd (projectAddress) {
-    eth.getAccounts((err, accounts) => {
-      if (!err) {
-        this.props.checkFinalStatus(projectAddress, {from: accounts[0]})
-      }
-    })
   }
 
   getPrevPollID (numTokens, user) {
@@ -174,13 +116,8 @@ class Vote extends React.Component {
           index={i}
           address={address}
           project={this.props.projects[address]}
-          rewardValidator={this.rewardValidator}
-          rewardTask={this.rewardTask}
           validations={(address) => this.getValidations(address)}
-          voteCommit={this.voteCommit}
-          voteReveal={this.voteReveal}
-          voteRescue={this.voteRescue}
-          checkEnd={this.checkEnd}
+          user={this.state.user}
         />
       })
       : []
@@ -212,21 +149,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    reroute: () => dispatch(push('/')),
     getProjects: () => dispatch(getProjects(5, projQuery)),
-    rewardValidator: (address, index, txObj) => dispatch(rewardValidator(address, index, txObj)),
-    rewardTask: (address, index, txObj) => dispatch(rewardTask(address, index, txObj)),
-    voteCommit: (collateralType, projectAddress, taskIndex, value, secretHash, vote, salt, pollID, txObj) => {
-      return dispatch(commitVote(collateralType, projectAddress, taskIndex, value, secretHash, vote, salt, pollID, txObj))
-    },
-    voteReveal: (collateralType, projectAddress, taskIndex, vote, salt, txObj) => {
-      return dispatch(revealVote(collateralType, projectAddress, taskIndex, vote, salt, txObj))
-    },
-    voteRescue: (collateralType, projectAddress, taskIndex, txObj) => {
-      return dispatch(rescueVote(collateralType, projectAddress, taskIndex, txObj))
-    },
-    getUserVotes: (account) => dispatch(getUserVotes(account)),
-    checkFinalStatus: (address, txObj) => dispatch(checkFinalStatus(address, txObj))
+    getUserVotes: (account) => dispatch(getUserVotes(account))
   }
 }
 
