@@ -159,12 +159,11 @@ module.exports = function () {
     let txHash = result.transactionHash
     let eventParams = result.data
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
-    let projectAddress = eventParamArr[0]
-    projectAddress = '0x' + projectAddress.substr(-40)
+    let projectAddress = '0x' + eventParamArr[0].substr(-40)
     let taskHash = '0x' + eventParamArr[1]
-    let submitter = eventParamArr[2]
-    submitter = '0x' + submitter.substr(-40)
+    let submitter = '0x' + eventParamArr[2].substr(-40)
     let weighting = parseInt(eventParamArr[3], 16)
+    console.log(projectAddress, taskHash, submitter, weighting, 'hi')
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
@@ -180,7 +179,7 @@ module.exports = function () {
             if (prelimTaskList !== null && prelimTaskList.hash === taskHash) {
               // console.log(prelimTaskList)
               prelimTaskList.verified = true
-              prelimTaskList.weighting = weighting
+              prelimTaskList.weighting = '' + weighting
               prelimTaskList.save(error => {
                 if (error) console.error(error)
                 console.log('prelim task list submitted')

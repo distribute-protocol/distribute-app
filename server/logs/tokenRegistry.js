@@ -45,22 +45,24 @@ module.exports = function () {
           }
           Project.findOne({address: projectAddress}).exec((error, doc) => {
             if (error) console.error(error)
-            let StakeEvent = new Stake({
-              _id: new mongoose.Types.ObjectId(),
-              amount: tokensStaked,
-              project: doc.id,
-              type: 'token',
-              userId: userStatus.id
-            })
-            doc.tokenBalance += tokensStaked
-            doc.weiBal += weiChange
-            doc.save((error, saved) => {
-              if (error) console.error(error)
-            })
-            StakeEvent.save((error, saved) => {
-              if (error) console.error(error)
-              console.log('tokens staked')
-            })
+            if (doc) {
+              let StakeEvent = new Stake({
+                _id: new mongoose.Types.ObjectId(),
+                amount: tokensStaked,
+                project: doc.id,
+                type: 'token',
+                userId: userStatus.id
+              })
+              doc.tokenBalance += tokensStaked
+              doc.weiBal += weiChange
+              doc.save((error, saved) => {
+                if (error) console.error(error)
+              })
+              StakeEvent.save((error, saved) => {
+                if (error) console.error(error)
+                console.log('tokens staked')
+              })
+            }
           })
         })
         netStatus.save(err => {
@@ -241,7 +243,7 @@ module.exports = function () {
                     if (error) console.error(error)
                     if (validation) {
                       validation.rewarded = true
-                      console.log('here 2', validation)
+                      // console.log('here 2', validation)
                       validation.save(err => {
                         if (err) console.error(err)
                       })

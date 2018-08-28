@@ -69,7 +69,7 @@ const typeDefs = `
     address: String
     hash: String
     submitter: String
-    weighting: Int
+    weighting: String
     content: String
   }
 
@@ -224,7 +224,7 @@ const typeDefs = `
   type Mutation {
     addUser(input: CredentialInput, account: String): User
     addTaskList(input: String, address: String): Project
-    addPrelimTaskList(address: String, taskHash: String, submitter: String, weighting: Int): Project
+    addPrelimTaskList(address: String, taskHash: String, submitter: String, weighting: String): Project
     addVote(type: String, projectAddress: String, taskIndex: Int, amount: Int, vote: String, salt: String, pollID: Int, voter: String): VoteRecord
   }
 `
