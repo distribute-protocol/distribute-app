@@ -1,6 +1,6 @@
 import React from 'react'
 import ProjectHeader from '../shared/ProjectHeader'
-import ButtonCheckVoting from '../../contractComponents/buttons/CheckVoting'
+import ButtonCheckVoting from '../../contractComponents/stage4/CheckVoting'
 import { Table } from 'antd'
 
 const columns = [{

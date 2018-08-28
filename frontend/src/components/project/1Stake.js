@@ -1,8 +1,8 @@
 import React from 'react'
 import { Button } from 'antd'
 import ProjectHeader from '../shared/ProjectHeader'
-import ButtonStakeProject from '../../contractComponents/buttons/StakeProject'
-import ButtonUnstakeProject from '../../contractComponents/buttons/UnstakeProject'
+import ButtonStakeProject from '../../contractComponents/stage1/StakeProject'
+import ButtonUnstakeProject from '../../contractComponents/stage1/UnstakeProject'
 const ButtonGroup = Button.Group
 
 export default ({

@@ -145,7 +145,7 @@ const submitHashedTaskList = action$ => {
     mergeMap(result => {
       txReceipt = result
       let mutation = gql`
-        mutation addPrelimTaskList($address: String!, $taskHash: String!, $submitter: String!, $weighting: Int!) {
+        mutation addPrelimTaskList($address: String!, $taskHash: String!, $submitter: String!, $weighting: String!) {
           addPrelimTaskList(address: $address, taskHash: $taskHash, submitter: $submitter, weighting: $weighting) {
             id
           }

@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import ValidateComponent from '../../components/project/4Validate'
 import ValidateTask from '../task/4Validate'
-import ButtonValidateTask from '../../contractComponents/buttons/ValidateTask'
+import ButtonValidateTask from '../../contractComponents/stage4/ValidateTask'
 import { web3 } from '../../utilities/blockchain'
 import moment from 'moment'
 
