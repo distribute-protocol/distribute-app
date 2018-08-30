@@ -4,6 +4,7 @@ import Project from '../project/Finished'
 import { connect } from 'react-redux'
 import { eth } from '../../utilities/blockchain'
 import { getProjects } from '../../actions/projectActions'
+import { getUserVotes } from '../../actions/userActions'
 
 import gql from 'graphql-tag'
 
@@ -55,6 +56,7 @@ class Vote extends React.Component {
 
   componentWillMount () {
     this.getProjects()
+    this.getVotes()
   }
 
   async getProjects () {
@@ -62,6 +64,18 @@ class Vote extends React.Component {
       if (!err) {
         if (result.length) {
           this.props.getProjects()
+        } else {
+          console.log('Please Unlock MetaMask')
+        }
+      }
+    })
+  }
+
+  getVotes () {
+    eth.getAccounts(async (err, result) => {
+      if (!err) {
+        if (result.length) {
+          this.props.getUserVotes(result[0])
         } else {
           console.log('Please Unlock MetaMask')
         }
@@ -105,7 +119,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getProjects: () => dispatch(getProjects(6, projQuery))
+    getProjects: () => dispatch(getProjects(6, projQuery)),
+    getUserVotes: (account) => dispatch(getUserVotes(account))
   }
 }
 
