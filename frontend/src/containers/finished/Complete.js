@@ -1,5 +1,4 @@
 import React from 'react'
-import { push } from 'react-router-redux'
 import Sidebar from '../../components/shared/Sidebar'
 import Project from '../project/Finished'
 import { connect } from 'react-redux'
@@ -78,6 +77,7 @@ class Vote extends React.Component {
           index={i}
           address={address}
           project={this.props.projects[address]}
+          state={6}
         />
       })
       : []

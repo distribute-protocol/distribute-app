@@ -1,5 +1,29 @@
 import React from 'react'
 import ProjectHeader from '../shared/ProjectHeader'
+import { Table } from 'antd'
+import ButtonRescueVote from '../../contractComponents/stage5/RescueVote'
+
+const columns = [{
+  title: 'Task Description',
+  dataIndex: 'description',
+  key: 'description'
+}, {
+  title: 'ETH Reward',
+  dataIndex: 'ethReward',
+  key: 'ethReward'
+}, {
+  title: 'Reward Validator?',
+  dataIndex: 'rewardValidator',
+  key: 'rewardValidator'
+}, {
+  title: 'Reward Worker?',
+  dataIndex: 'rewardWorker',
+  key: 'rewardWorker'
+}, {
+  title: 'Rescue Vote?',
+  dataIndex: 'rescueVote',
+  key: 'rescueVote'
+}]
 
 export default ({
   name,
@@ -10,7 +34,9 @@ export default ({
   cost,
   reputationCost,
   date,
-  state
+  state,
+  tasks,
+  votes
 }) => {
   return (
     <div style={{backgroundColor: '#DDE4E5', marginBottom: 30}}>
@@ -24,8 +50,16 @@ export default ({
         reputationCost={reputationCost}
       />
       <div style={{padding: 10}}>
-        {`Project State: ${state}`}
+        <div>
+          <div>
+            Voting Period Expires In {typeof date !== 'undefined' ? `${date.fromNow()}` : 'N/A'}
+          </div>
+        </div>
+        <div style={{display: 'flex', flexDirection: 'column', backgroundColor: '#FCFCFC', marginTop: 30}}>
+          <Table dataSource={tasks} columns={columns} pagination={false} />
+        </div>
       </div>
+      {votes}
     </div>
   )
 }

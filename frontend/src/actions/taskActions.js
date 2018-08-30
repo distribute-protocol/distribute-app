@@ -7,8 +7,6 @@ import {
   TASK_VALIDATED,
   SUBMIT_TASK_COMPLETE,
   TASK_COMPLETED,
-  // GET_TASKS,
-  // TASKS_RECEIVED,
   GET_VALIDATIONS,
   VALIDATIONS_RECEIVED,
   REWARD_VALIDATOR,
@@ -193,6 +191,7 @@ export function revealVote (collateralType, projectAddress, taskIndex, vote, sal
 }
 
 export function rescueVote (collateralType, projectAddress, taskIndex, txObj) {
+  console.log('vote rescued')
   return {
     type: RESCUE_VOTE,
     collateralType,

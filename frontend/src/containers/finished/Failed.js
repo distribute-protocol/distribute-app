@@ -62,6 +62,7 @@ class Vote extends React.Component {
       if (!err) {
         if (result.length) {
           this.props.getProjects()
+          this.setState({user: result[0]})
         } else {
           console.log('Please Unlock MetaMask')
         }
@@ -76,7 +77,9 @@ class Vote extends React.Component {
           key={i}
           index={i}
           address={address}
+          user={this.state.user}
           project={this.props.projects[address]}
+          state={7}
         />
       })
       : []
@@ -95,13 +98,13 @@ class Vote extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    projects: state.projects[6]
+    projects: state.projects[7]
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getProjects: () => dispatch(getProjects(6, projQuery))
+    getProjects: () => dispatch(getProjects(7, projQuery))
   }
 }
 
