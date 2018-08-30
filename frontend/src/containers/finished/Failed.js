@@ -46,7 +46,7 @@ let projQuery = gql`
     }
   }`
 
-class Vote extends React.Component {
+class Failed extends React.Component {
   constructor () {
     super()
     this.state = {
@@ -126,4 +126,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Vote)
+export default connect(mapStateToProps, mapDispatchToProps)(Failed)

@@ -404,7 +404,6 @@ module.exports = function () {
   })
 
   tokenVoteRescuedFilter.watch(async (error, result) => {
-    console.log('goobie')
     if (error) console.error(error)
     let txHash = result.transactionHash
     let projectAddress = result.topics[1]
@@ -415,24 +414,19 @@ module.exports = function () {
     let account = eventParamArr[2]
     account = '0x' + account.substr(-40)
     Network.findOne({}).exec((err, netStatus) => {
-      console.log('network')
       if (err) console.error(err)
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
         netStatus.processedTxs[txHash] = true
         User.findOne({account: account}).exec((err, user) => {
-          console.log('user')
           if (err) console.error(error)
           if (user !== null) {
             Project.findOne({address: projectAddress}).exec((err, project) => {
-              console.log('project')
               if (err) console.error(error)
               if (project !== null) {
                 Task.findOne({project: project.id, index: taskIndex}).exec((err, task) => {
-                  console.log('tasl')
                   if (err) console.error(error)
                   if (task !== null) {
                     Vote.findOne({task: task.id, user: user.id, type: 'tokens'}).exec((err, vote) => {
-                      console.log(vote, 'vote')
                       if (err) console.error(error)
                       if (vote !== null) {
                         let changeIndex = _.findIndex(user.voteRecords, (vR) => vR.pollID === vote.pollID && vR.task == task.id && vR.voter == user.id && vR.type === 'tokens')
@@ -452,7 +446,7 @@ module.exports = function () {
                         vote.rescued = true
                         vote.save((err, saved) => {
                           if (err) console.error(err)
-                          console.log('rep vote rescued - vote schema')
+                          console.log('rep vote rescued')
                         })
                       }
                     })
