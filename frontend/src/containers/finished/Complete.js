@@ -1,10 +1,10 @@
 import React from 'react'
-import { push } from 'react-router-redux'
 import Sidebar from '../../components/shared/Sidebar'
 import Project from '../project/Finished'
 import { connect } from 'react-redux'
 import { eth } from '../../utilities/blockchain'
 import { getProjects } from '../../actions/projectActions'
+import { getUserVotes } from '../../actions/userActions'
 
 import gql from 'graphql-tag'
 
@@ -18,23 +18,23 @@ let projQuery = gql`
         lng
       },
       name,
-      # tasks {
-      #   id,
-      #   address,
-      #   claimer {
-      #     account
-      #   },
-      #   claimed,
-      #   claimedAt,
-      #   complete,
-      #   description,
-      #   index,
-      #   hash,
-      #   weighting,
-      #   validationRewardClaimable,
-      #   workerRewardClaimable,
-      #   workerRewarded
-      # }
+      tasks {
+        id,
+        address,
+        claimer {
+          account
+        },
+        claimed,
+        claimedAt,
+        complete,
+        description,
+        index,
+        hash,
+        weighting,
+        validationRewardClaimable,
+        workerRewardClaimable,
+        workerRewarded
+      }
       nextDeadline,
       photo,
       reputationBalance,
@@ -46,7 +46,7 @@ let projQuery = gql`
     }
   }`
 
-class Vote extends React.Component {
+class Complete extends React.Component {
   constructor () {
     super()
     this.state = {
@@ -56,6 +56,7 @@ class Vote extends React.Component {
 
   componentWillMount () {
     this.getProjects()
+    this.getVotes()
   }
 
   async getProjects () {
@@ -63,6 +64,18 @@ class Vote extends React.Component {
       if (!err) {
         if (result.length) {
           this.props.getProjects()
+        } else {
+          console.log('Please Unlock MetaMask')
+        }
+      }
+    })
+  }
+
+  getVotes () {
+    eth.getAccounts(async (err, result) => {
+      if (!err) {
+        if (result.length) {
+          this.props.getUserVotes(result[0])
         } else {
           console.log('Please Unlock MetaMask')
         }
@@ -78,6 +91,7 @@ class Vote extends React.Component {
           index={i}
           address={address}
           project={this.props.projects[address]}
+          state={6}
         />
       })
       : []
@@ -105,8 +119,9 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getProjects: () => dispatch(getProjects(6, projQuery))
+    getProjects: () => dispatch(getProjects(6, projQuery)),
+    getUserVotes: (account) => dispatch(getUserVotes(account))
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Vote)
+export default connect(mapStateToProps, mapDispatchToProps)(Complete)

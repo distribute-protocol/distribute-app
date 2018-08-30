@@ -87,7 +87,7 @@ module.exports = function () {
                 amount: reputationStaked,
                 projectId: projectStatus.id,
                 type: 'reputation',
-                userId: userStatus.id
+                user: userStatus.id
               })
               projectStatus.reputationBalance += reputationStaked
               projectStatus.save((error, saved) => {
@@ -141,7 +141,7 @@ module.exports = function () {
               amount: -1 * reputationStaked,
               projectId: projectStatus.id,
               type: 'reputation',
-              userId: userStatus.id
+              user: userStatus.id
             })
             projectStatus.reputationBalance -= reputationStaked
             projectStatus.save((error, saved) => {
@@ -202,7 +202,7 @@ module.exports = function () {
                     hash: secretHash,
                     type: 'reputation',
                     pollID,
-                    taskId: task.id,
+                    task: task.id,
                     user: user.id
                   })
                   vote.save((err, saved) => {
@@ -235,8 +235,8 @@ module.exports = function () {
     projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
     let eventParamArr = result.data.slice(2).match(/.{1,64}/g)
     let taskIndex = parseInt(eventParamArr[0], 16)
-    let voteOption = parseInt(eventParamArr[1], 16)
-    let salt = parseInt(eventParamArr[2], 16)
+    // let voteOption = parseInt(eventParamArr[1], 16)
+    // let salt = parseInt(eventParamArr[2], 16)
     let account = eventParamArr[3]
     account = '0x' + account.substr(-40)
     Network.findOne({}).exec((err, netStatus) => {
@@ -253,7 +253,7 @@ module.exports = function () {
                 Task.findOne({project: project.id, index: taskIndex}).exec((err, task) => {
                   if (err) console.error(error)
                   if (task !== null) {
-                    Vote.findOne({taskId: task.id, userId: user.id, type: 'reputation'}).exec((err, vote) => {
+                    Vote.findOne({task: task.id, user: user.id, type: 'reputation'}).exec((err, vote) => {
                       if (err) console.error(error)
                       if (vote !== null) {
                         let changeIndex = _.findIndex(
@@ -310,7 +310,7 @@ module.exports = function () {
     projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
     let eventParamArr = result.data.slice(2).match(/.{1,64}/g)
     let taskIndex = parseInt(eventParamArr[0], 16)
-    let pollId = parseInt(eventParamArr[1], 16)
+    // let pollId = parseInt(eventParamArr[1], 16)
     let account = eventParamArr[2]
     account = '0x' + account.substr(-40)
     Network.findOne({}).exec((err, netStatus) => {
@@ -324,9 +324,23 @@ module.exports = function () {
             Task.findOne({project: projectAddress, index: taskIndex}).exec((err, task) => {
               if (err) console.error(error)
               if (task !== null) {
-                Vote.findOne({taskId: task.id, userId: user.id, type: 'reputation'}).exec((err, vote) => {
+                Vote.findOne({task: task.id, user: user.id, type: 'reputation'}).exec((err, vote) => {
                   if (err) console.error(error)
                   if (vote !== null) {
+                    let changeIndex = _.findIndex(user.voteRecords, (vR) => vR.pollID === vote.pollID && vR.task == task.id && vR.voter == user.id && vR.type === 'tokens')
+                    let voteRecords = user.voteRecords
+                    let userVote = voteRecords[changeIndex]
+                    userVote.rescued = true
+                    voteRecords[changeIndex] = userVote
+                    user.voteRecords = voteRecords
+                    // user.markModified('voteRecords')
+                    user.save((err, saved) => {
+                      if (err) {
+                        console.error(err)
+                      } else {
+                        console.log('user vote record updated')
+                      }
+                    })
                     vote.rescued = true
                     vote.save((err, saved) => {
                       if (err) console.error(err)

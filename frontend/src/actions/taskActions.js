@@ -7,8 +7,6 @@ import {
   TASK_VALIDATED,
   SUBMIT_TASK_COMPLETE,
   TASK_COMPLETED,
-  // GET_TASKS,
-  // TASKS_RECEIVED,
   GET_VALIDATIONS,
   VALIDATIONS_RECEIVED,
   REWARD_VALIDATOR,
@@ -111,57 +109,63 @@ export function validationsReceived (projectAddress, index, result) {
   }
 }
 
-export function getUserValidations (projectAddress, user) {
+export function getUserValidations (projectAddress, user, state) {
   return {
     type: GET_USER_VALIDATIONS,
     projectAddress,
-    user
+    user,
+    state
   }
 }
 
-export function userValidationsReceived (projectAddress, user, result) {
+export function userValidationsReceived (projectAddress, user, result, state) {
   return {
     type: USER_VALIDATIONS_RECEIVED,
     projectAddress,
     user,
-    result
+    result,
+    state
   }
 }
 
-export function rewardValidator (projectAddress, index, txObj) {
+export function rewardValidator (projectAddress, index, txObj, state) {
   return {
     type: REWARD_VALIDATOR,
     projectAddress,
     index,
-    txObj
+    txObj,
+    state
   }
 }
 
-export function validatorRewarded (projectAddress, index, amount) {
+export function validatorRewarded (projectAddress, index, amount, state) {
   return {
     type: VALIDATOR_REWARDED,
     projectAddress,
     index,
-    amount
+    amount,
+    state
   }
 }
 
-export function rewardTask (projectAddress, index, txObj) {
+export function rewardTask (projectAddress, index, txObj, state) {
   return {
     type: REWARD_TASK,
     projectAddress,
     index,
-    txObj
+    txObj,
+    state
   }
 }
 
-export function taskRewarded (projectAddress, index, amount, claimer) {
+export function taskRewarded (projectAddress, index, amount, claimer, state) {
   return {
     type: TASK_REWARDED,
     projectAddress,
     index,
     amount,
-    claimer
+    claimer,
+    state
   }
 }
 

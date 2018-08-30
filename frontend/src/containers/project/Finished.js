@@ -1,8 +1,14 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import FinishedComponent from '../../components/project/Finished'
-import {eth, web3, P} from '../../utilities/blockchain'
+import { getUserValidations } from '../../actions/taskActions'
+import ButtonRewardValidator from '../../contractComponents/stage5/RewardValidator'
+import ButtonRewardTask from '../../contractComponents/stage5/RewardTask'
+import ButtonRescueVote from '../../contractComponents/stage5/RescueVote'
+import { web3, eth } from '../../utilities/blockchain'
+import { Icon } from 'antd'
 import moment from 'moment'
-import ipfs from '../../utilities/ipfs'
+import * as _ from 'lodash'
 
 class FinishedProject extends React.Component {
   constructor () {
@@ -11,59 +17,111 @@ class FinishedProject extends React.Component {
       tasks: []
     }
   }
+
   componentWillMount () {
-    this.getProjectStatus()
+    this.getUserValidations()
   }
 
-  async getProjectStatus () {
-    let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
-    let accounts
-    let p = P.at(this.props.address)
-    eth.getAccounts(async (err, result) => {
+  async getUserValidations () {
+    eth.getAccounts(async (err, accounts) => {
       if (!err) {
-        accounts = result
-        if (accounts.length) {
-          let weiCost = (await p.weiCost()).toNumber()
-          let reputationCost = (await p.reputationCost()).toNumber()
-          let ipfsHash = web3.toAscii(await p.ipfsHash())
-          let nextDeadline = (await p.nextDeadline()) * 1000
-          let projectState = (await p.state())
-          let projObj = {
-            weiCost,
-            reputationCost,
-            ipfsHash,
-            nextDeadline,
-            state: states[projectState],
-            project: p
-          }
-          ipfs.object.get(ipfsHash, (err, node) => {
-            if (err) {
-              throw err
-            }
-            let dataString = new TextDecoder('utf-8').decode(node.toJSON().data)
-            projObj = Object.assign({}, projObj, JSON.parse(dataString))
-            this.setState(projObj)
-          })
-        }
+        this.props.getUserValidations(this.props.address, accounts[0], this.props.state)
       }
     })
   }
 
   render () {
+    let tasks, votes
+    if (typeof this.props.tasks !== 'undefined') {
+      tasks = this.props.tasks.slice(0).sort(function (a, b) {
+        return a.index - b.index
+      })
+      tasks = tasks.map((task, i) => {
+        votes = _.filter(this.props.votes, (vote) => { return vote.task.id === task.id ? vote : null })
+        let rewardVal, rewardWork, rescueVote
+        task.validationRewardClaimable
+          ? rewardVal =
+            <div>
+              <ButtonRewardValidator
+                type='Yes'
+                user={this.props.user}
+                address={this.props.address}
+                i={i}
+                state={this.props.state}
+              />
+            </div>
+          : rewardVal =
+            <Icon type='close' />
+
+        task.workerRewardClaimable
+          ? rewardWork =
+            <div>
+              <ButtonRewardTask
+                user={this.props.user}
+                address={this.props.address}
+                tasks={tasks}
+                i={i}
+                state={this.props.state}
+              />
+            </div>
+          : rewardWork =
+            <Icon type='close' />
+        votes.length !== 0 && !votes[0].revealed && !votes[0].rescued
+          ? rescueVote =
+            <div>
+              <ButtonRescueVote
+                user={this.props.user}
+                address={this.props.address}
+                i={i}
+                type={votes[0].type}
+              />
+            </div>
+          : rescueVote =
+            <Icon type='close' />
+
+        return {
+          key: i,
+          description: task.description,
+          ethReward: `${web3.fromWei(this.props.project.weiCost) * (task.weighting / 100)} ETH`,
+          rewardValidator: rewardVal,
+          rewardWorker: rewardWork,
+          rescueVote: rescueVote,
+          votes: votes
+        }
+      })
+    } else {
+      tasks = []
+    }
+
     return (
       <FinishedComponent
-        name={this.state.name}
+        name={this.props.project.name}
         address={this.props.address}
-        photo={this.state.photo}
-        summary={this.state.summary}
-        location={this.state.location}
-        cost={web3.fromWei(this.state.cost, 'ether')}
-        reputationCost={this.state.reputationCost}
-        date={moment(this.state.nextDeadline * 1000)}
-        state={this.state.state}
+        photo={this.props.project.photo}
+        summary={this.props.project.summary}
+        location={this.props.project.location}
+        cost={web3.fromWei(this.props.project.cost, 'ether')}
+        reputationCost={this.props.project.reputationCost}
+        date={moment(this.props.project.nextDeadline * 1000)}
+        user={this.props.user}
+        tasks={tasks}
       />
     )
   }
 }
 
-export default FinishedProject
+const mapStateToProps = (state, ownProps) => {
+  return {
+    project: state.projects[ownProps.state][ownProps.address],
+    tasks: state.projects[ownProps.state][ownProps.address].tasks,
+    votes: state.user.votes
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getUserValidations: (address, user, state) => dispatch(getUserValidations(address, user, state))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FinishedProject)

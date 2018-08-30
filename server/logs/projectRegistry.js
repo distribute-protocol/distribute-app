@@ -468,7 +468,7 @@ module.exports = function () {
         if (flag === 1) {
           Project.findOne({address: projectAddress}).exec((error, project) => {
             if (error) console.error(error)
-            if (project) {
+            if (project.state === 4) {
               project.state = 5
               project.save(err => {
                 if (err) console.error(error)

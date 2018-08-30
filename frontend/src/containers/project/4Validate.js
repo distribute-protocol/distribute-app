@@ -7,15 +7,6 @@ import { web3 } from '../../utilities/blockchain'
 import moment from 'moment'
 
 class ValidateTasks extends React.Component {
-  componentWillMount () {
-    this.getProjectStatus()
-  }
-
-  // let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
-  async getProjectStatus () {
-    this.setState(this.props.project)
-  }
-
   onChange (e) {
     this.setState({[e.target.name]: e.target.value})
   }
@@ -63,14 +54,14 @@ class ValidateTasks extends React.Component {
 
     return (
       <ValidateComponent
-        name={this.state.name}
+        name={this.props.project.name}
         address={this.props.address}
-        photo={this.state.photo}
-        summary={this.state.summary}
-        location={this.state.location}
-        cost={web3.fromWei(this.state.cost, 'ether')}
-        reputationCost={this.state.reputationCost}
-        date={moment(this.state.nextDeadline)}
+        photo={this.props.project.photo}
+        summary={this.props.project.summary}
+        location={this.props.project.location}
+        cost={web3.fromWei(this.props.project.cost, 'ether')}
+        reputationCost={this.props.project.reputationCost}
+        date={moment(this.props.project.nextDeadline)}
         tasks={tasks}
         user={this.props.user}
       />
