@@ -185,18 +185,17 @@ const getUserValidationsEpic = action$ => {
 }
 
 const rewardValidatorEpic = action$ => {
-  let address
-  let index
-  let txObj
+  let address, index, txObj, state
   return action$.ofType(REWARD_VALIDATOR).pipe(
     mergeMap(action => {
       address = action.projectAddress
       index = action.index
       txObj = action.txObj
+      state = action.state
       return Observable.from(tr.rewardValidator(address, index, txObj))
     }),
     map(result =>
-      validatorRewarded(address, index, result)
+      validatorRewarded(address, index, result, state)
     )
   )
 }
@@ -205,15 +204,17 @@ const rewardTaskEpic = action$ => {
   let address
   let index
   let txObj
+  let state
   return action$.ofType(REWARD_TASK).pipe(
     mergeMap(action => {
       address = action.projectAddress
       index = action.index
       txObj = action.txObj
+      state = action.state
       return Observable.from(rr.rewardTask(address, index, txObj))
     }),
     map(result =>
-      taskRewarded(address, index, result, txObj.from)
+      taskRewarded(address, index, result, txObj.from, state)
     )
   )
 }

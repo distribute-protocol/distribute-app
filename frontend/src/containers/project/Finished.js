@@ -31,8 +31,6 @@ class FinishedProject extends React.Component {
   }
 
   render () {
-    console.log(this.props.votes)
-    console.log(this.props.tasks)
     let tasks, votes
     if (typeof this.props.tasks !== 'undefined') {
       tasks = this.props.tasks.slice(0).sort(function (a, b) {
@@ -46,8 +44,26 @@ class FinishedProject extends React.Component {
             // validators and workers can claim
             // check to see if user can claim, then once they claim turn off the button
             // pull validations from task, filtered by current metamask address
-            rewardVal = <Icon type='close' />
-            rewardWork = <Icon type='close' />
+            rewardVal =
+              <div>
+                <ButtonRewardValidator
+                  type='Yes'
+                  user={this.props.user}
+                  address={this.props.address}
+                  i={i}
+                  state={this.props.state}
+                />
+              </div>
+            rewardWork =
+              <div>
+                <ButtonRewardTask
+                  user={this.props.user}
+                  address={this.props.address}
+                  tasks={tasks}
+                  i={i}
+                  state={this.props.state}
+                />
+              </div>
             rescueVote = <Icon type='close' />
           } else {
             // validators can claim, task fails

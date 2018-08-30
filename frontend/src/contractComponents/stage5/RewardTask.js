@@ -8,20 +8,20 @@ const ButtonRewardTask = (props) => {
   return (<Button
     disabled={props.tasks[props.i].claimer.account !== eth.accounts[0] || props.tasks[props.i].workerRewarded}
     type='danger'
-    onClick={() => props.rewardTask(props.address, props.i, {from: props.user})}>
+    onClick={() => props.rewardTask(props.address, props.i, {from: props.user}, props.state)}>
     Reward Task
   </Button>)
 }
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    project: state.projects[5][ownProps.address]
+    project: state.projects[ownProps.state][ownProps.address]
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    rewardTask: (address, index, txObj) => dispatch(rewardTask(address, index, txObj))
+    rewardTask: (address, index, txObj, state) => dispatch(rewardTask(address, index, txObj, state))
   }
 }
 

@@ -59,6 +59,7 @@ class VoteTasks extends React.Component {
                   user={this.props.user}
                   address={this.props.address}
                   i={i}
+                  state={5}
                 />
               </div>
             rewardWork =
@@ -68,6 +69,7 @@ class VoteTasks extends React.Component {
                   address={this.props.address}
                   tasks={tasks}
                   i={i}
+                  state={5}
                 />
               </div>
             needsVote = <Icon type='close' />
@@ -80,6 +82,7 @@ class VoteTasks extends React.Component {
                   user={this.props.user}
                   address={this.props.address}
                   i={i}
+                  state={5}
                 />
               </div>
             rewardWork = <Icon type='close' />

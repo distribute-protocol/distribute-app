@@ -1,7 +1,6 @@
 import React from 'react'
 import ProjectHeader from '../shared/ProjectHeader'
 import { Table } from 'antd'
-import ButtonRescueVote from '../../contractComponents/stage5/RescueVote'
 
 const columns = [{
   title: 'Task Description',

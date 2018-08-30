@@ -128,40 +128,44 @@ export function userValidationsReceived (projectAddress, user, result, state) {
   }
 }
 
-export function rewardValidator (projectAddress, index, txObj) {
+export function rewardValidator (projectAddress, index, txObj, state) {
   return {
     type: REWARD_VALIDATOR,
     projectAddress,
     index,
-    txObj
+    txObj,
+    state
   }
 }
 
-export function validatorRewarded (projectAddress, index, amount) {
+export function validatorRewarded (projectAddress, index, amount, state) {
   return {
     type: VALIDATOR_REWARDED,
     projectAddress,
     index,
-    amount
+    amount,
+    state
   }
 }
 
-export function rewardTask (projectAddress, index, txObj) {
+export function rewardTask (projectAddress, index, txObj, state) {
   return {
     type: REWARD_TASK,
     projectAddress,
     index,
-    txObj
+    txObj,
+    state
   }
 }
 
-export function taskRewarded (projectAddress, index, amount, claimer) {
+export function taskRewarded (projectAddress, index, amount, claimer, state) {
   return {
     type: TASK_REWARDED,
     projectAddress,
     index,
     amount,
-    claimer
+    claimer,
+    state
   }
 }
 
