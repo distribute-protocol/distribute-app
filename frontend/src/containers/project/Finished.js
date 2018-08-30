@@ -66,8 +66,7 @@ class FinishedProject extends React.Component {
             </div>
           : rewardWork =
             <Icon type='close' />
-
-        votes.length !== 0 && !votes.rescued
+        votes.length !== 0 && !votes[0].revealed && !votes[0].rescued
           ? rescueVote =
             <div>
               <ButtonRescueVote

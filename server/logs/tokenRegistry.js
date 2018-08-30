@@ -51,7 +51,7 @@ module.exports = function () {
                 amount: tokensStaked,
                 project: doc.id,
                 type: 'token',
-                userId: userStatus.id
+                user: userStatus.id
               })
               doc.tokenBalance += tokensStaked
               doc.weiBal += weiChange
@@ -105,7 +105,7 @@ module.exports = function () {
               amount: -1 * tokensUnstaked,
               projectId: doc.id,
               type: 'token',
-              userId: userStatus.id
+              user: userStatus.id
             })
             doc.tokenBalance -= tokensUnstaked
             doc.weiBal -= weiChange
@@ -308,8 +308,8 @@ module.exports = function () {
                     hash: secretHash,
                     type: 'tokens',
                     pollID,
-                    taskId: task.id,
-                    userId: user.id
+                    task: task.id,
+                    user: user.id
                   })
                   vote.save((err, saved) => {
                     if (err) console.error(err)
@@ -359,7 +359,7 @@ module.exports = function () {
                 Task.findOne({project: project.id, index: taskIndex}).exec((err, task) => {
                   if (err) console.error(error)
                   if (task !== null) {
-                    Vote.findOne({taskId: task.id, userId: user.id, type: 'tokens'}).exec((err, vote) => {
+                    Vote.findOne({task: task.id, user: user.id, type: 'tokens'}).exec((err, vote) => {
                       if (err) console.error(error)
                       if (vote !== null) {
                         let changeIndex = _.findIndex(user.voteRecords, (vR) => vR.pollID === vote.pollID && vR.task == task.id && vR.voter == user.id && vR.type === 'tokens')
@@ -404,7 +404,7 @@ module.exports = function () {
   })
 
   tokenVoteRescuedFilter.watch(async (error, result) => {
-    console.log('goob')
+    console.log('goobie')
     if (error) console.error(error)
     let txHash = result.transactionHash
     let projectAddress = result.topics[1]
@@ -414,30 +414,45 @@ module.exports = function () {
     // let pollId = parseInt(eventParamArr[1], 16)
     let account = eventParamArr[2]
     account = '0x' + account.substr(-40)
-    console.log(account)
     Network.findOne({}).exec((err, netStatus) => {
-      console.log('network goob')
+      console.log('network')
       if (err) console.error(err)
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
         netStatus.processedTxs[txHash] = true
         User.findOne({account: account}).exec((err, user) => {
-          console.log('user gppb')
+          console.log('user')
           if (err) console.error(error)
           if (user !== null) {
             Project.findOne({address: projectAddress}).exec((err, project) => {
+              console.log('project')
               if (err) console.error(error)
               if (project !== null) {
                 Task.findOne({project: project.id, index: taskIndex}).exec((err, task) => {
+                  console.log('tasl')
                   if (err) console.error(error)
                   if (task !== null) {
-                    console.log(task, user)
                     Vote.findOne({task: task.id, user: user.id, type: 'tokens'}).exec((err, vote) => {
+                      console.log(vote, 'vote')
                       if (err) console.error(error)
                       if (vote !== null) {
+                        let changeIndex = _.findIndex(user.voteRecords, (vR) => vR.pollID === vote.pollID && vR.task == task.id && vR.voter == user.id && vR.type === 'tokens')
+                        let voteRecords = user.voteRecords
+                        let userVote = voteRecords[changeIndex]
+                        userVote.rescued = true
+                        voteRecords[changeIndex] = userVote
+                        user.voteRecords = voteRecords
+                        // user.markModified('voteRecords')
+                        user.save((err, saved) => {
+                          if (err) {
+                            console.error(err)
+                          } else {
+                            console.log('user vote record updated')
+                          }
+                        })
                         vote.rescued = true
                         vote.save((err, saved) => {
                           if (err) console.error(err)
-                          console.log('rep vote rescued')
+                          console.log('rep vote rescued - vote schema')
                         })
                       }
                     })

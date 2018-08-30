@@ -87,7 +87,7 @@ module.exports = function () {
                 amount: reputationStaked,
                 projectId: projectStatus.id,
                 type: 'reputation',
-                userId: userStatus.id
+                user: userStatus.id
               })
               projectStatus.reputationBalance += reputationStaked
               projectStatus.save((error, saved) => {
@@ -141,7 +141,7 @@ module.exports = function () {
               amount: -1 * reputationStaked,
               projectId: projectStatus.id,
               type: 'reputation',
-              userId: userStatus.id
+              user: userStatus.id
             })
             projectStatus.reputationBalance -= reputationStaked
             projectStatus.save((error, saved) => {
@@ -202,7 +202,7 @@ module.exports = function () {
                     hash: secretHash,
                     type: 'reputation',
                     pollID,
-                    taskId: task.id,
+                    task: task.id,
                     user: user.id
                   })
                   vote.save((err, saved) => {
@@ -253,7 +253,7 @@ module.exports = function () {
                 Task.findOne({project: project.id, index: taskIndex}).exec((err, task) => {
                   if (err) console.error(error)
                   if (task !== null) {
-                    Vote.findOne({taskId: task.id, userId: user.id, type: 'reputation'}).exec((err, vote) => {
+                    Vote.findOne({task: task.id, user: user.id, type: 'reputation'}).exec((err, vote) => {
                       if (err) console.error(error)
                       if (vote !== null) {
                         let changeIndex = _.findIndex(
@@ -324,7 +324,7 @@ module.exports = function () {
             Task.findOne({project: projectAddress, index: taskIndex}).exec((err, task) => {
               if (err) console.error(error)
               if (task !== null) {
-                Vote.findOne({taskId: task.id, userId: user.id, type: 'reputation'}).exec((err, vote) => {
+                Vote.findOne({task: task.id, user: user.id, type: 'reputation'}).exec((err, vote) => {
                   if (err) console.error(error)
                   if (vote !== null) {
                     vote.rescued = true

@@ -8,8 +8,8 @@ let voteSchema = mongoose.Schema({
   hash: String,
   type: String,
   pollID: Number,
-  taskId: mongoose.Schema.Types.ObjectId,
-  userId: mongoose.Schema.Types.ObjectId
+  task: mongoose.Schema.Types.ObjectId,
+  user: mongoose.Schema.Types.ObjectId
 })
 
 const Vote = mongoose.model('Vote', voteSchema)

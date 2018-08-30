@@ -39,8 +39,8 @@ const resolvers = {
   Task: {
     claimer: (task) => User.findById(task.claimer).then(user => user),
     project: (task) => Project.findById(task.projectId).then(project => project),
-    validations: (task) => Validation.find({taskId: task.id}).then(validations => validations),
-    votes: (task) => Vote.find({taskId: task.id}).then(votes => votes)
+    validations: (task) => Validation.find({task: task.id}).then(validations => validations),
+    votes: (task) => Vote.find({task: task.id}).then(votes => votes)
   },
   Token: {
     user: (token) => User.findById(token.userId).then(user => user)
