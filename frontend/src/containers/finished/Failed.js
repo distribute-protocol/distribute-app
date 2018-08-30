@@ -101,6 +101,9 @@ class Vote extends React.Component {
       <div>
         <Sidebar />
         <div style={{marginLeft: 200, marginBottom: 30}}>
+          <header className='App-header'>
+            <h3>Failed Projects</h3>
+          </header>
           <div style={{paddingLeft: '30px', paddingRight: '30px'}}>
             {projects}
           </div>

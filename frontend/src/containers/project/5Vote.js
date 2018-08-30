@@ -136,12 +136,6 @@ class VoteTasks extends React.Component {
                         salt={vote.salt}
                       />)
                   }
-                  {/*   <ButtonRescueVote
-                    user={this.props.user}
-                    address={this.props.address}
-                    i={vote.task.index}
-                    type='reputation'
-                    /> */}
                 </div>
               </div> : null
           })
@@ -194,18 +188,6 @@ class VoteTasks extends React.Component {
                   type='reputation'
                   input={this.state['repVal' + i]}
                 />
-                {/* <Button
-                  type='danger' onClick={() => this.revealTask(i, 'reputation', true)}> Reveal Vote (R)
-                </Button>
-                <Button
-                  type='danger' onClick={() => this.revealTask(i, 'reputation', false)}> Reveal Vote (RF)
-                </Button>
-                <ButtonRescueVote
-                user={this.props.user}
-                address={this.props.address}
-                i={i}
-                type='reputation'
-                /> */}
               </div>
             </div>
         }

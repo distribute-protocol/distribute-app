@@ -187,7 +187,6 @@ module.exports = function () {
             })
             taskStatus.validations.push(ValidationEvent.id)
             taskStatus.markModified('validations')
-            // console.log(taskStatus, ValidationEvent, ValidationEvent.id)
             taskStatus.save(err => {
               if (err) console.error(err)
             })
@@ -220,7 +219,6 @@ module.exports = function () {
     let tokenReturnAmount = parseInt(eventParamArr[2], 16)
     let validator = eventParamArr[3]
     validator = '0x' + validator.substr(-40)
-    // console.log(projectAddress, index, weiReward, tokenReturnAmount, validator)
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
@@ -243,7 +241,6 @@ module.exports = function () {
                     if (error) console.error(error)
                     if (validation) {
                       validation.rewarded = true
-                      // console.log('here 2', validation)
                       validation.save(err => {
                         if (err) console.error(err)
                       })
@@ -407,6 +404,7 @@ module.exports = function () {
   })
 
   tokenVoteRescuedFilter.watch(async (error, result) => {
+    console.log('goob')
     if (error) console.error(error)
     let txHash = result.transactionHash
     let projectAddress = result.topics[1]
@@ -416,23 +414,32 @@ module.exports = function () {
     // let pollId = parseInt(eventParamArr[1], 16)
     let account = eventParamArr[2]
     account = '0x' + account.substr(-40)
+    console.log(account)
     Network.findOne({}).exec((err, netStatus) => {
+      console.log('network goob')
       if (err) console.error(err)
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
         netStatus.processedTxs[txHash] = true
-        User.findOne({account}).exec((err, user) => {
+        User.findOne({account: account}).exec((err, user) => {
+          console.log('user gppb')
           if (err) console.error(error)
           if (user !== null) {
-            Task.findOne({project: projectAddress, index: taskIndex}).exec((err, task) => {
+            Project.findOne({address: projectAddress}).exec((err, project) => {
               if (err) console.error(error)
-              if (task !== null) {
-                Vote.findOne({taskId: task.id, userId: user.id, type: 'token'}).exec((err, vote) => {
+              if (project !== null) {
+                Task.findOne({project: project.id, index: taskIndex}).exec((err, task) => {
                   if (err) console.error(error)
-                  if (vote !== null) {
-                    vote.rescued = true
-                    vote.save((err, saved) => {
-                      if (err) console.error(err)
-                      console.log('rep vote rescued')
+                  if (task !== null) {
+                    console.log(task, user)
+                    Vote.findOne({task: task.id, user: user.id, type: 'tokens'}).exec((err, vote) => {
+                      if (err) console.error(error)
+                      if (vote !== null) {
+                        vote.rescued = true
+                        vote.save((err, saved) => {
+                          if (err) console.error(err)
+                          console.log('rep vote rescued')
+                        })
+                      }
                     })
                   }
                 })

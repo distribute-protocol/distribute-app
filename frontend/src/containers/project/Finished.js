@@ -39,85 +39,46 @@ class FinishedProject extends React.Component {
       tasks = tasks.map((task, i) => {
         votes = _.filter(this.props.votes, (vote) => { return vote.task.id === task.id ? vote : null })
         let rewardVal, rewardWork, rescueVote
-        if (tasks[i].validationRewardClaimable) {
-          if (tasks[i].workerRewardClaimable) {
-            // validators and workers can claim
-            // check to see if user can claim, then once they claim turn off the button
-            // pull validations from task, filtered by current metamask address
-            rewardVal =
-              <div>
-                <ButtonRewardValidator
-                  type='Yes'
-                  user={this.props.user}
-                  address={this.props.address}
-                  i={i}
-                  state={this.props.state}
-                />
-              </div>
-            rewardWork =
-              <div>
-                <ButtonRewardTask
-                  user={this.props.user}
-                  address={this.props.address}
-                  tasks={tasks}
-                  i={i}
-                  state={this.props.state}
-                />
-              </div>
-            rescueVote = <Icon type='close' />
-          } else {
-            // validators can claim, task fails
-            rewardVal = <Icon type='close' />
-            rewardWork = <Icon type='close' />
-            rescueVote = <Icon type='close' />
-          }
-        } else {
-          // vote needs to happen
-          rewardVal = <Icon type='clock-circle-o' />
-          rewardWork = <Icon type='clock-circle-o' />
-          votes = votes.map((vote, i) => {
-            return !vote.revealed
-              ? <div key={i}>
-                <div>
-                  <div>{`Poll ID: ${vote.pollID}`}</div>
-                  <div>{`Amount: ${vote.amount}`}</div>
-                  <div>{`Salt: ${vote.salt}`}</div>
-                  <div>{`Vote: ${parseInt(vote.vote, 10) ? 'Approve' : 'Deny'}`}</div>
-                </div>
-              </div> : null
-          })
-          rescueVote =
+        task.validationRewardClaimable
+          ? rewardVal =
             <div>
-              <div>
-                <input
-                  name={'tokVal' + i}
-                  placeholder='tokens'
-                  onChange={(e) => this.onChange(e)}
-                  value={this.state['tokVal' + i] || ''}
-                />
-              </div>
-              <div>
-                <input
-                  name={'repVal' + i}
-                  placeholder='reputation'
-                  onChange={(e) => this.onChange(e)}
-                  value={this.state['repVal' + i] || ''}
-                />
-                {/* <Button
-                  type='danger' onClick={() => this.revealTask(i, 'reputation', true)}> Reveal Vote (R)
-                </Button>
-                <Button
-                  type='danger' onClick={() => this.revealTask(i, 'reputation', false)}> Reveal Vote (RF)
-                </Button>
-                <ButtonRescueVote
+              <ButtonRewardValidator
+                type='Yes'
                 user={this.props.user}
                 address={this.props.address}
                 i={i}
-                type='reputation'
-                /> */}
-              </div>
+                state={this.props.state}
+              />
             </div>
-        }
+          : rewardVal =
+            <Icon type='close' />
+
+        task.workerRewardClaimable
+          ? rewardWork =
+            <div>
+              <ButtonRewardTask
+                user={this.props.user}
+                address={this.props.address}
+                tasks={tasks}
+                i={i}
+                state={this.props.state}
+              />
+            </div>
+          : rewardWork =
+            <Icon type='close' />
+
+        votes.length !== 0 && !votes.rescued
+          ? rescueVote =
+            <div>
+              <ButtonRescueVote
+                user={this.props.user}
+                address={this.props.address}
+                i={i}
+                type={votes[0].type}
+              />
+            </div>
+          : rescueVote =
+            <Icon type='close' />
 
         return {
           key: i,
