@@ -8,7 +8,6 @@ import ButtonRewardValidator from '../../contractComponents/stage5/RewardValidat
 import ButtonRewardTask from '../../contractComponents/stage5/RewardTask'
 import ButtonCommitVote from '../../contractComponents/stage5/CommitVote'
 import ButtonRevealVote from '../../contractComponents/stage5/RevealVote'
-import ButtonRescueVote from '../../contractComponents/stage5/RescueVote'
 import moment from 'moment'
 import * as _ from 'lodash'
 
@@ -28,7 +27,7 @@ class VoteTasks extends React.Component {
   async getUserValidations () {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
-        this.props.getUserValidations(this.props.address, accounts[0])
+        this.props.getUserValidations(this.props.address, accounts[0], 5)
       }
     })
   }
@@ -249,7 +248,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getUserValidations: (address, user) => dispatch(getUserValidations(address, user))
+    getUserValidations: (address, user, state) => dispatch(getUserValidations(address, user, state))
   }
 }
 

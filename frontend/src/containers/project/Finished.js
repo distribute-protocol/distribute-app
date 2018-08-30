@@ -1,7 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import FinishedComponent from '../../components/project/Finished'
-import { web3 } from '../../utilities/blockchain'
+import { getUserValidations } from '../../actions/taskActions'
+import ButtonRewardValidator from '../../contractComponents/stage5/RewardValidator'
+import ButtonRewardTask from '../../contractComponents/stage5/RewardTask'
+import ButtonRescueVote from '../../contractComponents/stage5/RescueVote'
+import { web3, eth } from '../../utilities/blockchain'
 import { Icon } from 'antd'
 import moment from 'moment'
 import * as _ from 'lodash'
@@ -13,68 +17,43 @@ class FinishedProject extends React.Component {
       tasks: []
     }
   }
+
   componentWillMount () {
-    // this.getProjectStatus()
+    this.getUserValidations()
   }
 
-  // async getProjectStatus () {
-  //   let states = ['none', 'proposed', 'staked', 'active', 'validation', 'voting', 'complete', 'failed', 'expired']
-  //   let accounts
-  //   let p = P.at(this.props.address)
-  //   eth.getAccounts(async (err, result) => {
-  //     if (!err) {
-  //       accounts = result
-  //       if (accounts.length) {
-  //         let weiCost = (await p.weiCost()).toNumber()
-  //         let reputationCost = (await p.reputationCost()).toNumber()
-  //         let ipfsHash = web3.toAscii(await p.ipfsHash())
-  //         let nextDeadline = (await p.nextDeadline()) * 1000
-  //         let projectState = (await p.state())
-  //         let projObj = {
-  //           weiCost,
-  //           reputationCost,
-  //           ipfsHash,
-  //           nextDeadline,
-  //           state: states[projectState],
-  //           project: p
-  //         }
-  //         ipfs.object.get(ipfsHash, (err, node) => {
-  //           if (err) {
-  //             throw err
-  //           }
-  //           let dataString = new TextDecoder('utf-8').decode(node.toJSON().data)
-  //           projObj = Object.assign({}, projObj, JSON.parse(dataString))
-  //           this.setState(projObj)
-  //         })
-  //       }
-  //     }
-  //   })
-  // }
+  async getUserValidations () {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        this.props.getUserValidations(this.props.address, accounts[0], this.props.state)
+      }
+    })
+  }
 
   render () {
+    console.log(this.props.votes)
+    console.log(this.props.tasks)
     let tasks, votes
     if (typeof this.props.tasks !== 'undefined') {
       tasks = this.props.tasks.slice(0).sort(function (a, b) {
         return a.index - b.index
       })
-      // console.log(this.props.votes, 'votes')
-      // console.log(tasks, 'tasks')
       tasks = tasks.map((task, i) => {
         votes = _.filter(this.props.votes, (vote) => { return vote.task.id === task.id ? vote : null })
-        let rewardVal, rewardWork, needsVote
+        let rewardVal, rewardWork, rescueVote
         if (tasks[i].validationRewardClaimable) {
           if (tasks[i].workerRewardClaimable) {
             // validators and workers can claim
             // check to see if user can claim, then once they claim turn off the button
             // pull validations from task, filtered by current metamask address
-            rewardVal = []
-            rewardWork = []
-            needsVote = <Icon type='close' />
+            rewardVal = <Icon type='close' />
+            rewardWork = <Icon type='close' />
+            rescueVote = <Icon type='close' />
           } else {
             // validators can claim, task fails
-            rewardVal = []
+            rewardVal = <Icon type='close' />
             rewardWork = <Icon type='close' />
-            needsVote = <Icon type='close' />
+            rescueVote = <Icon type='close' />
           }
         } else {
           // vote needs to happen
@@ -91,7 +70,7 @@ class FinishedProject extends React.Component {
                 </div>
               </div> : null
           })
-          needsVote =
+          rescueVote =
             <div>
               <div>
                 <input
@@ -130,7 +109,7 @@ class FinishedProject extends React.Component {
           ethReward: `${web3.fromWei(this.props.project.weiCost) * (task.weighting / 100)} ETH`,
           rewardValidator: rewardVal,
           rewardWorker: rewardWork,
-          taskNeedsVote: needsVote,
+          rescueVote: rescueVote,
           votes: votes
         }
       })
@@ -149,13 +128,13 @@ class FinishedProject extends React.Component {
         reputationCost={this.props.project.reputationCost}
         date={moment(this.props.project.nextDeadline * 1000)}
         user={this.props.user}
+        tasks={tasks}
       />
     )
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
-  console.log(ownProps)
   return {
     project: state.projects[ownProps.state][ownProps.address],
     tasks: state.projects[ownProps.state][ownProps.address].tasks,
@@ -163,10 +142,10 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     getUserValidations: (address, user) => dispatch(getUserValidations(address, user))
-//   }
-// }
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getUserValidations: (address, user, state) => dispatch(getUserValidations(address, user, state))
+  }
+}
 
-export default connect(mapStateToProps)(FinishedProject)
+export default connect(mapStateToProps, mapDispatchToProps)(FinishedProject)

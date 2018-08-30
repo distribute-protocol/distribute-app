@@ -4,6 +4,7 @@ import Project from '../project/Finished'
 import { connect } from 'react-redux'
 import { eth } from '../../utilities/blockchain'
 import { getProjects } from '../../actions/projectActions'
+import { getUserVotes } from '../../actions/userActions'
 
 import gql from 'graphql-tag'
 
@@ -17,23 +18,23 @@ let projQuery = gql`
         lng
       },
       name,
-      # tasks {
-      #   id,
-      #   address,
-      #   claimer {
-      #     account
-      #   },
-      #   claimed,
-      #   claimedAt,
-      #   complete,
-      #   description,
-      #   index,
-      #   hash,
-      #   weighting,
-      #   validationRewardClaimable,
-      #   workerRewardClaimable,
-      #   workerRewarded
-      # }
+      tasks {
+        id,
+        address,
+        claimer {
+          account
+        },
+        claimed,
+        claimedAt,
+        complete,
+        description,
+        index,
+        hash,
+        weighting,
+        validationRewardClaimable,
+        workerRewardClaimable,
+        workerRewarded
+      }
       nextDeadline,
       photo,
       reputationBalance,
@@ -55,6 +56,7 @@ class Vote extends React.Component {
 
   componentWillMount () {
     this.getProjects()
+    this.getVotes()
   }
 
   async getProjects () {
@@ -63,6 +65,18 @@ class Vote extends React.Component {
         if (result.length) {
           this.props.getProjects()
           this.setState({user: result[0]})
+        } else {
+          console.log('Please Unlock MetaMask')
+        }
+      }
+    })
+  }
+
+  getVotes () {
+    eth.getAccounts(async (err, result) => {
+      if (!err) {
+        if (result.length) {
+          this.props.getUserVotes(result[0])
         } else {
           console.log('Please Unlock MetaMask')
         }
@@ -104,7 +118,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getProjects: () => dispatch(getProjects(7, projQuery))
+    getProjects: () => dispatch(getProjects(7, projQuery)),
+    getUserVotes: (account) => dispatch(getUserVotes(account))
   }
 }
 

@@ -17,23 +17,23 @@ let projQuery = gql`
         lng
       },
       name,
-      # tasks {
-      #   id,
-      #   address,
-      #   claimer {
-      #     account
-      #   },
-      #   claimed,
-      #   claimedAt,
-      #   complete,
-      #   description,
-      #   index,
-      #   hash,
-      #   weighting,
-      #   validationRewardClaimable,
-      #   workerRewardClaimable,
-      #   workerRewarded
-      # }
+      tasks {
+        id,
+        address,
+        claimer {
+          account
+        },
+        claimed,
+        claimedAt,
+        complete,
+        description,
+        index,
+        hash,
+        weighting,
+        validationRewardClaimable,
+        workerRewardClaimable,
+        workerRewarded
+      }
       nextDeadline,
       photo,
       reputationBalance,

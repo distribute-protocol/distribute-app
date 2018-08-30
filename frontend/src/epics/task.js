@@ -156,11 +156,12 @@ const getValidationsEpic = action$ => {
 }
 
 const getUserValidationsEpic = action$ => {
-  let address, user
+  let address, user, state
   return action$.ofType(GET_USER_VALIDATIONS).pipe(
     mergeMap(action => {
       address = action.projectAddress
       user = action.user
+      state = action.state
       let query = gql`
       query($address: String!, $user: String!) {
         getUserValidationsinProject(address: $address, user: $user) {
@@ -179,7 +180,7 @@ const getUserValidationsEpic = action$ => {
       return client.query({query: query, variables: {address: address, user: user}}
       )
     }),
-    map(result => userValidationsReceived(address, user, result.data.getUserValidationsinProject))
+    map(result => userValidationsReceived(address, user, result.data.getUserValidationsinProject, state))
   )
 }
 

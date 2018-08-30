@@ -109,20 +109,22 @@ export function validationsReceived (projectAddress, index, result) {
   }
 }
 
-export function getUserValidations (projectAddress, user) {
+export function getUserValidations (projectAddress, user, state) {
   return {
     type: GET_USER_VALIDATIONS,
     projectAddress,
-    user
+    user,
+    state
   }
 }
 
-export function userValidationsReceived (projectAddress, user, result) {
+export function userValidationsReceived (projectAddress, user, result, state) {
   return {
     type: USER_VALIDATIONS_RECEIVED,
     projectAddress,
     user,
-    result
+    result,
+    state
   }
 }
 
@@ -191,7 +193,6 @@ export function revealVote (collateralType, projectAddress, taskIndex, vote, sal
 }
 
 export function rescueVote (collateralType, projectAddress, taskIndex, txObj) {
-  console.log('vote rescued')
   return {
     type: RESCUE_VOTE,
     collateralType,
