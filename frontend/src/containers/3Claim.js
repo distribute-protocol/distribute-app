@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Button } from 'antd'
 import Sidebar from '../components/shared/Sidebar'
 import { eth } from '../utilities/blockchain'
+import { getEthPriceNow } from 'get-eth-price'
 import Project from './project/3Claim'
 import fastforward from '../utilities/fastforward'
 import { getProjects } from '../actions/projectActions'
@@ -62,6 +63,7 @@ class Claim extends React.Component {
 
   componentWillMount () {
     this.getProjects()
+    this.setEthPrice()
   }
 
   async getProjects () {
@@ -74,6 +76,14 @@ class Claim extends React.Component {
           console.log('Please Unlock MetaMask')
         }
       }
+    })
+  }
+
+  async setEthPrice () {
+    let ethPrice = await getEthPriceNow()
+    ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
+    this.setState({
+      ethPrice
     })
   }
 
@@ -91,6 +101,7 @@ class Claim extends React.Component {
           address={address}
           user={this.state.user}
           project={this.props.projects[address]}
+          ethPrice={this.state.ethPrice}
         />
       })
       : []

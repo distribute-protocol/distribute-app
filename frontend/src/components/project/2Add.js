@@ -18,6 +18,10 @@ const columns = [{
   dataIndex: 'ethReward',
   key: 'ethReward'
 }, {
+  title: 'USD Reward',
+  dataIndex: 'usdReward',
+  key: 'usdReward'
+}, {
   title: '',
   dataIndex: 'deleteTask',
   key: 'deleteTask'

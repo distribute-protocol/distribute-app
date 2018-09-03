@@ -17,6 +17,10 @@ const columns = [{
   dataIndex: 'repClaim',
   key: 'repClaim'
 }, {
+  title: 'USD Reward',
+  dataIndex: 'usdReward',
+  key: 'usdReward'
+}, {
   title: '',
   dataIndex: 'buttons',
   key: 'buttons'

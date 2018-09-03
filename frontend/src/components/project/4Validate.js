@@ -12,6 +12,10 @@ const columns = [{
   dataIndex: 'ethReward',
   key: 'ethReward'
 }, {
+  title: 'USD Reward',
+  dataIndex: 'usdReward',
+  key: 'usdReward'
+}, {
   title: '',
   dataIndex: 'input',
   key: 'input'

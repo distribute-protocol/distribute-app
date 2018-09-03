@@ -1,3 +1,5 @@
+/* global alert */
+
 import React from 'react'
 import { connect } from 'react-redux'
 import { getEthPriceNow } from 'get-eth-price'

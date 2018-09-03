@@ -41,10 +41,12 @@ class ValidateTasks extends React.Component {
         return a.index - b.index
       })
       tasks = tasks.map((task, i) => {
+        let ethReward = web3.fromWei(Math.ceil(this.props.project.weiCost / 1.05) * (task.weighting / 100), 'ether')
         return {
           key: i,
           description: task.description,
-          ethReward: `${web3.fromWei(this.props.project.weiCost) * (task.weighting / 100)} ETH`,
+          ethReward: `${ethReward} ETH`,
+          usdReward: `$${parseFloat(this.props.ethPrice * ethReward).toFixed(2)}`,
           input: returnInput(i)
         }
       })
@@ -59,7 +61,7 @@ class ValidateTasks extends React.Component {
         photo={this.props.project.photo}
         summary={this.props.project.summary}
         location={this.props.project.location}
-        cost={web3.fromWei(this.props.project.cost, 'ether')}
+        cost={web3.fromWei(Math.ceil(this.props.project.weiCost / 1.05), 'ether')}
         reputationCost={this.props.project.reputationCost}
         date={moment(this.props.project.nextDeadline)}
         tasks={tasks}
