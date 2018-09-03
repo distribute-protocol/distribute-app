@@ -174,7 +174,7 @@ module.exports = function () {
     let projectAddress = '0x' + eventParamArr[0].substr(-40)
     let taskHash = '0x' + eventParamArr[1]
     let submitter = '0x' + eventParamArr[2].substr(-40)
-    let weighting = parseInt(eventParamArr[3], 16)
+    let weighting = parseInt(eventParamArr[3], 16) / (10 ** 15)
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {

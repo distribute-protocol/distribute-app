@@ -134,6 +134,7 @@ const submitHashedTaskList = action$ => {
   let projectAddress
   let taskHash
   let txReceipt
+  let weighting
   return action$.ofType(SUBMIT_HASHED_TASK_LIST).pipe(
     mergeMap(action => {
       tasks = JSON.stringify(action.tasks)
@@ -144,6 +145,8 @@ const submitHashedTaskList = action$ => {
     }),
     mergeMap(result => {
       txReceipt = result
+      weighting = txReceipt.logs[1].args.weighting.toNumber() / (10 ** 15)
+      console.log(weighting)
       let mutation = gql`
         mutation addPrelimTaskList($address: String!, $taskHash: String!, $submitter: String!, $weighting: String!) {
           addPrelimTaskList(address: $address, taskHash: $taskHash, submitter: $submitter, weighting: $weighting) {
@@ -158,12 +161,12 @@ const submitHashedTaskList = action$ => {
           taskHash: taskHash,
           submitter: txObj.from,
           content: tasks,
-          weighting: txReceipt.logs[1].args.weighting.toNumber()
+          weighting: weighting
         }
       })
     }),
     map(result =>
-      hashedTaskListSubmitted(tasks, txObj.from, projectAddress, txReceipt.logs[1].args))
+      hashedTaskListSubmitted(tasks, txObj.from, projectAddress, weighting))
   )
 }
 
