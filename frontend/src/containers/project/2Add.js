@@ -76,11 +76,13 @@ class AddProject extends React.Component {
     let tasks, verifiedSubmissions
     if (this.props.taskList !== null && this.props.taskList.length !== 0) {
       tasks = JSON.parse(this.props.taskList).map((task, i) => {
+        let ethReward = web3.fromWei(Math.ceil(this.props.project.weiCost / 1.05) * (task.percentage / 100), 'ether')
         return {
           key: i,
           description: task.description,
-          percentage: task.percentage,
-          ethReward: web3.fromWei(this.props.project.weiCost * (task.percentage / 100), 'ether'),
+          percentage: `${task.percentage}%`,
+          ethReward: `${ethReward} ETH`,
+          usdReward: `$${parseFloat(this.props.ethPrice * ethReward).toFixed(2)}`,
           deleteTask: <Button type='danger' onClick={() => this.deleteElement(i)} >Delete</Button>
         }
       })
@@ -124,7 +126,7 @@ class AddProject extends React.Component {
         photo={this.props.project.photo}
         summary={this.props.project.summary}
         location={this.props.project.location}
-        cost={web3.fromWei(this.props.project.weiCost, 'ether')}
+        cost={web3.fromWei(Math.ceil(this.props.project.weiCost / 1.05), 'ether')}
         reputationCost={this.props.project.reputationCost}
         date={moment(this.props.project.nextDeadline)}
         tasks={tasks}

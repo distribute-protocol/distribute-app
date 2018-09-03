@@ -20,13 +20,14 @@ class ClaimProject extends React.Component {
     let tasks
     if (this.props.project.taskList !== null && typeof this.props.project.tasks !== 'undefined') {
       let reputationCost = this.props.project.reputationCost
-      let weiCost = this.props.project.weiCost
+      let weiCost = Math.ceil(this.props.project.weiCost / 1.05)
       tasks = JSON.parse(this.props.project.taskList).map((task, i) => {
         let weiReward = Math.floor(weiCost * task.percentage / 100)
         return {
           key: i,
           description: task.description,
           ethReward: `${web3.fromWei(weiReward, 'ether')} ETH`,
+          usdReward: `$${parseFloat(this.props.ethPrice * web3.fromWei(weiReward, 'ether')).toFixed(2)}`,
           repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' && typeof weiReward !== 'undefined' ? `${Math.floor(reputationCost * weiReward / weiCost)} rep` : '',
           buttons: <ButtonGroup>
             <ButtonClaimTask
@@ -54,7 +55,7 @@ class ClaimProject extends React.Component {
         photo={this.props.project.photo}
         summary={this.props.project.summary}
         location={this.props.project.location}
-        cost={web3.fromWei(this.props.project.weiCost, 'ether')}
+        cost={web3.fromWei(Math.ceil(this.props.project.weiCost / 1.05), 'ether')}
         reputationCost={this.props.project.reputationCost}
         date={moment(this.props.project.nextDeadline)}
         tasks={tasks}

@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import Sidebar from '../components/shared/Sidebar'
 import { Button } from 'antd'
 import { eth } from '../utilities/blockchain'
+import { getEthPriceNow } from 'get-eth-price'
 import Project from './project/2Add'
 import fastforward from '../utilities/fastforward'
 import { getProjects, setTaskList, getVerifiedTaskLists } from '../actions/projectActions'
@@ -44,6 +45,7 @@ class Add extends React.Component {
 
   componentWillMount () {
     this.getProjects()
+    this.setEthPrice()
   }
 
   async getProjects () {
@@ -56,6 +58,14 @@ class Add extends React.Component {
           console.log('Please Unlock MetaMask')
         }
       }
+    })
+  }
+
+  async setEthPrice () {
+    let ethPrice = await getEthPriceNow()
+    ethPrice = ethPrice[Object.keys(ethPrice)].ETH.USD
+    this.setState({
+      ethPrice
     })
   }
 
@@ -84,6 +94,7 @@ class Add extends React.Component {
           setTaskList={(taskDetails, address) => this.setTaskList(taskDetails, address)}
           getVerifiedTaskLists={(address) => this.getVerifiedTaskLists(address)}
           user={this.state.user}
+          ethPrice={this.state.ethPrice}
         />
       })
       : []
