@@ -16,7 +16,6 @@ export default ({
   reputationBalance,
   ethToSend,
   ethToRefund,
-  getNetworkStatus,
   input,
   user,
   tokensToBuy,
@@ -56,14 +55,6 @@ export default ({
             <h5>{reputationBalance}</h5>
           </div>
         </div>
-        {/* <Button style={{
-          marginLeft: 20,
-          marginTop: 10,
-          width: 160,
-          backgroundColor: '#115D8C',
-          color: '#FFF'}} icon='reload' color='info' onClick={getNetworkStatus}>
-          Refresh Balances}
-        </Button> */}
         <div style={{display: 'flex', flexDirection: 'row', marginTop: 30}}>
           <div style={{backgroundColor: '#C7D9D9', padding: 30, width: 250}}>
             <div>

@@ -34,7 +34,6 @@ module.exports = function () {
           netStatus.markModified('processedTxs')
           netStatus.save((err, doc) => {
             if (err) throw Error
-            // console.log(doc)
             console.log('network updated w/user registered')
           })
           User.findOne({account}).exec((err, userStatus) => {

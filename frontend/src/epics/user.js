@@ -17,7 +17,8 @@ const getUserEpic = action$ => {
       let query = gql`
         query ($account: String!) {
           user(account: $account) {
-            id
+            id,
+            reputationBalance
           }
         }
       `
@@ -25,7 +26,7 @@ const getUserEpic = action$ => {
     }),
     flatMap(result =>
       Observable.if(
-        () => !result.data.user,
+        () => !result.data.user || result.data.user.reputationBalance === 0,
         Observable.of(registerUser(credentials, web3.eth.accounts[0])),
         Observable.concat(
           Observable.of(loggedInUser(result)),

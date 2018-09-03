@@ -23,7 +23,6 @@ export default function projectReducer (state = initialState, action) {
       let projects = Object.assign({}, state[2], {[action.projectAddress]: project})
       return Object.assign({}, state, {2: projects})
     case HASHED_TASK_LIST_SUBMITTED:
-    console.log(action)
       let oldSubmissions
       if (typeof state[2][action.projectAddress].submittedTasks === 'undefined') {
         oldSubmissions = []

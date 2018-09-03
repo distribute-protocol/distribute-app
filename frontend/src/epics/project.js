@@ -146,7 +146,6 @@ const submitHashedTaskList = action$ => {
     mergeMap(result => {
       txReceipt = result
       weighting = txReceipt.logs[1].args.weighting.toNumber() / (10 ** 15)
-      console.log(weighting)
       let mutation = gql`
         mutation addPrelimTaskList($address: String!, $taskHash: String!, $submitter: String!, $weighting: String!) {
           addPrelimTaskList(address: $address, taskHash: $taskHash, submitter: $submitter, weighting: $weighting) {

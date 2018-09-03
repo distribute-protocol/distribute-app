@@ -8,7 +8,7 @@ const ButtonMintTokens = (props) => {
   return (<Button
     icon='plus-circle-o'
     color='primary'
-    onClick={() => props.mintTokens(props.tokensToBuy, {value: web3.toWei(Math.ceil(props.ethToSend * 100000) / 100000, 'ether'), from: props.user})}>
+    onClick={() => props.mintTokens(props.tokensToBuy, {value: web3.toWei(Math.ceil(props.ethToSend), 'ether'), from: props.user})}>
       Buy
   </Button>)
 }
