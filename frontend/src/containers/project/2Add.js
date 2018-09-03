@@ -109,7 +109,6 @@ class AddProject extends React.Component {
 
     if (typeof this.props.submissions !== 'undefined') {
       verifiedSubmissions = this.props.submissions.map((submission, i) => {
-        console.log(submission)
         return {
           key: i,
           submitter: submission.submitter,

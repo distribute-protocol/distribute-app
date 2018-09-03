@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { getEthPriceNow } from 'get-eth-price'
 import { eth, web3, dt } from '../utilities/blockchain'
-import * as _ from 'lodash'
 import StatusComponent from '../components/Status'
 import { getNetworkStatus } from '../actions/networkActions'
 import { getUserStatus } from '../actions/userActions'
@@ -18,9 +17,21 @@ class Status extends React.Component {
   }
 
   componentWillMount () {
-    if (_.isEmpty(this.props.user)) {
-    } else {}
-    this.getNetworkStatus()
+    if (this.props.user.registering === true) {
+      eth.getAccounts(async (err, accounts) => {
+        if (!err) {
+          if (accounts.length) {
+            // get user token balance
+            this.setState({user: accounts[0]})
+          } else {
+            alert('Please Unlock MetaMask')
+          }
+        }
+      })
+      this.getPriceData()
+    } else {
+      this.getNetworkStatus()
+    }
   }
 
   componentWillReceiveProps () {
@@ -103,7 +114,6 @@ class Status extends React.Component {
           : Math.round(this.state.ethToRefund * 100000) / 100000}
         tokensToBuy={this.state.tokensToBuy}
         user={this.state.user}
-        getNetworkStatus={this.getNetworkStatus}
         input={
           <input ref={(input) => (this.tokensToBuy = input)}
             placeholder='Number of Tokens'

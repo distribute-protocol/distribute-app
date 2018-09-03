@@ -1,9 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import uport from '../utilities/uport'
-
 import { Button } from 'antd'
-
 import { loginUser } from '../actions/userActions'
 import { getNetworkStatus } from '../actions/networkActions'
 
@@ -44,15 +42,10 @@ class Landing extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-  }
-}
-
 const mapDispatchToProps = (dispatch) => {
   return {
     loginUser: (credentials) => dispatch(loginUser(credentials)),
     getNetworkStatus: () => dispatch(getNetworkStatus())
   }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Landing)
+export default connect(null, mapDispatchToProps)(Landing)

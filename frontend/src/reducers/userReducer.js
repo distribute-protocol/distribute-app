@@ -3,13 +3,14 @@ import { TOKENS_MINTED, TOKENS_SOLD } from '../constants/TokenActionTypes'
 const initialState = {
   userTokens: 0,
   userReputation: 0,
+  registering: false,
   votes: []
 }
 
 export default function userReducer (state = initialState, action) {
   switch (action.type) {
     case REGISTERED_USER:
-      return Object.assign({}, state, {userReputation: 10000})
+      return Object.assign({}, state, {userReputation: 10000, registering: true})
     case LOGGED_IN_USER:
       return Object.assign({}, state, {user: action.userObj})
     case LOGOUT_USER:
@@ -18,10 +19,7 @@ export default function userReducer (state = initialState, action) {
       if (!action.responseDetails.data.user) {
         return state
       } else {
-        let userTokens = action.responseDetails.data.user.tokenBalance
-        let userReputation = action.responseDetails.data.user.reputationBalance
-        // console.log(userReputation, 'hey')
-        return Object.assign({}, state, {userTokens: userTokens, userReputation: userReputation})
+        return Object.assign({}, state, {userTokens: action.responseDetails.data.user.tokenBalance, userReputation: action.responseDetails.data.user.reputationBalance})
       }
     case TOKENS_MINTED:
       return Object.assign({}, state, {userTokens: state.userTokens + action.receipt.amountMinted.toNumber()})

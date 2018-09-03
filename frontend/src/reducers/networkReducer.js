@@ -15,13 +15,10 @@ export default function networkReducer (state = initialState, action) {
       if (!action.responseDetails.data.network) {
         return state
       } else {
-        let totalTokens = action.responseDetails.data.network.totalTokens
-        let totalReputation = action.responseDetails.data.network.totalReputation
-        return Object.assign({}, state, {totalTokens: totalTokens, totalReputation: totalReputation})
+        return Object.assign({}, state, {totalTokens: action.responseDetails.data.network.totalTokens, totalReputation: action.responseDetails.data.network.totalReputation})
       }
     case REGISTERED_USER:
-      let newState = Object.assign({}, state, {totalReputation: state.totalReputation + 10000})
-      return newState
+      return Object.assign({}, state, {totalReputation: state.totalReputation + 10000})
     case TOKENS_MINTED:
       return Object.assign({}, state, {totalTokens: state.totalTokens + action.receipt.amountMinted.toNumber()})
     case TOKENS_SOLD:
