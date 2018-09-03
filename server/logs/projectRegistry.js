@@ -17,14 +17,15 @@ module.exports = function () {
     fromBlock: 0,
     toBlock: 'latest',
     address: PR.projectRegistryAddress,
-    topics: [web3.sha3('LogProjectCreated(address)')]
+    topics: [web3.sha3('LogProjectCreated(address,uint256)')]
   })
-
   let projectAddress
   let txHash
   projectCreatedFilter.watch(async (error, result) => {
     if (error) console.error(error)
     txHash = result.transactionHash
+    let eventParamArr = result.data.slice(2).match(/.{1,64}/g)
+    let proposerCost = parseInt(eventParamArr[0], 16)
     projectAddress = result.topics[1]
     projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
     const projectDetailsFilter = web3.eth.filter({
@@ -36,7 +37,7 @@ module.exports = function () {
     projectDetailsFilter.watch(async (error, result) => {
       if (error) console.error(error)
       txHash = result.transactionHash
-      let eventParamArr = result.data.slice(2).match(/.{1,64}/g)
+      eventParamArr = result.data.slice(2).match(/.{1,64}/g)
       let weiCost = parseInt(eventParamArr[0], 16)
       let reputationCost = parseInt(eventParamArr[1], 16)
       let state = parseInt(eventParamArr[2], 16)
@@ -63,6 +64,17 @@ module.exports = function () {
             netStatus.markModified('processedTxs')
             netStatus.save((err, returned) => {
               if (err) throw Error
+            })
+            User.findOne({account: proposer}).exec((error, user) => {
+              if (error) console.error(err)
+              if (user !== null) {
+                proposerType === 1
+                  ? user.tokenBalance -= proposerCost
+                  : user.reputationBalance -= proposerCost
+                user.save((err, returned) => {
+                  if (err) throw Error
+                })
+              }
             })
             Project.findOne({address: projectAddress}).exec((error, doc) => {
               if (error) console.error(error)
@@ -116,7 +128,7 @@ module.exports = function () {
   })
   projectFullyStakedFilter.watch(async (err, result) => {
     if (err) console.error(err)
-    let txHash = result.transactionHash
+    // let txHash = result.transactionHash
     let eventParams = result.data
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
     let projectAddress = eventParamArr[0]
@@ -163,7 +175,6 @@ module.exports = function () {
     let taskHash = '0x' + eventParamArr[1]
     let submitter = '0x' + eventParamArr[2].substr(-40)
     let weighting = parseInt(eventParamArr[3], 16)
-    console.log(projectAddress, taskHash, submitter, weighting, 'hi')
     Network.findOne({}).exec((err, netStatus) => {
       if (err) console.error(err)
       if (typeof netStatus.processedTxs[txHash] === 'undefined') {
