@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server-express')
+const { gql } = require('apollo-server-express')
 
 // The GraphQL schema in string form
 // change taskList to currentTaskList
@@ -36,14 +36,13 @@ const typeDefs = gql`
     id: ID
     ipfsHash: String
     listSubmitted: Boolean
-    location: [Float]
+    location: Location
     name: String
     nextDeadline: String
     passThreshold: Int
     photo: String
     proposer: User
     proposerType: Int
-    proposerRewarded: Boolean
     reputationBalance: Int
     reputationCost: Int
     stakedStatePeriod: Int
@@ -71,6 +70,11 @@ const typeDefs = gql`
     submitter: String
     weighting: String
     content: String
+  }
+
+  type Location{
+    lat: Float
+    lng: Float
   }
 
   type Reputation {
@@ -159,7 +163,6 @@ const typeDefs = gql`
     id: ID
     amount: Int
     pollID: Int
-    project: String
     revealed: Boolean
     rescued: Boolean
     salt: String
@@ -220,10 +223,14 @@ const typeDefs = gql`
   type Mutation {
     addUser(input: CredentialInput, account: String): User
     addTaskList(input: String, address: String): Project
-    addPrelimTaskList(address: String, taskHash: String, submitter: String): Project
+    addPrelimTaskList(address: String, taskHash: String, submitter: String, weighting: String): Project
     addVote(type: String, projectAddress: String, taskIndex: Int, amount: Int, vote: String, salt: String, pollID: Int, voter: String): VoteRecord
   }
 `
 // Put together a schema
+// const schema = makeExecutableSchema({
+//   typeDefs,
+//   resolvers
+// })
 
 module.exports = typeDefs
