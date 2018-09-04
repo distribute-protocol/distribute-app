@@ -6,6 +6,8 @@ import {
   UNSTAKE_PROJECT,
   PROJECT_UNSTAKED,
   CHECK_STAKED_STATUS,
+  REWARD_PROPOSER,
+  PROPOSER_REWARDED,
   CHECK_ACTIVE_STATUS,
   SET_TASK_LIST,
   SUBMIT_HASHED_TASK_LIST,
@@ -108,6 +110,19 @@ export function stakedStatusChecked (receipt) {
     type: STAKED_STATUS_CHECKED,
     receipt
   }
+}
+
+export function rewardProposer (projectAddress, txObj) {
+  return {
+    type: REWARD_PROPOSER,
+    projectAddress,
+    txObj
+  }
+}
+
+export function proposerRewarded (receipt) {
+  type: PROPOSER_REWARDED,
+  receipt
 }
 
 export function checkActiveStatus (projectAddress, txObj) {
