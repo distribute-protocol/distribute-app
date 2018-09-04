@@ -3,6 +3,7 @@ import { Table } from 'antd'
 import ProjectHeader from '../shared/ProjectHeader'
 import ButtonSubmitTaskList from '../../contractComponents/stage2/SubmitTaskList'
 import ButtonCheckActive from '../../contractComponents/stage2/CheckActive'
+import ButtonRewardProposer from '../../contractComponents/stage2/RewardProposer'
 import DraggableTable from '../shared/DraggableTable'
 
 const columns = [{
@@ -67,6 +68,12 @@ export default ({
         cost={cost}
         reputationCost={reputationCost}
       />
+      <div style={{marginLeft: 10}}>
+        <ButtonRewardProposer
+          user={user}
+          address={address}
+        />
+      </div>
       <div style={{padding: 10}}>
         <div>
           <div>

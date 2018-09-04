@@ -121,8 +121,10 @@ export function rewardProposer (projectAddress, txObj) {
 }
 
 export function proposerRewarded (receipt) {
-  type: PROPOSER_REWARDED,
-  receipt
+  return {
+    type: PROPOSER_REWARDED,
+    receipt
+  }
 }
 
 export function checkActiveStatus (projectAddress, txObj) {

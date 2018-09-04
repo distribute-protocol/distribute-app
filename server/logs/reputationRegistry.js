@@ -9,7 +9,7 @@ const Stake = require('../models/stake')
 const Project = require('../models/project')
 const User = require('../models/user')
 const Vote = require('../models/vote')
-const VoteRecord = require('../models/voteRecord')
+// const VoteRecord = require('../models/voteRecord')
 const Task = require('../models/task')
 
 module.exports = function () {

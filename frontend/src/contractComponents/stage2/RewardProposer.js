@@ -5,13 +5,18 @@ import { rewardProposer } from '../../actions/projectActions'
 
 const ButtonRewardProposer = (props) => {
   return (<Button
-    disabled={0}
-    // disabled to be changed once reducer is written
+    disabled={props.proposerRewarded}
     style={{marginTop: 10}}
     type='danger'
     onClick={() => props.rewardProposer(props.address, {from: props.user})}>
       Reward Proposer
   </Button>)
+}
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    proposerRewarded: state.projects[2][ownProps.address].proposerRewarded
+  }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -20,4 +25,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(ButtonRewardProposer)
+export default connect(mapStateToProps, mapDispatchToProps)(ButtonRewardProposer)

@@ -202,14 +202,26 @@ const checkActiveStatus = action$ => {
 }
 
 const rewardProposer = action$ => {
-  let projectAddress, proposer
+  let projectAddress, txObj
   return action$.ofType(REWARD_PROPOSER).pipe(
-    mergeMap(action => {
-      projectAddress = action._projectAddress
-      proposer = action.txObj.from
-      return Observable.from(pr.rewardOriginator(action.projectAddress, action.txObj))
+    concatMap(action => {
+      console.log(action)
+      projectAddress = action.projectAddress
+      txObj = action.txObj
+      let query = gql`
+      query ($address: String!) {
+        project(address: $address){
+          proposerType
+        }
+      }`
+      return client.query({query: query, variables: {address: projectAddress}})
     }),
-    mergeMap(result => proposerRewarded(projectAddress, proposer, result))
+    mergeMap(result => {
+      return result.data.project.proposerType === 1
+        ? Observable.from(tr.refundProposer(projectAddress, txObj))
+        : Observable.from(rr.refundProposer(projectAddress, txObj))
+    }),
+    map(result => proposerRewarded(projectAddress, txObj.from, result))
   )
 }
 
