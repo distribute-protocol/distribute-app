@@ -23,6 +23,9 @@ let projQuery = gql`
       photo,
       reputationBalance,
       reputationCost,
+      proposer {
+        account
+      },
       proposerRewarded,
       state,
       summary,

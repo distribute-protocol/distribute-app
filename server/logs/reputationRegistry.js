@@ -73,6 +73,7 @@ module.exports = function () {
         User.findOne({account: account}).exec((err, userStatus) => {
           if (err) console.error(error)
           if (userStatus !== null) {
+            console.log(eventParamArr)
             userStatus.reputationBalance -= reputationStaked
             userStatus.save(err => {
               if (err) console.error(error)

@@ -205,7 +205,6 @@ const rewardProposer = action$ => {
   let projectAddress, txObj
   return action$.ofType(REWARD_PROPOSER).pipe(
     concatMap(action => {
-      console.log(action)
       projectAddress = action.projectAddress
       txObj = action.txObj
       let query = gql`
@@ -221,7 +220,7 @@ const rewardProposer = action$ => {
         ? Observable.from(tr.refundProposer(projectAddress, txObj))
         : Observable.from(rr.refundProposer(projectAddress, txObj))
     }),
-    map(result => proposerRewarded(projectAddress, txObj.from, result))
+    map(result => proposerRewarded(projectAddress))
   )
 }
 

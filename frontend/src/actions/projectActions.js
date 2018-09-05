@@ -120,10 +120,10 @@ export function rewardProposer (projectAddress, txObj) {
   }
 }
 
-export function proposerRewarded (receipt) {
+export function proposerRewarded (projectAddress) {
   return {
     type: PROPOSER_REWARDED,
-    receipt
+    projectAddress
   }
 }
 

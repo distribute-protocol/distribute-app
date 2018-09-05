@@ -234,7 +234,7 @@ module.exports = function () {
               : user.reputationBalance += proposedStake
             user.save(err => {
               if (err) console.error(err)
-              console.log('added proposer reward to user wei balance')
+              console.log('added proposer reward to user wei balance & returned tokens/rep')
             })
           }
         })

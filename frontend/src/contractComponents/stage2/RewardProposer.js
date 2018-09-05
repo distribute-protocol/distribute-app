@@ -4,17 +4,20 @@ import { Button } from 'antd'
 import { rewardProposer } from '../../actions/projectActions'
 
 const ButtonRewardProposer = (props) => {
-  return (<Button
-    disabled={props.proposerRewarded}
-    style={{marginTop: 10}}
-    type='danger'
-    onClick={() => props.rewardProposer(props.address, {from: props.user})}>
-      Reward Proposer
-  </Button>)
+  return props.user === props.proposer
+    ? (<Button
+      disabled={props.proposerRewarded}
+      style={{marginTop: 10}}
+      type='danger'
+      onClick={() => props.rewardProposer(props.address, {from: props.user})}>
+        Reward Proposer
+    </Button>)
+    : null
 }
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    proposer: state.projects[2][ownProps.address].proposer.account,
     proposerRewarded: state.projects[2][ownProps.address].proposerRewarded
   }
 }
