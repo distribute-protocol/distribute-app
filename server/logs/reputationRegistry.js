@@ -9,7 +9,7 @@ const Stake = require('../models/stake')
 const Project = require('../models/project')
 const User = require('../models/user')
 const Vote = require('../models/vote')
-const VoteRecord = require('../models/voteRecord')
+// const VoteRecord = require('../models/voteRecord')
 const Task = require('../models/task')
 
 module.exports = function () {
@@ -73,6 +73,7 @@ module.exports = function () {
         User.findOne({account: account}).exec((err, userStatus) => {
           if (err) console.error(error)
           if (userStatus !== null) {
+            console.log(eventParamArr)
             userStatus.reputationBalance -= reputationStaked
             userStatus.save(err => {
               if (err) console.error(error)

@@ -5,6 +5,7 @@ import {
   UNSTAKE_PROJECT,
   CHECK_STAKED_STATUS,
   CHECK_ACTIVE_STATUS,
+  REWARD_PROPOSER,
   SUBMIT_HASHED_TASK_LIST,
   SET_TASK_LIST,
   GET_VERIFIED_TASK_LISTS,
@@ -18,6 +19,7 @@ import {
   projectUnstaked,
   hashedTaskListSubmitted,
   stakedStatusChecked,
+  proposerRewarded,
   // activeStatusChecked,
   taskListSet,
   verifiedTaskListsReceived
@@ -188,8 +190,8 @@ const getVerifiedTaskListsEpic = action$ => {
   )
 }
 
-const checkActiveStatus = action$ =>
-  action$.ofType(CHECK_ACTIVE_STATUS).pipe(
+const checkActiveStatus = action$ => {
+  return action$.ofType(CHECK_ACTIVE_STATUS).pipe(
     mergeMap(action => {
       return Observable.from(pr.checkActive(action.projectAddress, action.txObj))
     }),
@@ -197,6 +199,30 @@ const checkActiveStatus = action$ =>
       Observable.of(push('/claim'))
     ))
   )
+}
+
+const rewardProposer = action$ => {
+  let projectAddress, txObj
+  return action$.ofType(REWARD_PROPOSER).pipe(
+    concatMap(action => {
+      projectAddress = action.projectAddress
+      txObj = action.txObj
+      let query = gql`
+      query ($address: String!) {
+        project(address: $address){
+          proposerType
+        }
+      }`
+      return client.query({query: query, variables: {address: projectAddress}})
+    }),
+    mergeMap(result => {
+      return result.data.project.proposerType === 1
+        ? Observable.from(tr.refundProposer(projectAddress, txObj))
+        : Observable.from(rr.refundProposer(projectAddress, txObj))
+    }),
+    map(result => proposerRewarded(projectAddress))
+  )
+}
 
 const checkValidateStatus = action$ => {
   return action$.ofType(CHECK_VALIDATE_STATUS).pipe(
@@ -221,8 +247,8 @@ const checkVotingStatus = action$ =>
     })
   )
 
-const checkFinalStatus = action$ =>
-  action$.ofType(CHECK_FINAL_STATUS).pipe(
+const checkFinalStatus = action$ => {
+  return action$.ofType(CHECK_FINAL_STATUS).pipe(
     mergeMap(action => {
       return Observable.from(pr.checkEnd(action.projectAddress, action.txObj))
     }),
@@ -232,6 +258,7 @@ const checkFinalStatus = action$ =>
       )
     })
   )
+}
 
 export default (action$, store) => merge(
   getProjectsEpic(action$, store),
@@ -240,6 +267,7 @@ export default (action$, store) => merge(
   unstakeProject(action$, store),
   checkStakedStatus(action$, store),
   checkActiveStatus(action$, store),
+  rewardProposer(action$, store),
   submitHashedTaskList(action$, store),
   setTaskList(action$, store),
   getVerifiedTaskListsEpic(action$, store),

@@ -13,6 +13,7 @@ let projectSchema = mongoose.Schema({
   photo: String,
   proposer: String,
   proposerType: Number,
+  proposerRewarded: Boolean,
   reputationBalance: Number,
   reputationCost: Number,
   stakedStatePeriod: Number,

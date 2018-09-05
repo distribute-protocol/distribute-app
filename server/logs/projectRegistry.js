@@ -93,6 +93,7 @@ module.exports = function () {
                   prelimTaskLists: [],
                   proposer,
                   proposerType,
+                  proposerRewarded: false,
                   reputationBalance: 0,
                   reputationCost,
                   stakedStatePeriod,
@@ -201,6 +202,56 @@ module.exports = function () {
       }
     })
   })
+  const rewardProposerFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: PR.projectRegistryAddress,
+    topics: [web3.sha3('LogRefundProposer(address,uint256,address,uint256,uint256)')]
+  })
+  rewardProposerFilter.watch(async (err, result) => {
+    if (err) console.error(err)
+    let txHash = result.transactionHash
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let projectAddress = '0x' + eventParamArr[0].substr(-40)
+    let isTokenRegistry = parseInt(eventParamArr[1], 16)
+    let proposer = '0x' + eventParamArr[2].substr(-40)
+    // proposed stake is in tokens or rep
+    let proposedCost = parseInt(eventParamArr[3], 16)
+    let proposedStake = parseInt(eventParamArr[4], 16)
+    let reward = Math.floor(proposedCost / 20)
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        User.findOne({account: proposer}).exec((err, user) => {
+          if (err) console.error(err)
+          if (user !== null) {
+            user.weiBalance += reward
+            isTokenRegistry === 1
+              ? user.tokenBalance += proposedStake
+              : user.reputationBalance += proposedStake
+            user.save(err => {
+              if (err) console.error(err)
+              console.log('added proposer reward to user wei balance & returned tokens/rep')
+            })
+          }
+        })
+        Project.findOne({address: projectAddress}).exec((err, project) => {
+          if (err) console.error(err)
+          if (project !== null) {
+            project.proposerRewarded = true
+            project.save(err => {
+              if (err) console.error(err)
+              console.log('proposerRewarded set to true')
+            })
+          }
+        })
+      }
+    })
+  })
+
   // filter for active projects
   const projectActiveFilter = web3.eth.filter({
     fromBlock: 0,

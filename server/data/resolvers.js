@@ -114,7 +114,8 @@ const resolvers = {
         tokenBalance: 0,
         reputationBalance: 0,
         tasks: [],
-        validations: []
+        validations: [],
+        weiBalance: 0
       })
       userObj.save((err, user) => {
         assert.equal(err, null)

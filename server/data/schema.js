@@ -44,6 +44,7 @@ const typeDefs = `
     photo: String
     proposer: User
     proposerType: Int
+    proposerRewarded: Boolean
     reputationBalance: Int
     reputationCost: Int
     stakedStatePeriod: Int
