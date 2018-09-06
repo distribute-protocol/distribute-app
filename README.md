@@ -283,8 +283,8 @@ Gateway server listening on /ip4/127.0.0.1/tcp/8080
 mongoDB must be running before this step.  
 cd into `distribute-app/server`, then install the necessary node modules and start up the server by running
 ```
-npm install
-npm start
+yarn
+yarn start
 ```
 The server should be running at localhost 3001.
 
