@@ -6,7 +6,7 @@ import { eth } from '../utilities/blockchain'
 import { getEthPriceNow } from 'get-eth-price'
 import Project from './project/2Add'
 import fastforward from '../utilities/fastforward'
-import { getProjects, setTaskList, getVerifiedTaskLists } from '../actions/projectActions'
+import { getProjects } from '../actions/projectActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -43,8 +43,6 @@ class Add extends React.Component {
       projects: []
     }
     this.fastForward = this.fastForward.bind(this)
-    this.setTaskList = this.setTaskList.bind(this)
-    this.getVerifiedTaskLists = this.getVerifiedTaskLists.bind(this)
   }
 
   componentWillMount () {
@@ -73,15 +71,6 @@ class Add extends React.Component {
     })
   }
 
-  async setTaskList (taskDetails, address) {
-    this.props.setTaskList(taskDetails, address)
-  }
-
-  getVerifiedTaskLists (address) {
-    this.props.getVerifiedTaskLists(address)
-    return 0
-  }
-
   // fast forward Ganache 1 week
   async fastForward () {
     await fastforward(7 * 24 * 60 * 60)
@@ -95,8 +84,6 @@ class Add extends React.Component {
           index={i}
           address={address}
           project={this.props.projects[address]}
-          setTaskList={(taskDetails, address) => this.setTaskList(taskDetails, address)}
-          getVerifiedTaskLists={(address) => this.getVerifiedTaskLists(address)}
           user={this.state.user}
           ethPrice={this.state.ethPrice}
         />
@@ -129,9 +116,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getProjects: () => dispatch(getProjects(2, projQuery)),
-    getVerifiedTaskLists: (projectAddress) => dispatch(getVerifiedTaskLists(projectAddress)),
-    setTaskList: (taskDetails, projectAddress) => dispatch(setTaskList(taskDetails, projectAddress))
+    getProjects: () => dispatch(getProjects(2, projQuery))
   }
 }
 

@@ -283,7 +283,7 @@ module.exports = function () {
                   project.state = 3
                   project.topTaskHash = topTaskHash
                   project.taskList = prelimTaskList.content
-                  // console.log('final tasks:', project.taskList)
+                  console.log('final tasks:', project.taskList)
                   project.save(err => {
                     if (err) console.error(error)
                     console.log('active project with topTaskHash')

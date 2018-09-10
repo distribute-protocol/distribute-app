@@ -5,6 +5,7 @@ import AddComponent from '../../components/project/2Add'
 import {web3} from '../../utilities/blockchain'
 import update from 'immutability-helper'
 import moment from 'moment'
+import { setTaskList, getVerifiedTaskLists } from '../../actions/projectActions'
 
 class AddProject extends React.Component {
   constructor () {
@@ -13,17 +14,12 @@ class AddProject extends React.Component {
       tempTask: {},
       taskList: []
     }
-    this.getVerifiedTaskLists = this.getVerifiedTaskLists.bind(this)
     this.handleTaskInput = this.handleTaskInput.bind(this)
     this.moveRow = this.moveRow.bind(this)
   }
 
   componentWillMount () {
-    this.getVerifiedTaskLists(this.props.address)
-  }
-
-  getVerifiedTaskLists (address) {
-    this.props.getVerifiedTaskLists(address)
+    this.props.getVerifiedTaskLists(this.props.address)
   }
 
   componentWillReceiveProps (np) {
@@ -73,6 +69,7 @@ class AddProject extends React.Component {
   }
 
   render () {
+    console.log(this.props.submissions, 'this.props.submissions')
     let tasks, verifiedSubmissions
     if (this.props.taskList !== null && this.props.taskList.length !== 0) {
       tasks = JSON.parse(this.props.taskList).map((task, i) => {
@@ -147,4 +144,11 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export default connect(mapStateToProps)(AddProject)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setTaskList: (taskDetails, projectAddress) => dispatch(setTaskList(taskDetails, projectAddress)),
+    getVerifiedTaskLists: (projectAddress) => dispatch(getVerifiedTaskLists(projectAddress))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddProject)

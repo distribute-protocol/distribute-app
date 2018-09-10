@@ -7,9 +7,9 @@ import { submitHashedTaskList } from '../../actions/projectActions'
 import { hashTasksArray } from '../../utilities/hashing'
 
 const ButtonSubmitTaskList = (props) => {
+  console.log(props.taskList, 'button')
   let submitHashedTaskList = () => {
     let tasks = JSON.parse(props.taskList)
-    console.log(tasks)
     let sumTotal = tasks.map(el => el.percentage).reduce((prev, curr) => {
       return prev + curr
     }, 0)
@@ -21,6 +21,7 @@ const ButtonSubmitTaskList = (props) => {
         percentage: task.percentage
       }))
       let taskHash = hashTasksArray(taskArray)
+      console.log(taskArray, 'taskarray button')
       props.submitHashedTaskList(tasks, taskHash, props.address, {from: props.user})
     }
   }

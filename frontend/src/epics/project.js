@@ -111,6 +111,7 @@ const setTaskList = action$ => {
     mergeMap(action => {
       address = action.projectAddress
       taskDetails = JSON.stringify(action.taskDetails.taskList)
+      console.log('set task list', taskDetails)
       let mutation = gql`
         mutation addTaskList($input: String!, $address: String!) {
           addTaskList(input: $input, address: $address) {
