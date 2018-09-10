@@ -69,7 +69,6 @@ class AddProject extends React.Component {
   }
 
   render () {
-    console.log(this.props.submissions, 'this.props.submissions')
     let tasks, verifiedSubmissions
     if (this.props.taskList !== null && this.props.taskList.length !== 0) {
       tasks = JSON.parse(this.props.taskList).map((task, i) => {

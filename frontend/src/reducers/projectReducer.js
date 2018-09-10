@@ -24,11 +24,9 @@ export default function projectReducer (state = initialState, action) {
       return Object.assign({}, state, {2: projects})
     case HASHED_TASK_LIST_SUBMITTED:
       let oldSubmissions
-      if (typeof state[2][action.projectAddress].submittedTasks === 'undefined') {
-        oldSubmissions = []
-      } else {
-        oldSubmissions = state[2][action.projectAddress].submittedTasks
-      }
+      typeof state[2][action.projectAddress].submittedTasks === 'undefined'
+        ? oldSubmissions = []
+        : oldSubmissions = state[2][action.projectAddress].submittedTasks
       let newSubmissions = oldSubmissions
       let overwrite = oldSubmissions.findIndex(function (element) { return element.submitter === action.submitterAddress })
       if (overwrite === -1) {

@@ -111,7 +111,6 @@ const setTaskList = action$ => {
     mergeMap(action => {
       address = action.projectAddress
       taskDetails = JSON.stringify(action.taskDetails.taskList)
-      console.log('set task list', taskDetails)
       let mutation = gql`
         mutation addTaskList($input: String!, $address: String!) {
           addTaskList(input: $input, address: $address) {
@@ -136,22 +135,15 @@ const submitHashedTaskList = action$ => {
   let txObj
   let projectAddress
   let taskHash
-  let txReceipt
-  let weighting
   return action$.ofType(SUBMIT_HASHED_TASK_LIST).pipe(
     mergeMap(action => {
       tasks = JSON.stringify(action.tasks)
       txObj = action.txObj
       projectAddress = action.projectAddress
       taskHash = action.taskListHash
-      return Observable.from(pr.addTaskHash(projectAddress, taskHash, txObj))
-    }),
-    mergeMap(result => {
-      txReceipt = result
-      weighting = txReceipt.logs[1].args.weighting.toNumber() / (10 ** 15)
       let mutation = gql`
-        mutation addPrelimTaskList($address: String!, $taskHash: String!, $submitter: String!, $weighting: String!) {
-          addPrelimTaskList(address: $address, taskHash: $taskHash, submitter: $submitter, weighting: $weighting) {
+        mutation addPrelimTaskList($address: String!, $taskHash: String!, $submitter: String!) {
+          addPrelimTaskList(address: $address, taskHash: $taskHash, submitter: $submitter) {
             id
           }
         }
@@ -162,13 +154,15 @@ const submitHashedTaskList = action$ => {
           address: projectAddress,
           taskHash: taskHash,
           submitter: txObj.from,
-          content: tasks,
-          weighting: weighting
+          content: tasks
         }
       })
     }),
+    mergeMap(action => {
+      return Observable.from(pr.addTaskHash(projectAddress, taskHash, txObj))
+    }),
     map(result =>
-      hashedTaskListSubmitted(tasks, txObj.from, projectAddress, weighting))
+      hashedTaskListSubmitted(tasks, txObj.from, projectAddress, result.logs[1].args.weighting.toNumber() / (10 ** 15)))
   )
 }
 

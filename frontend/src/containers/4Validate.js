@@ -30,7 +30,6 @@ let projQuery = gql`
         complete,
         description,
         index,
-        hash,
         weighting,
         validationRewardClaimable,
         workerRewardClaimable,
