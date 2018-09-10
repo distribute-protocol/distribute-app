@@ -42,8 +42,6 @@ class VoteTasks extends React.Component {
       tasks = this.props.tasks.slice(0).sort(function (a, b) {
         return a.index - b.index
       })
-      // console.log(this.props.votes, 'votes')
-      // console.log(tasks, 'tasks')
       tasks = tasks.map((task, i) => {
         votes = _.filter(this.props.votes, (vote) => { return vote.task.id === task.id ? vote : null })
         let rewardVal, rewardWork, needsVote
@@ -88,6 +86,11 @@ class VoteTasks extends React.Component {
             rewardWork = <Icon type='close' />
             needsVote = <Icon type='close' />
           }
+        } else if (task.complete === false) {
+          rewardVal = <Icon type='close' />
+          rewardWork = <Icon type='close' />
+          needsVote = <Icon type='close' />
+          votes = <div>This task was never completed.</div>
         } else {
           // vote needs to happen
           rewardVal = <Icon type='clock-circle-o' />

@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Icon } from 'antd'
 import ValidateComponent from '../../components/project/4Validate'
 import ValidateTask from '../task/4Validate'
 import ButtonValidateTask from '../../contractComponents/stage4/ValidateTask'
@@ -42,12 +43,22 @@ class ValidateTasks extends React.Component {
       })
       tasks = tasks.map((task, i) => {
         let ethReward = web3.fromWei(Math.ceil(this.props.project.weiCost / 1.05) * (task.weighting / 100), 'ether')
-        return {
-          key: i,
-          description: task.description,
-          ethReward: `${ethReward} ETH`,
-          usdReward: `$${parseFloat(this.props.ethPrice * ethReward).toFixed(2)}`,
-          input: returnInput(i)
+        if (task.complete === false) {
+          return {
+            key: i,
+            description: task.description,
+            ethReward: <Icon type='close' />,
+            usdReward: <Icon type='close' />,
+            input: <div>This task was never completed.</div>
+          }
+        } else {
+          return {
+            key: i,
+            description: task.description,
+            ethReward: `${ethReward} ETH`,
+            usdReward: `$${parseFloat(this.props.ethPrice * ethReward).toFixed(2)}`,
+            input: returnInput(i)
+          }
         }
       })
     } else {
