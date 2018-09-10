@@ -1,5 +1,7 @@
 import { LOGGED_IN_USER, LOGOUT_USER, USER_STATUS_RECEIVED, REGISTERED_USER, USER_VOTES_RECEIVED } from '../constants/UserActionTypes'
 import { TOKENS_MINTED, TOKENS_SOLD } from '../constants/TokenActionTypes'
+import { VOTE_COMMITTED, VOTE_REVEALED } from '../constants/PollActionTypes'
+
 const initialState = {
   userTokens: 0,
   userReputation: 0,
@@ -26,7 +28,11 @@ export default function userReducer (state = initialState, action) {
     case TOKENS_SOLD:
       return Object.assign({}, state, {userTokens: state.userTokens - action.receipt.amountWithdrawn.toNumber()})
     case USER_VOTES_RECEIVED:
+      console.log(action.votes)
       return Object.assign({}, state, {votes: action.votes})
+    case VOTE_COMMITTED:
+      console.log(action)
+      return state
     default:
   }
   return state

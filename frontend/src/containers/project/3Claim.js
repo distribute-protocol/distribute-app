@@ -26,7 +26,7 @@ class ClaimProject extends React.Component {
         return {
           key: i,
           description: task.description,
-          ethReward: `${web3.fromWei(weiReward, 'ether')} ETH`,
+          ethReward: `${web3.fromWei(weiReward, 'ether').toFixed(5)} ETH`,
           usdReward: `$${parseFloat(this.props.ethPrice * web3.fromWei(weiReward, 'ether')).toFixed(2)}`,
           repClaim: typeof reputationCost !== 'undefined' && typeof weiCost !== 'undefined' && typeof weiReward !== 'undefined' ? `${Math.floor(reputationCost * weiReward / weiCost)} rep` : '',
           buttons: <ButtonGroup>

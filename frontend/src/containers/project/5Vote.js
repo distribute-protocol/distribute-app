@@ -198,7 +198,7 @@ class VoteTasks extends React.Component {
         return {
           key: i,
           description: task.description,
-          ethReward: `${web3.fromWei(this.props.project.weiCost) * (task.weighting / 100)} ETH`,
+          ethReward: `${(web3.fromWei(this.props.project.weiCost) * (task.weighting / 100)).toFixed(5)} ETH`,
           rewardValidator: rewardVal,
           rewardWorker: rewardWork,
           taskNeedsVote: needsVote,
