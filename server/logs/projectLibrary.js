@@ -4,7 +4,7 @@ const PL = require('../../frontend/src/abi/ProjectLibrary')
 const Project = require('../models/project')
 const Task = require('../models/task')
 const Network = require('../models/network')
-const Validation = require('../models/validation')
+// const Validation = require('../models/validation')
 const User = require('../models/user')
 
 module.exports = function () {
