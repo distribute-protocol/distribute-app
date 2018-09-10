@@ -367,6 +367,7 @@ module.exports = function () {
                       if (err) console.error(error)
                       if (vote !== null) {
                         let changeIndex = _.findIndex(user.voteRecords, (vR) => vR.pollID === vote.pollID && vR.task == task.id && vR.voter == user.id && vR.type === 'tokens')
+                        console.log(changeIndex)
                         let voteRecords = user.voteRecords
                         let userVote = voteRecords[changeIndex]
                         userVote.revealed = true

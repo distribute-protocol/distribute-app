@@ -77,7 +77,7 @@ class AddProject extends React.Component {
           key: i,
           description: task.description,
           percentage: `${task.percentage}%`,
-          ethReward: `${ethReward.toFixed(5)} ETH`,
+          ethReward: `${parseFloat(ethReward).toFixed(5)} ETH`,
           usdReward: `$${parseFloat(this.props.ethPrice * ethReward).toFixed(2)}`,
           deleteTask: <Button type='danger' onClick={() => this.deleteElement(i)} >Delete</Button>
         }

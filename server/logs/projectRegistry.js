@@ -493,7 +493,7 @@ module.exports = function () {
       if (parseInt(flag) === 1) {
         Project.findOne({address: projectAddress}).exec((error, project) => {
           if (error) console.error(error)
-          if (project) {
+          if (project && project.state === 3) {
             project.state = 4
             project.save(err => {
               if (err) console.error(error)
@@ -521,11 +521,11 @@ module.exports = function () {
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
     let flag = parseInt(eventParamArr[1])
-    // Network.findOne({}).exec((err, netStatus) => {
-    //   if (err) console.error(err)
-    //   if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-    //     netStatus.processedTxs[txHash] = true
-    //     netStatus.markModified('processedTxs')
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
         if (flag === 1) {
           Project.findOne({address: projectAddress}).exec((error, project) => {
             if (error) console.error(error)
@@ -538,11 +538,11 @@ module.exports = function () {
             }
           })
         }
-    //     netStatus.save((err, returned) => {
-    //       if (err) throw Error
-    //     })
-    //   }
-    // })
+        netStatus.save((err, returned) => {
+          if (err) throw Error
+        })
+      }
+    })
   })
   // filter for project ended
   const projectEndFilter = web3.eth.filter({

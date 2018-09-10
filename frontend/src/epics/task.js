@@ -268,7 +268,7 @@ const commitVoteEpic = action$ => {
       })
     }),
     map(result =>
-      voteCommitted({projectAddress, taskIndex, value, secretHash, voter: txObj.from, txReceipt})
+      voteCommitted({projectAddress, taskIndex, type, value, salt, voter: txObj.from, txReceipt, vote})
     )
   )
 }
@@ -286,28 +286,8 @@ const revealVoteEpic = action$ => {
         ? Observable.from(tr.voteReveal(projectAddress, taskIndex, vote, salt, action.txObj))
         : Observable.from(rr.voteReveal(projectAddress, taskIndex, vote, salt, action.txObj))
     }),
-    // mergeMap(result => {
-    //   txReceipt = result
-    //   let mutation = gql`
-    //     mutation revealVote($address: String!, $taskIndex: String!, $vote: String!, $salt: String!, $voter: String!) {
-    //       revealVote(address: $address, taskIndex: $taskIndex, vote: $vote, salt: $salt, voter: $voter) {
-    //         id
-    //       }
-    //     }
-    //   `
-    //   return client.mutate({
-    //     mutation: mutation,
-    //     variables: {
-    //       address: projectAddress,
-    //       taskIndex: taskIndex,
-    //       vote: vote,
-    //       salt: salt,
-    //       voter: txObj.from
-    //     }
-    //   })
-    // }),
     map(result =>
-      voteRevealed({projectAddress, taskIndex, voter: txObj.from, txReceipt})
+      voteRevealed({projectAddress, taskIndex, voter: txObj.from, txReceipt, salt})
     )
   )
 }

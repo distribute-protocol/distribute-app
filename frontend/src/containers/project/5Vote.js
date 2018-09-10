@@ -37,13 +37,20 @@ class VoteTasks extends React.Component {
   }
 
   render () {
+    console.log(this.props.votes)
     let tasks, votes
     if (typeof this.props.tasks !== 'undefined') {
       tasks = this.props.tasks.slice(0).sort(function (a, b) {
         return a.index - b.index
       })
       tasks = tasks.map((task, i) => {
-        votes = _.filter(this.props.votes, (vote) => { return vote.task.id === task.id ? vote : null })
+        votes = _.filter(this.props.votes, (vote) => {
+          if (vote.task.id !== undefined) {
+            return vote.task.id === task.id ? vote : null
+          } else {
+            return vote.task.index === task.index ? vote : null
+          }
+        })
         let rewardVal, rewardWork, needsVote
         if (tasks[i].validationRewardClaimable) {
           if (tasks[i].workerRewardClaimable) {
@@ -112,14 +119,16 @@ class VoteTasks extends React.Component {
                         type='tokens'
                         status={1}
                         salt={vote.salt}
+                        revealed={vote.revealed}
                       />)
                       : (<ButtonRevealVote
                         user={this.props.user}
                         address={this.props.address}
-                        i={vote.task.index}
+                        i={task.index}
                         type='tokens'
                         status={0}
                         salt={vote.salt}
+                        revealed={vote.revealed}
                       />)
                     : parseInt(vote.vote, 10)
                       ? (<ButtonRevealVote
@@ -129,6 +138,7 @@ class VoteTasks extends React.Component {
                         type='reputation'
                         status={1}
                         salt={vote.salt}
+                        revealed={vote.revealed}
                       />)
                       : (<ButtonRevealVote
                         user={this.props.user}
@@ -137,6 +147,7 @@ class VoteTasks extends React.Component {
                         type='reputation'
                         status={0}
                         salt={vote.salt}
+                        revealed={vote.revealed}
                       />)
                   }
                 </div>
@@ -198,7 +209,7 @@ class VoteTasks extends React.Component {
         return {
           key: i,
           description: task.description,
-          ethReward: `${(web3.fromWei(this.props.project.weiCost) * (task.weighting / 100)).toFixed(5)} ETH`,
+          ethReward: `${(parseFloat(web3.fromWei(Math.ceil(this.props.project.weiCost / 1.05) * (task.weighting / 100), 'ether')).toFixed(5))} ETH`,
           rewardValidator: rewardVal,
           rewardWorker: rewardWork,
           taskNeedsVote: needsVote,
@@ -216,7 +227,7 @@ class VoteTasks extends React.Component {
         photo={this.props.project.photo}
         summary={this.props.project.summary}
         location={this.props.project.location}
-        cost={web3.fromWei(this.props.project.cost, 'ether')}
+        cost={web3.fromWei(Math.ceil(this.props.project.weiCost / 1.05), 'ether')}
         reputationCost={this.props.project.reputationCost}
         date={moment(this.props.project.nextDeadline)}
         tasks={tasks}
