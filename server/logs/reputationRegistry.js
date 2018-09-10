@@ -9,7 +9,6 @@ const Stake = require('../models/stake')
 const Project = require('../models/project')
 const User = require('../models/user')
 const Vote = require('../models/vote')
-// const VoteRecord = require('../models/voteRecord')
 const Task = require('../models/task')
 
 module.exports = function () {
@@ -188,6 +187,7 @@ module.exports = function () {
         netStatus.markModified('processedTxs')
         User.findOne({account}).exec((err, user) => {
           if (err) console.error(error)
+          user.reputationBalance -= stakeAmount
           if (user !== null) {
             Project.findOne({address: projectAddress}).exec((err, project) => {
               if (err) console.error(error, 'Project not found')
@@ -213,6 +213,9 @@ module.exports = function () {
               })
             })
           }
+          user.save(err => {
+            if (err) console.log(err)
+          })
         })
         netStatus.save(err => {
           if (err) console.log(err)
