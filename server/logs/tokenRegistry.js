@@ -294,6 +294,7 @@ module.exports = function () {
         netStatus.markModified('processedTxs')
         User.findOne({account}).exec((err, user) => {
           if (err) console.error(error)
+          user.tokenBalance -= stakeAmount
           if (user !== null) {
             Project.findOne({address: projectAddress}).exec((err, project) => {
               if (err) console.error(error, 'Project not found')
@@ -319,6 +320,9 @@ module.exports = function () {
               })
             })
           }
+          user.save((err, returned) => {
+            if (err) throw Error
+          })
         })
         netStatus.save(err => {
           if (err) console.log(err)
