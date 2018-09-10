@@ -186,7 +186,7 @@ module.exports = function () {
         })
         Project.findOne({address: projectAddress}).exec((error, doc) => {
           if (error) console.error(error)
-          PrelimTaskList.findOne({submitter: submitter}).exec((error, prelimTaskList) => {
+          PrelimTaskList.findOne({submitter: submitter, address: projectAddress}).exec((error, prelimTaskList) => {
             if (error) console.error(error)
             if (prelimTaskList !== null && prelimTaskList.hash === taskHash) {
               // console.log(prelimTaskList)
@@ -283,7 +283,6 @@ module.exports = function () {
                   project.state = 3
                   project.topTaskHash = topTaskHash
                   project.taskList = prelimTaskList.content
-                  // console.log('final tasks:', project.taskList)
                   project.save(err => {
                     if (err) console.error(error)
                     console.log('active project with topTaskHash')

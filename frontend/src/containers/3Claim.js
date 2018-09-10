@@ -10,7 +10,7 @@ import { getProjects } from '../actions/projectActions'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
-    { allProjectsinState(state: 3){
+  { allProjectsinState(state: 3){
       address,
       id,
       ipfsHash,
@@ -32,25 +32,24 @@ let projQuery = gql`
       weiBal,
       weiCost,
       state,
-        tasks {
-          id,
-          address,
-          claimer {
-            account
-          },
-          claimed,
-          claimedAt,
-          complete,
-          description,
-          index,
-          hash,
-          weighting,
-          validationRewardClaimable,
-          workerRewardClaimable,
-          workerRewarded
-        }
+      tasks {
+        id,
+        address,
+        claimer {
+          account
+        },
+        claimed,
+        claimedAt,
+        complete,
+        description,
+        index,
+        weighting,
+        validationRewardClaimable,
+        workerRewardClaimable,
+        workerRewarded
       }
-    }`
+    }
+  }`
 
 class Claim extends React.Component {
   constructor () {

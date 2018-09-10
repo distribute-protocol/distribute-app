@@ -9,7 +9,6 @@ import { hashTasksArray } from '../../utilities/hashing'
 const ButtonSubmitTaskList = (props) => {
   let submitHashedTaskList = () => {
     let tasks = JSON.parse(props.taskList)
-    console.log(tasks)
     let sumTotal = tasks.map(el => el.percentage).reduce((prev, curr) => {
       return prev + curr
     }, 0)
