@@ -29,11 +29,10 @@ export default function userReducer (state = initialState, action) {
     case TOKENS_SOLD:
       return Object.assign({}, state, {userTokens: state.userTokens - action.receipt.amountWithdrawn.toNumber()})
     case USER_VOTES_RECEIVED:
-      console.log(action)
       return Object.assign({}, state, {votes: action.votes})
     case VOTE_COMMITTED:
       let length = state.votes.length
-      let newState = Object.assign([], state.votes, {[length]: {amount: action.voteDetails.value, task: {index: action.voteDetails.taskIndex}, rescued: false, revealed: false, salt: action.voteDetails.salt, type: action.voteDetails.type, pollID: action.voteDetails.txReceipt.logs[0].args.pollId.toNumber(), vote: action.voteDetails.vote}})
+      let newState = Object.assign([], state.votes, {[length]: {project: action.voteDetails.projectAddress, amount: action.voteDetails.value, task: {index: action.voteDetails.taskIndex}, rescued: false, revealed: false, salt: action.voteDetails.salt, type: action.voteDetails.type, pollID: action.voteDetails.txReceipt.logs[0].args.pollId.toNumber(), vote: action.voteDetails.vote}})
       return Object.assign({}, state, {votes: newState})
     case VOTE_REVEALED:
       let index = _.findIndex(state.votes, function (vote) {
