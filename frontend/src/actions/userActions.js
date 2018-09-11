@@ -65,9 +65,10 @@ export function getUserVotes (account) {
   }
 }
 
-export function userVotesReceived (votes) {
+export function userVotesReceived (votes, user) {
   return {
     type: USER_VOTES_RECEIVED,
-    votes
+    votes,
+    user
   }
 }

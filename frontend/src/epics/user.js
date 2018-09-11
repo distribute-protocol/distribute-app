@@ -83,10 +83,12 @@ const getUserStatusEpic = action$ =>
     map(result => userStatusReceived(result))
   )
 
-const getUserVotesEpic = action$ =>
-  action$.ofType(GET_USER_VOTES).pipe(
+const getUserVotesEpic = action$ => {
+  let account
+  return action$.ofType(GET_USER_VOTES).pipe(
   // pull value from database
     mergeMap(action => {
+      account = action.account
       let query = gql`
         query ($account: String!) {
           userVoteRecords(account: $account) {
@@ -105,10 +107,11 @@ const getUserVotesEpic = action$ =>
           }
         }
       `
-      return client.query({query: query, variables: {account: action.account}})
+      return client.query({query: query, variables: {account: account}})
     }),
-    map(result => userVotesReceived(result.data.userVoteRecords))
+    map(result => userVotesReceived(result.data.userVoteRecords, account))
   )
+}
 
 export default (action$, store) => merge(
   getUserEpic(action$, store),

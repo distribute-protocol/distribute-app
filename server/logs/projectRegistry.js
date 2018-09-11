@@ -558,9 +558,7 @@ module.exports = function () {
     let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
     let projectAddress = eventParamArr[0]
     projectAddress = '0x' + projectAddress.substr(-40)
-    // let flag = eventParamArr[1]
     let flag = parseInt(eventParamArr[1])
-    // console.log(projectAddress, flag)
     // Network.findOne({}).exec((err, netStatus) => {
     //   if (err) console.error(err)
     //   if (typeof netStatus.processedTxs[txHash] === 'undefined') {

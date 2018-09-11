@@ -268,7 +268,7 @@ const commitVoteEpic = action$ => {
       })
     }),
     map(result =>
-      voteCommitted({projectAddress, taskIndex, type, value, salt, voter: txObj.from, txReceipt, vote})
+      voteCommitted({projectAddress, taskIndex, type, value, salt, voter: txObj.from, txReceipt, vote, pollID})
     )
   )
 }

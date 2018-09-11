@@ -4,8 +4,13 @@ import { Button } from 'antd'
 import { commitVote } from '../../actions/taskActions'
 import { utils } from 'ethers'
 import { P, T } from '../../utilities/blockchain'
+import * as _ from 'lodash'
 
 const ButtonCommitVote = (props) => {
+  let disabled
+  _.find(props.votes, function (vote) { return vote.task.index === props.i }) !== undefined
+    ? disabled = true
+    : disabled = false
   async function commitVote () {
     let status
     props.status === 'Yes'
@@ -31,9 +36,16 @@ const ButtonCommitVote = (props) => {
   }
   return (<Button
     type='danger'
+    disabled={disabled}
     onClick={() => commitVote()}>
     {`${props.status}`}
   </Button>)
+}
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    votes: state.user.votes
+  }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -42,4 +54,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(ButtonCommitVote)
+export default connect(mapStateToProps, mapDispatchToProps)(ButtonCommitVote)

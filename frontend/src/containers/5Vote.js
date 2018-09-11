@@ -116,7 +116,6 @@ class Vote extends React.Component {
           index={i}
           address={address}
           project={this.props.projects[address]}
-          validations={(address) => this.getValidations(address)}
           user={this.state.user}
         />
       })
@@ -142,8 +141,7 @@ class Vote extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    projects: state.projects[5],
-    pollID: state.polls.pollID
+    projects: state.projects[5]
   }
 }
 
