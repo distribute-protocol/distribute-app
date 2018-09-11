@@ -4,6 +4,7 @@ let VoteRecordSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   task: mongoose.Schema.Types.ObjectId,
   pollID: Number,
+  project: String,
   amount: Number,
   vote: String,
   salt: String,

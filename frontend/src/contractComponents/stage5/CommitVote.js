@@ -8,7 +8,7 @@ import * as _ from 'lodash'
 
 const ButtonCommitVote = (props) => {
   let disabled
-  _.find(props.votes, function (vote) { return vote.task.index === props.i }) !== undefined
+  _.find(props.votes, function (vote) { return vote.task.index === props.i && vote.project === props.address }) !== undefined
     ? disabled = true
     : disabled = false
   async function commitVote () {

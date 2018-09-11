@@ -1,6 +1,7 @@
 import { LOGGED_IN_USER, LOGOUT_USER, USER_STATUS_RECEIVED, REGISTERED_USER, USER_VOTES_RECEIVED } from '../constants/UserActionTypes'
 import { TOKENS_MINTED, TOKENS_SOLD } from '../constants/TokenActionTypes'
 import { VOTE_COMMITTED, VOTE_REVEALED } from '../constants/PollActionTypes'
+import * as _ from 'lodash'
 
 const initialState = {
   userTokens: 0,
@@ -28,14 +29,20 @@ export default function userReducer (state = initialState, action) {
     case TOKENS_SOLD:
       return Object.assign({}, state, {userTokens: state.userTokens - action.receipt.amountWithdrawn.toNumber()})
     case USER_VOTES_RECEIVED:
+      console.log(action)
       return Object.assign({}, state, {votes: action.votes})
     case VOTE_COMMITTED:
       let length = state.votes.length
       let newState = Object.assign([], state.votes, {[length]: {amount: action.voteDetails.value, task: {index: action.voteDetails.taskIndex}, rescued: false, revealed: false, salt: action.voteDetails.salt, type: action.voteDetails.type, pollID: action.voteDetails.txReceipt.logs[0].args.pollId.toNumber(), vote: action.voteDetails.vote}})
       return Object.assign({}, state, {votes: newState})
     case VOTE_REVEALED:
-      console.log(action)
-      return state
+      let index = _.findIndex(state.votes, function (vote) {
+        console.log(vote, action.voteDetails)
+        return vote.voter === action.voteDetails.voter && vote.task.index === action.voteDetails.taskIndex
+      })
+      newState = Object.assign([], state.votes, {[index]: {revealed: true}})
+      console.log(index, newState)
+      return Object.assign({}, state, {votes: newState})
     default:
   }
   return state

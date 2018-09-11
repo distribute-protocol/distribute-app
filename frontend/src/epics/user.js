@@ -94,6 +94,7 @@ const getUserVotesEpic = action$ => {
           userVoteRecords(account: $account) {
             id
             pollID
+            project
             amount
             rescued
             revealed
@@ -109,7 +110,7 @@ const getUserVotesEpic = action$ => {
       `
       return client.query({query: query, variables: {account: account}})
     }),
-    map(result => userVotesReceived(result.data.userVoteRecords, account))
+    map(result => userVotesReceived(result.data.userVoteRecords))
   )
 }
 
