@@ -3,12 +3,7 @@ import { FINAL_TASK_LIST_SUBMITTED, VALIDATIONS_RECEIVED, TASK_CLAIMED, TASK_COM
 
 const initialState = {
 }
-// let receiptHandler = (tx, multiHash) => {
-//   let txReceipt = tx.receipt
-//   let projectAddress = txReceipt.logs[0].address
-//   this.props.proposeProject(Object.assign({}, this.state.tempProject, {address: projectAddress, ipfsHash: `https://ipfs.io/ipfs/${multiHash}`}))  // this is calling the reducer
-//   this.setState({cost: 0, photo: false, imageUrl: false, coords: 0, location: ''})
-// }
+
 export default function projectReducer (state = initialState, action) {
   switch (action.type) {
     case PROJECTS_RECEIVED:

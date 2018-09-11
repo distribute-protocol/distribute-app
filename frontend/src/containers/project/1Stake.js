@@ -40,7 +40,7 @@ class StakeProject extends React.Component {
         photo={this.props.project.photo}
         summary={this.props.project.summary}
         location={this.props.project.location}
-        cost={web3.fromWei(this.props.project.weiCost, 'ether')}
+        cost={web3.fromWei(Math.ceil(this.props.project.weiCost / 1.05), 'ether')}
         tokensLeft={tokensLeft}
         reputationCost={this.props.project.reputationCost}
         totalReputationStaked={this.props.project.reputationBalance}

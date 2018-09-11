@@ -1,3 +1,4 @@
+const _ = require('lodash')
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
 const mongoose = require('mongoose')
@@ -262,8 +263,8 @@ module.exports = function () {
                         let changeIndex = _.findIndex(
                           user.voteRecords,
                           (vR) => vR.pollID === vote.pollID &&
-                          vR.task === task.id &&
-                          vR.voter === user.id &&
+                          vR.task == task.id &&
+                          vR.voter == user.id &&
                           vR.type === 'reputation'
                         )
                         let voteRecords = user.voteRecords

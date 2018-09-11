@@ -55,7 +55,7 @@ class ValidateTasks extends React.Component {
           return {
             key: i,
             description: task.description,
-            ethReward: `${ethReward} ETH`,
+            ethReward: `${parseFloat(ethReward).toFixed(5)} ETH`,
             usdReward: `$${parseFloat(this.props.ethPrice * ethReward).toFixed(2)}`,
             input: returnInput(i)
           }

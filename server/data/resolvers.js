@@ -55,7 +55,6 @@ const resolvers = {
     validations: (user) => Validation.find({userId: user.id}).then(validations => validations),
     votes: (user) => Vote.find({userId: user.id}).then(votes => votes),
     voteRecords: (user) => User.findOne({_id: user.id}).then(userDoc => userDoc.voteRecords)
-    // voteRecords: (user) => VoteRecord.find({voter: user.id}).
   },
   VoteRecord: {
     voter: (vote) => User.findOne({account: vote.voter}).then(user => user),
@@ -189,6 +188,7 @@ const resolvers = {
                 _id: new mongoose.Types.ObjectId(),
                 amount: args.amount,
                 pollID: args.pollID,
+                project: args.projectAddress,
                 revealed: false,
                 rescued: false,
                 salt: args.salt,

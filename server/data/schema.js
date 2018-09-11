@@ -165,6 +165,7 @@ const typeDefs = `
     id: ID
     amount: Int
     pollID: Int
+    project: String
     revealed: Boolean
     rescued: Boolean
     salt: String
