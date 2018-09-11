@@ -28,6 +28,7 @@ import {
   // votingStatusChecked
 } from '../actions/projectActions'
 import { map, mergeMap, concatMap } from 'rxjs/operators'
+import {EmptyObservable} from 'rxjs/observable/EmptyObservable'
 import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
 import { client } from '../index'
@@ -190,9 +191,15 @@ const checkActiveStatus = action$ => {
     mergeMap(action => {
       return Observable.from(pr.checkActive(action.projectAddress, action.txObj))
     }),
-    mergeMap(result => Observable.concat(
-      Observable.of(push('/claim'))
-    ))
+    mergeMap(result => {
+      if (result.logs[0].args.active === true) {
+        return Observable.concat(
+          Observable.of(push('/claim'))
+        )
+      } else {
+        return new EmptyObservable()
+      }
+    })
   )
 }
 
