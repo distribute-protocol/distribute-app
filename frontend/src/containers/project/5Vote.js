@@ -37,7 +37,6 @@ class VoteTasks extends React.Component {
   }
 
   render () {
-    console.log(this.props.votes)
     let tasks, votes
     if (typeof this.props.tasks !== 'undefined') {
       tasks = this.props.tasks.slice(0).sort(function (a, b) {

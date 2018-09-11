@@ -36,11 +36,10 @@ export default function userReducer (state = initialState, action) {
       return Object.assign({}, state, {votes: newState})
     case VOTE_REVEALED:
       let index = _.findIndex(state.votes, function (vote) {
-        console.log(vote, action.voteDetails)
-        return vote.voter === action.voteDetails.voter && vote.task.index === action.voteDetails.taskIndex
+        return vote.task.index === action.voteDetails.taskIndex && vote.project === action.voteDetails.projectAddress
       })
-      newState = Object.assign([], state.votes, {[index]: {revealed: true}})
-      console.log(index, newState)
+      let vote = Object.assign({}, state.votes[index], {revealed: true})
+      newState = Object.assign([], state.votes, {[index]: vote})
       return Object.assign({}, state, {votes: newState})
     default:
   }

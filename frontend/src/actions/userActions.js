@@ -66,7 +66,6 @@ export function getUserVotes (account) {
 }
 
 export function userVotesReceived (votes) {
-  console.log(votes)
   return {
     type: USER_VOTES_RECEIVED,
     votes

@@ -263,8 +263,8 @@ module.exports = function () {
                         let changeIndex = _.findIndex(
                           user.voteRecords,
                           (vR) => vR.pollID === vote.pollID &&
-                          vR.task === task.id &&
-                          vR.voter === user.id &&
+                          vR.task == task.id &&
+                          vR.voter == user.id &&
                           vR.type === 'reputation'
                         )
                         let voteRecords = user.voteRecords
