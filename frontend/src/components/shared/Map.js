@@ -33,7 +33,9 @@ class Map extends React.Component {
   }
 
   componentWillUnmount () {
-    this.state.map.remove()
+    if (this.state.map !== undefined) {
+      this.state.map.remove()
+    }
   }
 
   render () {
