@@ -28,7 +28,7 @@ import {
   // votingStatusChecked
 } from '../actions/projectActions'
 import { map, mergeMap, concatMap } from 'rxjs/operators'
-import {EmptyObservable} from 'rxjs/observable/EmptyObservable'
+import { EmptyObservable } from 'rxjs/observable/EmptyObservable'
 import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
 import { client } from '../index'
@@ -255,9 +255,17 @@ const checkFinalStatus = action$ => {
       return Observable.from(pr.checkEnd(action.projectAddress, action.txObj))
     }),
     mergeMap(result => {
-      return Observable.concat(
-        Observable.of(push('/complete'))
-      )
+      if (result.logs[0].args.end.toNumber() === 1) {
+        return Observable.concat(
+          Observable.of(push('/complete'))
+        )
+      } else if (result.logs[0].args.end.toNumber() === 2) {
+        return Observable.concat(
+          Observable.of(push('/failed'))
+        )
+      } else {
+        return new EmptyObservable()
+      }
     })
   )
 }
