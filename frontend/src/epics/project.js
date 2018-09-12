@@ -99,6 +99,7 @@ const unstakeProject = action$ => {
 const checkStakedStatus = action$ =>
   action$.ofType(CHECK_STAKED_STATUS).pipe(
     mergeMap(action => {
+      console.log(action)
       return Observable.from(pr.checkStaked(action.projectAddress, action.txObj))
     }),
     map(result => stakedStatusChecked(result))
