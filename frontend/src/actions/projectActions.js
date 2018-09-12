@@ -106,7 +106,6 @@ export function checkStakedStatus (projectAddress, txObj) {
 }
 
 export function stakedStatusChecked (firstReceipt, receipt) {
-  console.log(firstReceipt, receipt)
   return {
     type: STAKED_STATUS_CHECKED,
     receipt

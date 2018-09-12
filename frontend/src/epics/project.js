@@ -18,7 +18,7 @@ import {
   projectStaked,
   projectUnstaked,
   hashedTaskListSubmitted,
-  stakedStatusChecked,
+  // stakedStatusChecked,
   proposerRewarded,
   // activeStatusChecked,
   taskListSet,
