@@ -13,7 +13,7 @@ class Map extends React.Component {
       style: 'mapbox://styles/mapbox/streets-v10',
       interactive: false
     })
-    map.setCenter(this.props.lngLat)
+    map.setCenter([this.props.lngLat[0], this.props.lngLat[1]])
     map.setZoom(18)
     this.setState({map: map})
   }
@@ -36,7 +36,7 @@ class Map extends React.Component {
 
   render () {
     return (
-      <div id='map' style={{width: 300, height: 300}} ref={el => { this.mapContainer = el; return }} />
+      <div id='map' style={{width: 300, height: 300}} ref={el => { this.mapContainer = el }} />
     )
   }
 }
