@@ -18,7 +18,7 @@ import {
   projectStaked,
   projectUnstaked,
   hashedTaskListSubmitted,
-  stakedStatusChecked,
+  // stakedStatusChecked,
   proposerRewarded,
   // activeStatusChecked,
   taskListSet,
@@ -33,7 +33,7 @@ import { Observable } from 'rxjs'
 import { push } from 'react-router-redux'
 import { client } from '../index'
 import { merge } from 'rxjs/observable/merge'
-import { rr, tr, pr, dt } from '../utilities/blockchain'
+import { rr, tr, pr, dt, P } from '../utilities/blockchain'
 import gql from 'graphql-tag'
 
 const getProjectsEpic = action$ => {
@@ -96,13 +96,28 @@ const unstakeProject = action$ => {
   )
 }
 
-const checkStakedStatus = action$ =>
-  action$.ofType(CHECK_STAKED_STATUS).pipe(
+const checkStakedStatus = action$ => {
+  let projectAddress, firstResult
+  return action$.ofType(CHECK_STAKED_STATUS).pipe(
     mergeMap(action => {
+      projectAddress = action.projectAddress
       return Observable.from(pr.checkStaked(action.projectAddress, action.txObj))
     }),
-    map(result => stakedStatusChecked(result))
+    mergeMap(result => {
+      firstResult = result
+      return Observable.from(P.at(projectAddress).state())
+    }),
+    mergeMap(state => {
+      if (firstResult.logs[0].args.staked === true) {
+        return Observable.of(push('/add'))
+      } else if (state.toNumber() === 8) {
+        return Observable.of(push('/expired'))
+      } else {
+        return new EmptyObservable()
+      }
+    })
   )
+}
 
 // set task list on the frontend
 const setTaskList = action$ => {

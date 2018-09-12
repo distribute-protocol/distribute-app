@@ -105,7 +105,7 @@ export function checkStakedStatus (projectAddress, txObj) {
   }
 }
 
-export function stakedStatusChecked (receipt) {
+export function stakedStatusChecked (firstReceipt, receipt) {
   return {
     type: STAKED_STATUS_CHECKED,
     receipt

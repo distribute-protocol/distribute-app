@@ -8,18 +8,20 @@ class Map extends React.Component {
     this.state = {}
   }
   componentDidMount () {
-    const map = new mapboxgl.Map({
-      container: this.mapContainer,
-      style: 'mapbox://styles/mapbox/streets-v10',
-      interactive: false
-    })
-    map.setCenter([this.props.lngLat[0], this.props.lngLat[1]])
-    map.setZoom(18)
-    this.setState({map: map})
+    if (this.props.lngLat.length > 0) {
+      const map = new mapboxgl.Map({
+        container: this.mapContainer,
+        style: 'mapbox://styles/mapbox/streets-v10',
+        interactive: false
+      })
+      map.setCenter([this.props.lngLat[0], this.props.lngLat[1]])
+      map.setZoom(18)
+      this.setState({map: map})
+    }
   }
 
   componentWillReceiveProps (np) {
-    if (typeof np.lngLat !== 'undefined') {
+    if (typeof np.lngLat !== 'undefined' && np.lngLat.length > 0) {
       this.state.map.setCenter(np.lngLat)
       if (typeof this.state.marker === 'undefined') {
         const marker = new mapboxgl.Marker()
@@ -31,13 +33,15 @@ class Map extends React.Component {
   }
 
   componentWillUnmount () {
-    this.state.map.remove()
+    if (this.state.map !== undefined) {
+      this.state.map.remove()
+    }
   }
 
   render () {
-    return (
-      <div id='map' style={{width: 300, height: 300}} ref={el => { this.mapContainer = el }} />
-    )
+    return this.props.lngLat.length > 0
+      ? <div id='map' style={{width: 300, height: 300}} ref={el => { this.mapContainer = el }} />
+      : <p />
   }
 }
 

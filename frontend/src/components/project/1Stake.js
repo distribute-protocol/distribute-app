@@ -3,6 +3,7 @@ import { Button } from 'antd'
 import ProjectHeader from '../shared/ProjectHeader'
 import ButtonStakeProject from '../../contractComponents/stage1/StakeProject'
 import ButtonUnstakeProject from '../../contractComponents/stage1/UnstakeProject'
+import ButtonCheckStaked from '../../contractComponents/stage1/CheckStaked'
 const ButtonGroup = Button.Group
 
 export default ({
@@ -74,6 +75,10 @@ export default ({
             </div>
           </div>
         </div>
+        <ButtonCheckStaked
+          address={address}
+          user={user}
+        />
       </div>
     </div>
   )

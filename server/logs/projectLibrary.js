@@ -171,4 +171,40 @@ module.exports = function () {
       })
     })
   })
+
+  const ProjectExpiredFilter = web3.eth.filter({
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: PL.projectLibraryAddress,
+    topics: [web3.sha3('LogProjectExpired(address)')]
+  })
+
+  ProjectExpiredFilter.watch(async (err, result) => {
+    if (err) console.error(err)
+    let txHash = result.transactionHash
+    let eventParams = result.data
+    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
+    let projectAddress = eventParamArr[0]
+    projectAddress = '0x' + projectAddress.substr(-40)
+    Network.findOne({}).exec((err, netStatus) => {
+      if (err) console.error(err)
+      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
+        netStatus.processedTxs[txHash] = true
+        netStatus.markModified('processedTxs')
+        netStatus.save((err, returned) => {
+          if (err) throw Error
+        })
+      }
+      Project.findOne({address: projectAddress}).exec((error, doc) => {
+        if (error) console.error(error)
+        if (doc) {
+          doc.state = 8
+          doc.save(err => {
+            if (err) console.error(err)
+            console.log('project expired')
+          })
+        }
+      })
+    })
+  })
 }
