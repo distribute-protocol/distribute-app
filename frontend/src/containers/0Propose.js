@@ -80,6 +80,7 @@ class Propose extends React.Component {
   async proposeProject (type, values) {
     // stakingPeriod in Days changed to seconds -> blockchain understands seconds
     // This is creating and storing an IPFS object
+    console.log(this.state.cost, this.state.photo, values.name, this.state.coords, values.summary)
     let projObj = {
       cost: this.state.cost,
       stakingEndDate: Math.floor(values.date.valueOf() / 1000),
@@ -88,11 +89,13 @@ class Propose extends React.Component {
       location: this.state.coords,
       summary: values.summary
     }
+    console.log(projObj)
     let multiHash
     const obj = {
       Data: JSON.stringify(projObj),
       Links: []
     }
+    console.log(obj)
     await ipfs.object.put(obj, {enc: 'json'}, (err, node) => {
       if (err) {
         console.log('errrrr')

@@ -189,7 +189,6 @@ module.exports = function () {
           PrelimTaskList.findOne({submitter: submitter, address: projectAddress}).exec((error, prelimTaskList) => {
             if (error) console.error(error)
             if (prelimTaskList !== null && prelimTaskList.hash === taskHash) {
-              // console.log(prelimTaskList)
               prelimTaskList.verified = true
               prelimTaskList.weighting = '' + weighting
               prelimTaskList.save(error => {

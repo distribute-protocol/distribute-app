@@ -15,10 +15,7 @@ let projQuery = gql`
       address,
       id,
       ipfsHash,
-      location {
-        lat,
-        lng
-      },
+      location,
       name,
       tasks {
         id,
