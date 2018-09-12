@@ -21,7 +21,7 @@ class Map extends React.Component {
   }
 
   componentWillReceiveProps (np) {
-    if (typeof np.lngLat !== 'undefined') {
+    if (typeof np.lngLat !== 'undefined' && np.lngLat.length > 0) {
       this.state.map.setCenter(np.lngLat)
       if (typeof this.state.marker === 'undefined') {
         const marker = new mapboxgl.Marker()
