@@ -1,9 +1,8 @@
-const { makeExecutableSchema } = require('graphql-tools')
-const resolvers = require('./resolvers')
+const { ApolloServer, gql } = require('apollo-server-express')
 
 // The GraphQL schema in string form
 // change taskList to currentTaskList
-const typeDefs = `
+const typeDefs = gql`
   type Avatar {
     credential: Credential
     uri: String
@@ -226,9 +225,5 @@ const typeDefs = `
   }
 `
 // Put together a schema
-const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers
-})
 
-module.exports = schema
+module.exports = typeDefs
