@@ -238,10 +238,10 @@ This will deploy a local blockchain with 10 accounts, each preloaded with 100 et
 
 *Step 4:*   
 Open and sign in to MetaMask in your Google Chrome browser.
-From the dropdown menu at the top, select the `Localhost 8545` network. Click the three dots and select "Copy Address to Clipboard".
+Open MetaMask. From the dropdown menu at the top, select the `Localhost 8545` network. Then, click your account name. This will automatically copy your address to clipboard.
 
 **Remember to reset this account every time you run `ganache-cli`.**  
-To reset the account, confirm that you are on Localhost 8545, then navigate to Settings from the three bars on the top right. Scroll down and select "Reset Account". This forces MetaMask to believe that this network ID is a clean network in a fresh state (**ordinary users of MetaMask should never have to do this!**).
+To reset the account, confirm that you are on Localhost 8545, then navigate to Settings by clicking on your account image at the top right. Scroll down and select "Reset Account". This forces MetaMask to believe that this network ID is a clean network in a fresh state (**ordinary users of MetaMask should never have to do this!**).
 
 *Step 5:*   
 In a new terminal window, navigate to the `contracts` folder you cloned from GitHub in Step 1. Deploy it to the local blockchain running in ganache by running:
