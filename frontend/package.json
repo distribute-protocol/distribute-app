@@ -40,6 +40,7 @@
     "redux-thunk": "^2.3.0",
     "rxjs": "6.3.3",
     "rxjs-compat": "^6.3.3",
+    "sha3": "^1.2.2",
     "truffle-contract": "^3.0.6",
     "truffle-hdwallet-provider": "0.0.6",
     "uport-connect": "^0.7.8",
