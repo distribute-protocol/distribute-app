@@ -3,13 +3,36 @@ import { connect } from 'react-redux'
 import uport from '../utilities/uport'
 import { Button } from 'antd'
 import { loginUser } from '../actions/userActions'
+import { eth } from '../utilities/blockchain'
 import { getNetworkStatus } from '../actions/networkActions'
 
 class Landing extends React.Component {
   constructor () {
     super()
+    this.state = {
+      metamask: false
+    }
     this.getUport = this.getUport.bind(this)
+    this.checkMetamask = this.checkMetamask.bind(this)
   }
+
+  componentWillMount () {
+    this.checkMetamask()
+  }
+
+  checkMetamask () {
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        if (accounts.length) {
+          // get user token balance
+          this.setState({metamask: true})
+        } else {
+          this.setState({metamask: false})
+        }
+      }
+    })
+  }
+
   getUport () {
     uport.requestCredentials({
       requested: ['name', 'avatar'],
@@ -30,16 +53,46 @@ class Landing extends React.Component {
                   <path fill-rule='evenodd' clip-rule='evenodd' d='M32 64C49.6731 64 64 49.6731 64 32C64 14.3269 49.6731 0 32 0C14.3269 0 0 14.3269 0 32C0 49.6731 14.3269 64 32 64Z' fill='#A4D573' />
                 </svg>
               </div>
-              <div style={{paddingLeft: 9, fontSize: 20, fontFamily: 'nowAlt'}}>
+              <div style={{paddingLeft: 9, fontSize: 20, fontFamily: 'NowAltRegular'}}>
                 DISTRIBUTE<br />NETWORK
               </div>
             </div>
-            <div style={{paddingTop: 27, paddingRight: 66.5, color: 'white', fontSize: 20, fontFamily: 'nowAlt'}}>
+            <div style={{paddingTop: 27, paddingRight: 66.5, color: 'white', fontSize: 20, fontFamily: 'NowAltRegular'}}>
               SIGN UP | LOGIN
             </div>
           </div>
+          <div style={{display: 'flex', justifyContent: 'center'}}>
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+              <div style={{fontSize: 36, fontFamily: 'NowAltRegular'}}>A Platform for the Commons</div>
+              { this.state.metamask
+                ? <Button onClick={this.getUport}>
+                  <div style={{backgroundColor: '#A4D573', color: 'white', fontSize: 18, fontFamily: 'NowAltRegular'}}>JOIN</div>
+                </Button>
+                : <Button onClick={this.getUport}>
+                  <div style={{backgroundColor: '#A4D573', color: 'white', fontSize: 18, fontFamily: 'NowAltRegular'}}>GET METAMASK</div>
+                </Button>
+              }
+            </div>
+          </div>
         </div>
-        <h1 className='display-3'>Welcome to Distribute</h1>
+        <div>
+          <div style={{display: 'flex', justifyContent: 'center', fontSize: 18, fontFamily: 'NowAltRegular'}}>This distributed organization requires:</div>
+          <div style={{display: 'flex', justifyContent: 'space-around'}}>
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 16, fontFamily: 'NowAltRegular'}}>
+              <svg width='167' height='72' viewBox='0 0 167 72' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                <rect width='167' height='72' rx='13' fill='#5C50CA' />
+              </svg>
+              <div style={{textAlign: 'center'}}>uPort is a decentralized self-sovereign<br />identity platform.</div>
+            </div>
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 16, fontFamily: 'NowAltRegular'}}>
+              <svg width='167' height='72' viewBox='0 0 167 72' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                <rect width='167' height='72' rx='13' fill='#5C50CA' />
+              </svg>
+              <div style={{textAlign: 'center'}}>Metamask is an in-browser wallet that grants easy<br />access to the Ethereum blockchain.</div>
+            </div>
+          </div>
+        </div>
+        { /* <h1 className='display-3'>Welcome to Distribute</h1>
         <hr className='my-2' />
         <p>You need a uPort to continue. You can download the mobile app with one of the links below.</p>
         <p>Upon login, you will be prompted to receive your first reputation points.</p>
@@ -53,7 +106,7 @@ class Landing extends React.Component {
           <Button color='primary' onClick={this.getUport}>
             Connect with uPort
           </Button>
-        </p>
+        </p> */}
       </div>
     )
   }
