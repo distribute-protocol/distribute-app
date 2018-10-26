@@ -247,7 +247,7 @@ To reset the account, confirm that you are on Localhost 8545, then navigate to S
 In a new terminal window, navigate to the `contracts` folder you cloned from GitHub in Step 1. Deploy it to the local blockchain running in ganache by running:
 ```
 cd contracts
-truffle migrate
+truffle migrate --network app
 ```
 Then enter the Truffle console.
 ```

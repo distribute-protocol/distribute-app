@@ -21,7 +21,24 @@ class Landing extends React.Component {
   }
   render () {
     return (
-      <div style={{padding: 30}}>
+      <div>
+        <div style={{backgroundColor: '#CDCDCD', height: '68vh'}}>
+          <div style={{display: 'flex', justifyContent: 'space-between'}}>
+            <div style={{display: 'flex', alignContent: 'center', paddingTop: 24, paddingLeft: 23}}>
+              <div>
+                <svg width='64' height='64' viewBox='0 0 64 64' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                  <path fill-rule='evenodd' clip-rule='evenodd' d='M32 64C49.6731 64 64 49.6731 64 32C64 14.3269 49.6731 0 32 0C14.3269 0 0 14.3269 0 32C0 49.6731 14.3269 64 32 64Z' fill='#A4D573' />
+                </svg>
+              </div>
+              <div style={{paddingLeft: 9, fontSize: 20, fontFamily: 'nowAlt'}}>
+                DISTRIBUTE<br />NETWORK
+              </div>
+            </div>
+            <div style={{paddingTop: 27, paddingRight: 66.5, color: 'white', fontSize: 20, fontFamily: 'nowAlt'}}>
+              SIGN UP | LOGIN
+            </div>
+          </div>
+        </div>
         <h1 className='display-3'>Welcome to Distribute</h1>
         <hr className='my-2' />
         <p>You need a uPort to continue. You can download the mobile app with one of the links below.</p>
