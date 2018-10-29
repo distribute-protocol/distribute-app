@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import uport from '../utilities/uport'
 import { Button } from 'antd'
+import OnboardingModal from '../components/shared/OnboardingModal'
 import { loginUser } from '../actions/userActions'
 import { eth } from '../utilities/blockchain'
 import { getNetworkStatus } from '../actions/networkActions'
@@ -12,10 +13,12 @@ class Landing extends React.Component {
   constructor () {
     super()
     this.state = {
-      metamask: false
+      metamask: false,
+      hasEther: false
     }
     this.getUport = this.getUport.bind(this)
     this.checkMetamask = this.checkMetamask.bind(this)
+    this.handleJoin = this.handleJoin.bind(this)
   }
 
   componentWillMount () {
@@ -26,10 +29,32 @@ class Landing extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
-          // get user token balance
-          this.setState({metamask: true})
+          eth.getBalance(accounts[0], (err, res) => {
+            if (!err) {
+              this.setState({metamask: true})
+            }
+          })
         } else {
           this.setState({metamask: false})
+        }
+      }
+    })
+  }
+
+  handleJoin () {
+    // check has ether
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        if (accounts.length) {
+          eth.getBalance(accounts[0], (err, res) => {
+            if (!err) {
+              if (res > 0) {
+                this.getUport()
+              } else {
+                this.setState({hasEther: false, clickedJoin: true})
+              }
+            }
+          })
         }
       }
     })
@@ -46,13 +71,14 @@ class Landing extends React.Component {
   }
 
   getMetaMask () {
-    console.log('metamask')
+    window.open('https://metamask.io/')
   }
 
   render () {
     return (
       <div>
-        <div style={{backgroundColor: '#CDCDCD', height: '68vh'}}>
+        <OnboardingModal hasEther={this.state.hasEther} clickedJoin={this.state.clickedJoin} />
+        <div style={{backgroundColor: '#CDCDCD', height: '60vh'}}>
           { /* START OF TOP BAR */ }
           <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <div style={{display: 'flex', alignItems: 'center', paddingTop: 24, paddingLeft: 23}}>
@@ -75,7 +101,7 @@ class Landing extends React.Component {
             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
               <div style={{fontSize: 36, fontFamily: 'NowAltRegular'}}>A Platform for the Commons</div>
               { this.state.metamask
-                ? <Button onClick={this.getUport}>
+                ? <Button onClick={this.handleJoin}>
                   <div style={{backgroundColor: '#A4D573', color: 'white', fontSize: 18, fontFamily: 'NowAltRegular'}}>JOIN</div>
                 </Button>
                 : <Button onClick={this.getMetaMask}>
