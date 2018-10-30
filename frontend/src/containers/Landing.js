@@ -42,14 +42,13 @@ class Landing extends React.Component {
   }
 
   handleJoin () {
-    // check has ether
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
           eth.getBalance(accounts[0], (err, res) => {
             if (!err) {
               if (res > 0) {
-                this.getUport()
+                this.setState({hasEther: true, clickedJoin: true})
               } else {
                 this.setState({hasEther: false, clickedJoin: true})
               }
@@ -77,7 +76,7 @@ class Landing extends React.Component {
   render () {
     return (
       <div>
-        <OnboardingModal hasEther={this.state.hasEther} clickedJoin={this.state.clickedJoin} />
+        <OnboardingModal hasEther={this.state.hasEther} clickedJoin={this.state.clickedJoin} getUport={this.getUport} />
         <div style={{backgroundColor: '#CDCDCD', height: '60vh'}}>
           { /* START OF TOP BAR */ }
           <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -101,11 +100,11 @@ class Landing extends React.Component {
             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
               <div style={{fontSize: 36, fontFamily: 'NowAltRegular'}}>A Platform for the Commons</div>
               { this.state.metamask
-                ? <Button onClick={this.handleJoin}>
-                  <div style={{backgroundColor: '#A4D573', color: 'white', fontSize: 18, fontFamily: 'NowAltRegular'}}>JOIN</div>
+                ? <Button style={{backgroundColor: '#A4D573', marginTop: 10, paddingTop: 3}} onClick={this.handleJoin}>
+                  <p style={{color: 'white', fontSize: 18, fontFamily: 'NowAltRegular'}}>JOIN</p>
                 </Button>
-                : <Button onClick={this.getMetaMask}>
-                  <div style={{fontSize: 14, fontFamily: 'PingFang SC'}}>Please Connect to MetaMask</div>
+                : <Button style={{marginTop: 10, paddingTop: 4}} onClick={this.getMetaMask}>
+                  <p style={{fontSize: 14, fontFamily: 'PingFang SC'}}>Please Connect to MetaMask</p>
                 </Button>
               }
             </div>
@@ -113,17 +112,17 @@ class Landing extends React.Component {
           { /* END OF PLATFORM TITLE */ }
         </div>
         { /* START OF WHITE SPACE */ }
-        <div style={{display: 'flex', justifyContent: 'center', fontSize: 18, fontFamily: 'NowAltRegular'}}>
+        <div style={{display: 'flex', justifyContent: 'center', marginTop: 15, fontSize: 18, fontFamily: 'NowAltRegular'}}>
           This distributed organization requires:
         </div>
-        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-around', marginTop: 15}}>
           <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 16, fontFamily: 'NowAltRegular'}}>
             <img src={uportlogo} alt='uPort logo' />
-            <div style={{textAlign: 'center'}}>uPort is a decentralized self-sovereign<br />identity platform.</div>
+            <div style={{textAlign: 'center', marginTop: 10}}>uPort is a decentralized self-sovereign<br />identity platform.</div>
           </div>
           <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 16, fontFamily: 'NowAltRegular'}}>
             <img src={metamasklogo} alt='MetaMask fox' />
-            <div style={{textAlign: 'center'}}>Metamask is an in-browser wallet that grants easy<br />access to the Ethereum blockchain.</div>
+            <div style={{textAlign: 'center', marginTop: 10}}>Metamask is an in-browser wallet that grants easy<br />access to the Ethereum blockchain.</div>
           </div>
         </div>
       </div>
