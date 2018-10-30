@@ -4,7 +4,6 @@ import { from, of, iif, concat, merge } from 'rxjs'
 import { map, mergeMap, flatMap } from 'rxjs/operators'
 import { client } from '../index'
 import { web3, rr } from '../utilities/blockchain'
-import { push } from 'react-router-redux'
 import gql from 'graphql-tag'
 import * as _ from 'lodash'
 
@@ -31,10 +30,9 @@ const getUserEpic = action$ => {
     flatMap(result => {
       return iif(
         () => !result.data.user || result.data.user.reputationBalance === 0,
-        of(registerUser(credentials, accounts[0])),
+        of(registerUser(credentials, web3.eth.accounts[0])),
         concat(
-          of(loggedInUser(result)),
-          of(push('/status'))
+          of(loggedInUser(result))
         )
       )
     })
@@ -63,8 +61,7 @@ const registerUserEpic = action$ => {
     }),
     map(result => from(rr.register({from: account}))),
     flatMap(result => concat(
-      of(registeredUser(result)),
-      of(push('/status'))
+      of(registeredUser(result))
     ))
   )
 }

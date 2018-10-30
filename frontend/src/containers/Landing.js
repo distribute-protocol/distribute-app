@@ -1,8 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 import uport from '../utilities/uport'
 import { Button } from 'antd'
 import OnboardingModal from '../components/shared/OnboardingModal'
+import TextContinueModal from '../components/shared/TextContinueModal'
 import { loginUser } from '../actions/userActions'
 import { eth } from '../utilities/blockchain'
 import { getNetworkStatus } from '../actions/networkActions'
@@ -19,6 +21,7 @@ class Landing extends React.Component {
     this.getUport = this.getUport.bind(this)
     this.checkMetamask = this.checkMetamask.bind(this)
     this.handleJoin = this.handleJoin.bind(this)
+    this.statusPage = this.statusPage.bind(this)
   }
 
   componentWillMount () {
@@ -66,6 +69,7 @@ class Landing extends React.Component {
     }).then((credentials) => {
       this.props.getNetworkStatus()
       this.props.loginUser(credentials)
+      this.setState({clickedJoin: false, loggedin: true})
     })
   }
 
@@ -73,10 +77,15 @@ class Landing extends React.Component {
     window.open('https://metamask.io/')
   }
 
+  statusPage () {
+    push('/status')
+  }
+
   render () {
     return (
       <div>
-        <OnboardingModal hasEther={this.state.hasEther} clickedJoin={this.state.clickedJoin} getUport={this.getUport} />
+        <OnboardingModal skipFirst={this.state.hasEther} visible={this.state.clickedJoin} getUport={this.getUport} />
+        <TextContinueModal text={'congrats'} visible={this.state.loggedin} continue={this.statusPage} />
         <div style={{backgroundColor: '#CDCDCD', height: '60vh'}}>
           { /* START OF TOP BAR */ }
           <div style={{display: 'flex', justifyContent: 'space-between'}}>

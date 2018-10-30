@@ -16,8 +16,8 @@ class OnboardingModal extends React.Component {
   }
 
   componentWillReceiveProps (np) {
-    if (typeof np.hasEther !== 'undefined' && np.clickedJoin !== 'undefined') {
-      this.setState({modalVisible: np.clickedJoin, getEthModal: !np.hasEther && np.clickedJoin})
+    if (typeof np.skipFirst !== 'undefined' && np.visible !== 'undefined') {
+      this.setState({modalVisible: np.visible, firstModal: !np.skipFirst && np.visible})
     }
   }
 
@@ -26,21 +26,25 @@ class OnboardingModal extends React.Component {
   }
 
   handleOk (e) {
-    if (this.state.getEthModal) {
-      this.setState({getEthModal: false, uportModal: true})
+    if (this.state.firstModal) {
+      this.setState({firstModal: false})
     } else {
-      this.handleCancel()
+      this.setState({modalVisible: false})
       this.props.getUport()
     }
   }
 
   handleCancel (e) {
-    this.setState({modalVisible: false})
+    if (this.state.firstModal) {
+      this.setState({modalVisible: false})
+    } else {
+      this.setState({firstModal: true})
+    }
   }
 
   render () {
     let footer, image, topText, bottomText
-    if (this.state.getEthModal) {
+    if (this.state.firstModal) {
       footer = [
         <Button key='back' onClick={this.handleCancel}>Back</Button>,
         <Button style={{backgroundColor: '#A4D573'}} key='submit' type='primary' onClick={this.handleOk}>
@@ -81,7 +85,6 @@ class OnboardingModal extends React.Component {
         onOk={this.handleOk}
         onCancel={this.handleCancel}
         footer={footer}
-        border='none'
       >
         <div>
           {topText}
