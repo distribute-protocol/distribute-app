@@ -42,8 +42,8 @@ export default ({
           <ProfileTable title={'Expertise / Skills'} input={'Electrical Wiring'} add={'Add Expertise'} />
           <ProfileTable title={'Interests'} input={'Land Trusts'} add={'Add Interest'} />
           <ProfileTable title={'Contact Details'} input={'twitter: @ashokafinley'} add={'Add Contact Details'} />
-          <ProfileTable title={'Want To Learn'} input={'mesh node installation'} add={'Add Skill To Learn'} />
-          <ProfileTable title={'Want To Teach'} input={'urban gardening'} add={'Add Skill To Teach'} />
+          <ProfileTable title={'Want To Learn'} input={'Mesh Node Installation'} add={'Add Skill To Learn'} />
+          <ProfileTable title={'Want To Teach'} input={'Urban Gardening'} add={'Add Skill To Teach'} />
           <ProfileTable title={'Affiliations'} input={'distribute.network'} add={'Add Affiliation'} />
         </div>
         <div style={{display: 'flex', justifyContent: 'center', flexGrow: 1}}>
@@ -51,7 +51,7 @@ export default ({
             <p style={{fontSize: 20, fontFamily: 'NowAltRegular'}}>Connections</p>
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 300, width: 315, backgroundColor: 'rgba(218, 218, 218, 0.5)'}}>
               <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <p style={{fontSize: 18, fontFamily: 'Avenir Next', color: '#989898', textAlign: 'center'}}>You don't currently have<br />any connections.</p>
+                <b><p style={{fontSize: 18, fontFamily: 'Avenir Next', color: '#989898', textAlign: 'center'}}>You don't currently have<br />any connections.</p></b>
                 <Input style={{fontSize: 14, fontFamily: 'Avenir Next', textAlign: 'center'}} placeholder='Enter Email Address' />
                 <Button style={{backgroundColor: 'rgba(60, 142, 185, 0.8)', marginTop: 10, paddingTop: 4}}>
                   <p style={{color: 'white', fontSize: 14, fontFamily: 'Avenir Next'}}>Send Invite</p>

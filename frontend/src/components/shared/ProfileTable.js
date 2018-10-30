@@ -4,7 +4,6 @@ import plusbutton from '../../images/plusbutton.svg'
 import { css } from 'react-emotion'
 
 const tableCSS = css({
-  backgroundColor: 'white',
   'thead': {
     fontSize: 20,
     fontFamily: 'Lato',
@@ -12,7 +11,8 @@ const tableCSS = css({
   },
   'td': {
     fontSize: 16,
-    fontFamily: 'NowAltRegular'
+    fontFamily: 'NowAltRegular',
+    backgroundColor: 'rgba(218, 218, 218, 0.5)'
   }
 })
 
