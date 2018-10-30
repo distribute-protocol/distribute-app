@@ -4,6 +4,7 @@ import Sidebar from './shared/Sidebar'
 import ButtonMintTokens from '../contractComponents/stage0/MintTokens'
 import ButtonSellTokens from '../contractComponents/stage0/SellTokens'
 const ButtonGroup = Button.Group
+
 export default ({
   totalTokenSupply,
   balance,
