@@ -9,6 +9,7 @@ class TextContinueModal extends React.Component {
     }
     this.showModal = this.showModal.bind(this)
     this.handleOk = this.handleOk.bind(this)
+    this.handleCancel = this.handleCancel.bind(this)
   }
 
   componentWillReceiveProps (np) {
@@ -17,6 +18,9 @@ class TextContinueModal extends React.Component {
       switch (np.text) {
         case 'congrats':
           text = <p>Congratulations!<br />You have successfully registered.</p>
+          break
+        case 'firstprofile':
+          text = <p>We already started a profile for you based on<br />your uPort profile. You can add more to your<br />profile to give people more information about<br />you and what you like.</p>
           break
         default:
           text = <p>I'm sorry, something seems to be broken in here.</p>
@@ -34,6 +38,10 @@ class TextContinueModal extends React.Component {
     if (typeof this.props.continue !== 'undefined') {
       this.props.continue()
     }
+    this.setState({modalVisible: false})
+  }
+
+  handleCancel (e) {
     this.setState({modalVisible: false})
   }
 

@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
 import uport from '../utilities/uport'
 import { Button } from 'antd'
 import OnboardingModal from '../components/shared/OnboardingModal'
@@ -21,7 +20,7 @@ class Landing extends React.Component {
     this.getUport = this.getUport.bind(this)
     this.checkMetamask = this.checkMetamask.bind(this)
     this.handleJoin = this.handleJoin.bind(this)
-    this.statusPage = this.statusPage.bind(this)
+    this.profilePage = this.profilePage.bind(this)
   }
 
   componentWillMount () {
@@ -77,15 +76,15 @@ class Landing extends React.Component {
     window.open('https://metamask.io/')
   }
 
-  statusPage () {
-    this.props.history.push('/status')
+  profilePage () {
+    this.props.history.push('/profile')
   }
 
   render () {
     return (
       <div>
         <OnboardingModal skipFirst={this.state.hasEther} visible={this.state.clickedJoin} getUport={this.getUport} />
-        <TextContinueModal text={'congrats'} visible={this.state.loggedin} continue={this.statusPage} />
+        <TextContinueModal text={'congrats'} visible={this.state.loggedin} continue={this.profilePage} />
         <div style={{backgroundColor: '#CDCDCD', height: '60vh'}}>
           { /* START OF TOP BAR */ }
           <div style={{display: 'flex', justifyContent: 'space-between'}}>
