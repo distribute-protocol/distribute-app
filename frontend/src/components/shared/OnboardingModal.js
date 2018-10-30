@@ -25,7 +25,7 @@ class OnboardingModal extends React.Component {
     this.setState({modalVisible: true})
   }
 
-  handleOk (e) {
+  async handleOk (e) {
     if (this.state.firstModal) {
       this.setState({firstModal: false})
     } else {

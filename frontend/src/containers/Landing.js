@@ -78,7 +78,7 @@ class Landing extends React.Component {
   }
 
   statusPage () {
-    push('/status')
+    this.props.history.push('/status')
   }
 
   render () {
