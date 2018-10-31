@@ -14,7 +14,7 @@ class Profile extends React.Component {
     this.roleSelection = this.roleSelection.bind(this)
   }
 
-  componentWillMount () {
+  componentWillReceiveProps (np) {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {

@@ -41,7 +41,7 @@ export default ({
               </div>
             </div>
             <Button style={{backgroundColor: '#A4D573', width: 222, height: 56, paddingTop: 10, marginTop: 30}} onClick={handleSave}>
-              <p style={{color: 'white', fontSize: 24, fontFamily: 'Avenir Next'}}>Save</p>
+              <p style={{color: 'white', fontSize: 24, fontFamily: 'Avenir Next'}}>Save & Continue</p>
             </Button>
           </div>
         </div>
