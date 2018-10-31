@@ -1,5 +1,6 @@
 import React from 'react'
 import { Modal } from 'antd'
+import RoleIntroModalIcon from './RoleIntroModalIcon'
 import initiator from '../../images/roleselection/initiator.svg'
 import finder from '../../images/roleselection/finder.svg'
 import planner from '../../images/roleselection/planner.svg'
@@ -63,39 +64,15 @@ class RoseIntroModal extends React.Component {
         footer={null}
       >
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: 140, backgroundColor: 'black', color: 'white', fontSize: 18, fontFamily: 'Avenir Next', textAlign: 'center'}}>
-          <p>On the distribute network there are 6 roles. Each role has a specific task they<br />complete to help further the purpose of the distribute network. The roles are<br />Initiators, Discoverers, Planners, Doers, Validators, and Resolvers.</p>
+          <p style={{marginTop: 5}}>On the distribute network there are 6 roles. Each role has a specific task they<br />complete to help further the purpose of the distribute network. The roles are<br />Initiators, Discoverers, Planners, Doers, Validators, and Resolvers.</p>
         </div>
         <div style={{display: 'flex', height: 440, justifyContent: 'space-around', alignItems: 'center', flexWrap: 'wrap', paddingLeft: 40, paddingRight: 40}}>
-          <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: '1 0 30%'}}>
-            <img style={{justifyContent: 'center'}} src={initiator} alt='initiator' />
-            <p style={{fontFamily: 'Roboto', fontSize: 18}}>INITIATOR</p>
-            <p style={{fontFamily: 'NowAltRegular', fontSize: 14, marginTop: -20}}>Spark the Ideas</p>
-          </div>
-          <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: '1 0 30%'}}>
-            <img style={{justifyContent: 'center'}} src={finder} alt='finder' />
-            <p style={{fontFamily: 'Roboto', fontSize: 18}}>FINDER</p>
-            <p style={{fontFamily: 'NowAltRegular', fontSize: 14, marginTop: -20}}>Quest for the Best</p>
-          </div>
-          <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: '1 0 30%'}}>
-            <img style={{justifyContent: 'center'}} src={planner} alt='planner' />
-            <p style={{fontFamily: 'Roboto', fontSize: 18}}>PLANNER</p>
-            <p style={{fontFamily: 'NowAltRegular', fontSize: 14, marginTop: -20}}>How Should It Be Done</p>
-          </div>
-          <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: '1 0 30%'}}>
-            <img style={{justifyContent: 'center'}} src={doer} alt='doer' />
-            <p style={{fontFamily: 'Roboto', fontSize: 18}}>DOER</p>
-            <p style={{fontFamily: 'NowAltRegular', fontSize: 14, marginTop: -20}}>Makers Welcome</p>
-          </div>
-          <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: '1 0 30%'}}>
-            <img style={{justifyContent: 'center'}} src={validator} alt='validator' />
-            <p style={{fontFamily: 'Roboto', fontSize: 18}}>VALIDATOR</p>
-            <p style={{fontFamily: 'NowAltRegular', fontSize: 14, marginTop: -20}}>Protect the Network</p>
-          </div>
-          <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: '1 0 30%'}}>
-            <img style={{justifyContent: 'center'}} src={resolver} alt='resolver' />
-            <p style={{fontFamily: 'Roboto', fontSize: 18}}>RESOLVER</p>
-            <p style={{fontFamily: 'NowAltRegular', fontSize: 14, marginTop: -20}}>Find the Solution</p>
-          </div>
+          <RoleIntroModalIcon roleName={'INTIATOR'} roleIcon={initiator} roleDescription={'Spark the Ideas'} />
+          <RoleIntroModalIcon roleName={'FINDER'} roleIcon={finder} roleDescription={'Quest for the Best'} />
+          <RoleIntroModalIcon roleName={'PLANNER'} roleIcon={planner} roleDescription={'How Should It Be Done'} />
+          <RoleIntroModalIcon roleName={'DOER'} roleIcon={doer} roleDescription={'Makers Welcome'} />
+          <RoleIntroModalIcon roleName={'VALIDATOR'} roleIcon={validator} roleDescription={'Protect the Network'} />
+          <RoleIntroModalIcon roleName={'RESOLVER'} roleIcon={resolver} roleDescription={'Find the Solution'} />
         </div>
         <div style={{display: 'flex', justifyContent: 'center', marginTop: -18}}>
           <p style={{fontFamily: 'Avenir Next', color: '#989898', fontSize: 14}}>You will select one role now, but you are able to switch roles any time.</p>
