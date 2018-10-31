@@ -12,9 +12,10 @@ class Profile extends React.Component {
       firstProfile: true
     }
     this.roleSelection = this.roleSelection.bind(this)
+    this.makeInvisible = this.makeInvisible.bind(this)
   }
 
-  componentWillReceiveProps (np) {
+  componentWillMount () {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
@@ -24,6 +25,10 @@ class Profile extends React.Component {
     })
   }
 
+  makeInvisible () {
+    this.setState({firstProfile: false})
+  }
+
   roleSelection () {
     this.props.history.push('/roleselection')
   }
@@ -31,7 +36,7 @@ class Profile extends React.Component {
   render () {
     return (
       <div>
-        <TextContinueModal text={'firstprofile'} visible={this.state.firstProfile} />
+        <TextContinueModal visible={this.state.firstProfile} text={'firstprofile'} continue={this.makeInvisible} />
         <ProfileComponent
           name={this.props.user.name}
           location={'Brooklyn, NY'}

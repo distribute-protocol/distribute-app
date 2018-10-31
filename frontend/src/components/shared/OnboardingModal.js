@@ -1,8 +1,8 @@
 import React from 'react'
 import { Modal, Button } from 'antd'
-import coinbaselogo from '../../images/coinbaselogo.svg'
-import krakenlogo from '../../images/krakenlogo.svg'
-import uportlogo from '../../images/uportlogo.svg'
+import coinbaselogo from '../../images/logos/coinbaselogo.svg'
+import krakenlogo from '../../images/logos/krakenlogo.svg'
+import uportlogo from '../../images/logos/uportlogo.svg'
 
 class OnboardingModal extends React.Component {
   constructor () {
@@ -10,7 +10,6 @@ class OnboardingModal extends React.Component {
     this.state = {
       modalVisible: false
     }
-    this.showModal = this.showModal.bind(this)
     this.handleOk = this.handleOk.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
   }
@@ -19,10 +18,6 @@ class OnboardingModal extends React.Component {
     if (typeof np.skipFirst !== 'undefined' && np.visible !== 'undefined') {
       this.setState({modalVisible: np.visible, firstModal: !np.skipFirst && np.visible})
     }
-  }
-
-  showModal () {
-    this.setState({modalVisible: true})
   }
 
   async handleOk (e) {

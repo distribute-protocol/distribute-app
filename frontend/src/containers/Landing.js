@@ -6,8 +6,8 @@ import OnboardingModal from '../components/shared/OnboardingModal'
 import TextContinueModal from '../components/shared/TextContinueModal'
 import { loginUser } from '../actions/userActions'
 import { eth } from '../utilities/blockchain'
-import uportlogo from '../images/uportlogo.svg'
-import metamasklogo from '../images/metamaskfox.svg'
+import uportlogo from '../images/logos/uportlogo.svg'
+import metamasklogo from '../images/logos/metamaskfox.svg'
 
 class Landing extends React.Component {
   constructor () {

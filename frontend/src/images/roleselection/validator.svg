@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_d)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M64 122C97.1371 122 124 95.1371 124 62C124 28.8629 97.1371 2 64 2C30.8629 2 4 28.8629 4 62C4 95.1371 30.8629 122 64 122Z" fill="#5E498A"/>
+<mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="4" y="2" width="120" height="120">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M64 122C97.1371 122 124 95.1371 124 62C124 28.8629 97.1371 2 64 2C30.8629 2 4 28.8629 4 62C4 95.1371 30.8629 122 64 122Z" fill="white"/>
+</mask>
+<g mask="url(#mask0)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M64.0003 109.755C86.0109 109.755 104.452 94.4724 109.291 73.9395C110.102 70.4994 110.531 66.9121 110.531 63.2245C110.531 37.5263 89.6985 16.6939 64.0003 16.6939C38.3022 16.6939 17.4697 37.5263 17.4697 63.2245C17.4697 88.9226 38.3022 109.755 64.0003 109.755Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M64.0001 102.408C85.6406 102.408 103.184 84.8651 103.184 63.2245C103.184 41.584 85.6406 24.0408 64.0001 24.0408C42.3595 24.0408 24.8164 41.584 24.8164 63.2245C24.8164 84.8651 42.3595 102.408 64.0001 102.408Z" fill="#5E498A"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M45.6328 42.4081V69.3039C45.6328 69.3039 47.8456 75.8803 52.7805 81.3078C57.7154 86.7354 64.5986 90.1632 64.5986 90.1632C64.5986 90.1632 71.495 86.2989 75.7466 81.3078C79.9981 76.3168 82.3675 69.3039 82.3675 69.3039V42.4081C82.3675 42.4081 74.0534 43.9873 64.5986 43.9873C55.1439 43.9873 45.6328 42.4081 45.6328 42.4081Z" stroke="white" stroke-width="2"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_d" x="0" y="0" width="128" height="128" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"/>
+<feOffset dy="2"/>
+<feGaussianBlur stdDeviation="2"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+</filter>
+</defs>
+</svg>
