@@ -6,7 +6,6 @@ import OnboardingModal from '../components/shared/OnboardingModal'
 import TextContinueModal from '../components/shared/TextContinueModal'
 import { loginUser } from '../actions/userActions'
 import { eth } from '../utilities/blockchain'
-import { getNetworkStatus } from '../actions/networkActions'
 import uportlogo from '../images/uportlogo.svg'
 import metamasklogo from '../images/metamaskfox.svg'
 
@@ -66,7 +65,6 @@ class Landing extends React.Component {
       requested: ['name', 'avatar'],
       notifications: true
     }).then((credentials) => {
-      this.props.getNetworkStatus()
       this.props.loginUser(credentials)
       this.setState({clickedJoin: false, loggedin: true})
     })
@@ -140,8 +138,7 @@ class Landing extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    loginUser: (credentials) => dispatch(loginUser(credentials)),
-    getNetworkStatus: () => dispatch(getNetworkStatus())
+    loginUser: (credentials) => dispatch(loginUser(credentials))
   }
 }
 export default connect(null, mapDispatchToProps)(Landing)

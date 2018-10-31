@@ -103,6 +103,7 @@ const resolvers = {
   },
   Mutation: {
     addUser: (obj, args) => {
+      console.log('goob', args)
       let credentialObj = Object.assign({_id: new mongoose.Types.ObjectId()}, args.input)
       credentialObj = _.omit(credentialObj, ['avatar'])
       let userObj = new User({

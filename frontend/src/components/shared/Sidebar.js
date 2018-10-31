@@ -6,42 +6,33 @@ let titleStyle = {
   marginTop: 10,
   marginLeft: 10,
   fontSize: 20,
-  fontFamily: 'helvetica'
+  fontFamily: 'Lato'
 }
-let titleBarStyle = {
-  color: '#000',
-  backgroundColor: '#FCFCFC',
-  marginTop: 10,
-  fontSize: 20,
-  fontFamily: 'helvetica',
-  fontWeight: 100,
-  padding: 10
-}
+
 class Sidebar extends React.Component {
   constructor () {
     super()
     this.state = {
-      actions: false,
-      projects: false
+      showIcons: false,
+      highlightIcons: []
     }
     this.toggleShow = this.toggleShow.bind(this)
   }
+
   toggleShow (val) {
     this.setState({[val]: !this.state[val]})
   }
+
   render () {
     return (
       <div style={{height: '100vh', width: 200, backgroundColor: '#111111', position: 'fixed', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-        <h1 className='App-title' style={{color: 'white', marginTop: 20}}>distribute</h1>
-        <div style={{width: 100, height: 100, borderRadius: 50, backgroundColor: '#fcfcfc', marginTop: 20}}>
-          <img style={{width: 100, height: 100, borderRadius: 50}} alt='profile' src={typeof this.props.user.avatar !== 'undefined' ? this.props.user.avatar.uri : 'https://podlodka.info/components/com_jcomments/images/no_avatar.png'} />
+        <h1 className='App-title' style={{color: 'white', marginTop: 20}}>HYPHA</h1>
+        <div style={{width: 100, height: 100, borderRadius: 50, backgroundColor: '#fcfcfc', marginTop: 10}}>
+          <img style={{width: 100, height: 100, borderRadius: 50}} alt='profile' src={typeof this.props.user.avatar !== 'undefined' ? this.props.user.avatar.uri : 'http://busybridgeng.com/wp-content/uploads/2017/05/generic-avatar.png'} />
         </div>
         <h3 style={{color: '#FCFCFC', marginTop: 15}}>{this.props.user.name}</h3>
         <div style={{alignItems: 'flex-start', marginTop: 20}}>
-          <a href='/status'><h3 className='ActionText' style={Object.assign({}, titleStyle, {textAlign: 'center'})}>Network Status</h3></a>
-          {/* <a href='/projects'><h3 className='ActionText' style={{color: '#FCFCFC', marginTop: 10, fontSize: 20, fontFamily: 'helvetica'}}>Current Projects</h3></a> */}
-          <h3 onClick={() => this.toggleShow('actions')} style={Object.assign({}, titleBarStyle, {textAlign: 'center'})}>Project Actions</h3>
-          { true
+          { this.state.showIcons
             ? <div>
               <a href='/propose'><h3 className='ActionText' style={titleStyle}>Propose</h3></a>
               <a href='/stake'><h3 className='ActionText' style={titleStyle}>Stake</h3></a>
@@ -49,15 +40,6 @@ class Sidebar extends React.Component {
               <a href='/claim'><h3 className='ActionText' style={titleStyle}>Claim Tasks</h3></a>
               <a href='/validate'><h3 className='ActionText' style={titleStyle}>Validate</h3></a>
               <a href='/vote'><h3 className='ActionText' style={titleStyle}>Vote</h3></a>
-            </div>
-            : null
-          }
-          <h3 onClick={() => this.toggleShow('projects')} style={Object.assign({}, titleBarStyle, {textAlign: 'center'})}>Finished Projects</h3>
-          { true
-            ? <div>
-              <a href='/complete'><h3 className='ActionText' style={titleStyle}>Complete</h3></a>
-              <a href='/failed'><h3 className='ActionText' style={titleStyle}>Failed</h3></a>
-              <a href='/expired'><h3 className='ActionText' style={titleStyle}>Expired</h3></a>
             </div>
             : null
           }

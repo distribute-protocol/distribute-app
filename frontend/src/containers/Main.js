@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom'
 
 import Status from './Status'
 import Profile from './Profile'
+import RoleSelection from './RoleSelection'
 // import CurrentProjects from './CurrentProjects'
 import Propose from './0Propose'
 import Stake from './1Stake'
@@ -21,6 +22,7 @@ const Main = () =>
       <Route exact path='/' component={Landing} />
       <Route path='/status' component={Status} />
       <Route path='/profile' component={Profile} />
+      <Route path='/roleselection' component={RoleSelection} />
       {/* <Route path='/projects' component={CurrentProjects} /> */}
       <Route path='/propose' component={Propose} />
       <Route path='/stake' component={Stake} />

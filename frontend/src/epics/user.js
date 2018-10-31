@@ -74,6 +74,7 @@ const getUserStatusEpic = action$ =>
         query ($account: String!) {
           user(account: $account) {
             id
+            name
             reputationBalance
             tokenBalance
           }

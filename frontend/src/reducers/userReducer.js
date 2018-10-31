@@ -4,6 +4,7 @@ import { VOTE_COMMITTED, VOTE_REVEALED } from '../constants/PollActionTypes'
 import * as _ from 'lodash'
 
 const initialState = {
+  name: '',
   userTokens: 0,
   userReputation: 0,
   registering: false,
@@ -15,6 +16,7 @@ export default function userReducer (state = initialState, action) {
     case REGISTERED_USER:
       return Object.assign({}, state, {userReputation: 10000, registering: true})
     case LOGGED_IN_USER:
+      console.log(action.userObj)
       return Object.assign({}, state, {user: action.userObj})
     case LOGOUT_USER:
       return Object.assign({}, state, {user: {}})
@@ -22,7 +24,7 @@ export default function userReducer (state = initialState, action) {
       if (!action.responseDetails.data.user) {
         return state
       } else {
-        return Object.assign({}, state, {userTokens: action.responseDetails.data.user.tokenBalance, userReputation: action.responseDetails.data.user.reputationBalance})
+        return Object.assign({}, state, {name: action.responseDetails.data.user.name, userTokens: action.responseDetails.data.user.tokenBalance, userReputation: action.responseDetails.data.user.reputationBalance})
       }
     case TOKENS_MINTED:
       return Object.assign({}, state, {userTokens: state.userTokens + action.receipt.amountMinted.toNumber()})

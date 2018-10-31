@@ -1,17 +1,14 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import ProfileComponent from '../components/Profile'
-import TextContinueModal from '../components/shared/TextContinueModal'
+import RoleSelectionComponent from '../components/RoleSelection'
 import { getUserStatus } from '../actions/userActions'
 import { eth } from '../utilities/blockchain'
 
-class Profile extends React.Component {
+class RoleSelection extends React.Component {
   constructor () {
     super()
     this.state = {
-      firstProfile: true
     }
-    this.roleSelection = this.roleSelection.bind(this)
   }
 
   componentWillMount () {
@@ -24,20 +21,9 @@ class Profile extends React.Component {
     })
   }
 
-  roleSelection () {
-    this.props.history.push('/roleselection')
-  }
-
   render () {
     return (
-      <div>
-        <TextContinueModal text={'firstprofile'} visible={this.state.firstProfile} />
-        <ProfileComponent
-          name={this.props.user.name}
-          location={'Brooklyn, NY'}
-          handleSave={this.roleSelection}
-        />
-      </div>
+      <RoleSelectionComponent />
     )
   }
 }
@@ -55,4 +41,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile)
+export default connect(mapStateToProps, mapDispatchToProps)(RoleSelection)
