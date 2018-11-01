@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg width="98" height="98" viewBox="0 0 98 98" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M49 98C76.062 98 98 76.062 98 49C98 21.938 76.062 0 49 0C21.938 0 0 21.938 0 49C0 76.062 21.938 98 49 98Z" fill="white"/>
+<mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="98" height="98">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M49 98C76.062 98 98 76.062 98 49C98 21.938 76.062 0 49 0C21.938 0 0 21.938 0 49C0 76.062 21.938 98 49 98Z" fill="white"/>
+</mask>
+<g mask="url(#mask0)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M49 88C66.9753 88 82.0355 75.5191 85.9876 58.7506C86.6497 55.9412 87 53.0115 87 50C87 29.0132 69.9868 12 49 12C28.0132 12 11 29.0132 11 50C11 70.9868 28.0132 88 49 88Z" fill="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M49 82C66.6731 82 81 67.6731 81 50C81 32.3269 66.6731 18 49 18C31.3269 18 17 32.3269 17 50C17 67.6731 31.3269 82 49 82Z" fill="#FFC161"/>
+</g>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M49.0307 28L46.06 44.5789L41.9646 37.6163V44.5789L31 40.8066L41.9646 50.4777L31 59.4429L41.9646 55.2907V62.2336L46.06 55.2907L49.0307 70.6456L51.4671 55.2907L55.9127 62.2336L55.4592 54.6053L66 59.4429L57.243 50.4777L66 40.8066L54.9012 44.5789L55.9127 37.6163L51.4671 44.5789L49.0307 28Z" fill="#FFC161" stroke="white"/>
+</svg>
