@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import ProfileComponent from '../components/Profile'
-import TextContinueModal from '../components/shared/TextContinueModal'
+import TextContinue from '../components/shared/modals/TextContinue'
 import { getUserStatus } from '../actions/userActions'
 import { eth } from '../utilities/blockchain'
 
@@ -36,7 +36,7 @@ class Profile extends React.Component {
   render () {
     return (
       <div>
-        <TextContinueModal visible={this.state.firstProfile} text={'firstprofile'} continue={this.makeInvisible} />
+        <TextContinue visible={this.state.firstProfile} text={'firstprofile'} continue={this.makeInvisible} />
         <ProfileComponent
           name={this.props.user.name}
           location={'Brooklyn, NY'}

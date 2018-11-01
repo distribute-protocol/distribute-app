@@ -2,8 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import uport from '../utilities/uport'
 import { Button } from 'antd'
-import OnboardingModal from '../components/shared/OnboardingModal'
-import TextContinueModal from '../components/shared/TextContinueModal'
+import Onboarding from '../components/shared/modals/Onboarding'
+import TextContinue from '../components/shared/modals/TextContinue'
 import { loginUser } from '../actions/userActions'
 import { eth } from '../utilities/blockchain'
 import uportlogo from '../images/logos/uportlogo.svg'
@@ -81,8 +81,8 @@ class Landing extends React.Component {
   render () {
     return (
       <div>
-        <OnboardingModal skipFirst={this.state.hasEther} visible={this.state.clickedJoin} getUport={this.getUport} />
-        <TextContinueModal text={'congrats'} visible={this.state.loggedin} continue={this.profilePage} />
+        <Onboarding skipFirst={this.state.hasEther} visible={this.state.clickedJoin} getUport={this.getUport} />
+        <TextContinue text={'congrats'} visible={this.state.loggedin} continue={this.profilePage} />
         <div style={{backgroundColor: '#CDCDCD', height: '60vh'}}>
           { /* START OF TOP BAR */ }
           <div style={{display: 'flex', justifyContent: 'space-between'}}>

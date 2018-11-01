@@ -1,7 +1,7 @@
 import React from 'react'
 import { Modal, Button } from 'antd'
 
-class TextContinueModal extends React.Component {
+class TextContinue extends React.Component {
   constructor () {
     super()
     this.state = {
@@ -66,4 +66,4 @@ class TextContinueModal extends React.Component {
   }
 }
 
-export default TextContinueModal
+export default TextContinue

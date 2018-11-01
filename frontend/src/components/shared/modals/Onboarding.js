@@ -1,10 +1,10 @@
 import React from 'react'
 import { Modal, Button } from 'antd'
-import coinbaselogo from '../../images/logos/coinbaselogo.svg'
-import krakenlogo from '../../images/logos/krakenlogo.svg'
-import uportlogo from '../../images/logos/uportlogo.svg'
+import coinbaselogo from '../../../images/logos/coinbaselogo.svg'
+import krakenlogo from '../../../images/logos/krakenlogo.svg'
+import uportlogo from '../../../images/logos/uportlogo.svg'
 
-class OnboardingModal extends React.Component {
+class Onboarding extends React.Component {
   constructor () {
     super()
     this.state = {
@@ -20,7 +20,7 @@ class OnboardingModal extends React.Component {
     }
   }
 
-  async handleOk (e) {
+  handleOk (e) {
     if (this.state.firstModal) {
       this.setState({firstModal: false})
     } else {
@@ -91,4 +91,4 @@ class OnboardingModal extends React.Component {
   }
 }
 
-export default OnboardingModal
+export default Onboarding

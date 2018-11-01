@@ -31,7 +31,7 @@ class Sidebar extends React.Component {
         </div>
         <h3 style={{color: '#FCFCFC', marginTop: 11, fontSize: 15}}>{this.props.user.name.split(' ')[0]}</h3>
         <div style={{alignItems: 'flex-start', marginTop: 20}}>
-          { this.state.showIcons
+          { this.props.showIcons
             ? <div>
               <a href='/propose'><h3 className='ActionText' style={titleStyle}>Propose</h3></a>
               <a href='/stake'><h3 className='ActionText' style={titleStyle}>Stake</h3></a>

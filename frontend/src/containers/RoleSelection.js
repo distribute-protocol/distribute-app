@@ -1,7 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Sidebar from '../components/shared/Sidebar'
-import RoleIntroModal from '../components/shared/RoleIntroModal'
+import RoleIntro from '../components/shared/modals/RoleIntro'
+import RoleSelectionModal from '../components/shared/modals/RoleSelectionModal'
 import { getUserStatus } from '../actions/userActions'
 import { eth } from '../utilities/blockchain'
 
@@ -9,8 +10,11 @@ class RoleSelection extends React.Component {
   constructor () {
     super()
     this.state = {
-      firstProfile: true
+      firstModal: true,
+      secondModal: false
     }
+    this.changeRole = this.changeRole.bind(this)
+    this.populateSidebar = this.populateSidebar.bind(this)
   }
 
   componentWillMount () {
@@ -23,11 +27,20 @@ class RoleSelection extends React.Component {
     })
   }
 
+  changeRole (role) {
+    this.setState({firstModal: false, secondModal: true, role: role})
+  }
+
+  populateSidebar () {
+    this.setState({showIcons: true, secondModal: false})
+  }
+
   render () {
     return (
       <div>
-        <RoleIntroModal visible={this.state.firstProfile} />
-        <Sidebar />
+        <RoleIntro visible={this.state.firstModal} indicateRole={this.changeRole} />
+        <RoleSelectionModal visible={this.state.secondModal} role={this.state.role} selectRole={this.populateSidebar} />
+        <Sidebar showIcons={this.state.showIcons} highlightIcon={this.state.role} />
       </div>
     )
   }
