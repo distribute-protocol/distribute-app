@@ -7,7 +7,6 @@ class TextContinue extends React.Component {
     this.state = {
       modalVisible: false
     }
-    this.showModal = this.showModal.bind(this)
     this.handleOk = this.handleOk.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
   }
@@ -22,16 +21,20 @@ class TextContinue extends React.Component {
         case 'firstprofile':
           text = <p>We already started a profile for you based on<br />your uPort profile. You can add more to your<br />profile to give people more information about<br />you and what you like.</p>
           break
+        case 'Initiator':
+        case 'Finder':
+        case 'Planner':
+        case 'Doer':
+        case 'Validator':
+        case 'Resolver':
+          text = <p>You have selected the {np.text.toLowerCase()} role.<br />You can see your current role and the other<br />available ones on the dashboard on the left.</p>
+          break
         default:
           text = <p>I'm sorry, something seems to be broken in here.</p>
           break
       }
       this.setState({text: text, modalVisible: true})
     }
-  }
-
-  showModal () {
-    this.setState({modalVisible: true})
   }
 
   handleOk (e) {
@@ -42,6 +45,9 @@ class TextContinue extends React.Component {
   }
 
   handleCancel (e) {
+    if (typeof this.props.handleCancel !== 'undefined') {
+      this.props.handleCancel()
+    }
     this.setState({modalVisible: false})
   }
 

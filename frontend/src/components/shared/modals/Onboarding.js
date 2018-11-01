@@ -80,6 +80,7 @@ class Onboarding extends React.Component {
         onOk={this.handleOk}
         onCancel={this.handleCancel}
         footer={footer}
+        maskClosable={false}
       >
         <div>
           {topText}

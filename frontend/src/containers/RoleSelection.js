@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import Sidebar from '../components/shared/Sidebar'
 import RoleIntro from '../components/shared/modals/RoleIntro'
+import TextContinue from '../components/shared/modals/TextContinue'
 import RoleSelectionModal from '../components/shared/modals/RoleSelectionModal'
 import { getUserStatus } from '../actions/userActions'
 import { eth } from '../utilities/blockchain'
@@ -11,10 +12,14 @@ class RoleSelection extends React.Component {
     super()
     this.state = {
       firstModal: true,
-      secondModal: false
+      secondModal: false,
+      thirdModal: false
     }
     this.changeRole = this.changeRole.bind(this)
     this.populateSidebar = this.populateSidebar.bind(this)
+    this.closeLastModal = this.closeLastModal.bind(this)
+    this.goBack = this.goBack.bind(this)
+    this.goToProfile = this.goToProfile.bind(this)
   }
 
   componentWillMount () {
@@ -31,15 +36,32 @@ class RoleSelection extends React.Component {
     this.setState({firstModal: false, secondModal: true, role: role})
   }
 
+  goBack () {
+    if (this.state.secondModal === true) {
+      this.setState({firstModal: true, secondModal: false})
+    } else if (this.state.thirdModal === true) {
+      this.setState({secondModal: true, thirdModal: false})
+    }
+  }
+
+  goToProfile () {
+    this.props.history.push('/profile')
+  }
+
   populateSidebar () {
-    this.setState({showIcons: true, secondModal: false})
+    this.setState({showIcons: true, secondModal: false, thirdModal: true})
+  }
+
+  closeLastModal () {
+    this.setState({thirdModal: false})
   }
 
   render () {
     return (
       <div>
-        <RoleIntro visible={this.state.firstModal} indicateRole={this.changeRole} />
-        <RoleSelectionModal visible={this.state.secondModal} role={this.state.role} selectRole={this.populateSidebar} />
+        <RoleIntro visible={this.state.firstModal} indicateRole={this.changeRole} handleCancel={this.goToProfile} />
+        <RoleSelectionModal visible={this.state.secondModal} role={this.state.role} selectRole={this.populateSidebar} handleCancel={this.goBack} />
+        <TextContinue visible={this.state.thirdModal} text={this.state.role} continue={this.closeLastModal} handleCancel={this.goBack} />
         <Sidebar showIcons={this.state.showIcons} highlightIcon={this.state.role} />
       </div>
     )

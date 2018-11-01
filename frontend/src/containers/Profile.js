@@ -12,7 +12,7 @@ class Profile extends React.Component {
       firstProfile: true
     }
     this.roleSelection = this.roleSelection.bind(this)
-    this.makeInvisible = this.makeInvisible.bind(this)
+    this.closeLastModal = this.closeLastModal.bind(this)
   }
 
   componentWillMount () {
@@ -25,7 +25,7 @@ class Profile extends React.Component {
     })
   }
 
-  makeInvisible () {
+  closeLastModal () {
     this.setState({firstProfile: false})
   }
 
@@ -36,7 +36,7 @@ class Profile extends React.Component {
   render () {
     return (
       <div>
-        <TextContinue visible={this.state.firstProfile} text={'firstprofile'} continue={this.makeInvisible} />
+        <TextContinue visible={this.state.firstProfile} text={'firstprofile'} continue={this.closeLastModal} />
         <ProfileComponent
           name={this.props.user.name}
           location={'Brooklyn, NY'}

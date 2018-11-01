@@ -23,8 +23,9 @@ class Sidebar extends React.Component {
     this.toggleShow = this.toggleShow.bind(this)
   }
 
-  toggleShow (val) {
-    this.setState({[val]: !this.state[val]})
+  toggleShow () {
+    console.log('goob')
+    // this.setState({[val]: !this.state[val]})
   }
 
   render () {
@@ -38,7 +39,7 @@ class Sidebar extends React.Component {
         <div style={{marginTop: 10}}>
           { this.props.showIcons
             ? <div style={{display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between'}}>
-              { this.props.highlightIcon === 'Initiator' ? <img src={initiatorcolor} alt='initiator' /> : <img src={initiatorgray} alt='initiator' /> }
+              { this.props.highlightIcon === 'Initiator' ? <img src={initiatorcolor} alt='initiator' onClick={() => this.toggleShow()} /> : <img src={initiatorgray} alt='initiator' /> }
               { this.props.highlightIcon === 'Finder' ? <img src={findercolor} alt='finder' /> : <img src={findergray} alt='finder' /> }
               { this.props.highlightIcon === 'Planner' ? <img src={plannercolor} alt='planner' /> : <img src={plannergray} alt='planner' /> }
               { this.props.highlightIcon === 'Doer' ? <img src={doercolor} alt='doer' /> : <img src={doergray} alt='doer' /> }

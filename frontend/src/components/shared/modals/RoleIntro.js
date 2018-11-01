@@ -15,6 +15,7 @@ class RoleIntro extends React.Component {
       modalVisible: false
     }
     this.clickedRole = this.clickedRole.bind(this)
+    this.handleCancel = this.handleCancel.bind(this)
   }
 
   componentWillReceiveProps (np) {
@@ -28,6 +29,11 @@ class RoleIntro extends React.Component {
     this.setState({modalVisible: false})
   }
 
+  handleCancel () {
+    this.setState({modalVisible: false})
+    this.props.handleCancel()
+  }
+
   render () {
     return (
       <Modal
@@ -35,9 +41,9 @@ class RoleIntro extends React.Component {
         width={841}
         bodyStyle={{height: 600, padding: 0}}
         visible={this.state.modalVisible}
-        onOk={this.handleOk}
         onCancel={this.handleCancel}
         footer={null}
+        maskClosable={false}
       >
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: 140, backgroundColor: 'black', color: 'white', fontSize: 18, fontFamily: 'Avenir Next', textAlign: 'center'}}>
           <p style={{marginTop: 5}}>On the distribute network there are 6 roles. Each role has a specific task they<br />complete to help further the purpose of the distribute network. The roles are<br />Initiators, Discoverers, Planners, Doers, Validators, and Resolvers.</p>
