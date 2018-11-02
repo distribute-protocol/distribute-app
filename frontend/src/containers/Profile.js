@@ -15,12 +15,11 @@ class Profile extends React.Component {
     this.closeLastModal = this.closeLastModal.bind(this)
   }
 
-  componentDidReceiveProps () {
+  componentWillMount () {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
           this.props.getUserStatus(accounts[0])
-          console.log('goba')
         }
       }
     })
@@ -37,7 +36,10 @@ class Profile extends React.Component {
   render () {
     return (
       <div>
-        <TextContinue visible={this.state.firstProfile} text={'firstprofile'} continue={this.closeLastModal} />
+        {this.state.firstProfile
+          ? <TextContinue visible={this.state.firstProfile} text={'firstprofile'} continue={this.closeLastModal} />
+          : null
+        }
         <ProfileComponent
           name={this.props.user.name}
           location={'Brooklyn, NY'}
