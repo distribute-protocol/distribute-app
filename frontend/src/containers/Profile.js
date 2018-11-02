@@ -15,11 +15,12 @@ class Profile extends React.Component {
     this.closeLastModal = this.closeLastModal.bind(this)
   }
 
-  componentWillMount () {
+  componentDidReceiveProps () {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
           this.props.getUserStatus(accounts[0])
+          console.log('goba')
         }
       }
     })

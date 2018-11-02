@@ -32,7 +32,7 @@ class RoleSelectionModal extends React.Component {
           color = '#A85490'
           break
         case 'Validator':
-          text = <p>Initiators are the spark of the distribute network. They spark the ideas that become the projects and<br />initiatives for the commons. They are invited to be creative in addition to being practical. When an initiator<br />wants to submit an idea to the network they contribute some of their own stake to help it grow.<br />What will you help start today?</p>
+          text = <p>Defenders are the protectors of network value. They validate the work that has been done on projects and<br />confirm that it has been completed sufficiently. They are required to stake some of their own tokens to<br />complete a validation, and receive a reward if they are deemed correct.<br />Will you help us protect the network today?</p>
           color = '#5E498A'
           break
         case 'Resolver':

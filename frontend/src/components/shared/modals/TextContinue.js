@@ -63,6 +63,7 @@ class TextContinue extends React.Component {
             Continue
           </Button>
         ]}
+        maskClosable={false}
       >
         <div style={{fontSize: 14, fontFamily: 'NowAltRegular', textAlign: 'center'}}>
           {this.state.text}
