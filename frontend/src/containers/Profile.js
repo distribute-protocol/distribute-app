@@ -53,7 +53,7 @@ class Profile extends React.Component {
   }
 
   addItem (i) {
-    alert('add', i)
+    console.log('add', i)
   }
 
   render () {

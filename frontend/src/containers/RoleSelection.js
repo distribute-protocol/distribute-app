@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Sidebar from '../components/shared/Sidebar'
-import RoleIntro from '../components/shared/modals/RoleIntro'
+import RoleIntro from '../components/shared/modals/onboarding/RoleIntro'
 import TextContinue from '../components/shared/modals/TextContinue'
-import RoleSelectionModal from '../components/shared/modals/RoleSelectionModal'
+import RoleSelectionModal from '../components/shared/modals/onboarding/RoleSelectionModal'
 import { getUserStatus } from '../actions/userActions'
 import { eth } from '../utilities/blockchain'
 
@@ -17,7 +17,7 @@ class RoleSelection extends React.Component {
     }
     this.changeRole = this.changeRole.bind(this)
     this.populateSidebar = this.populateSidebar.bind(this)
-    this.closeLastModal = this.closeLastModal.bind(this)
+    this.closeModal = this.closeModal.bind(this)
     this.goBack = this.goBack.bind(this)
     this.goToProfile = this.goToProfile.bind(this)
   }
@@ -52,8 +52,9 @@ class RoleSelection extends React.Component {
     this.setState({showIcons: true, secondModal: false, thirdModal: true})
   }
 
-  closeLastModal () {
+  closeModal () {
     this.setState({thirdModal: false})
+    this.props.history.push('/' + this.state.role.toLowerCase())
   }
 
   render () {
@@ -61,7 +62,7 @@ class RoleSelection extends React.Component {
       <div>
         <RoleIntro visible={this.state.firstModal} indicateRole={this.changeRole} handleCancel={this.goToProfile} />
         <RoleSelectionModal visible={this.state.secondModal} role={this.state.role} selectRole={this.populateSidebar} handleCancel={this.goBack} />
-        <TextContinue visible={this.state.thirdModal} text={this.state.role} continue={this.closeLastModal} handleCancel={this.goBack} />
+        <TextContinue visible={this.state.thirdModal} text={this.state.role} continue={this.closeModal} handleCancel={this.goBack} />
         <Sidebar showIcons={this.state.showIcons} highlightIcon={this.state.role} />
       </div>
     )

@@ -1,8 +1,8 @@
 import React from 'react'
 import { Modal, Button } from 'antd'
-import coinbaselogo from '../../../images/logos/coinbaselogo.svg'
-import krakenlogo from '../../../images/logos/krakenlogo.svg'
-import uportlogo from '../../../images/logos/uportlogo.svg'
+import coinbaselogo from '../../../../images/logos/coinbaselogo.svg'
+import krakenlogo from '../../../../images/logos/krakenlogo.svg'
+import uportlogo from '../../../../images/logos/uportlogo.svg'
 
 class Onboarding extends React.Component {
   constructor () {

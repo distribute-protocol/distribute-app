@@ -22,12 +22,6 @@ class Sidebar extends React.Component {
       showIcons: false,
       highlightIcons: []
     }
-    this.toggleShow = this.toggleShow.bind(this)
-  }
-
-  toggleShow () {
-    console.log('goob')
-    // this.setState({[val]: !this.state[val]})
   }
 
   render () {
@@ -41,12 +35,12 @@ class Sidebar extends React.Component {
         <div style={{marginTop: 10}}>
           { this.props.showIcons
             ? <div style={{display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between'}}>
-              { this.props.highlightIcon === 'Initiator' ? <img src={initiatorcolor} alt='initiator' onClick={() => this.toggleShow()} /> : <img src={initiatorgray} alt='initiator' /> }
-              { this.props.highlightIcon === 'Finder' ? <img src={findercolor} alt='finder' /> : <img src={findergray} alt='finder' /> }
-              { this.props.highlightIcon === 'Planner' ? <img src={plannercolor} alt='planner' /> : <img src={plannergray} alt='planner' /> }
-              { this.props.highlightIcon === 'Doer' ? <img src={doercolor} alt='doer' /> : <img src={doergray} alt='doer' /> }
-              { this.props.highlightIcon === 'Validator' ? <img src={validatorcolor} alt='validator' /> : <img src={validatorgray} alt='validator' /> }
-              { this.props.highlightIcon === 'Resolver' ? <img src={resolvercolor} alt='resolver' /> : <img src={resolvergray} alt='resolver' /> }
+              { this.props.highlightIcon === 'Initiator' ? <img style={{paddingBottom: 5}} src={initiatorcolor} alt='initiator' onClick={() => this.toggleShow()} /> : <img src={initiatorgray} alt='initiator' /> }
+              { this.props.highlightIcon === 'Finder' ? <img style={{paddingTop: 5, paddingBottom: 5}} src={findercolor} alt='finder' /> : <img src={findergray} alt='finder' /> }
+              { this.props.highlightIcon === 'Planner' ? <img style={{paddingTop: 5, paddingBottom: 5}} src={plannercolor} alt='planner' /> : <img src={plannergray} alt='planner' /> }
+              { this.props.highlightIcon === 'Doer' ? <img style={{paddingTop: 5, paddingBottom: 5}} src={doercolor} alt='doer' /> : <img src={doergray} alt='doer' /> }
+              { this.props.highlightIcon === 'Validator' ? <img style={{paddingTop: 5, paddingBottom: 5}} src={validatorcolor} alt='validator' /> : <img src={validatorgray} alt='validator' /> }
+              { this.props.highlightIcon === 'Resolver' ? <img style={{paddingTop: 5}} src={resolvercolor} alt='resolver' /> : <img src={resolvergray} alt='resolver' /> }
               <div style={{paddingTop: 38, paddingBottom: 10}}>
                 <img style={{paddingRight: 5}} src={network} alt='network' />
                 <img style={{paddingLeft: 5}}src={dashboard} alt='dashboard' />

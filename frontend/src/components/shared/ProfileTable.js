@@ -6,7 +6,8 @@ import { css } from 'react-emotion'
 const tableCSS = css({
   'thead': {
     fontSize: 18,
-    fontFamily: 'Lato'
+    fontFamily: 'Lato',
+    fontWeight: 700
   },
   'td': {
     fontSize: 14,
