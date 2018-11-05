@@ -19,6 +19,7 @@ class Landing extends React.Component {
     this.getUport = this.getUport.bind(this)
     this.checkMetamask = this.checkMetamask.bind(this)
     this.handleJoin = this.handleJoin.bind(this)
+    this.unclickJoin = this.unclickJoin.bind(this)
     this.profilePage = this.profilePage.bind(this)
   }
 
@@ -32,7 +33,11 @@ class Landing extends React.Component {
         if (accounts.length) {
           eth.getBalance(accounts[0], (err, res) => {
             if (!err) {
-              this.setState({metamask: true})
+              if (res > 0) {
+                this.setState({metamask: true, hasEther: true})
+              } else {
+                this.setState({metamask: true, hasEther: false})
+              }
             }
           })
         } else {
@@ -43,21 +48,25 @@ class Landing extends React.Component {
   }
 
   handleJoin () {
-    eth.getAccounts(async (err, accounts) => {
-      if (!err) {
-        if (accounts.length) {
-          eth.getBalance(accounts[0], (err, res) => {
-            if (!err) {
-              if (res > 0) {
-                this.setState({hasEther: true, clickedJoin: true})
-              } else {
-                this.setState({hasEther: false, clickedJoin: true})
+    if (!this.state.metamask || !this.state.hasEther) {
+      eth.getAccounts(async (err, accounts) => {
+        if (!err) {
+          if (accounts.length) {
+            eth.getBalance(accounts[0], (err, res) => {
+              if (!err) {
+                if (res > 0) {
+                  this.setState({hasEther: true, clickedJoin: true})
+                } else {
+                  this.setState({hasEther: false, clickedJoin: true})
+                }
               }
-            }
-          })
+            })
+          }
         }
-      }
-    })
+      })
+    } else {
+      this.setState({clickedJoin: true})
+    }
   }
 
   getUport () {
@@ -78,10 +87,18 @@ class Landing extends React.Component {
     this.props.history.push('/profile')
   }
 
+  unclickJoin () {
+    this.setState({clickedJoin: false})
+  }
+
   render () {
+    console.log(this.state.clickedJoin)
     return (
       <div>
-        <Onboarding skipFirst={this.state.hasEther} visible={this.state.clickedJoin} getUport={this.getUport} />
+        {this.state.clickedJoin
+          ? <Onboarding skipFirst={this.state.hasEther} visible={this.state.clickedJoin} getUport={this.getUport} cancel={this.unclickJoin} />
+          : null
+        }
         <TextContinue text={'congrats'} visible={this.state.loggedin} continue={this.profilePage} />
         <div style={{backgroundColor: '#CDCDCD', height: '60vh'}}>
           { /* START OF TOP BAR */ }
@@ -96,7 +113,7 @@ class Landing extends React.Component {
                 DISTRIBUTE<br />NETWORK
               </div>
             </div>
-            <div style={{paddingTop: 27, paddingRight: 66.5, color: 'white', fontSize: 20, fontFamily: 'NowAltRegular'}}>
+            <div style={{paddingTop: 28.5, paddingRight: 66.5, color: 'white', fontSize: 20, fontFamily: 'NowAltRegular'}}>
               SIGN UP | LOGIN
             </div>
           </div>
@@ -104,7 +121,7 @@ class Landing extends React.Component {
                START OF PLATFORM TITLE */ }
           <div style={{display: 'flex', justifyContent: 'center'}}>
             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-              <div style={{fontSize: 36, fontFamily: 'NowAltRegular'}}>A Platform for the Commons</div>
+              <div style={{fontSize: 36, fontFamily: 'NowAltRegular', textAlign: 'center'}}>A Platform for the Commons</div>
               { this.state.metamask
                 ? <Button style={{backgroundColor: '#A4D573', marginTop: 10, paddingTop: 3}} onClick={this.handleJoin}>
                   <p style={{color: 'white', fontSize: 18, fontFamily: 'NowAltRegular'}}>JOIN</p>

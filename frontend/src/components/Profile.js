@@ -6,13 +6,17 @@ import addavatar from '../images/addavatar.svg'
 export default ({
   name,
   location,
-  handleSave
+  handleSave,
+  editContent,
+  deleteItem,
+  addItem,
+  data
 }) => {
   return (
     <div>
       <div style={{display: 'flex', alignItems: 'center', paddingTop: 47, paddingLeft: 100}}>
         <div>
-          <img src={addavatar} alt='add avatar' />
+          <img style={{cursor: 'pointer'}} src={addavatar} alt='add avatar' />
         </div>
         <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 20, fontFamily: 'NowAltRegular', paddingLeft: 25, paddingTop: 20}}>
           <p>{name}</p>
@@ -21,12 +25,12 @@ export default ({
       </div>
       <div style={{display: 'flex', paddingTop: 40}}>
         <div style={{display: 'flex', justifyContent: 'space-between', flexGrow: 3, flexWrap: 'wrap', paddingLeft: 100, paddingRight: 46}}>
-          <ProfileTable title={'Expertise / Skills'} input={'Electrical Wiring'} add={'Add Expertise'} />
-          <ProfileTable title={'Interests'} input={'Land Trusts'} add={'Add Interest'} />
-          <ProfileTable title={'Contact Details'} input={'twitter: @ashokafinley'} add={'Add Contact Details'} />
-          <ProfileTable title={'Want To Learn'} input={'Mesh Node Installation'} add={'Add Skill To Learn'} />
-          <ProfileTable title={'Want To Teach'} input={'Urban Gardening'} add={'Add Skill To Teach'} />
-          <ProfileTable title={'Affiliations'} input={'distribute.network'} add={'Add Affiliation'} />
+          <ProfileTable title={'Expertise / Skills'} input={data.expertise} add={'Add Expertise'} deleteItem={(i) => deleteItem(i)} addItem={addItem} />
+          <ProfileTable title={'Interests'} input={data.interests} add={'Add Interest'} deleteItem={(i) => deleteItem(i)} addItem={addItem} />
+          <ProfileTable title={'Contact Details'} input={data.contactDetails} add={'Add Contact Details'} deleteItem={(i) => deleteItem(i)} addItem={addItem} />
+          <ProfileTable title={'Want To Learn'} input={data.wantToLearn} add={'Add Skill To Learn'} deleteItem={(i) => deleteItem(i)} addItem={addItem} />
+          <ProfileTable title={'Want To Teach'} input={data.wantToTeach} add={'Add Skill To Teach'} deleteItem={(i) => deleteItem(i)} addItem={addItem} />
+          <ProfileTable title={'Affiliations'} input={data.affiliations} add={'Add Affiliation'} deleteItem={(i) => deleteItem(i)} addItem={addItem} />
         </div>
         <div style={{display: 'flex', justifyContent: 'center', flexGrow: 1}}>
           <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', flexGrow: 1, paddingRight: 105}}>

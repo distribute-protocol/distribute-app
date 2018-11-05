@@ -9,10 +9,20 @@ class Profile extends React.Component {
   constructor () {
     super()
     this.state = {
-      firstProfile: true
+      firstProfile: true,
+      data: {
+        expertise: ['electrical wiring'],
+        interests: ['land trusts'],
+        contactDetails: ['twitter: @ashokafinley'],
+        wantToLearn: ['mesh node installation'],
+        wantToTeach: ['urban gardening'],
+        affiliations: ['distribute.network']
+      }
     }
     this.roleSelection = this.roleSelection.bind(this)
     this.closeLastModal = this.closeLastModal.bind(this)
+    this.deleteItem = this.deleteItem.bind(this)
+    this.addItem = this.addItem.bind(this)
   }
 
   componentWillMount () {
@@ -33,6 +43,14 @@ class Profile extends React.Component {
     this.props.history.push('/roleselection')
   }
 
+  deleteItem (i) {
+    alert('delete', i)
+  }
+
+  addItem (i) {
+    alert('add', i)
+  }
+
   render () {
     return (
       <div>
@@ -44,6 +62,9 @@ class Profile extends React.Component {
           name={this.props.user.name}
           location={'Brooklyn, NY'}
           handleSave={this.roleSelection}
+          deleteItem={(i) => { this.deleteItem(i) }}
+          addItem={this.addItem}
+          data={this.state.data}
         />
       </div>
     )

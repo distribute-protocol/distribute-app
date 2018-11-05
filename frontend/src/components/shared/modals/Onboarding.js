@@ -16,6 +16,7 @@ class Onboarding extends React.Component {
 
   componentWillReceiveProps (np) {
     if (typeof np.skipFirst !== 'undefined' && np.visible !== 'undefined') {
+      console.log('modal visible plz', np.visible)
       this.setState({modalVisible: np.visible, firstModal: !np.skipFirst && np.visible})
     }
   }
@@ -35,6 +36,7 @@ class Onboarding extends React.Component {
     } else {
       this.setState({firstModal: true})
     }
+    this.props.cancel()
   }
 
   render () {
