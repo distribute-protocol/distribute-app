@@ -1,17 +1,19 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import initiatorgray from '../../images/sidebaricons/initiator-gray.svg'
-import initiatorcolor from '../../images/sidebaricons/initiator-color.svg'
-import findergray from '../../images/sidebaricons/finder-gray.svg'
-import findercolor from '../../images/sidebaricons/finder-color.svg'
-import plannergray from '../../images/sidebaricons/planner-gray.svg'
-import plannercolor from '../../images/sidebaricons/planner-color.svg'
-import doergray from '../../images/sidebaricons/doer-gray.svg'
-import doercolor from '../../images/sidebaricons/doer-color.svg'
-import validatorgray from '../../images/sidebaricons/validator-gray.svg'
-import validatorcolor from '../../images/sidebaricons/validator-color.svg'
-import resolvergray from '../../images/sidebaricons/resolver-gray.svg'
-import resolvercolor from '../../images/sidebaricons/resolver-color.svg'
+import initiatorgray from '../../images/sidebaricons/standard/initiator-gray.svg'
+import initiatorcolor from '../../images/sidebaricons/standard/initiator-color.svg'
+import findergray from '../../images/sidebaricons/standard/finder-gray.svg'
+import findercolor from '../../images/sidebaricons/standard/finder-color.svg'
+import plannergray from '../../images/sidebaricons/standard/planner-gray.svg'
+import plannercolor from '../../images/sidebaricons/standard/planner-color.svg'
+import doergray from '../../images/sidebaricons/standard/doer-gray.svg'
+import doercolor from '../../images/sidebaricons/standard/doer-color.svg'
+import validatorgray from '../../images/sidebaricons/standard/validator-gray.svg'
+import validatorcolor from '../../images/sidebaricons/standard/validator-color.svg'
+import resolvergray from '../../images/sidebaricons/standard/resolver-gray.svg'
+import resolvercolor from '../../images/sidebaricons/standard/resolver-color.svg'
+import network from '../../images/sidebaricons/standard/network.svg'
+import dashboard from '../../images/sidebaricons/standard/dashboard.svg'
 
 class Sidebar extends React.Component {
   constructor () {
@@ -30,7 +32,7 @@ class Sidebar extends React.Component {
 
   render () {
     return (
-      <div style={{height: '100vh', width: 150, backgroundColor: '#111111', position: 'fixed', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+      <div style={{minHeight: '100vh', width: 150, backgroundColor: '#111111', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
         <h1 className='App-title' style={{color: 'white', marginTop: 10, fontSize: 18}}>HYPHA</h1>
         <div style={{width: 100, height: 100, borderRadius: 50, backgroundColor: '#fcfcfc'}}>
           <img style={{width: 100, height: 100, borderRadius: 50}} alt='profile' src={typeof this.props.user.avatar !== 'undefined' ? this.props.user.avatar.uri : 'http://busybridgeng.com/wp-content/uploads/2017/05/generic-avatar.png'} />
@@ -45,6 +47,10 @@ class Sidebar extends React.Component {
               { this.props.highlightIcon === 'Doer' ? <img src={doercolor} alt='doer' /> : <img src={doergray} alt='doer' /> }
               { this.props.highlightIcon === 'Validator' ? <img src={validatorcolor} alt='validator' /> : <img src={validatorgray} alt='validator' /> }
               { this.props.highlightIcon === 'Resolver' ? <img src={resolvercolor} alt='resolver' /> : <img src={resolvergray} alt='resolver' /> }
+              <div style={{paddingTop: 38, paddingBottom: 10}}>
+                <img style={{paddingRight: 5}} src={network} alt='network' />
+                <img style={{paddingLeft: 5}}src={dashboard} alt='dashboard' />
+              </div>
             </div>
             : null
           }
