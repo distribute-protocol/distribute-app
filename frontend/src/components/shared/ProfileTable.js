@@ -28,7 +28,7 @@ export default ({
       return {
         key: i,
         address: datum,
-        close: <Button onClick={(i) => deleteItem(i)} style={{cursor: 'pointer'}} shape='circle' icon='close' />
+        close: <Button onClick={() => deleteItem(i)} style={{cursor: 'pointer'}} shape='circle' icon='close' />
       }
     })
   } else {
@@ -40,6 +40,7 @@ export default ({
         dataSource={data}
         className={tableCSS}
         pagination={false}
+        locale={{ emptyText: null }}
       >
         <Table.Column
           title={title}

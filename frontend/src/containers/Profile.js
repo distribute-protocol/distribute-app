@@ -43,8 +43,13 @@ class Profile extends React.Component {
     this.props.history.push('/roleselection')
   }
 
-  deleteItem (i) {
-    alert('delete', i)
+  deleteItem (i, category) {
+    let data = this.state.data
+    let categoryData = data[category]
+    categoryData.splice(i, 1)
+    data = Object.assign({}, data, {[category]: categoryData})
+    console.log(data)
+    this.setState({data})
   }
 
   addItem (i) {
@@ -62,7 +67,7 @@ class Profile extends React.Component {
           name={this.props.user.name}
           location={'Brooklyn, NY'}
           handleSave={this.roleSelection}
-          deleteItem={(i) => { this.deleteItem(i) }}
+          deleteItem={(i, category) => this.deleteItem(i, category)}
           addItem={this.addItem}
           data={this.state.data}
         />

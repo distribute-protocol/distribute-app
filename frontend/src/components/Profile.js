@@ -25,12 +25,12 @@ export default ({
       </div>
       <div style={{display: 'flex', paddingTop: 40}}>
         <div style={{display: 'flex', justifyContent: 'space-between', flexGrow: 3, flexWrap: 'wrap', paddingLeft: 100, paddingRight: 46}}>
-          <ProfileTable title={'Expertise / Skills'} input={data.expertise} add={'Add Expertise'} deleteItem={(i) => deleteItem(i)} addItem={addItem} />
-          <ProfileTable title={'Interests'} input={data.interests} add={'Add Interest'} deleteItem={(i) => deleteItem(i)} addItem={addItem} />
-          <ProfileTable title={'Contact Details'} input={data.contactDetails} add={'Add Contact Details'} deleteItem={(i) => deleteItem(i)} addItem={addItem} />
-          <ProfileTable title={'Want To Learn'} input={data.wantToLearn} add={'Add Skill To Learn'} deleteItem={(i) => deleteItem(i)} addItem={addItem} />
-          <ProfileTable title={'Want To Teach'} input={data.wantToTeach} add={'Add Skill To Teach'} deleteItem={(i) => deleteItem(i)} addItem={addItem} />
-          <ProfileTable title={'Affiliations'} input={data.affiliations} add={'Add Affiliation'} deleteItem={(i) => deleteItem(i)} addItem={addItem} />
+          <ProfileTable title={'Expertise / Skills'} input={data.expertise} add={'Add Expertise'} deleteItem={(i) => deleteItem(i, 'expertise')} addItem={addItem} />
+          <ProfileTable title={'Interests'} input={data.interests} add={'Add Interest'} deleteItem={(i) => deleteItem(i, 'interests')} addItem={addItem} />
+          <ProfileTable title={'Contact Details'} input={data.contactDetails} add={'Add Contact Details'} deleteItem={(i) => deleteItem(i, 'contactDetails')} addItem={addItem} />
+          <ProfileTable title={'Want To Learn'} input={data.wantToLearn} add={'Add Skill To Learn'} deleteItem={(i) => deleteItem(i, 'wantToLearn')} addItem={addItem} />
+          <ProfileTable title={'Want To Teach'} input={data.wantToTeach} add={'Add Skill To Teach'} deleteItem={(i) => deleteItem(i, 'wantToTeach')} addItem={addItem} />
+          <ProfileTable title={'Affiliations'} input={data.affiliations} add={'Add Affiliation'} deleteItem={(i) => deleteItem(i, 'affiliations')} addItem={addItem} />
         </div>
         <div style={{display: 'flex', justifyContent: 'center', flexGrow: 1}}>
           <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', flexGrow: 1, paddingRight: 105}}>
