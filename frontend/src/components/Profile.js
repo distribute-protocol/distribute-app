@@ -18,7 +18,7 @@ export default ({
         <div>
           <img style={{cursor: 'pointer'}} src={addavatar} alt='add avatar' />
         </div>
-        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 20, fontFamily: 'NowAltRegular', paddingLeft: 25, paddingTop: 20}}>
+        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', fontSize: 20, fontFamily: 'NowAltRegular', paddingLeft: 25, paddingTop: 20}}>
           <p>{name}</p>
           <p>{location}</p>
         </div>

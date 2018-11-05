@@ -20,7 +20,7 @@ class Profile extends React.Component {
       }
     }
     this.roleSelection = this.roleSelection.bind(this)
-    this.closeLastModal = this.closeLastModal.bind(this)
+    this.closeModal = this.closeModal.bind(this)
     this.deleteItem = this.deleteItem.bind(this)
     this.addItem = this.addItem.bind(this)
   }
@@ -35,7 +35,7 @@ class Profile extends React.Component {
     })
   }
 
-  closeLastModal () {
+  closeModal () {
     this.setState({firstProfile: false})
   }
 
@@ -55,7 +55,7 @@ class Profile extends React.Component {
     return (
       <div>
         {this.state.firstProfile
-          ? <TextContinue visible={this.state.firstProfile} text={'firstprofile'} continue={this.closeLastModal} />
+          ? <TextContinue visible={this.state.firstProfile} text={'firstprofile'} continue={this.closeModal} handleCancel={this.closeModal} />
           : null
         }
         <ProfileComponent
