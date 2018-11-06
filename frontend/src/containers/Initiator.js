@@ -17,7 +17,7 @@ class Initiator extends React.Component {
       secondModal: false
     }
     this.choosePropType = this.choosePropType.bind(this)
-    this.goToDashboard = this.goToDashboard.bind(this)
+    this.redirect = this.redirect.bind(this)
   }
 
   componentWillMount () {
@@ -37,16 +37,20 @@ class Initiator extends React.Component {
     }
   }
 
-  goToDashboard () {
-    this.props.history.push('/dashboard')
+  redirect (url) {
+    this.props.history.push(url)
   }
 
   render () {
     return (
       <div>
-        <InitiatorWelcome visible={this.state.firstTime && this.state.firstModal} continue={this.choosePropType} />
-        <InsufficientTokens visible={this.state.firstTime && this.state.secondModal} continue={this.goToDashboard} />
-        <Sidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} />
+        {this.state.firstTime && this.state.firstModal
+          ? <InitiatorWelcome visible={this.state.firstTime && this.state.firstModal} continue={this.choosePropType} />
+          : null }
+        {this.state.firstTime && this.state.secondModal
+          ? <InsufficientTokens visible={this.state.firstTime && this.state.secondModal} continue={() => this.redirect('/dashboard')} />
+          : null }
+        <Sidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
       </div>
     )
   }

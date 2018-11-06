@@ -35,12 +35,12 @@ class Sidebar extends React.Component {
         <div style={{marginTop: 10}}>
           { this.props.showIcons
             ? <div style={{display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between'}}>
-              { this.props.highlightIcon === 'Initiator' ? <img style={{paddingBottom: 5}} src={initiatorcolor} alt='initiator' onClick={() => this.toggleShow()} /> : <img src={initiatorgray} alt='initiator' /> }
-              { this.props.highlightIcon === 'Finder' ? <img style={{paddingTop: 5, paddingBottom: 5}} src={findercolor} alt='finder' /> : <img src={findergray} alt='finder' /> }
-              { this.props.highlightIcon === 'Planner' ? <img style={{paddingTop: 5, paddingBottom: 5}} src={plannercolor} alt='planner' /> : <img src={plannergray} alt='planner' /> }
-              { this.props.highlightIcon === 'Doer' ? <img style={{paddingTop: 5, paddingBottom: 5}} src={doercolor} alt='doer' /> : <img src={doergray} alt='doer' /> }
-              { this.props.highlightIcon === 'Validator' ? <img style={{paddingTop: 5, paddingBottom: 5}} src={validatorcolor} alt='validator' /> : <img src={validatorgray} alt='validator' /> }
-              { this.props.highlightIcon === 'Resolver' ? <img style={{paddingTop: 5}} src={resolvercolor} alt='resolver' /> : <img src={resolvergray} alt='resolver' /> }
+              { this.props.highlightIcon === 'Initiator' ? <img style={{paddingBottom: 5, cursor: 'pointer'}} src={initiatorcolor} alt='initiator' onClick={() => this.props.redirect('/initiator')} /> : <img style={{cursor: 'pointer'}} src={initiatorgray} alt='initiator' onClick={() => this.props.redirect('/initiator')} /> }
+              { this.props.highlightIcon === 'Finder' ? <img style={{paddingTop: 5, paddingBottom: 5, cursor: 'pointer'}} src={findercolor} alt='finder' onClick={() => this.props.redirect('/finder')} /> : <img style={{cursor: 'pointer'}} src={findergray} alt='finder' onClick={() => this.props.redirect('/finder')} /> }
+              { this.props.highlightIcon === 'Planner' ? <img style={{paddingTop: 5, paddingBottom: 5, cursor: 'pointer'}} src={plannercolor} alt='planner' onClick={() => this.props.redirect('/planner')} /> : <img style={{cursor: 'pointer'}} src={plannergray} alt='planner' onClick={() => this.props.redirect('/planner')} /> }
+              { this.props.highlightIcon === 'Doer' ? <img style={{paddingTop: 5, paddingBottom: 5, cursor: 'pointer'}} src={doercolor} alt='doer' onClick={() => this.props.redirect('/doer')} /> : <img style={{cursor: 'pointer'}} src={doergray} alt='doer' onClick={() => this.props.redirect('/doer')} /> }
+              { this.props.highlightIcon === 'Validator' ? <img style={{paddingTop: 5, paddingBottom: 5, cursor: 'pointer'}} src={validatorcolor} alt='validator' onClick={() => this.props.redirect('/validator')} /> : <img style={{cursor: 'pointer'}} src={validatorgray} alt='validator' onClick={() => this.props.redirect('/validator')} /> }
+              { this.props.highlightIcon === 'Resolver' ? <img style={{paddingTop: 5, cursor: 'pointer'}} src={resolvercolor} alt='resolver' onClick={() => this.props.redirect('/resolver')} /> : <img style={{cursor: 'pointer'}} src={resolvergray} alt='resolver' onClick={() => this.props.redirect('resolver')} /> }
               <div style={{paddingTop: 38, paddingBottom: 10}}>
                 <img style={{paddingRight: 5}} src={network} alt='network' />
                 <img style={{paddingLeft: 5}}src={dashboard} alt='dashboard' />
