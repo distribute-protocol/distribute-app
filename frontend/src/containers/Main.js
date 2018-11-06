@@ -4,7 +4,6 @@ import { Switch, Route } from 'react-router-dom'
 import Status from './Status'
 import Profile from './Profile'
 import RoleSelection from './RoleSelection'
-import Propose from './0Propose'
 import Stake from './1Stake'
 import Add from './2Add'
 import Claim from './3Claim'
@@ -24,7 +23,6 @@ const Main = () =>
       <Route path='/profile' component={Profile} />
       <Route path='/roleselection' component={RoleSelection} />
       <Route path='/initiator' component={Initiator} />
-      <Route path='/propose' component={Propose} />
       <Route path='/stake' component={Stake} />
       <Route path='/add' component={Add} />
       <Route path='/claim' component={Claim} />

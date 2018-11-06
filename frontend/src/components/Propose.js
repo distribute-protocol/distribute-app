@@ -32,12 +32,45 @@ const ProposeForm = (props) => {
   )
   const { getFieldDecorator } = props.form
   return (
-    <div>
-      <div style={{marginLeft: 200, marginBottom: 100}}>
+    <div style={{minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingLeft: 150, backgroundColor: 'rgba(218, 218, 218, 0.5)'}}>
+      <b><p style={{paddingTop: 20, textAlign: 'center', fontFamily: 'Lato', fontSize: 36}}>Initiating a Proposal</p></b>
+      <p style={{paddingTop: 20, textAlign: 'center', fontFamily: 'Lato', fontSize: 20}}>In order to create a node proposal you will need to stake 5% of the project cost in tokens or reputation.<br />If the project proposal is successful, you will receive 1% of the project cost in ether as a reward.</p>
+      <div style={{marginTop: 20, backgroundColor: 'white', border: '1px solid #989898', display: 'flex', flexDirection: 'column', justifyContent: 'center', marginLeft: '20%', marginRight: '20%'}}>
+        <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '20%', marginRight: '20%'}}>
+          project image
+        </div>
+        <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '20%', marginRight: '20%'}}>
+          project name
+        </div>
+        <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '20%', marginRight: '20%'}}>
+          project description
+        </div>
+        <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '20%', marginRight: '20%'}}>
+          project location
+        </div>
+        <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '20%', marginRight: '20%'}}>
+          project duration
+        </div>
+        <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '20%', marginRight: '20%'}}>
+          project cost
+        </div>
+        <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '20%', marginRight: '20%'}}>
+          collateral type
+        </div>
+        <div style={{display: 'flex', marginTop: 40, marginBottom: 40, justifyContent: 'center', alignItems: 'center', marginLeft: '20%', marginRight: '20%'}}>
+          <Button style={{textAlign: 'center', backgroundColor: '#A4D573', borderRadius: 4, color: 'white', height: 46, fontFamily: 'Lato', fontSize: 24}}>
+            Create Proposal
+          </Button>
+        </div>
+      </div>
+    </div>
+
+     /* <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+      <div style={{display: 'flex', flexDirection: 'column', marginLeft: 100, justifyContent: 'center', marginBottom: 100}}>
         <header className='App-header'>
           <h3 className='App-title2'>Propose Project</h3>
         </header>
-        <div style={{display: 'flex', flexDirection: 'column', marginLeft: 100, marginRight: 200}}>
+        <div style={{display: 'flex', flexDirection: 'column', marginRight: 200}}>
           <Form layout='horizontal'>
             <FormItem label='Name'>
               {getFieldDecorator('name')(<Input placeholder='Project Name' />)}
@@ -89,7 +122,7 @@ const ProposeForm = (props) => {
           </Form>
         </div>
       </div>
-    </div>
+    </div> */
   )
 }
 

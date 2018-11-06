@@ -26,7 +26,7 @@ class Sidebar extends React.Component {
 
   render () {
     return (
-      <div style={{minHeight: '100vh', width: 150, backgroundColor: '#111111', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+      <div style={{minHeight: '100vh', width: 150, position: 'absolute', backgroundColor: '#111111', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
         <h1 className='App-title' style={{color: 'white', marginTop: 10, fontSize: 18}}>HYPHA</h1>
         <div style={{width: 100, height: 100, borderRadius: 50, backgroundColor: '#fcfcfc'}}>
           <img style={{width: 100, height: 100, borderRadius: 50}} alt='profile' src={typeof this.props.user.avatar !== 'undefined' ? this.props.user.avatar.uri : 'http://busybridgeng.com/wp-content/uploads/2017/05/generic-avatar.png'} />
