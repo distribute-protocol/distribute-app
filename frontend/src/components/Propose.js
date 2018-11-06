@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, Form, Input, DatePicker, Upload, Icon } from 'antd'
+import grayx from '../images/grayplus.svg'
 const { TextArea } = Input
 const FormItem = Form.Item
 
@@ -32,32 +33,38 @@ const ProposeForm = (props) => {
   )
   const { getFieldDecorator } = props.form
   return (
-    <div style={{minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingLeft: 150, backgroundColor: 'rgba(218, 218, 218, 0.5)'}}>
+    <div style={{minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', marginLeft: 150, backgroundColor: 'rgba(218, 218, 218, 0.5)', color: 'black'}}>
       <b><p style={{paddingTop: 20, textAlign: 'center', fontFamily: 'Lato', fontSize: 36}}>Initiating a Proposal</p></b>
       <p style={{paddingTop: 20, textAlign: 'center', fontFamily: 'Lato', fontSize: 20}}>In order to create a node proposal you will need to stake 5% of the project cost in tokens or reputation.<br />If the project proposal is successful, you will receive 1% of the project cost in ether as a reward.</p>
-      <div style={{marginTop: 20, backgroundColor: 'white', border: '1px solid #989898', display: 'flex', flexDirection: 'column', justifyContent: 'center', marginLeft: '20%', marginRight: '20%'}}>
-        <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '20%', marginRight: '20%'}}>
-          project image
+      <div style={{marginTop: 20, marginBottom: 40, backgroundColor: 'white', border: '1px solid #989898', display: 'flex', flexDirection: 'column', justifyContent: 'center', marginLeft: '15%', marginRight: '15%'}}>
+        <div style={{display: 'flex', justifyContent: 'space-between', marginTop: 40, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '10%', marginRight: '10%'}}>
+          <div style={{marginLeft: 15, marginTop: 20}}>
+            <b><p style={{fontFamily: 'Lato', fontSize: 20}}>Project Image:</p></b>
+            <p style={{fontFamily: 'Lato', fontSize: 14}}>Adding a picture of where the<br />mesh node should go helps<br />people understand what you<br />want to build.</p>
+          </div>
+          <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(218, 218, 218, 0.5)', border: '1px solid #989898', marginTop: 20, marginLeft: 20, marginBottom: 20, marginRight: 50, paddingLeft: '15%', paddingRight: '15%', paddingTop: '10%', paddingBottom: '10%'}}>
+            <img src={grayx} alt='gray x' />
+          </div>
         </div>
-        <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '20%', marginRight: '20%'}}>
+        <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '10%', marginRight: '10%'}}>
           project name
         </div>
-        <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '20%', marginRight: '20%'}}>
+        <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '10%', marginRight: '10%'}}>
           project description
         </div>
-        <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '20%', marginRight: '20%'}}>
+        <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '10%', marginRight: '10%'}}>
           project location
         </div>
-        <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '20%', marginRight: '20%'}}>
+        <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '10%', marginRight: '10%'}}>
           project duration
         </div>
-        <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '20%', marginRight: '20%'}}>
+        <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '10%', marginRight: '10%'}}>
           project cost
         </div>
-        <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '20%', marginRight: '20%'}}>
+        <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '10%', marginRight: '10%'}}>
           collateral type
         </div>
-        <div style={{display: 'flex', marginTop: 40, marginBottom: 40, justifyContent: 'center', alignItems: 'center', marginLeft: '20%', marginRight: '20%'}}>
+        <div style={{display: 'flex', marginTop: 40, marginBottom: 40, justifyContent: 'center', alignItems: 'center', marginLeft: '15%', marginRight: '15%'}}>
           <Button style={{textAlign: 'center', backgroundColor: '#A4D573', borderRadius: 4, color: 'white', height: 46, fontFamily: 'Lato', fontSize: 24}}>
             Create Proposal
           </Button>
