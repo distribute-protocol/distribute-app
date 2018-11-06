@@ -1,8 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Sidebar from '../components/shared/Sidebar'
-import InitiatorWelcome from '../components/shared/modals/initiator/InitiatorWelcome'
-import InsufficientTokens from '../components/shared/modals/initiator/InsufficientTokens'
+import InitiatorWelcome from '../components/modals/InitiatorWelcome'
+import InsufficientTokens from '../components/modals/InsufficientTokens'
 import { getUserStatus } from '../actions/userActions'
 import { eth } from '../utilities/blockchain'
 

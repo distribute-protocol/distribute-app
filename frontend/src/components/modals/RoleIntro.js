@@ -1,12 +1,12 @@
 import React from 'react'
 import { Modal } from 'antd'
-import RoleIntroIcon from '../../RoleIntroIcon'
-import initiator from '../../../../images/roleselection/initiator.svg'
-import finder from '../../../../images/roleselection/finder.svg'
-import planner from '../../../../images/roleselection/planner.svg'
-import doer from '../../../../images/roleselection/doer.svg'
-import validator from '../../../../images/roleselection/validator.svg'
-import resolver from '../../../../images/roleselection/resolver.svg'
+import RoleIntroIcon from './RoleIntroIcon'
+import initiator from '../../images/roleselection/initiator.svg'
+import finder from '../../images/roleselection/finder.svg'
+import planner from '../../images/roleselection/planner.svg'
+import doer from '../../images/roleselection/doer.svg'
+import validator from '../../images/roleselection/validator.svg'
+import resolver from '../../images/roleselection/resolver.svg'
 
 class RoleIntro extends React.Component {
   constructor () {

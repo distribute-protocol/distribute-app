@@ -48,7 +48,6 @@ class Profile extends React.Component {
     let categoryData = data[category]
     categoryData.splice(i, 1)
     data = Object.assign({}, data, {[category]: categoryData})
-    console.log(data)
     this.setState({data})
   }
 
