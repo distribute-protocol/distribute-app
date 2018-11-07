@@ -2,7 +2,7 @@ import { compose, createStore, applyMiddleware } from 'redux'
 import createHistory from 'history/createBrowserHistory'
 import { createEpicMiddleware } from 'redux-observable'
 import { routerMiddleware } from 'react-router-redux'
-import { autoRehydrate } from 'redux-persist'
+// import { autoRehydrate } from 'redux-persist'
 
 import reducers from '../reducers'
 import epics from '../epics'
@@ -16,15 +16,16 @@ const routeMiddleware = routerMiddleware(history)
 // Add the reducer to your store on the `router` key
 // Also apply our middleware for navigating
 function configureStore () {
-  const epicMiddleware = createEpicMiddleware(epics)
+  const epicMiddleware = createEpicMiddleware()
 
   const store = createStore(
     reducers,
     compose(
       applyMiddleware(routeMiddleware, epicMiddleware),
-      autoRehydrate()
+      // autoRehydrate()
     )
   )
+  epicMiddleware.run(epics)
   return store
 }
 
