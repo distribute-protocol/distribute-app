@@ -18,13 +18,11 @@ if (typeof web3init !== 'undefined') {
   web3init = new Web3(window.web3.currentProvider)
   // web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
 }
-// const Eth = require('ethjs')
 
 export const web3 = web3init
 export const eth = web3init.eth
 
-// need to do this for promisified eth.accounts() for sagas
-export const ethjs = new Eth(window.web3.currentProvider)
+export const ethjs = new Eth(window.web3.currentProvider.enable())
 
 const TR = contract({abi: JSON.parse(TokenRegistryABI)})
 TR.setProvider(window.web3.currentProvider)

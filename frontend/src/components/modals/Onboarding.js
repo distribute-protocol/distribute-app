@@ -14,10 +14,10 @@ class Onboarding extends React.Component {
     this.handleCancel = this.handleCancel.bind(this)
   }
 
-  componentWillReceiveProps (np) {
-    if (typeof np.skipFirst !== 'undefined' && np.visible !== 'undefined') {
-      console.log('modal visible plz', np.visible)
-      this.setState({modalVisible: np.visible, firstModal: !np.skipFirst && np.visible})
+  componentWillMount () {
+    console.log(this.props.visible, this.props.skipFirst)
+    if (typeof this.props.skipFirst !== 'undefined' && this.props.visible !== 'undefined') {
+      this.setState({modalVisible: this.props.visible, firstModal: !this.props.skipFirst && this.props.visible})
     }
   }
 

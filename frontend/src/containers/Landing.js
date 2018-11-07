@@ -18,6 +18,7 @@ class Landing extends React.Component {
       hasEther: false
     }
     this.getUport = this.getUport.bind(this)
+    this.checkMetamaskConnected = this.checkMetamaskConnected.bind(this)
     this.checkMetamask = this.checkMetamask.bind(this)
     this.handleJoin = this.handleJoin.bind(this)
     this.unclickJoin = this.unclickJoin.bind(this)
@@ -25,7 +26,19 @@ class Landing extends React.Component {
   }
 
   componentWillMount () {
-    this.checkMetamask()
+    this.checkMetamaskConnected()
+  }
+
+  checkMetamaskConnected () {
+    if (!this.state.metamask && window.ethereum._metamask.isEnabled()) {
+      this.checkMetamask()
+    } else if (this.state.metamask && !window.ethereum._metamask.isEnabled()) {
+      this.setState({metamask: false})
+      window.ethereum.enable()
+    }
+    setTimeout(() => {
+      this.checkMetamaskConnected()
+    }, 1000)
   }
 
   checkMetamask () {
@@ -109,7 +122,9 @@ class Landing extends React.Component {
                   <path fillRule='evenodd' clipRule='evenodd' d='M32 64C49.6731 64 64 49.6731 64 32C64 14.3269 49.6731 0 32 0C14.3269 0 0 14.3269 0 32C0 49.6731 14.3269 64 32 64Z' fill='#A4D573' />
                 </svg>
               </div>
-              <p style={{paddingLeft: 9, fontSize: 25, fontFamily: 'PingFang SC', fontWeight: 600, color: 'white'}}>HYPHA</p>
+              <div>
+                <p style={{paddingLeft: 9, fontSize: 25, fontFamily: 'PingFang SC', fontWeight: 600, color: 'white'}}>HYPHA</p>
+              </div>
             </div>
             <p style={{paddingTop: 28.5, paddingRight: 66.5, color: 'white', fontSize: 20, fontFamily: 'NowAltRegular'}}>SIGN UP | LOGIN</p>
           </div>
