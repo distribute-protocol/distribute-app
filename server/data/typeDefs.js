@@ -210,13 +210,13 @@ const typeDefs = gql`
   }
 
   input CredentialInput {
-    address: String
     avatar: AvatarInput
+    boxPub: String
+    country: String
+    did: String
     id: ID
     name: String
-    networkAddress: String
     publicEncKey: String
-    publicKey: String
     pushToken: String
   }
 

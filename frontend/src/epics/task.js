@@ -23,9 +23,8 @@ import {
 } from '../actions/taskActions'
 import { voteCommitted, voteRevealed, voteRescued } from '../actions/pollActions'
 import { map, mergeMap, concatMap } from 'rxjs/operators'
-import { Observable } from 'rxjs'
+import { merge, from } from 'rxjs'
 import { client } from '../index'
-import { merge } from 'rxjs/observable/merge'
 import { tr, rr, pr, T, P } from '../utilities/blockchain'
 import { hashTasks } from '../utilities/hashing'
 import gql from 'graphql-tag'
@@ -62,7 +61,7 @@ const submitFinalTaskListEpic = action$ => {
     mergeMap(result => {
       tasks = result.data.findFinalTaskHash.content
       taskArray = hashTasks(JSON.parse(tasks))
-      return Observable.from(pr.submitHashList(address, taskArray, txObj))
+      return from(pr.submitHashList(address, taskArray, txObj))
     }),
     map(result => finalTaskListSubmitted(address, tasks))
   )
@@ -87,7 +86,7 @@ const claimTaskEpic = action$ => {
       return client.query({query: query, variables: {address: address, index: index}})
     }),
     mergeMap(result => {
-      return Observable.from(rr.claimTask(address, index, result.data.findTaskByIndex.description, result.data.findTaskByIndex.weighting, txObj))
+      return from(rr.claimTask(address, index, result.data.findTaskByIndex.description, result.data.findTaskByIndex.weighting, txObj))
     }),
     map(result => taskClaimed(address, index))
   )
@@ -100,7 +99,7 @@ const submitTaskCompleteEpic = action$ => {
     mergeMap(action => {
       address = action.address
       index = action.index
-      return Observable.from(pr.submitTaskComplete(address, index, action.txObj))
+      return from(pr.submitTaskComplete(address, index, action.txObj))
     }),
     map(result => taskCompleted(address, index))
   )
@@ -117,13 +116,13 @@ const validateTaskEpic = action$ => {
       index = action.taskIndex
       validationState = action.validationState
       txObj = action.txObj
-      return Observable.from(tr.validateTask(address, index, validationState, action.txObj))
+      return from(tr.validateTask(address, index, validationState, action.txObj))
     }),
     mergeMap(result => {
-      return Observable.from(P.at(address).tasks(index))
+      return from(P.at(address).tasks(index))
     }),
     mergeMap(result => {
-      return Observable.from(T.at(result).validationEntryFee())
+      return from(T.at(result).validationEntryFee())
     }),
     map(result => taskValidated(address, index, validationState, result, txObj.from))
   )
@@ -192,7 +191,7 @@ const rewardValidatorEpic = action$ => {
       index = action.index
       txObj = action.txObj
       state = action.state
-      return Observable.from(tr.rewardValidator(address, index, txObj))
+      return from(tr.rewardValidator(address, index, txObj))
     }),
     map(result =>
       validatorRewarded(address, index, result, state)
@@ -211,7 +210,7 @@ const rewardTaskEpic = action$ => {
       index = action.index
       txObj = action.txObj
       state = action.state
-      return Observable.from(rr.rewardTask(address, index, txObj))
+      return from(rr.rewardTask(address, index, txObj))
     }),
     map(result =>
       taskRewarded(address, index, result, txObj.from, state)
@@ -241,8 +240,8 @@ const commitVoteEpic = action$ => {
     }),
     mergeMap(result => {
       return type === 'tokens'
-        ? Observable.from(tr.voteCommit(projectAddress, taskIndex, value, secretHash, result.data.getPrevPollID, txObj))
-        : Observable.from(rr.voteCommit(projectAddress, taskIndex, value, secretHash, result.data.getPrevPollID, txObj))
+        ? from(tr.voteCommit(projectAddress, taskIndex, value, secretHash, result.data.getPrevPollID, txObj))
+        : from(rr.voteCommit(projectAddress, taskIndex, value, secretHash, result.data.getPrevPollID, txObj))
     }),
     mergeMap(result => {
       txReceipt = result
@@ -283,8 +282,8 @@ const revealVoteEpic = action$ => {
       salt = action.salt
       txObj = action.txObj
       return action.collateralType === 'tokens'
-        ? Observable.from(tr.voteReveal(projectAddress, taskIndex, vote, salt, action.txObj))
-        : Observable.from(rr.voteReveal(projectAddress, taskIndex, vote, salt, action.txObj))
+        ? from(tr.voteReveal(projectAddress, taskIndex, vote, salt, action.txObj))
+        : from(rr.voteReveal(projectAddress, taskIndex, vote, salt, action.txObj))
     }),
     map(result =>
       voteRevealed({projectAddress, taskIndex, voter: txObj.from, txReceipt, salt})
@@ -300,8 +299,8 @@ const rescueVoteEpic = action$ => {
       taskIndex = action.taskIndex
       txObj = action.txObj
       return action.collateralType === 'tokens'
-        ? Observable.from(tr.rescueTokens(projectAddress, taskIndex, action.txObj))
-        : Observable.from(rr.rescueTokens(projectAddress, taskIndex, action.txObj))
+        ? from(tr.rescueTokens(projectAddress, taskIndex, action.txObj))
+        : from(rr.rescueTokens(projectAddress, taskIndex, action.txObj))
     }),
     // mergeMap(result => {
     //   txReceipt = result

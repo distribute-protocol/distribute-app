@@ -37,6 +37,7 @@
     "react-transition-group": "^2.5.0",
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",
+    "redux-observable": "^1.0.0",
     "redux-persist": "^5.10.0",
     "redux-thunk": "^2.3.0",
     "rxjs": "6.3.3",
@@ -44,7 +45,7 @@
     "sha3": "^1.2.2",
     "truffle-contract": "^3.0.6",
     "truffle-hdwallet-provider": "0.0.6",
-    "uport-connect": "^0.8.4",
+    "uport-connect": "^1.0.0-beta.1",
     "web3": "^1.0.0-beta.36",
     "web3-utils": "^1.0.0-beta.36",
     "webcrypto": "^0.1.1"
@@ -61,5 +62,11 @@
   },
   "resolutions": {
     "eslint-scope": "3.7.1"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

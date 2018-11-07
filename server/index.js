@@ -5,12 +5,7 @@ const mongoose = require('mongoose')
 const assert = require('assert')
 const compression = require('compression')
 const cors = require('cors')
-<<<<<<< HEAD
 const { ApolloServer, gql } = require('apollo-server-express')
-=======
-// const { graphqlExpress, graphiqlExpress } = require('apollo-server-express')
-const { ApolloServer } = require('apollo-server-express')
->>>>>>> package updates initially complete
 const { ApolloEngine } = require('apollo-engine')
 
 mongoose.Promise = global.Promise
@@ -50,6 +45,9 @@ const server = new ApolloServer({
   tracing: true,
   cacheControl: true,
   engine: false
+  //   // By setting this to "false", we avoid using Apollo Server 2's
+  //   // integrated metric reporting and fall-back to using the Apollo
+  //   // Engine Proxy (running separately) for metric collection.
   // engine: {
   //   apiKey: ENGINE_API_KEY
   // }
@@ -73,20 +71,6 @@ rrLogs()
 prLogs()
 trLogs()
 plLogs()
-
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  tracing: true,
-  cacheControl: true,
-
-  // By setting this to "false", we avoid using Apollo Server 2's
-  // integrated metric reporting and fall-back to using the Apollo
-  // Engine Proxy (running separately) for metric collection.
-  engine: false
-})
-
-server.applyMiddleware({ app })
 
 engine.listen({
   port: app.get('port'),
