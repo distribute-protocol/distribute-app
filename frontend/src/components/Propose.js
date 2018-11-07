@@ -56,7 +56,13 @@ const ProposeForm = (props) => {
           </div>
         </div>
         <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '10%', marginRight: '10%'}}>
-          project description
+          <div style={{marginLeft: 15, marginTop: 20}}>
+            <b><p style={{fontFamily: 'Lato', fontSize: 20}}>Project Description:</p></b>
+            <p style={{fontFamily: 'Lato', fontSize: 14}}>Let's give your project a name<br />so that people can easily find it.</p>
+          </div>
+          <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginRight: 50, paddingLeft: '15%', paddingTop: '10%', paddingBottom: '10%'}}>
+            <TextArea style={{width: 350}} rows={10} />
+          </div>
         </div>
         <div style={{marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '10%', marginRight: '10%'}}>
           project location

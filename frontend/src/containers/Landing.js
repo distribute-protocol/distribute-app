@@ -6,6 +6,7 @@ import Onboarding from '../components/modals/Onboarding'
 import TextContinue from '../components/modals/TextContinue'
 import { loginUser } from '../actions/userActions'
 import { eth } from '../utilities/blockchain'
+import landingbackground from '../images/landingbackground.svg'
 import uportlogo from '../images/logos/uportlogo.svg'
 import metamasklogo from '../images/logos/metamaskfox.svg'
 
@@ -92,7 +93,6 @@ class Landing extends React.Component {
   }
 
   render () {
-    console.log(this.state.clickedJoin)
     return (
       <div>
         {this.state.clickedJoin
@@ -100,7 +100,7 @@ class Landing extends React.Component {
           : null
         }
         <TextContinue text={'congrats'} visible={this.state.loggedin} continue={this.profilePage} />
-        <div style={{backgroundColor: '#CDCDCD', height: '60vh'}}>
+        <div style={{backgroundImage: `url(${landingbackground})`, backgroundColor: 'rgba(0, 0, 0, 0.5)', height: '60vh'}}>
           { /* START OF TOP BAR */ }
           <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <div style={{display: 'flex', alignItems: 'center', paddingTop: 24, paddingLeft: 23}}>
@@ -109,8 +109,8 @@ class Landing extends React.Component {
                   <path fillRule='evenodd' clipRule='evenodd' d='M32 64C49.6731 64 64 49.6731 64 32C64 14.3269 49.6731 0 32 0C14.3269 0 0 14.3269 0 32C0 49.6731 14.3269 64 32 64Z' fill='#A4D573' />
                 </svg>
               </div>
-              <div style={{paddingLeft: 9, fontSize: 20, fontFamily: 'NowAltRegular'}}>
-                DISTRIBUTE<br />NETWORK
+              <div style={{paddingLeft: 9, fontSize: 25, fontFamily: 'PingFang SC', fontWeight: 600, color: 'white'}}>
+                HYPHA
               </div>
             </div>
             <div style={{paddingTop: 28.5, paddingRight: 66.5, color: 'white', fontSize: 20, fontFamily: 'NowAltRegular'}}>
@@ -121,10 +121,10 @@ class Landing extends React.Component {
                START OF PLATFORM TITLE */ }
           <div style={{display: 'flex', justifyContent: 'center'}}>
             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-              <div style={{fontSize: 36, fontFamily: 'NowAltRegular', textAlign: 'center'}}>A Platform for the Commons</div>
+              <div style={{fontSize: 36, fontFamily: 'NowAltRegular', textAlign: 'center', color: 'white'}}>A Platform for the Commons</div>
               { this.state.metamask
-                ? <Button style={{backgroundColor: '#A4D573', marginTop: 10, paddingTop: 3}} onClick={this.handleJoin}>
-                  <p style={{color: 'white', fontSize: 18, fontFamily: 'NowAltRegular'}}>JOIN</p>
+                ? <Button style={{backgroundColor: '#A4D573', marginTop: 10, paddingTop: 3, border: '#D9D9D9'}} onClick={this.handleJoin}>
+                  <p style={{color: 'white', fontSize: 18, fontFamily: 'PingFang SC'}}>JOIN</p>
                 </Button>
                 : <Button style={{marginTop: 10, paddingTop: 4}} onClick={this.getMetaMask}>
                   <p style={{fontSize: 14, fontFamily: 'PingFang SC'}}>Please Connect to MetaMask</p>
@@ -135,17 +135,17 @@ class Landing extends React.Component {
           { /* END OF PLATFORM TITLE */ }
         </div>
         { /* START OF WHITE SPACE */ }
-        <div style={{display: 'flex', justifyContent: 'center', marginTop: 15, fontSize: 18, fontFamily: 'NowAltRegular'}}>
+        <p style={{display: 'flex', justifyContent: 'center', marginTop: 15, fontSize: 18, fontFamily: 'NowAltRegular', color: 'black'}}>
           This distributed organization requires:
-        </div>
+        </p>
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-around', marginTop: 15}}>
           <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 16, fontFamily: 'NowAltRegular'}}>
             <img src={uportlogo} alt='uPort logo' />
-            <div style={{textAlign: 'center', marginTop: 10}}>uPort is a decentralized self-sovereign<br />identity platform.</div>
+            <p style={{textAlign: 'center', marginTop: 10, color: 'black'}}>uPort is a decentralized self-sovereign<br />identity platform.</p>
           </div>
           <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 16, fontFamily: 'NowAltRegular'}}>
             <img src={metamasklogo} alt='MetaMask fox' />
-            <div style={{textAlign: 'center', marginTop: 10}}>Metamask is an in-browser wallet that grants easy<br />access to the Ethereum blockchain.</div>
+            <p style={{textAlign: 'center', marginTop: 10, color: 'black'}}>Metamask is an in-browser wallet that grants easy<br />access to the Ethereum blockchain.</p>
           </div>
         </div>
       </div>
