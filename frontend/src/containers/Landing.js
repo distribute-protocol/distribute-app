@@ -100,22 +100,18 @@ class Landing extends React.Component {
           : null
         }
         <TextContinue text={'congrats'} visible={this.state.loggedin} continue={this.profilePage} />
-        <div style={{backgroundImage: `url(${landingbackground})`, backgroundColor: 'rgba(0, 0, 0, 0.5)', height: '60vh'}}>
+        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', backgroundImage: `url(${landingbackground})`, backgroundColor: 'rgba(0, 0, 0, 0.75)', height: '60vh'}}>
           { /* START OF TOP BAR */ }
-          <div style={{display: 'flex', justifyContent: 'space-between'}}>
+          <div style={{display: 'flex', width: '100%', justifyContent: 'space-between'}}>
             <div style={{display: 'flex', alignItems: 'center', paddingTop: 24, paddingLeft: 23}}>
               <div>
                 <svg width='64' height='64' viewBox='0 0 64 64' fill='none' xmlns='http://www.w3.org/2000/svg'>
                   <path fillRule='evenodd' clipRule='evenodd' d='M32 64C49.6731 64 64 49.6731 64 32C64 14.3269 49.6731 0 32 0C14.3269 0 0 14.3269 0 32C0 49.6731 14.3269 64 32 64Z' fill='#A4D573' />
                 </svg>
               </div>
-              <div style={{paddingLeft: 9, fontSize: 25, fontFamily: 'PingFang SC', fontWeight: 600, color: 'white'}}>
-                HYPHA
-              </div>
+              <p style={{paddingLeft: 9, fontSize: 25, fontFamily: 'PingFang SC', fontWeight: 600, color: 'white'}}>HYPHA</p>
             </div>
-            <div style={{paddingTop: 28.5, paddingRight: 66.5, color: 'white', fontSize: 20, fontFamily: 'NowAltRegular'}}>
-              SIGN UP | LOGIN
-            </div>
+            <p style={{paddingTop: 28.5, paddingRight: 66.5, color: 'white', fontSize: 20, fontFamily: 'NowAltRegular'}}>SIGN UP | LOGIN</p>
           </div>
           { /* END OF TOP BAR
                START OF PLATFORM TITLE */ }
@@ -133,6 +129,8 @@ class Landing extends React.Component {
             </div>
           </div>
           { /* END OF PLATFORM TITLE */ }
+          <div /> { /* DO NOT DELETE --> NEED THESE FOR POSITIONING */ }
+          <div /> { /* DO NOT DELETE --> NEED THESE FOR POSITIONING */ }
         </div>
         { /* START OF WHITE SPACE */ }
         <p style={{display: 'flex', justifyContent: 'center', marginTop: 15, fontSize: 18, fontFamily: 'NowAltRegular', color: 'black'}}>
