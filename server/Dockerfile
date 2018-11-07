@@ -17,6 +17,7 @@ FROM base as build
 # Build tools
 #RUN apt-get install -y build-essential
 COPY . /app
+COPY ../contracts/build/contracts /app/abi/build
 RUN cd /app && \
     npm --unsafe-perm install
 RUN cd /app && \
