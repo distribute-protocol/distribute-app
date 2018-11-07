@@ -1,8 +1,7 @@
 import { LOGIN_USER, REGISTER_USER, GET_USER_STATUS, GET_USER_VOTES } from '../constants/UserActionTypes'
 import { userStatusReceived, loggedInUser, registerUser, registeredUser, userVotesReceived } from '../actions/userActions'
+import { from, of, iif, concat, merge } from 'rxjs'
 import { map, mergeMap, flatMap } from 'rxjs/operators'
-import { Observable } from 'rxjs'
-import { merge } from 'rxjs/observable/merge'
 import { client } from '../index'
 import { web3, rr } from '../utilities/blockchain'
 import { push } from 'react-router-redux'
@@ -11,6 +10,11 @@ import * as _ from 'lodash'
 
 const getUserEpic = action$ => {
   let credentials
+  let accounts
+  web3.eth.getAccounts((err, res) => {
+    if (err) return err
+    accounts = res
+  })
   return action$.ofType(LOGIN_USER).pipe(
     mergeMap(action => {
       credentials = action.credentials
@@ -22,18 +26,18 @@ const getUserEpic = action$ => {
           }
         }
       `
-      return client.query({query, variables: {account: web3.eth.accounts[0]}})
+      return client.query({query, variables: {account: accounts[0]}})
     }),
-    flatMap(result =>
-      Observable.if(
+    flatMap(result => {
+      return iif(
         () => !result.data.user || result.data.user.reputationBalance === 0,
-        Observable.of(registerUser(credentials, web3.eth.accounts[0])),
-        Observable.concat(
-          Observable.of(loggedInUser(result)),
-          Observable.of(push('/status'))
+        of(registerUser(credentials, accounts[0])),
+        concat(
+          of(loggedInUser(result)),
+          of(push('/status'))
         )
       )
-    )
+    })
   )
 }
 
@@ -57,10 +61,10 @@ const registerUserEpic = action$ => {
         }
       })
     }),
-    map(result => Observable.from(rr.register({from: account}))),
-    flatMap(result => Observable.concat(
-      Observable.of(registeredUser(result)),
-      Observable.of(push('/status'))
+    map(result => from(rr.register({from: account}))),
+    flatMap(result => concat(
+      of(registeredUser(result)),
+      of(push('/status'))
     ))
   )
 }

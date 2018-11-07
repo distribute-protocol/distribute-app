@@ -28,11 +28,9 @@ import {
   // votingStatusChecked
 } from '../actions/projectActions'
 import { map, mergeMap, concatMap } from 'rxjs/operators'
-import { EmptyObservable } from 'rxjs/observable/EmptyObservable'
-import { Observable } from 'rxjs'
+import { merge, EMPTY, of, from, concat } from 'rxjs'
 import { push } from 'react-router-redux'
 import { client } from '../index'
-import { merge } from 'rxjs/observable/merge'
 import { rr, tr, pr, dt, P } from '../utilities/blockchain'
 import gql from 'graphql-tag'
 
@@ -52,11 +50,11 @@ const proposeProject = action$ =>
   action$.ofType(PROPOSE_PROJECT).pipe(
     mergeMap(action =>
       action.collateralType === 'tokens'
-        ? Observable.from(tr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
-        : Observable.from(rr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
+        ? from(tr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
+        : from(rr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
     ),
-    mergeMap(result => Observable.concat(
-      Observable.of(push('/stake'))
+    mergeMap(result => concat(
+      of(push('/stake'))
     ))
   )
 
@@ -66,18 +64,18 @@ const stakeProject = action$ => {
     mergeMap(action => {
       collateralType = action.collateralType
       return action.collateralType === 'tokens'
-        ? Observable.from(tr.stakeTokens(action.projectAddress, parseInt(action.value, 10), action.txObj))
-        : Observable.from(rr.stakeReputation(action.projectAddress, parseInt(action.value, 10), action.txObj))
+        ? from(tr.stakeTokens(action.projectAddress, parseInt(action.value, 10), action.txObj))
+        : from(rr.stakeReputation(action.projectAddress, parseInt(action.value, 10), action.txObj))
     }),
     mergeMap(result => {
       stakeResult = result
-      return Observable.from(dt.currentPrice())
+      return from(dt.currentPrice())
     }),
     mergeMap(result => {
       if (stakeResult.logs[0].args.staked === true) {
-        return Observable.of(push('/add'))
+        return of(push('/add'))
       } else {
-        return Observable.of(projectStaked(collateralType, stakeResult.logs[0].args, result))
+        return of(projectStaked(collateralType, stakeResult.logs[0].args, result))
       }
     })
   )
@@ -89,8 +87,8 @@ const unstakeProject = action$ => {
     mergeMap(action => {
       collateralType = action.collateralType
       return action.collateralType === 'tokens'
-        ? Observable.from(tr.unstakeTokens(action.projectAddress, parseInt(action.value, 10), action.txObj))
-        : Observable.from(rr.unstakeReputation(action.projectAddress, parseInt(action.value, 10), action.txObj))
+        ? from(tr.unstakeTokens(action.projectAddress, parseInt(action.value, 10), action.txObj))
+        : from(rr.unstakeReputation(action.projectAddress, parseInt(action.value, 10), action.txObj))
     }),
     map(result => projectUnstaked(collateralType, result.logs[0].args))
   )
@@ -101,19 +99,19 @@ const checkStakedStatus = action$ => {
   return action$.ofType(CHECK_STAKED_STATUS).pipe(
     mergeMap(action => {
       projectAddress = action.projectAddress
-      return Observable.from(pr.checkStaked(action.projectAddress, action.txObj))
+      return from(pr.checkStaked(action.projectAddress, action.txObj))
     }),
     mergeMap(result => {
       firstResult = result
-      return Observable.from(P.at(projectAddress).state())
+      return from(P.at(projectAddress).state())
     }),
     mergeMap(state => {
       if (firstResult.logs[0].args.staked === true) {
-        return Observable.of(push('/add'))
+        return of(push('/add'))
       } else if (state.toNumber() === 8) {
-        return Observable.of(push('/expired'))
+        return of(push('/expired'))
       } else {
-        return new EmptyObservable()
+        return EMPTY
       }
     })
   )
@@ -175,7 +173,7 @@ const submitHashedTaskList = action$ => {
       })
     }),
     mergeMap(action => {
-      return Observable.from(pr.addTaskHash(projectAddress, taskHash, txObj))
+      return from(pr.addTaskHash(projectAddress, taskHash, txObj))
     }),
     map(result =>
       hashedTaskListSubmitted(tasks, txObj.from, projectAddress, result.logs[1].args.weighting.toNumber() / (10 ** 15)))
@@ -204,15 +202,15 @@ const getVerifiedTaskListsEpic = action$ => {
 const checkActiveStatus = action$ => {
   return action$.ofType(CHECK_ACTIVE_STATUS).pipe(
     mergeMap(action => {
-      return Observable.from(pr.checkActive(action.projectAddress, action.txObj))
+      return from(pr.checkActive(action.projectAddress, action.txObj))
     }),
     mergeMap(result => {
       if (result.logs[0].args.active === true) {
-        return Observable.concat(
-          Observable.of(push('/claim'))
+        return concat(
+          of(push('/claim'))
         )
       } else {
-        return new EmptyObservable()
+        return EMPTY
       }
     })
   )
@@ -234,8 +232,8 @@ const rewardProposer = action$ => {
     }),
     mergeMap(result => {
       return result.data.project.proposerType === 1
-        ? Observable.from(tr.refundProposer(projectAddress, txObj))
-        : Observable.from(rr.refundProposer(projectAddress, txObj))
+        ? from(tr.refundProposer(projectAddress, txObj))
+        : from(rr.refundProposer(projectAddress, txObj))
     }),
     map(result => proposerRewarded(projectAddress))
   )
@@ -244,10 +242,10 @@ const rewardProposer = action$ => {
 const checkValidateStatus = action$ => {
   return action$.ofType(CHECK_VALIDATE_STATUS).pipe(
     mergeMap(action => {
-      return Observable.from(pr.checkValidate(action.projectAddress, action.txObj))
+      return from(pr.checkValidate(action.projectAddress, action.txObj))
     }),
-    mergeMap(result => Observable.concat(
-      Observable.of(push('/validate'))
+    mergeMap(result => concat(
+      of(push('/validate'))
     ))
   )
 }
@@ -255,11 +253,11 @@ const checkValidateStatus = action$ => {
 const checkVotingStatus = action$ =>
   action$.ofType(CHECK_VOTING_STATUS).pipe(
     mergeMap(action => {
-      return Observable.from(pr.checkVoting(action.projectAddress, action.txObj))
+      return from(pr.checkVoting(action.projectAddress, action.txObj))
     }),
     mergeMap(result => {
-      return Observable.concat(
-        Observable.of(push('/vote'))
+      return concat(
+        of(push('/vote'))
       )
     })
   )
@@ -267,19 +265,19 @@ const checkVotingStatus = action$ =>
 const checkFinalStatus = action$ => {
   return action$.ofType(CHECK_FINAL_STATUS).pipe(
     mergeMap(action => {
-      return Observable.from(pr.checkEnd(action.projectAddress, action.txObj))
+      return from(pr.checkEnd(action.projectAddress, action.txObj))
     }),
     mergeMap(result => {
       if (result.logs[0].args.end.toNumber() === 1) {
-        return Observable.concat(
-          Observable.of(push('/complete'))
+        return concat(
+          of(push('/complete'))
         )
       } else if (result.logs[0].args.end.toNumber() === 2) {
-        return Observable.concat(
-          Observable.of(push('/failed'))
+        return concat(
+          of(push('/failed'))
         )
       } else {
-        return new EmptyObservable()
+        return EMPTY
       }
     })
   )
