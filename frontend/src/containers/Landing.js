@@ -123,7 +123,7 @@ class Landing extends React.Component {
                 </svg>
               </div>
               <div>
-                <p style={{paddingLeft: 9, fontSize: 25, fontFamily: 'PingFang SC', fontWeight: 600, color: 'white'}}>HYPHA</p>
+                <p style={{paddingLeft: 9, paddingTop: 20, fontSize: 25, fontFamily: 'PingFang SC', fontWeight: 600, color: 'white'}}>HYPHA</p>
               </div>
             </div>
             <p style={{paddingTop: 28.5, paddingRight: 66.5, color: 'white', fontSize: 20, fontFamily: 'NowAltRegular'}}>SIGN UP | LOGIN</p>
