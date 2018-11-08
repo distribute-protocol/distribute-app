@@ -7,7 +7,9 @@
     "antd": "^3.10.0",
     "apollo-boost": "^0.1.16",
     "bignumber.js": "^7.2.1",
+    "emotion": "^9.2.12",
     "ethers": "^4.0.4",
+    "ethjs": "^0.4.0",
     "get-eth-price": "^1.0.0",
     "graphql-tag": "^2.10.0",
     "history": "^4.7.2",
@@ -31,7 +33,7 @@
     "rxjs": "6.3.3",
     "truffle-contract": "^3.0.6",
     "uport-connect": "^1.0.0-beta.1",
-    "web3": "^1.0.0-beta.36",
+    "web3": "0.20.6",
     "web3-utils": "^1.0.0-beta.36"
   },
   "devDependencies": {

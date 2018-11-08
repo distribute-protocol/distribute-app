@@ -58,27 +58,27 @@ class Initiator extends React.Component {
   }
 
   componentDidMount () {
-    // const map = new mapboxgl.Map({
-    //   container: this.mapContainer,
-    //   style: 'mapbox://styles/mapbox/streets-v10'
-    // })
-    // this.setState({map: map})
-    // let coordHandler = (pos) => {
-    //   let ll = new mapboxgl.LngLat(pos.coords.longitude, pos.coords.latitude)
-    //   map.setCenter(ll)
-    //   map.setZoom(12)
-    //   map.addControl(new mapboxgl.NavigationControl())
-    //   map.on('click', (e) => {
-    //     map.setCenter(e.lngLat)
-    //     this.setState({coords: e.lngLat})
-    //   })
-    // }
-    // window.navigator.geolocation.getCurrentPosition(coordHandler)
+    const map = new mapboxgl.Map({
+      container: this.mapContainer,
+      style: 'mapbox://styles/mapbox/streets-v10'
+    })
+    this.setState({map: map})
+    let coordHandler = (pos) => {
+      let ll = new mapboxgl.LngLat(pos.coords.longitude, pos.coords.latitude)
+      map.setCenter(ll)
+      map.setZoom(12)
+      map.addControl(new mapboxgl.NavigationControl())
+      map.on('click', (e) => {
+        map.setCenter(e.lngLat)
+        this.setState({coords: e.lngLat})
+      })
+    }
+    window.navigator.geolocation.getCurrentPosition(coordHandler)
   }
 
-  // componentWillUnmount () {
-  //   this.state.map.remove()
-  // }
+  componentWillUnmount () {
+    this.state.map.remove()
+  }
 
   getNetworkStatus () {
     this.props.getNetworkStatus()
@@ -105,6 +105,7 @@ class Initiator extends React.Component {
       location: this.state.coords,
       summary: values.summary
     }
+    console.log(projObj)
     let multiHash
     const obj = {
       Data: JSON.stringify(projObj),
@@ -156,7 +157,11 @@ class Initiator extends React.Component {
   }
 
   handlePriceChange (val) {
-    this.setState({cost: web3.toWei(val.target.value, 'ether')})
+    try {
+      this.setState({cost: web3.toWei(val.target.value, 'ether')})
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   handleLocationChange (val) {
@@ -193,7 +198,10 @@ class Initiator extends React.Component {
     return (
       <div>
         {this.state.firstTime && this.state.firstModal
-          ? <InitiatorWelcome visible={this.state.firstTime && this.state.firstModal} continue={this.choosePropType} />
+          ? <InitiatorWelcome visible={
+            // this.state.firstTime && this.state.firstModal
+            false
+          } continue={this.choosePropType} />
           : null }
         {this.state.firstTime && this.state.secondModal
           ? <InsufficientTokens visible={this.state.firstTime && this.state.secondModal} continue={() => this.redirect('/dashboard')} />
