@@ -30,7 +30,7 @@ const getUserEpic = action$ => {
     flatMap(result => {
       return iif(
         () => !result.data.user || result.data.user.reputationBalance === 0,
-        of(registerUser(credentials, web3.eth.accounts[0])),
+        of(registerUser(credentials, accounts[0])),
         concat(
           of(loggedInUser(result))
         )
@@ -43,6 +43,7 @@ const registerUserEpic = action$ => {
   let account
   return action$.ofType(REGISTER_USER).pipe(
     mergeMap(action => {
+      console.log('???')
       account = action.account
       let mutation = gql`
         mutation addUser($input: CredentialInput, $account: String!) {

@@ -84,11 +84,13 @@ class Landing extends React.Component {
   }
 
   getUport () {
-    uport.requestCredentials({
-      requested: ['name', 'avatar'],
+    const reqObj = {
+      requested: ['name', 'avatar', 'country'], 
       notifications: true
-    }).then((credentials) => {
-      this.props.loginUser(credentials)
+    } 
+    uport.requestDisclosure(reqObj)
+    uport.onResponse('disclosureReq').then(res => { 
+      this.props.loginUser(res.payload)
       this.setState({clickedJoin: false, loggedin: true})
     })
   }

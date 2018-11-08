@@ -15,7 +15,6 @@ class Onboarding extends React.Component {
   }
 
   componentWillMount () {
-    console.log(this.props.visible, this.props.skipFirst)
     if (typeof this.props.skipFirst !== 'undefined' && this.props.visible !== 'undefined') {
       this.setState({modalVisible: this.props.visible, firstModal: !this.props.skipFirst && this.props.visible})
     }

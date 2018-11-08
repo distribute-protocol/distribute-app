@@ -1,20 +1,20 @@
 import React from 'react'
 import { Table, Button } from 'antd'
 // import plusbutton from '../../images/plusbutton.svg'
-import { css } from 'react-emotion'
+// import stuff from 'react-emotion'
 
-const tableCSS = css({
-  'thead': {
-    fontSize: 18,
-    fontFamily: 'Lato',
-    fontWeight: 700
-  },
-  'td': {
-    fontSize: 14,
-    fontFamily: 'NowAltRegular',
-    backgroundColor: 'rgba(218, 218, 218, 0.5)'
-  }
-})
+// const tableCSS = stuff.css({
+//   'thead': {
+//     fontSize: 18,
+//     fontFamily: 'Lato',
+//     fontWeight: 700
+//   },
+//   'td': {
+//     fontSize: 14,
+//     fontFamily: 'NowAltRegular',
+//     backgroundColor: 'rgba(218, 218, 218, 0.5)'
+//   }
+// })
 
 export default ({
   title,
@@ -39,7 +39,7 @@ export default ({
     <div style={{width: 250}}>
       <Table
         dataSource={data}
-        className={tableCSS}
+        // className={tableCSS}
         pagination={false}
         locale={{ emptyText: null }}
       >
