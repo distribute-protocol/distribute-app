@@ -1,20 +1,19 @@
 import React from 'react'
 import { Table, Button } from 'antd'
-// import plusbutton from '../../images/plusbutton.svg'
-// import stuff from 'react-emotion'
+import { css } from 'react-emotion'
 
-// const tableCSS = stuff.css({
-//   'thead': {
-//     fontSize: 18,
-//     fontFamily: 'Lato',
-//     fontWeight: 700
-//   },
-//   'td': {
-//     fontSize: 14,
-//     fontFamily: 'NowAltRegular',
-//     backgroundColor: 'rgba(218, 218, 218, 0.5)'
-//   }
-// })
+const tableCSS = css({
+  'thead': {
+    fontSize: 18,
+    fontFamily: 'Lato',
+    fontWeight: 700
+  },
+  'td': {
+    fontSize: 14,
+    fontFamily: 'NowAltRegular',
+    backgroundColor: 'rgba(218, 218, 218, 0.5)'
+  }
+})
 
 export default ({
   title,
@@ -39,7 +38,7 @@ export default ({
     <div style={{width: 250}}>
       <Table
         dataSource={data}
-        // className={tableCSS}
+        className={tableCSS}
         pagination={false}
         locale={{ emptyText: null }}
       >
@@ -55,7 +54,6 @@ export default ({
         />
       </Table>
       <div style={{display: 'flex', alignItems: 'center', paddingLeft: 5}}>
-        { /* // <img onClick={addItem} style={{paddingLeft: 5, cursor: 'pointer'}} src={plusbutton} alt='add avatar' /> */ }
         <Button onClick={() => addItem()} style={{cursor: 'pointer'}} shape='circle' icon='plus' />
         <p style={{paddingLeft: 13, paddingTop: 19, fontSize: 14, fontFamily: 'NowAltRegular'}}>{add}</p>
       </div>

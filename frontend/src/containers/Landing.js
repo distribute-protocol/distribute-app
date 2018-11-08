@@ -84,10 +84,7 @@ class Landing extends React.Component {
   }
 
   getUport () {
-    const reqObj = {
-      requested: ['name', 'avatar', 'country'], 
-      notifications: true
-    } 
+    const reqObj = { requested: ['name', 'avatar', 'country'], notifications: true } 
     uport.requestDisclosure(reqObj)
     uport.onResponse('disclosureReq').then(res => { 
       this.props.loginUser(res.payload)
