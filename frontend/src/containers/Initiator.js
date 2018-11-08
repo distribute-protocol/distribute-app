@@ -76,9 +76,9 @@ class Initiator extends React.Component {
     // window.navigator.geolocation.getCurrentPosition(coordHandler)
   }
 
-  componentWillUnmount () {
-    this.state.map.remove()
-  }
+  // componentWillUnmount () {
+  //   this.state.map.remove()
+  // }
 
   getNetworkStatus () {
     this.props.getNetworkStatus()

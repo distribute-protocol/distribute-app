@@ -29,10 +29,10 @@ class Sidebar extends React.Component {
       <div style={{height: '100%', width: 150, position: 'fixed', backgroundColor: '#111111', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
         <h1 className='App-title' style={{color: 'white', marginTop: 5, fontSize: 18}}>HYPHA</h1>
         <div style={{width: 100, height: 100, borderRadius: 50, backgroundColor: '#fcfcfc'}}>
-          <img style={{width: 100, height: 100, borderRadius: 50}} alt='profile' src={typeof this.props.user.avatar !== 'undefined' ? this.props.user.avatar.uri : 'http://busybridgeng.com/wp-content/uploads/2017/05/generic-avatar.png'} />
+          <img style={{width: 100, height: 100, borderRadius: 50, cursor: 'pointer'}} onClick={() => this.props.redirect('/profile')} alt='profile' src={typeof this.props.user.avatar !== 'undefined' ? this.props.user.avatar.uri : 'http://busybridgeng.com/wp-content/uploads/2017/05/generic-avatar.png'} />
         </div>
         <h3 style={{color: '#FCFCFC', fontSize: 15}}>{this.props.user.name.split(' ')[0]}</h3>
-        <div style={{marginTop: 5}}>
+        <div>
           { this.props.showIcons
             ? <div style={{display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between'}}>
               { this.props.highlightIcon === 'Initiator' ? <img style={{paddingBottom: 5, cursor: 'pointer'}} src={initiatorcolor} alt='initiator' onClick={() => this.props.redirect('/initiator')} /> : <img style={{cursor: 'pointer'}} src={initiatorgray} alt='initiator' onClick={() => this.props.redirect('/initiator')} /> }
