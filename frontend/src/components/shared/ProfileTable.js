@@ -1,6 +1,6 @@
 import React from 'react'
 import { Table, Button } from 'antd'
-import css from 'react-emotion'
+import { css } from 'react-emotion'
 
 const tableCSS = css({
   'thead': {

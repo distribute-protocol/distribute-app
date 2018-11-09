@@ -105,7 +105,6 @@ class Initiator extends React.Component {
       location: this.state.coords,
       summary: values.summary
     }
-    console.log(projObj)
     let multiHash
     const obj = {
       Data: JSON.stringify(projObj),
@@ -113,11 +112,9 @@ class Initiator extends React.Component {
     }
     await ipfs.object.put(obj, {enc: 'json'}, (err, node) => {
       if (err) {
-        console.log('errrrr')
         throw err
       }
       multiHash = node.toJSON().multihash
-      console.log(multiHash)
       eth.getAccounts(async (err, accounts) => {
         if (!err) {
           await this.props.proposeProject(type, {cost: projObj.cost, stakingEndDate: projObj.stakingEndDate, multiHash: multiHash}, {from: accounts[0]})
@@ -199,10 +196,7 @@ class Initiator extends React.Component {
     return (
       <div>
         {this.state.firstTime && this.state.firstModal
-          ? <InitiatorWelcome visible={
-            // this.state.firstTime && this.state.firstModal
-            false
-          } continue={this.choosePropType} />
+          ? <InitiatorWelcome visible={this.state.firstTime && this.state.firstModal} continue={this.choosePropType} />
           : null }
         {this.state.firstTime && this.state.secondModal
           ? <InsufficientTokens visible={this.state.firstTime && this.state.secondModal} continue={() => this.redirect('/dashboard')} />
