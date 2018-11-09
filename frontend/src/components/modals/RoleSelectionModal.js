@@ -12,6 +12,7 @@ class RoleSelectionModal extends React.Component {
   }
 
   componentWillReceiveProps (np) {
+    console.log(np)
     if (np.visible === true && typeof np.role !== 'undefined') {
       let text, color
       switch (np.role) {
@@ -59,6 +60,7 @@ class RoleSelectionModal extends React.Component {
   }
 
   render () {
+    console.log(this.state.text, this.state.modalVisible, this.state.visible)
     return (
       <Modal
         centered

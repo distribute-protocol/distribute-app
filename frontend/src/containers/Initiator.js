@@ -117,6 +117,7 @@ class Initiator extends React.Component {
         throw err
       }
       multiHash = node.toJSON().multihash
+      console.log(multiHash)
       eth.getAccounts(async (err, accounts) => {
         if (!err) {
           await this.props.proposeProject(type, {cost: projObj.cost, stakingEndDate: projObj.stakingEndDate, multiHash: multiHash}, {from: accounts[0]})

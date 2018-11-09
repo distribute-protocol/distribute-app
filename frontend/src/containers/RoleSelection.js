@@ -58,6 +58,7 @@ class RoleSelection extends React.Component {
   }
 
   render () {
+    console.log(this.state.firstModal, this.state.secondModal, this.state.thirdModal, this.state.role)
     return (
       <div>
         {this.state.firstModal

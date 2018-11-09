@@ -25,7 +25,7 @@
     "cors": "^2.8.4",
     "express": "^4.16.4",
     "graphql": "^14.0.2",
-    "ipfs-api": "^25.0.0",
+    "ipfs-api": "23.0.0",
     "lodash": "4.17.11",
     "mongodb": "^3.1.8",
     "mongoose": "^5.3.4",

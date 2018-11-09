@@ -43,7 +43,6 @@ const registerUserEpic = action$ => {
   let account
   return action$.ofType(REGISTER_USER).pipe(
     mergeMap(action => {
-      console.log('???')
       account = action.account
       let mutation = gql`
         mutation addUser($input: CredentialInput, $account: String!) {
