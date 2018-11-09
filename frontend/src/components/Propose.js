@@ -55,7 +55,7 @@ class ProposeForm extends React.Component {
                     onChange={this.props.handlePhotoChange}
                   >
                     {this.props.imageUrl
-                      ? <img style={{width: 200, height: 200}} src={this.props.imageUrl} alt='' />
+                      ? <img style={{maxWidth: 200, maxHeight: 200}} src={this.props.imageUrl} alt='' />
                       : <img style={{cursor: 'pointer'}} src={grayx} alt='gray x' />}
                   </Upload>
                 </FormItem>
@@ -68,7 +68,7 @@ class ProposeForm extends React.Component {
               </div>
               <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginRight: 50, paddingLeft: '15%', paddingTop: '5%', paddingBottom: '5%'}}>
                 <FormItem>
-                  {getFieldDecorator('name')(<Input style={{width: 350, borderRadius: 0, border: '1px solid #989898'}} placeholder='' />)}
+                  {getFieldDecorator('name')(<Input style={{maxWidth: 350, borderRadius: 0, border: '1px solid #989898'}} placeholder='' />)}
                 </FormItem>
               </div>
             </div>
@@ -79,7 +79,7 @@ class ProposeForm extends React.Component {
               </div>
               <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginRight: 50, paddingLeft: '15%', paddingTop: '7%', paddingBottom: '4%'}}>
                 <FormItem>
-                  {getFieldDecorator('summary')(<TextArea style={{width: 350, borderRadius: 0, border: '1px solid #989898'}} rows={10} type='textarea' />)}
+                  {getFieldDecorator('summary')(<TextArea style={{maxWidth: 350, borderRadius: 0, border: '1px solid #989898'}} rows={10} type='textarea' />)}
                 </FormItem>
               </div>
             </div>
@@ -101,7 +101,7 @@ class ProposeForm extends React.Component {
                 <p style={{fontFamily: 'Lato', fontSize: 14}}>How long do you want the<br />proposal to be open.</p>
                 <p style={{fontFamily: 'Lato', fontSize: 10}}>Note: If the proposal is not funded by the<br />proposal end date, you will lose your staked<br />tokens or reputation.</p>
               </div>
-              <div style={{marginRight: '20%', marginTop: 10}}>
+              <div style={{marginRight: 50, marginTop: 10}}>
                 <FormItem>
                   {getFieldDecorator('date')(<DatePicker style={{borderRadius: 0, border: '1px solid #989898'}} />)}
                 </FormItem>
@@ -114,7 +114,7 @@ class ProposeForm extends React.Component {
               </div>
               <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginRight: 50, paddingLeft: '15%', paddingTop: '5%', paddingBottom: '5%'}}>
                 <FormItem>
-                  {getFieldDecorator('cost')(<Input style={{width: 350, borderRadius: 0, border: '1px solid #989898'}} placeholder='ETH' type='number' onChange={this.props.handlePriceChange} />)}
+                  {getFieldDecorator('cost')(<Input style={{maxWidth: 350, borderRadius: 0, border: '1px solid #989898'}} placeholder='ETH' type='number' onChange={this.props.handlePriceChange} />)}
                 </FormItem>
               </div>
             </div>
@@ -125,7 +125,7 @@ class ProposeForm extends React.Component {
               </div>
               <div style={{marginTop: '5%', marginBottom: '5%', marginRight: '7%'}}>
                 <Dropdown overlay={menu}>
-                  <Button style={{ width: 350, border: '1px solid #989898', borderRadius: 0, textAlign: 'left' }}>
+                  <Button style={{ maxWidth: 350, border: '1px solid #989898', borderRadius: 0, textAlign: 'left' }}>
                     <Icon type='down' /> { this.state.collateralType === '' ? null : this.state.collateralType }
                   </Button>
                 </Dropdown>
