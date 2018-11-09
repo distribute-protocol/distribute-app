@@ -14,8 +14,7 @@ class ProposeForm extends React.Component {
   }
 
   submitHandler (type) {
-    console.log(type, this.props.form.getFieldsValue())
-    this.props.proposeProject(type, this.props.form.getFieldsValue())
+    this.props.storeData(type, this.props.form.getFieldsValue())
     this.props.form.resetFields()
   }
 

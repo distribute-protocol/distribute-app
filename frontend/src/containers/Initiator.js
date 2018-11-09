@@ -8,6 +8,7 @@ import ProposeForm from '../components/Propose'
 import Sidebar from '../components/shared/Sidebar'
 import InitiatorWelcome from '../components/modals/InitiatorWelcome'
 import InsufficientTokens from '../components/modals/InsufficientTokens'
+import VerificationModal from '../components/modals/VerificationModal'
 import ipfs from '../utilities/ipfs'
 import { getUserStatus } from '../actions/userActions'
 import { getNetworkStatus } from '../actions/networkActions'
@@ -31,7 +32,17 @@ class Initiator extends React.Component {
       currPrice: 0,
       loading: false,
       imageUrl: false,
-      location: [0, 0]
+      location: [0, 0],
+      verificationModal: false,
+      collateralType: '',
+      data: {
+        cost: '',
+        stakingEndDate: '',
+        photo: '',
+        name: '',
+        location: '',
+        summary: ''
+      }
     }
     this.choosePropType = this.choosePropType.bind(this)
     this.redirect = this.redirect.bind(this)
@@ -42,6 +53,7 @@ class Initiator extends React.Component {
     this.handleLocationChange = this.handleLocationChange.bind(this)
     this.handlePhotoChange = this.handlePhotoChange.bind(this)
     this.triggerMapChange = this.triggerMapChange.bind(this)
+    this.storeData = this.storeData.bind(this)
   }
 
   componentWillMount () {
@@ -94,7 +106,7 @@ class Initiator extends React.Component {
     })
   }
 
-  async proposeProject (type, values) {
+  storeData (type, values) {
     // stakingPeriod in Days changed to seconds -> blockchain understands seconds
     // This is creating and storing an IPFS object
     let projObj = {
@@ -105,11 +117,29 @@ class Initiator extends React.Component {
       location: this.state.coords,
       summary: values.summary
     }
-    let multiHash
+    this.setState({data: projObj, verificationModal: true, collateralType: type})
+  }
+
+  async proposeProject (type, values) {
+    // stakingPeriod in Days changed to seconds -> blockchain understands seconds
+    // This is creating and storing an IPFS object
+    // let projObj = {
+      // cost: this.state.cost,
+      // stakingEndDate: Math.floor(values.date.valueOf() / 1000),
+      // photo: this.state.photo,
+      // name: values.name,
+      // location: this.state.coords,
+      // summary: values.summary
+    // }
     const obj = {
-      Data: JSON.stringify(projObj),
+      Data: JSON.stringify(this.state.data),
       Links: []
     }
+    let multiHash
+    // const obj = {
+    //   Data: JSON.stringify(projObj),
+    //   Links: []
+    // }
     await ipfs.object.put(obj, {enc: 'json'}, (err, node) => {
       if (err) {
         throw err
@@ -117,7 +147,7 @@ class Initiator extends React.Component {
       multiHash = node.toJSON().multihash
       eth.getAccounts(async (err, accounts) => {
         if (!err) {
-          await this.props.proposeProject(type, {cost: projObj.cost, stakingEndDate: projObj.stakingEndDate, multiHash: multiHash}, {from: accounts[0]})
+          await this.props.proposeProject(type, {cost: this.state.obj.cost, stakingEndDate: this.state.obj.stakingEndDate, multiHash: multiHash}, {from: accounts[0]})
         }
       })
     })
@@ -192,6 +222,10 @@ class Initiator extends React.Component {
     this.props.history.push(url)
   }
 
+  areYouSure () {
+    this.setState({verificationModal: true})
+  }
+
   render () {
     return (
       <div>
@@ -200,6 +234,9 @@ class Initiator extends React.Component {
           : null }
         {this.state.firstTime && this.state.secondModal
           ? <InsufficientTokens visible={this.state.firstTime && this.state.secondModal} continue={() => this.redirect('/dashboard')} />
+          : null }
+        {this.state.verificationModal
+          ? <VerificationModal visible={this.state.verificationModal} close={() => this.redirect('./finder')} collateralType={this.state.collateralType} data={this.state.data} />
           : null }
         <Sidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
         <ProposeForm
@@ -214,7 +251,7 @@ class Initiator extends React.Component {
             : Math.ceil(this.state.cost / this.state.weiBal * this.props.network.totalReputation / 20)}
           handlePriceChange={this.handlePriceChange}
           handleLocationChange={this.handleLocationChange}
-          proposeProject={this.proposeProject}
+          storeData={this.storeData}
           map={<div id='map' style={{width: 400, height: 400}} ref={el => { this.mapContainer = el }} />}
         />
       </div>

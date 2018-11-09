@@ -52,10 +52,11 @@ const proposeProject = action$ =>
       action.collateralType === 'tokens'
         ? from(tr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
         : from(rr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
-    ),
-    mergeMap(result => concat(
-      of(push('/stake'))
-    ))
+    )
+    // ,
+    // mergeMap(result => concat(
+    //   of(push('/stake'))
+    // ))
   )
 
 const stakeProject = action$ => {

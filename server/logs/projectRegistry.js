@@ -57,7 +57,6 @@ module.exports = function () {
           throw err
         }
         let dataObj = JSON.parse(new TextDecoder('utf-8').decode(node.toJSON().data))
-        console.log(dataObj)
         Network.findOne({}).exec((err, netStatus) => {
           if (err) console.error(err)
           if (typeof netStatus.processedTxs[txHash] === 'undefined') {
