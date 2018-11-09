@@ -120,7 +120,7 @@ class Initiator extends React.Component {
     this.setState({data: projObj, verificationModal: true, collateralType: type})
   }
 
-  async proposeProject (type, values) {
+  async proposeProject () {
     // stakingPeriod in Days changed to seconds -> blockchain understands seconds
     // This is creating and storing an IPFS object
     // let projObj = {
@@ -147,7 +147,7 @@ class Initiator extends React.Component {
       multiHash = node.toJSON().multihash
       eth.getAccounts(async (err, accounts) => {
         if (!err) {
-          await this.props.proposeProject(type, {cost: this.state.obj.cost, stakingEndDate: this.state.obj.stakingEndDate, multiHash: multiHash}, {from: accounts[0]})
+          await this.props.proposeProject(this.state.collateralType, {cost: this.state.data.cost, stakingEndDate: this.state.data.stakingEndDate, multiHash: multiHash}, {from: accounts[0]})
         }
       })
     })
@@ -236,7 +236,7 @@ class Initiator extends React.Component {
           ? <InsufficientTokens visible={this.state.firstTime && this.state.secondModal} continue={() => this.redirect('/dashboard')} />
           : null }
         {this.state.verificationModal
-          ? <VerificationModal visible={this.state.verificationModal} close={() => this.redirect('./finder')} collateralType={this.state.collateralType} data={this.state.data} />
+          ? <VerificationModal visible={this.state.verificationModal} close={() => this.redirect('./finder')} propose={this.proposeProject} collateralType={this.state.collateralType} data={this.state.data} />
           : null }
         <Sidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
         <ProposeForm

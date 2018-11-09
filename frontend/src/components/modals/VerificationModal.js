@@ -7,20 +7,24 @@ class VerificationModal extends React.Component {
     this.state = {
       modalVisible: false
     }
-    this.handleOk = this.handleOk.bind(this)
+    // this.handleOk = this.handleOk.bind(this)
+    this.handleCancel = this.handleCancel.bind(this)
   }
 
   componentWillMount () {
     this.setState({modalVisible: this.props.visible})
   }
 
-  handleOk (propType) {
-    // this.props.continue(propType)
+  // handleOk (propType) {
+  //   // this.props.continue(propType)
+  //   this.setState({modalVisible: false})
+  // }
+
+  handleCancel () {
     this.setState({modalVisible: false})
   }
 
   render () {
-    console.log(this.props)
     return (
       <Modal
         centered
@@ -45,10 +49,10 @@ class VerificationModal extends React.Component {
             <p style={{justifyContent: 'center', textAlign: 'center', fontFamily: 'Avenir Next', fontSize: 25}}>In order to initiate this proposal you are required to<br />contribute:</p>
             <b><p style={{justifyContent: 'center', textAlign: 'center', fontFamily: 'Lato', fontSize: 40, marginTop: -20}}>XX,XXX Clout</p></b>
             <div style={{display: 'flex', minWidth: '100%', justifyContent: 'space-evenly', marginTop: -20}}>
-              <Button style={{border: '1px solid #989898', borderRadius: 4, color: '#989898', backgroundColor: 'white', maxWidth: 200, height: 55, fontSize: 30, fontFamily: 'Lato', textAlign: 'center'}} key='continueclout' onClick={() => this.handleOk('rep')}>
+              <Button style={{borderRadius: 4, color: '#989898', backgroundColor: 'white', maxWidth: 200, height: 55, fontSize: 30, fontFamily: 'Lato', textAlign: 'center'}} key='continueclout' onClick={this.handleCancel}>
                 <b>Cancel</b>
               </Button>
-              <Button style={{border: '1px solid #989898', borderRadius: 4, color: 'white', backgroundColor: '#A4D573', maxWidth: 200, height: 55, fontSize: 30, fontFamily: 'Lato', textAlign: 'center'}} key='continuemoney' onClick={() => this.handleOk('tokens')}>
+              <Button style={{borderRadius: 4, color: 'white', backgroundColor: '#A4D573', maxWidth: 200, height: 55, fontSize: 30, fontFamily: 'Lato', textAlign: 'center'}} key='continuemoney' onClick={this.props.propose}>
                 Initiate
               </Button>
             </div>
