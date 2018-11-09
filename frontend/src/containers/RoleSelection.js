@@ -64,8 +64,7 @@ class RoleSelection extends React.Component {
           ? <RoleIntro visible={this.state.firstModal} indicateRole={this.changeRole} handleCancel={this.goToProfile} />
           : null}
         {this.state.secondModal
-          ? <RoleSelectionModal visible={this.state.second
-            Modal} role={this.state.role} selectRole={this.populateSidebar} handleCancel={this.goBack} />
+          ? <RoleSelectionModal visible={this.state.secondModal} role={this.state.role} selectRole={this.populateSidebar} handleCancel={this.goBack} />
           : null}
         {this.state.thirdModal
           ? <TextContinue visible={this.state.thirdModal} text={this.state.role} continue={this.closeModal} handleCancel={this.goBack} />
