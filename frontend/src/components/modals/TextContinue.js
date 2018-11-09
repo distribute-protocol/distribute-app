@@ -11,10 +11,10 @@ class TextContinue extends React.Component {
     this.handleCancel = this.handleCancel.bind(this)
   }
 
-  componentWillReceiveProps (np) {
-    if (typeof np.text !== 'undefined' && np.visible === true) {
+  componentWillMount () {
+    if (typeof this.props.text !== 'undefined' && this.props.visible === true) {
       let text
-      switch (np.text) {
+      switch (this.props.text) {
         case 'congrats':
           text = <p>Congratulations!<br />You have successfully registered.</p>
           break
@@ -27,7 +27,7 @@ class TextContinue extends React.Component {
         case 'Doer':
         case 'Validator':
         case 'Resolver':
-          text = <p>You have selected the {np.text.toLowerCase()} role.<br />You can see your current role and the other<br />available ones on the dashboard on the left.</p>
+          text = <p>You have selected the {this.props.text.toLowerCase()} role.<br />You can see your current role and the other<br />available ones on the dashboard on the left.</p>
           break
         default:
           text = <p>I'm sorry, something seems to be broken in here.</p>

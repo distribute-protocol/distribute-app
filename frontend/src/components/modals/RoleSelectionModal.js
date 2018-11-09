@@ -11,11 +11,10 @@ class RoleSelectionModal extends React.Component {
     this.handleCancel = this.handleCancel.bind(this)
   }
 
-  componentWillReceiveProps (np) {
-    console.log(np)
-    if (np.visible === true && typeof np.role !== 'undefined') {
+  componentWillMount () {
+    if (this.props.visible === true && typeof this.props.role !== 'undefined') {
       let text, color
-      switch (np.role) {
+      switch (this.props.role) {
         case 'Initiator':
           text = <p>Initiators are the spark of the distribute network. They spark the ideas that become the projects and<br />initiatives for the commons. They are invited to be creative in addition to being practical. When an initiator<br />wants to submit an idea to the network they contribute some of their own stake to help it grow.<br />What will you help start today?</p>
           color = '#FFC161'
@@ -45,7 +44,7 @@ class RoleSelectionModal extends React.Component {
           color = 'red'
           break
       }
-      this.setState({modalVisible: true, color: color, text: text, role: np.role})
+      this.setState({modalVisible: true, color: color, text: text, role: this.props.role})
     }
   }
 
@@ -60,7 +59,6 @@ class RoleSelectionModal extends React.Component {
   }
 
   render () {
-    console.log(this.state.text, this.state.modalVisible, this.state.visible)
     return (
       <Modal
         centered
@@ -76,7 +74,7 @@ class RoleSelectionModal extends React.Component {
           {this.state.text}
         </div>
         <div style={{display: 'flex', height: 340, alignItems: 'flex-end', justifyContent: 'center'}}>
-          <Button style={{backgroundColor: this.state.color, color: 'white'}} key='back' onClick={this.handleOk}>Select {this.state.role}</Button>
+          <Button style={{backgroundColor: this.state.color, color: 'white'}} key='back' onClick={this.handleOk}>{'Select ' + this.state.role}</Button>
         </div>
       </Modal>
     )
