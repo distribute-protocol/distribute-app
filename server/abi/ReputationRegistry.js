@@ -1,4 +1,4 @@
-let obj = require('./build/ReputationRegistry.json')
+let obj = require('./build/contracts/ReputationRegistry.json')
 
 const ReputationRegistryAddress = obj.networks['5777'].address
 
