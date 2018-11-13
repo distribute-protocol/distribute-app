@@ -106,7 +106,7 @@ class Initiator extends React.Component {
     })
   }
 
-  storeData (type, values) {
+  storeData (type, values, category) {
     // stakingPeriod in Days changed to seconds -> blockchain understands seconds
     // This is creating and storing an IPFS object
     let projObj = {
@@ -115,31 +115,19 @@ class Initiator extends React.Component {
       photo: this.state.photo,
       name: values.name,
       location: this.state.coords,
-      summary: values.summary
+      summary: values.summary,
+      category: category,
+      collateralType: type
     }
     this.setState({data: projObj, verificationModal: true, collateralType: type})
   }
 
   async proposeProject () {
-    // stakingPeriod in Days changed to seconds -> blockchain understands seconds
-    // This is creating and storing an IPFS object
-    // let projObj = {
-      // cost: this.state.cost,
-      // stakingEndDate: Math.floor(values.date.valueOf() / 1000),
-      // photo: this.state.photo,
-      // name: values.name,
-      // location: this.state.coords,
-      // summary: values.summary
-    // }
     const obj = {
       Data: JSON.stringify(this.state.data),
       Links: []
     }
     let multiHash
-    // const obj = {
-    //   Data: JSON.stringify(projObj),
-    //   Links: []
-    // }
     await ipfs.object.put(obj, {enc: 'json'}, (err, node) => {
       if (err) {
         throw err

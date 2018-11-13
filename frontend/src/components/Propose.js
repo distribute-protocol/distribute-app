@@ -15,7 +15,7 @@ class ProposeForm extends React.Component {
   }
 
   submitHandler (type) {
-    this.props.storeData(type, this.props.form.getFieldsValue())
+    this.props.storeData(type, this.props.form.getFieldsValue(), this.state.category)
     this.props.form.resetFields()
   }
 
@@ -23,10 +23,10 @@ class ProposeForm extends React.Component {
     const collateralMenu = (
       <Menu>
         <Menu.Item>
-          <a onClick={() => this.setState({collateralType: 'Tokens'})} target='_blank' rel='noopener noreferrer'>Tokens</a>
+          <p onClick={() => this.setState({collateralType: 'Tokens'})} target='_blank' rel='noopener noreferrer'>Tokens</p>
         </Menu.Item>
         <Menu.Item>
-          <a onClick={() => this.setState({collateralType: 'Reputation'})} target='_blank' rel='noopener noreferrer'>Reputation</a>
+          <p onClick={() => this.setState({collateralType: 'Reputation'})} target='_blank' rel='noopener noreferrer'>Reputation</p>
         </Menu.Item>
       </Menu>
     )
@@ -34,22 +34,22 @@ class ProposeForm extends React.Component {
     const categoryMenu = (
       <Menu>
         <Menu.Item>
-          <a onClick={() => this.setState({category: 'community mesh networks'})} target='_blank' rel='noopener noreferrer'>community mesh networks</a>
+          <p onClick={() => this.setState({category: 'community mesh networks'})} target='_blank' rel='noopener noreferrer'>community mesh networks</p>
         </Menu.Item>
         <Menu.Item>
-          <a onClick={() => this.setState({category: 'urban agriculture'})} target='_blank' rel='noopener noreferrer'>urban agriculture</a>
+          <p onClick={() => this.setState({category: 'urban agriculture'})} target='_blank' rel='noopener noreferrer'>urban agriculture</p>
         </Menu.Item>
         <Menu.Item>
-          <a onClick={() => this.setState({category: 'land trusts'})} target='_blank' rel='noopener noreferrer'>land trusts</a>
+          <p onClick={() => this.setState({category: 'land trusts'})} target='_blank' rel='noopener noreferrer'>land trusts</p>
         </Menu.Item>
         <Menu.Item>
-          <a onClick={() => this.setState({category: 'sustainable energy systems'})} target='_blank' rel='noopener noreferrer'>sustainable energy systems</a>
+          <p onClick={() => this.setState({category: 'sustainable energy systems'})} target='_blank' rel='noopener noreferrer'>sustainable energy systems</p>
         </Menu.Item>
         <Menu.Item>
-          <a onClick={() => this.setState({category: 'open source software'})} target='_blank' rel='noopener noreferrer'>open source software</a>
+          <p onClick={() => this.setState({category: 'open source software'})} target='_blank' rel='noopener noreferrer'>open source software</p>
         </Menu.Item>
         <Menu.Item>
-          <a onClick={() => this.setState({category: 'other'})} target='_blank' rel='noopener noreferrer'>other</a>
+          <p onClick={() => this.setState({category: 'other'})} target='_blank' rel='noopener noreferrer'>other</p>
         </Menu.Item>
       </Menu>
     )
@@ -68,7 +68,10 @@ class ProposeForm extends React.Component {
               </div>
               <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginRight: 50, paddingLeft: '15%', paddingTop: '5%', paddingBottom: '5%'}}>
                 <FormItem>
-                  {getFieldDecorator('name')(<Input style={{maxWidth: 350, borderRadius: 0, border: '1px solid #989898'}} placeholder='' />)}
+                  {getFieldDecorator('name')(<Input
+                    style={{maxWidth: 350, borderRadius: 0, border: '1px solid #989898'}}
+                    placeholder='' />
+                  )}
                 </FormItem>
               </div>
             </div>
@@ -85,46 +88,15 @@ class ProposeForm extends React.Component {
             </div>
             <div style={{display: 'flex', justifyContent: 'space-between', marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '10%', marginRight: '10%'}}>
               <div style={{marginLeft: 15, marginTop: 20}}>
-                <b><p style={{fontFamily: 'Lato', fontSize: 20}}>Project Image:</p></b>
-                <p style={{fontFamily: 'Lato', fontSize: 14}}>Adding a picture of where the<br />mesh node should go helps<br />people understand what you<br />want to build.</p>
-              </div>
-              <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(218, 218, 218, 0.5)', border: '1px solid #989898', marginTop: 20, marginLeft: 20, marginBottom: 20, marginRight: 50, paddingLeft: '15%', paddingRight: '15%', paddingTop: '10%', paddingBottom: '10%'}}>
-                <FormItem>
-                  <Upload
-                    name='avatar'
-                    showUploadList={false}
-                    onChange={this.props.handlePhotoChange}
-                  >
-                    {this.props.imageUrl
-                      ? <img style={{maxWidth: 200, maxHeight: 200}} src={this.props.imageUrl} alt='' />
-                      : <img style={{cursor: 'pointer'}} src={grayx} alt='gray x' />}
-                  </Upload>
-                </FormItem>
-              </div>
-            </div>
-            <div style={{display: 'flex', justifyContent: 'space-between', marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '10%', marginRight: '10%'}}>
-              <div style={{marginLeft: 15, marginTop: 20}}>
                 <b><p style={{fontFamily: 'Lato', fontSize: 20}}>Project Category:</p></b>
                 <p style={{fontFamily: 'Lato', fontSize: 14}}>Pick a project category to connect with a specific community.<br />You can always update this later.</p>
               </div>
               <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', marginTop: '5%', marginBottom: '5%', marginRight: '7%'}}>
-                <Dropdown overlay={categoryMenu} style={{justifyContent: 'flex-end'}}>
+                {getFieldDecorator('category')(<Dropdown overlay={categoryMenu} style={{justifyContent: 'flex-end'}}>
                   <Button style={{ maxWidth: 350, border: '1px solid #989898', borderRadius: 0, textAlign: 'left' }}>
                     <Icon type='down' /> { this.state.category === '' ? null : this.state.category }
                   </Button>
-                </Dropdown>
-              </div>
-            </div>
-            <div style={{display: 'flex', justifyContent: 'space-between', marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '10%', marginRight: '10%'}}>
-              <div style={{marginLeft: 15, marginTop: 20}}>
-                <b><p style={{fontFamily: 'Lato', fontSize: 20}}>Project Location:</p></b>
-                <p style={{fontFamily: 'Lato', fontSize: 14}}>Let's mark the location on a map<br />so people know where you're<br />trying to build the node.</p>
-              </div>
-              <div>
-                <FormItem style={{marginBottom: -0, backgroundColor: 'black'}}>
-                  {getFieldDecorator('location')(<Input style={{borderRadius: 0, border: '1px solid #989898'}} placeholder='Enter Address' onChange={this.props.handleLocationChange} />)}
-                </FormItem>
-                {this.props.map}
+                </Dropdown>)}
               </div>
             </div>
             <div style={{display: 'flex', justifyContent: 'space-between', marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '10%', marginRight: '10%'}}>
@@ -162,6 +134,37 @@ class ProposeForm extends React.Component {
                   </Button>
                 </Dropdown>
                 { this.state.collateralType === '' ? null : <p style={{justifyContent: 'flex-end'}}>You will need to contribute amount {this.state.collateralType.toLowerCase()}.</p> }
+              </div>
+            </div>
+            <div style={{display: 'flex', justifyContent: 'space-between', marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '10%', marginRight: '10%'}}>
+              <div style={{marginLeft: 15, marginTop: 20}}>
+                <b><p style={{fontFamily: 'Lato', fontSize: 20}}>Project Location:</p></b>
+                <p style={{fontFamily: 'Lato', fontSize: 14}}>Let's mark the location on a map<br />so people know where you're<br />trying to build the node.</p>
+              </div>
+              <div>
+                <FormItem style={{marginBottom: -0, backgroundColor: 'black'}}>
+                  {getFieldDecorator('location')(<Input style={{borderRadius: 0, border: '1px solid #989898'}} placeholder='Enter Address' onChange={this.props.handleLocationChange} />)}
+                </FormItem>
+                {this.props.map}
+              </div>
+            </div>
+            <div style={{display: 'flex', justifyContent: 'space-between', marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '10%', marginRight: '10%'}}>
+              <div style={{marginLeft: 15, marginTop: 20}}>
+                <b><p style={{fontFamily: 'Lato', fontSize: 20}}>Project Image:</p></b>
+                <p style={{fontFamily: 'Lato', fontSize: 14}}>Adding a picture of where the<br />mesh node should go helps<br />people understand what you<br />want to build.</p>
+              </div>
+              <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(218, 218, 218, 0.5)', border: '1px solid #989898', marginTop: 20, marginLeft: 20, marginBottom: 20, marginRight: 50, paddingLeft: '15%', paddingRight: '15%', paddingTop: '10%', paddingBottom: '10%'}}>
+                <FormItem>
+                  <Upload
+                    name='avatar'
+                    showUploadList={false}
+                    onChange={this.props.handlePhotoChange}
+                  >
+                    {this.props.imageUrl
+                      ? <img style={{maxWidth: 200, maxHeight: 200}} src={this.props.imageUrl} alt='' />
+                      : <img style={{cursor: 'pointer'}} src={grayx} alt='gray x' />}
+                  </Upload>
+                </FormItem>
               </div>
             </div>
             <div style={{display: 'flex', marginTop: 40, marginBottom: 40, justifyContent: 'center', alignItems: 'center', marginLeft: '15%', marginRight: '15%'}}>
