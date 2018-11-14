@@ -91,28 +91,28 @@ export default () => {
   )
 
   return (
-    <div>
-      <div style={{marginTop: 20, marginBottom: 10, color: 'black', backgroundColor: 'white', display: 'flex', justifyContent: 'center', fontFamily: 'Lato', fontSize: 20}}>
+    <div style={{marginLeft: 75, color: 'black'}}>
+      <div style={{marginTop: 20, marginBottom: 10, display: 'flex', justifyContent: 'center', fontFamily: 'Lato', fontSize: 20}}>
         <p style={{marginRight: 10}}> Show me</p>
         <Dropdown overlay={projectLimiter} >
-          <Button style={{ maxWidth: 350, border: '1px solid black', borderRadius: 4, textAlign: 'left' }}>
+          <Button style={{ color: 'black', maxWidth: 350, border: '1px solid black', borderRadius: 4, textAlign: 'left' }}>
             <Icon type='down' />All
           </Button>
         </Dropdown>
         <p style={{marginLeft: 10, marginRight: 10}}>projects within</p>
         <Dropdown overlay={mileage} >
-          <Button style={{ maxWidth: 350, border: '1px solid black', borderRadius: 4, textAlign: 'left' }}>
+          <Button style={{ color: 'black', maxWidth: 350, border: '1px solid black', borderRadius: 4, textAlign: 'left' }}>
             <Icon type='down' />50 miles
           </Button>
         </Dropdown>
         <p style={{marginLeft: 10, marginRight: 10}}>sorted by</p>
         <Dropdown overlay={sortedBy} >
-          <Button style={{ maxWidth: 350, border: '1px solid black', borderRadius: 4, textAlign: 'left' }}>
+          <Button style={{ color: 'black', maxWidth: 350, border: '1px solid black', borderRadius: 4, textAlign: 'left' }}>
             <Icon type='down' />Most Staked
           </Button>
         </Dropdown>
       </div>
-      <hr />
+      <hr style={{marginLeft: -75}} />
     </div>
   )
 }

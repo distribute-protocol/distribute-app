@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import MiniSidebar from '../components/shared/MiniSidebar'
 import TitleBar from '../components/shared/TitleBar'
 import SearchProjectBar from '../components/shared/SearchProjectBar'
+import ProjectCardGrid from '../components/shared/ProjectCardGrid'
 import { getUserStatus } from '../actions/userActions'
 // import { getNetworkStatus } from '../actions/networkActions'
 import { proposeProject } from '../actions/projectActions'
@@ -39,10 +40,11 @@ class Initiator extends React.Component {
 
   render () {
     return (
-      <div>
+      <div style={{backgroundColor: 'white'}}>
         <MiniSidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
         <TitleBar role={this.state.role} />
         <SearchProjectBar />
+        <ProjectCardGrid />
       </div>
     )
   }
