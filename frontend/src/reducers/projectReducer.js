@@ -1,4 +1,4 @@
-import { PROJECTS_RECEIVED, TASK_LIST_SET, HASHED_TASK_LIST_SUBMITTED, PROJECT_STAKED, PROJECT_UNSTAKED, VERIFIED_TASK_LISTS_RECEIVED, PROPOSER_REWARDED } from '../constants/ProjectActionTypes'
+import { PROJECT_PROPOSED, PROJECTS_RECEIVED, TASK_LIST_SET, HASHED_TASK_LIST_SUBMITTED, PROJECT_STAKED, PROJECT_UNSTAKED, VERIFIED_TASK_LISTS_RECEIVED, PROPOSER_REWARDED } from '../constants/ProjectActionTypes'
 import { FINAL_TASK_LIST_SUBMITTED, VALIDATIONS_RECEIVED, TASK_CLAIMED, TASK_COMPLETED, TASK_VALIDATED, VALIDATOR_REWARDED, TASK_REWARDED, USER_VALIDATIONS_RECEIVED } from '../constants/TaskActionTypes'
 
 const initialState = {
@@ -6,6 +6,8 @@ const initialState = {
 
 export default function projectReducer (state = initialState, action) {
   switch (action.type) {
+    case PROJECT_PROPOSED:
+      return Object.assign({}, state, {projectProposed: true})
     case PROJECTS_RECEIVED:
       if (!action.projects.length) {
         return state

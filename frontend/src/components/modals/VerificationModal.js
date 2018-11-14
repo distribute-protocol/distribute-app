@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Modal, Button } from 'antd'
 import txpending from '../../images/tximages/txpending.svg'
 import cancel from '../../images/tximages/cancel.svg'
@@ -13,6 +14,7 @@ class VerificationModal extends React.Component {
     // this.handleOk = this.handleOk.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
     this.initiate = this.initiate.bind(this)
+    this.checkIfProjectPending = this.checkIfProjectPending.bind(this)
   }
 
   componentWillMount () {
@@ -30,7 +32,17 @@ class VerificationModal extends React.Component {
 
   initiate () {
     this.props.propose()
-    this.setState({txState: 'pending'})
+    this.checkIfProjectPending()
+  }
+
+  checkIfProjectPending () {
+    if (this.props.projects !== undefined && this.props.projects.projectProposed === true) {
+      this.setState({txState: 'pending'})
+    } else if (this.state.txState === 'verification') {
+      setTimeout(() => {
+        this.checkIfProjectPending()
+      }, 1000)
+    }
   }
 
   render () {
@@ -85,4 +97,10 @@ class VerificationModal extends React.Component {
   }
 }
 
-export default VerificationModal
+const mapStateToProps = (state) => {
+  return {
+    projects: state.projects
+  }
+}
+
+export default connect(mapStateToProps)(VerificationModal)

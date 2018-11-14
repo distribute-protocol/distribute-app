@@ -8,8 +8,7 @@ import gql from 'graphql-tag'
 import * as _ from 'lodash'
 
 const getUserEpic = action$ => {
-  let credentials
-  let accounts
+  let credentials, accounts
   web3.eth.getAccounts((err, res) => {
     if (err) return err
     accounts = res

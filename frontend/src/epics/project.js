@@ -22,10 +22,11 @@ import {
   proposerRewarded,
   // activeStatusChecked,
   taskListSet,
-  verifiedTaskListsReceived
+  verifiedTaskListsReceived,
   // finalStatusChecked
   // validateStatusChecked,
   // votingStatusChecked
+  projectProposed
 } from '../actions/projectActions'
 import { map, mergeMap, concatMap } from 'rxjs/operators'
 import { merge, EMPTY, of, from, concat } from 'rxjs'
@@ -48,11 +49,12 @@ const getProjectsEpic = action$ => {
 
 const proposeProject = action$ =>
   action$.ofType(PROPOSE_PROJECT).pipe(
-    mergeMap(action =>
-      action.collateralType === 'tokens'
+    mergeMap(action => {
+      return action.collateralType === 'tokens'
         ? from(tr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
         : from(rr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
-    )
+    }),
+    map(result => projectProposed())
     // ,
     // mergeMap(result => concat(
     //   of(push('/stake'))
