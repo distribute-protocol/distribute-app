@@ -96,7 +96,7 @@ class VerificationModal extends React.Component {
           <b><p style={{textAlign: 'center', fontFamily: 'Lato', fontSize: 24}}>Transaction Successful</p></b>
           <p style={{justifyContent: 'center', textAlign: 'center', fontFamily: 'Lato', fontSize: 18, marginTop: -20}}>Your proposal was successfully submitted. People can now find your project.</p>
           <img style={{justifyContent: 'center'}} src={txconfirmed} alt={txconfirmed} />
-          <Button style={{marginTop: 10, borderRadius: 4, border: '1px solid rgba(0, 0, 0, 0.6)', color: 'rgba(0, 0, 0, 0.6)', maxWidth: 200, height: 45, fontSize: 24, fontFamily: 'Lato', textAlign: 'center'}} key='continuemoney' onClick={this.handleCancel}>
+          <Button style={{marginTop: 10, borderRadius: 4, border: '1px solid rgba(0, 0, 0, 0.6)', color: 'rgba(0, 0, 0, 0.6)', maxWidth: 200, height: 45, fontSize: 24, fontFamily: 'Lato', textAlign: 'center'}} key='continuemoney' onClick={this.props.finder}>
             Close
           </Button>
         </div>

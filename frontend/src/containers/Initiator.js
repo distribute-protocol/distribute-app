@@ -224,7 +224,7 @@ class Initiator extends React.Component {
           ? <InsufficientTokens visible={this.state.firstTime && this.state.secondModal} continue={() => this.redirect('/dashboard')} />
           : null }
         {this.state.verificationModal
-          ? <VerificationModal visible={this.state.verificationModal} close={() => this.redirect('./finder')} propose={this.proposeProject} collateralType={this.state.collateralType} data={this.state.data} />
+          ? <VerificationModal visible={this.state.verificationModal} close={() => this.redirect('./finder')} propose={this.proposeProject} collateralType={this.state.collateralType} data={this.state.data} finder={() => this.redirect('/finder')} />
           : null }
         <Sidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
         <ProposeForm
