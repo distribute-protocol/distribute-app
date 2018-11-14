@@ -4,6 +4,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import MiniSidebar from '../components/shared/MiniSidebar'
 import TitleBar from '../components/shared/TitleBar'
+import SearchProjectBar from '../components/shared/SearchProjectBar'
 import { getUserStatus } from '../actions/userActions'
 // import { getNetworkStatus } from '../actions/networkActions'
 import { proposeProject } from '../actions/projectActions'
@@ -41,6 +42,7 @@ class Initiator extends React.Component {
       <div>
         <MiniSidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
         <TitleBar role={this.state.role} />
+        <SearchProjectBar />
       </div>
     )
   }
