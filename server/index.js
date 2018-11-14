@@ -51,11 +51,11 @@ const server = new ApolloServer({
 server.applyMiddleware({ app })
 
 // fire logs --> network model initalized in dtLog ONLY
-  dtLogs()
-  rrLogs()
-  prLogs()
-  trLogs()
-  plLogs()
+dtLogs()
+rrLogs()
+prLogs()
+trLogs()
+plLogs()
 
 engine.listen({
   port: app.get('port'),

@@ -3,8 +3,6 @@ const { mongoUrl,
   isProd,
   defaultMongoOptions } = require('../config/env')
 
-// import supervisor from '../../config/supervisor';
-
 mongoose.Promise = global.Promise
 mongoose.set('debug', !isProd);
 
