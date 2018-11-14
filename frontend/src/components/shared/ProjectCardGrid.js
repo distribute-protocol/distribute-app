@@ -29,7 +29,7 @@ export default (
           {projects}
         </Row>
       </div>
-      <div style={{marginLeft: 60, display: 'flex', justifyContent: 'center'}}>
+      <div style={{marginLeft: 60, marginBottom: 20, display: 'flex', justifyContent: 'center'}}>
         <Pagination defaultCurrent={1} total={50} />
       </div>
     </div>
