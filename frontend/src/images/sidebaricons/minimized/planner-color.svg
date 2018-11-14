@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg width="98" height="98" viewBox="0 0 98 98" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M49 98C76.062 98 98 76.062 98 49C98 21.938 76.062 0 49 0C21.938 0 0 21.938 0 49C0 76.062 21.938 98 49 98Z" fill="white"/>
+<mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="98" height="98">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M49 98C76.062 98 98 76.062 98 49C98 21.938 76.062 0 49 0C21.938 0 0 21.938 0 49C0 76.062 21.938 98 49 98Z" fill="white"/>
+</mask>
+<g mask="url(#mask0)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M49 88C66.9753 88 82.0355 75.5191 85.9876 58.7506C86.6497 55.9412 87 53.0115 87 50C87 29.0132 69.9868 12 49 12C28.0132 12 11 29.0132 11 50C11 70.9868 28.0132 88 49 88Z" fill="black" stroke="black"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M49 82C66.6731 82 81 67.6731 81 50C81 32.3269 66.6731 18 49 18C31.3269 18 17 32.3269 17 50C17 67.6731 31.3269 82 49 82Z" fill="#E36983"/>
+</g>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M57.7822 43.5028C58.2142 46.2302 60.7754 48.091 63.5029 47.6591C66.2303 47.2271 68.0911 44.6659 67.6591 41.9384C67.2271 39.211 64.6659 37.3502 61.9385 37.7822C59.2111 38.2142 57.3503 40.7754 57.7822 43.5028Z" stroke="white"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M57.7822 66.5028C58.2142 69.2302 60.7754 71.091 63.5029 70.6591C66.2303 70.2271 68.0911 67.6659 67.6591 64.9384C67.2271 62.211 64.6659 60.3502 61.9385 60.7822C59.2111 61.2142 57.3503 63.7754 57.7822 66.5028Z" stroke="white"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M29.7822 57.5028C30.2142 60.2302 32.7754 62.091 35.5029 61.6591C38.2303 61.2271 40.0911 58.6659 39.6591 55.9384C39.2271 53.211 36.6659 51.3502 33.9385 51.7822C31.2111 52.2142 29.3503 54.7754 29.7822 57.5028Z" stroke="white"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M29.7822 33.5028C30.2142 36.2302 32.7754 38.091 35.5029 37.6591C38.2303 37.2271 40.0911 34.6659 39.6591 31.9384C39.2271 29.211 36.6659 27.3502 33.9385 27.7822C31.2111 28.2142 29.3503 30.7754 29.7822 33.5028Z" stroke="white"/>
+<path d="M44.6617 34.3885L54.848 39.3567" stroke="white" stroke-linecap="square"/>
+<path d="M54.8354 39.1031L53.4541 35.0916" stroke="white" stroke-linecap="square" stroke-linejoin="round"/>
+<path d="M54.6686 39.7494L50.5738 40.4224" stroke="white" stroke-linecap="square" stroke-linejoin="round"/>
+<path d="M43.6617 60.3885L53.848 65.3567" stroke="white" stroke-linecap="square"/>
+<path d="M53.8354 65.1031L52.4541 61.0916" stroke="white" stroke-linecap="square" stroke-linejoin="round"/>
+<path d="M53.6686 65.7494L49.5738 66.4224" stroke="white" stroke-linecap="square" stroke-linejoin="round"/>
+<path d="M55.0912 47.3885L44.9049 52.3567" stroke="white" stroke-linecap="square"/>
+<path d="M44.9176 52.1031L46.2988 48.0916" stroke="white" stroke-linecap="square" stroke-linejoin="round"/>
+<path d="M45.0843 52.7494L49.1792 53.4224" stroke="white" stroke-linecap="square" stroke-linejoin="round"/>
+</svg>

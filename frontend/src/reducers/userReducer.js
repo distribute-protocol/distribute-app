@@ -16,7 +16,6 @@ export default function userReducer (state = initialState, action) {
     case REGISTERED_USER:
       return Object.assign({}, state, {userReputation: 10000, registering: true})
     case LOGGED_IN_USER:
-      console.log(action.userObj)
       return Object.assign({}, state, {user: action.userObj})
     case LOGOUT_USER:
       return Object.assign({}, state, {user: {}})

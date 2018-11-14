@@ -14,6 +14,7 @@ import Failed from './finished/Failed'
 import Expired from './finished/Expired'
 import Landing from './Landing'
 import Initiator from './Initiator'
+import Finder from './Finder'
 
 const Main = () =>
   <main>
@@ -23,6 +24,7 @@ const Main = () =>
       <Route path='/profile' component={Profile} />
       <Route path='/roleselection' component={RoleSelection} />
       <Route path='/initiator' component={Initiator} />
+      <Route path='/finder' component={Finder} />
       <Route path='/stake' component={Stake} />
       <Route path='/add' component={Add} />
       <Route path='/claim' component={Claim} />

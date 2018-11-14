@@ -52,7 +52,7 @@ class Profile extends React.Component {
   }
 
   addItem (i) {
-    console.log('add', i)
+    // console.log('add', i)
   }
 
   render () {
