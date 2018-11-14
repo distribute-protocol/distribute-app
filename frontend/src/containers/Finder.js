@@ -1,5 +1,3 @@
-/* global */
-
 import React from 'react'
 import { connect } from 'react-redux'
 import MiniSidebar from '../components/shared/MiniSidebar'
