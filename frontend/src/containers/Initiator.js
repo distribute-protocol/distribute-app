@@ -230,13 +230,13 @@ class Initiator extends React.Component {
         <ProposeForm
           handlePhotoChange={this.handlePhotoChange}
           imageUrl={this.state.imageUrl}
-          loading={this.state.loading}
-          cost={typeof this.state.cost === 'undefined'
-            ? 0
-            : Math.ceil(this.state.cost / 20 / this.state.currPrice)}
-          reputationCost={typeof this.state.cost === 'undefined'
-            ? 0
-            : Math.ceil(this.state.cost / this.state.weiBal * this.props.network.totalReputation / 20)}
+          // loading={this.state.loading}
+          // cost={typeof this.state.cost === 'undefined'
+          //   ? 0
+          //   : Math.ceil(this.state.cost / 20 / this.state.currPrice)}
+          // reputationCost={typeof this.state.cost === 'undefined'
+          //   ? 0
+          //   : Math.ceil(this.state.cost / this.state.weiBal * this.props.network.totalReputation / 20)}
           handlePriceChange={this.handlePriceChange}
           handleLocationChange={this.handleLocationChange}
           storeData={this.storeData}
