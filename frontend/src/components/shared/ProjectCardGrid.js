@@ -3,8 +3,18 @@ import { Button, Col, Row, Pagination } from 'antd'
 import ProjectCard from './ProjectCard'
 import mapicon from '../../images/mapicon.svg'
 
-export default () => {
-  let gutter = { xs: 8, sm: 16, md: 24, lg: 32 }
+export default (
+  projectData
+) => {
+  const projects = typeof projectData.projectData !== `undefined`
+    ? Object.keys(projectData.projectData).map((address, i) => {
+      return <Col key={i} index={i} span={6} style={{marginBottom: 32}}>
+        <ProjectCard
+          project={projectData.projectData[address]} />
+      </Col>
+    })
+    : null
+  const gutter = { xs: 8, sm: 16, md: 24, lg: 32 }
   return (
     <div>
       <div style={{marginTop: 20, display: 'flex', justifyContent: 'space-between', color: 'black'}}>
@@ -16,35 +26,10 @@ export default () => {
       </div>
       <div style={{marginLeft: 85, marginRight: 25}}>
         <Row gutter={gutter}>
-          <Col span={6}>
-            <ProjectCard title='ProjectCard title' bordered={false}>ProjectCard content</ProjectCard>
-          </Col>
-          <Col span={6}>
-            <ProjectCard title='ProjectCard title' bordered={false}>ProjectCard content</ProjectCard>
-          </Col>
-          <Col span={6}>
-            <ProjectCard title='ProjectCard title' bordered={false}>ProjectCard content</ProjectCard>
-          </Col>
-          <Col span={6}>
-            <ProjectCard title='ProjectCard title' bordered={false}>ProjectCard content</ProjectCard>
-          </Col>
-        </Row>
-        <Row gutter={gutter} style={{marginTop: 32}}>
-          <Col span={6}>
-            <ProjectCard title='ProjectCard title' bordered={false}>ProjectCard content</ProjectCard>
-          </Col>
-          <Col span={6}>
-            <ProjectCard title='ProjectCard title' bordered={false}>ProjectCard content</ProjectCard>
-          </Col>
-          <Col span={6}>
-            <ProjectCard title='ProjectCard title' bordered={false}>ProjectCard content</ProjectCard>
-          </Col>
-          <Col span={6}>
-            <ProjectCard title='ProjectCard title' bordered={false}>ProjectCard content</ProjectCard>
-          </Col>
+          {projects}
         </Row>
       </div>
-      <div style={{marginLeft: 60, display: 'flex', justifyContent: 'center', marginTop: 35}}>
+      <div style={{marginLeft: 60, display: 'flex', justifyContent: 'center'}}>
         <Pagination defaultCurrent={1} total={50} />
       </div>
     </div>

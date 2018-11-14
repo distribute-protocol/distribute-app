@@ -7,9 +7,30 @@ import TitleBar from '../components/shared/TitleBar'
 import SearchProjectBar from '../components/shared/SearchProjectBar'
 import ProjectCardGrid from '../components/shared/ProjectCardGrid'
 import { getUserStatus } from '../actions/userActions'
-// import { getNetworkStatus } from '../actions/networkActions'
-import { proposeProject } from '../actions/projectActions'
-// import { eth, web3, dt } from '../utilities/blockchain'
+import { getProjects } from '../actions/projectActions'
+import { eth } from '../utilities/blockchain'
+import gql from 'graphql-tag'
+
+let projQuery = gql`
+  { allProjectsinState(state: 1){
+      address,
+      id,
+      ipfsHash,
+      location {
+        lat,
+        lng,
+      },
+      name
+      nextDeadline,
+      photo,
+      reputationBalance,
+      reputationCost,
+      summary,
+      tokenBalance,
+      weiBal,
+      weiCost
+    }
+  }`
 
 class Initiator extends React.Component {
   constructor () {
@@ -23,15 +44,14 @@ class Initiator extends React.Component {
   }
 
   componentWillMount () {
-    // eth.getAccounts(async (err, accounts) => {
-    //   if (!err) {
-    //     if (accounts.length) {
-    //       this.props.getUserStatus(accounts[0])
-    //     }
-    //   }
-    // })
-    // this.getContractValues()
-    // this.getNetworkStatus()
+    eth.getAccounts(async (err, accounts) => {
+      if (!err) {
+        if (accounts.length) {
+          this.props.getUserStatus(accounts[0])
+          this.props.getProjects()
+        }
+      }
+    })
   }
 
   redirect (url) {
@@ -44,7 +64,7 @@ class Initiator extends React.Component {
         <MiniSidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
         <TitleBar role={this.state.role} />
         <SearchProjectBar />
-        <ProjectCardGrid />
+        <ProjectCardGrid projectData={this.props.projects['1']} />
       </div>
     )
   }
@@ -52,16 +72,15 @@ class Initiator extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    network: state.network,
-    user: state.user
+    projects: state.projects
+    // user: state.user
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    proposeProject: (type, projObj, txObj) => dispatch(proposeProject(type, projObj, txObj)),
-    // getNetworkStatus: () => dispatch(getNetworkStatus()),
-    getUserStatus: (userAccount) => dispatch(getUserStatus(userAccount))
+    getUserStatus: (userAccount) => dispatch(getUserStatus(userAccount)),
+    getProjects: () => dispatch(getProjects(1, projQuery))
   }
 }
 
