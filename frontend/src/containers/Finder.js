@@ -23,6 +23,7 @@ let projQuery = gql`
       photo,
       reputationBalance,
       reputationCost,
+      nextDeadline,
       summary,
       tokenBalance,
       weiBal,

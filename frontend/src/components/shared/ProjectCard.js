@@ -1,6 +1,7 @@
 import React from 'react'
-import { Card, Button } from 'antd'
+import { Card, Button, Progress } from 'antd'
 import fillercardimage from '../../images/fillercardimage.svg'
+import moment from 'moment'
 
 class ProjectCard extends React.Component {
   constructor () {
@@ -16,13 +17,17 @@ class ProjectCard extends React.Component {
   }
 
   render () {
-    let image, style
+    console.log(this.props.project)
+    let image, style, description
     this.props.project.image !== undefined
       ? image = this.props.project.project.image
       : image = fillercardimage
     this.state.cardClicked
-      ? style = {height: 200}
-      : style = {height: 200, backgroundImage: `url(${image})`}
+      ? style = {height: 300}
+      : style = {height: 300, backgroundImage: `url(${image})`}
+    this.props.project.summary !== undefined
+      ? description = this.props.project.summary
+      : description = 'This project does not have a description.'
     return (
       <Card
         hoverable
@@ -32,17 +37,30 @@ class ProjectCard extends React.Component {
       >
         { this.state.cardClicked
           ? <div>
-            <p>{this.props.project.name}</p>
+            <p style={{fontFamily: 'Lato', fontSize: 15}}>{this.props.project.name}</p>
             <hr />
-            <p>{this.props.project.description}</p>
-            <p>THIS WILL BE PIE CHARTS</p>
-            <p>{this.props.project.cost}</p>
-            <p>{this.props.project.stakingPeriod}</p>
-            <Button>
-              more
-            </Button>
+            <p style={{fontFamily: 'Lato', fontSize: 12, textAlign: 'center', marginTop: 15}}>{description}</p>
+            <div style={{display: 'flex', justifyContent: 'space-between', marginTop: 15}}>
+              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                <Progress style={{fontFamily: 'Arimo', fontSize: 8}} type='circle' strokeColor='#326BC1' width={75} strokeWidth={8} percent={75} format={percent => `${percent}% Funded`} />
+                <p style={{fontFamily: 'Lato', fontSize: 12, color: '#989898', marginTop: 5}}>Tokens</p>
+              </div>
+              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                <Progress type='circle' strokeColor='#F5A623' width={75} strokeWidth={8} percent={75} format={percent => `${percent}% Funded`} />
+                <p style={{fontFamily: 'Lato', fontSize: 12, color: '#989898', marginTop: 5}}>Reputation</p>
+              </div>
+            </div>
+            <div style={{display: 'flex', justifyContent: 'space-between', marginTop: 10}}>
+              <div style={{fontFamily: 'Lato', fontSize: 12}}>
+                <b><p style={{color: '#CDCDCD'}}>Project Cost: {this.props.project.cost}</p></b>
+                <b><p>{this.props.project.nextDeadline} days to go</p></b>
+              </div>
+              <Button style={{justifyContent: 'flex-end', height: 30, width: 67, color: 'white', backgroundColor: '#CDCDCD', borderRadius: 5}}>
+                <b>More</b>
+              </Button>
+            </div>
           </div>
-          : <b><p style={{fontFamily: 'Lato', color: 'white', fontSize: 20, marginTop: 130, marginLeft: 10}}>{this.props.project.name}</p></b>
+          : <b><p style={{fontFamily: 'Lato', color: 'white', fontSize: 20, marginTop: 230, marginLeft: 10}}>{this.props.project.name}</p></b>
         }
       </Card>
     )
