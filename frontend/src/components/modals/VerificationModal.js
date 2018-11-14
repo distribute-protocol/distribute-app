@@ -5,6 +5,7 @@ import cancel from '../../images/tximages/cancel.svg'
 import txpending from '../../images/tximages/txpending.svg'
 import txconfirmed from '../../images/tximages/txconfirmed.svg'
 import txfailed from '../../images/tximages/txfailed.svg'
+import { web3 } from '../../utilities/blockchain'
 
 class VerificationModal extends React.Component {
   constructor () {
@@ -16,6 +17,7 @@ class VerificationModal extends React.Component {
     this.handleCancel = this.handleCancel.bind(this)
     this.initiate = this.initiate.bind(this)
     this.checkIfProjectPending = this.checkIfProjectPending.bind(this)
+    this.checkTxStatus = this.checkTxStatus.bind(this)
   }
 
   componentWillMount () {
@@ -34,10 +36,29 @@ class VerificationModal extends React.Component {
   checkIfProjectPending () {
     if (this.props.projects !== undefined && this.props.projects.projectProposed === true) {
       this.setState({txState: 'pending'})
+      setTimeout(() => {
+        this.checkTxStatus()
+      }, 3000)
     } else if (this.state.txState === 'verification') {
       setTimeout(() => {
         this.checkIfProjectPending()
       }, 1000)
+    }
+  }
+
+  checkTxStatus () {
+    if (this.props.projects.txHash !== undefined) {
+      web3.eth.getTransactionReceipt(this.props.projects.txHash, (err, res) => {
+        if (!err) {
+          if (res.blockHash === null) {
+            setTimeout(() => {
+              this.checkTxStatus()
+            }, 1000)
+          } else {
+            this.setState({txState: 'txConfirmed'})
+          }
+        }
+      })
     }
   }
 
@@ -62,7 +83,7 @@ class VerificationModal extends React.Component {
         break
       case 'pending':
         topText = <div style={{display: 'flex', justifyContent: 'space-around', color: 'black'}}><img style={{cursor: 'pointer'}} src={cancel} alt={cancel} onClick={this.handleCancel} /><p style={{marginTop: 15, fontFamily: 'Avenir Next', fontSize: 30, fontWeight: 500, justifyContent: 'center'}}>You are initiating a proposal with the following details:</p></div>
-        bottomText = <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'center', paddingTop: 39}}>
+        bottomText = <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'center', color: 'black', paddingTop: 39}}>
           <b><p style={{textAlign: 'center', fontFamily: 'Lato', fontSize: 24}}>Transaction Pending</p></b>
           <p style={{justifyContent: 'center', textAlign: 'center', fontFamily: 'Lato', fontSize: 18, marginTop: -20}}>The average rate that the ethereum blockchain adds blocks is 15 seconds.<br />Block time differs between chains with some blockchains such as bitcoin taking<br />10 minutes to add blocks.</p>
           <img style={{justifyContent: 'center'}} src={txpending} alt={txpending} />
@@ -70,24 +91,24 @@ class VerificationModal extends React.Component {
         backColor = 'white'
         break
       case 'txConfirmed':
-        topText = <div style={{display: 'flex', justifyContent: 'space-around', color: 'black'}}><img style={{cursor: 'pointer'}} src={cancel} alt={cancel} onClick={this.handleCancel} /><p style={{marginTop: 15, fontFamily: 'Avenir Next', fontSize: 30, fontWeight: 500, justifyContent: 'center'}}>Success!</p></div>
-        bottomText = <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'center', paddingTop: 39}}>
+        topText = <div style={{display: 'flex', justifyContent: 'space-between', color: 'black'}}><img style={{cursor: 'pointer'}} src={cancel} alt={cancel} onClick={this.handleCancel} /><p style={{marginTop: 15, fontFamily: 'Avenir Next', fontSize: 30, fontWeight: 500}}>Success!</p><p /></div>
+        bottomText = <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'center', color: 'black', paddingTop: 20}}>
           <b><p style={{textAlign: 'center', fontFamily: 'Lato', fontSize: 24}}>Transaction Successful</p></b>
           <p style={{justifyContent: 'center', textAlign: 'center', fontFamily: 'Lato', fontSize: 18, marginTop: -20}}>Your proposal was successfully submitted. People can now find your project.</p>
           <img style={{justifyContent: 'center'}} src={txconfirmed} alt={txconfirmed} />
-          <Button style={{borderRadius: 4, border: '1px solid rgba(0, 0, 0, 0.6)', color: 'rgba(0, 0, 0, 0.6)', maxWidth: 200, height: 45, fontSize: 24, fontFamily: 'Lato', textAlign: 'center'}} key='continuemoney' onClick={this.handleCancel}>
+          <Button style={{marginTop: 10, borderRadius: 4, border: '1px solid rgba(0, 0, 0, 0.6)', color: 'rgba(0, 0, 0, 0.6)', maxWidth: 200, height: 45, fontSize: 24, fontFamily: 'Lato', textAlign: 'center'}} key='continuemoney' onClick={this.handleCancel}>
             Close
           </Button>
         </div>
         backColor = 'rgba(126, 211, 33, 0.25)'
         break
       case 'txFailed':
-        topText = <div style={{display: 'flex', justifyContent: 'space-around', color: 'black'}}><img style={{cursor: 'pointer'}} src={cancel} alt={cancel} onClick={this.handleCancel} /><p style={{marginTop: 15, fontFamily: 'Avenir Next', fontSize: 30, fontWeight: 500, justifyContent: 'center'}}>Failed</p></div>
-        bottomText = <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'center', paddingTop: 39}}>
+        topText = <div style={{display: 'flex', justifyContent: 'space-between', color: 'black'}}><img style={{cursor: 'pointer', justifyContent: 'flex-start'}} src={cancel} alt={cancel} onClick={this.handleCancel} /><p style={{marginTop: 15, fontFamily: 'Avenir Next', fontSize: 30, fontWeight: 500, justifyContent: 'center'}}>Failed</p><p /></div>
+        bottomText = <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'center', color: 'black', paddingTop: 20}}>
           <b><p style={{textAlign: 'center', fontFamily: 'Lato', fontSize: 24}}>Transaction Failed</p></b>
           <p style={{justifyContent: 'center', textAlign: 'center', fontFamily: 'Lato', fontSize: 18, marginTop: -20}}>Unfortunately your proposal was not submitted. Please try again.</p>
           <img style={{justifyContent: 'center'}} src={txfailed} alt={txfailed} />
-          <Button style={{borderRadius: 4, border: '1px solid rgba(0, 0, 0, 0.6)', color: 'rgba(0, 0, 0, 0.6)', maxWidth: 200, height: 45, fontSize: 24, fontFamily: 'Lato', textAlign: 'center'}} key='continuemoney' onClick={this.handleCancel}>
+          <Button style={{marginTop: 10, borderRadius: 4, border: '1px solid rgba(0, 0, 0, 0.6)', color: 'rgba(0, 0, 0, 0.6)', maxWidth: 200, height: 45, fontSize: 24, fontFamily: 'Lato', textAlign: 'center'}} key='continuemoney' onClick={this.handleCancel}>
             Close
           </Button>
         </div>

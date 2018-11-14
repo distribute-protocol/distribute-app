@@ -54,11 +54,8 @@ const proposeProject = action$ =>
         ? from(tr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
         : from(rr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
     }),
-    map(result => projectProposed())
-    // ,
-    // mergeMap(result => concat(
-    //   of(push('/stake'))
-    // ))
+    map(result => projectProposed(result.tx)
+    )
   )
 
 const stakeProject = action$ => {

@@ -7,7 +7,7 @@ const initialState = {
 export default function projectReducer (state = initialState, action) {
   switch (action.type) {
     case PROJECT_PROPOSED:
-      return Object.assign({}, state, {projectProposed: true})
+      return Object.assign({}, state, {projectProposed: true, txHash: action.receipt})
     case PROJECTS_RECEIVED:
       if (!action.projects.length) {
         return state

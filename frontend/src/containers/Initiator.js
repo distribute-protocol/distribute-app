@@ -11,7 +11,7 @@ import InsufficientTokens from '../components/modals/InsufficientTokens'
 import VerificationModal from '../components/modals/VerificationModal'
 import ipfs from '../utilities/ipfs'
 import { getUserStatus } from '../actions/userActions'
-import { getNetworkStatus } from '../actions/networkActions'
+// import { getNetworkStatus } from '../actions/networkActions'
 import { proposeProject } from '../actions/projectActions'
 import { eth, web3, dt } from '../utilities/blockchain'
 
@@ -47,7 +47,7 @@ class Initiator extends React.Component {
     this.choosePropType = this.choosePropType.bind(this)
     this.redirect = this.redirect.bind(this)
     this.proposeProject = this.proposeProject.bind(this)
-    this.getContractValues = this.getContractValues.bind(this)
+    // this.getContractValues = this.getContractValues.bind(this)
     this.handlePhotoUpload = this.handlePhotoUpload.bind(this)
     this.handlePriceChange = this.handlePriceChange.bind(this)
     this.handleLocationChange = this.handleLocationChange.bind(this)
@@ -64,8 +64,8 @@ class Initiator extends React.Component {
         }
       }
     })
-    this.getContractValues()
-    this.getNetworkStatus()
+    // this.getContractValues()
+    // this.getNetworkStatus()
     this.timer = null
   }
 
@@ -92,19 +92,19 @@ class Initiator extends React.Component {
     this.state.map.remove()
   }
 
-  getNetworkStatus () {
-    this.props.getNetworkStatus()
-    this.getContractValues()
-  }
-
-  async getContractValues () {
-    let currPrice = (await dt.currentPrice()).toNumber()
-    let weiBal = (await dt.weiBal()).toNumber()
-    this.setState({
-      currPrice,
-      weiBal
-    })
-  }
+  // getNetworkStatus () {
+  //   this.props.getNetworkStatus()
+  //   this.getContractValues()
+  // }
+  //
+  // async getContractValues () {
+  //   let currPrice = (await dt.currentPrice()).toNumber()
+  //   let weiBal = (await dt.weiBal()).toNumber()
+  //   this.setState({
+  //     currPrice,
+  //     weiBal
+  //   })
+  // }
 
   storeData (type, values, category) {
     // stakingPeriod in Days changed to seconds -> blockchain understands seconds
@@ -257,7 +257,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     proposeProject: (type, projObj, txObj) => dispatch(proposeProject(type, projObj, txObj)),
-    getNetworkStatus: () => dispatch(getNetworkStatus()),
+    // getNetworkStatus: () => dispatch(getNetworkStatus()),
     getUserStatus: (userAccount) => dispatch(getUserStatus(userAccount))
   }
 }
