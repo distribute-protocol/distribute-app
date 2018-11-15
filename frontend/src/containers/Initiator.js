@@ -11,9 +11,7 @@ import InsufficientTokens from '../components/modals/InsufficientTokens'
 import VerificationModal from '../components/modals/VerificationModal'
 import ipfs from '../utilities/ipfs'
 import { getUserStatus } from '../actions/userActions'
-// import { getNetworkStatus } from '../actions/networkActions'
-import { proposeProject } from '../actions/projectActions'
-import { eth, web3, dt } from '../utilities/blockchain'
+import { eth, web3 } from '../utilities/blockchain'
 
 const client = new MapboxClient('pk.eyJ1IjoiY29uc2Vuc3lzIiwiYSI6ImNqOHBmY2w0NjBmcmYyd3F1NHNmOXJwMWgifQ.8-GlTlTTUHLL8bJSnK2xIA')
 mapboxgl.accessToken = 'pk.eyJ1IjoiY29uc2Vuc3lzIiwiYSI6ImNqOHBmY2w0NjBmcmYyd3F1NHNmOXJwMWgifQ.8-GlTlTTUHLL8bJSnK2xIA'
@@ -46,8 +44,6 @@ class Initiator extends React.Component {
     }
     this.choosePropType = this.choosePropType.bind(this)
     this.redirect = this.redirect.bind(this)
-    this.proposeProject = this.proposeProject.bind(this)
-    // this.getContractValues = this.getContractValues.bind(this)
     this.handlePhotoUpload = this.handlePhotoUpload.bind(this)
     this.handlePriceChange = this.handlePriceChange.bind(this)
     this.handleLocationChange = this.handleLocationChange.bind(this)
@@ -64,8 +60,6 @@ class Initiator extends React.Component {
         }
       }
     })
-    // this.getContractValues()
-    // this.getNetworkStatus()
     this.timer = null
   }
 
@@ -122,24 +116,24 @@ class Initiator extends React.Component {
     this.setState({data: projObj, verificationModal: true, collateralType: type})
   }
 
-  async proposeProject () {
-    const obj = {
-      Data: JSON.stringify(this.state.data),
-      Links: []
-    }
-    let multiHash
-    await ipfs.object.put(obj, {enc: 'json'}, (err, node) => {
-      if (err) {
-        throw err
-      }
-      multiHash = node.toJSON().multihash
-      eth.getAccounts(async (err, accounts) => {
-        if (!err) {
-          await this.props.proposeProject(this.state.collateralType, {cost: this.state.data.cost, stakingEndDate: this.state.data.stakingEndDate, multiHash: multiHash}, {from: accounts[0]})
-        }
-      })
-    })
-  }
+  // async proposeProject () {
+  //   const obj = {
+  //     Data: JSON.stringify(this.state.data),
+  //     Links: []
+  //   }
+  //   let multiHash
+  //   await ipfs.object.put(obj, {enc: 'json'}, (err, node) => {
+  //     if (err) {
+  //       throw err
+  //     }
+  //     multiHash = node.toJSON().multihash
+  //     eth.getAccounts(async (err, accounts) => {
+  //       if (!err) {
+  //         await this.props.proposeProject(this.state.collateralType, {cost: this.state.data.cost, stakingEndDate: this.state.data.stakingEndDate, multiHash: multiHash}, {from: accounts[0]})
+  //       }
+  //     })
+  //   })
+  // }
 
   handlePhotoChange (info) {
     this.handlePhotoUpload(info.file.originFileObj)
@@ -224,7 +218,10 @@ class Initiator extends React.Component {
           ? <InsufficientTokens visible={this.state.firstTime && this.state.secondModal} continue={() => this.redirect('/dashboard')} />
           : null }
         {this.state.verificationModal
-          ? <VerificationModal visible={this.state.verificationModal} close={() => this.redirect('./finder')} propose={this.proposeProject} collateralType={this.state.collateralType} data={this.state.data} finder={() => this.redirect('/finder')} />
+          ? <VerificationModal visible={this.state.verificationModal} close={() => this.redirect('./finder')}
+            collateralType={this.state.collateralType}
+            data={this.state.data}
+            finder={() => this.redirect('/finder')} />
           : null }
         <Sidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
         <ProposeForm
@@ -256,8 +253,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    proposeProject: (type, projObj, txObj) => dispatch(proposeProject(type, projObj, txObj)),
-    // getNetworkStatus: () => dispatch(getNetworkStatus()),
     getUserStatus: (userAccount) => dispatch(getUserStatus(userAccount))
   }
 }

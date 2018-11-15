@@ -1,7 +1,6 @@
 import React from 'react'
 import { Card, Button, Progress } from 'antd'
 import fillercardimage from '../../images/fillercardimage.svg'
-import moment from 'moment'
 
 class ProjectCard extends React.Component {
   constructor () {
@@ -17,7 +16,6 @@ class ProjectCard extends React.Component {
   }
 
   render () {
-    console.log(this.props.project)
     let image, style, description
     this.props.project.image !== undefined
       ? image = this.props.project.project.image

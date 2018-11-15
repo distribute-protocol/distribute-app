@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Modal, Button } from 'antd'
+import ButtonProposeProject from '../../contractComponents/stage0/ProposeProject'
 import cancel from '../../images/tximages/cancel.svg'
 import txpending from '../../images/tximages/txpending.svg'
 import txconfirmed from '../../images/tximages/txconfirmed.svg'
@@ -15,7 +16,6 @@ class VerificationModal extends React.Component {
       txState: 'verification'
     }
     this.handleCancel = this.handleCancel.bind(this)
-    this.initiate = this.initiate.bind(this)
     this.checkIfProjectPending = this.checkIfProjectPending.bind(this)
     this.checkTxStatus = this.checkTxStatus.bind(this)
   }
@@ -26,11 +26,6 @@ class VerificationModal extends React.Component {
 
   handleCancel () {
     this.setState({modalVisible: false})
-  }
-
-  initiate () {
-    this.props.propose()
-    this.checkIfProjectPending()
   }
 
   checkIfProjectPending () {
@@ -74,9 +69,12 @@ class VerificationModal extends React.Component {
             <Button style={{borderRadius: 4, color: '#989898', backgroundColor: 'white', maxWidth: 200, height: 55, fontSize: 30, fontFamily: 'Lato', textAlign: 'center'}} key='continueclout' onClick={this.handleCancel}>
               <b>Cancel</b>
             </Button>
-            <Button style={{borderRadius: 4, color: 'white', backgroundColor: '#A4D573', maxWidth: 200, height: 55, fontSize: 30, fontFamily: 'Lato', textAlign: 'center'}} key='continuemoney' onClick={this.initiate}>
-              Initiate
-            </Button>
+            <ButtonProposeProject
+              collateralType={this.props.collateralType}
+              data={this.props.data}
+              style={{borderRadius: 4, color: 'white', backgroundColor: '#A4D573', maxWidth: 200, height: 55, fontSize: 30, fontFamily: 'Lato', textAlign: 'center'}}
+              checkPending={this.checkIfProjectPending}
+            />
           </div>
         </div>
         backColor = 'white'
