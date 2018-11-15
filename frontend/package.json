@@ -12,6 +12,7 @@
     "dragula": "^3.7.2",
     "ethereumjs-abi": "^0.6.5",
     "ethers": "^4.0.4",
+    "ethjs": "^0.4.0",
     "get-eth-price": "^1.0.0",
     "graphql": "^14.0.2",
     "graphql-tag": "^2.10.0",
@@ -51,17 +52,14 @@
     "webcrypto": "^0.1.1"
   },
   "devDependencies": {
-    "react-scripts": "2.0.4"
+    "react-scripts": "2.0.4",
+    "eslint-scope": "3.7.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "server": "node server.js"
-  },
-  "resolutions": {
-    "eslint-scope": "3.7.1"
+    "eject": "react-scripts eject"
   },
   "browserslist": [
     ">0.2%",
