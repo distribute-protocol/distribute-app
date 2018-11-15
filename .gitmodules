@@ -1,12 +1,6 @@
 [submodule "contracts"]
 	path = contracts
 	url = https://github.com/distribute-protocol/distribute-contracts.git
-[submodule "distribute-contracts"]
-	path = distribute-contracts
-	url = https://github.com/distribute-protocol/distribute-contracts
-[submodule "server/contracts"]
-	path = server/contracts
-	url = git@github.com:distribute-protocol/distribute-contracts.git
 [submodule "server/abi/build"]
 	path = server/abi/build
 	url = git@github.com:distribute-protocol/abis.git

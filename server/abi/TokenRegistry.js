@@ -1,4 +1,4 @@
-let obj = require('./build/TokenRegistry.json')
+let obj = require('./build/contracts/TokenRegistry.json')
 
 const TokenRegistryAddress = obj.networks['5777'].address
 

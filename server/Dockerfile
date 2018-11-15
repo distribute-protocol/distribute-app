@@ -6,16 +6,10 @@ ENV LANGUAGE=en_US.UTF-8 LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 # Utilities
 RUN apk add --no-cache wget jq tar nodejs git python make g++
 
-# Nodejs
-# RUN wget -O - https://nodejs.org/dist/v8.11.0/node-v8.11.0-linux-x64.tar.gz | tar xz
-# RUN mv node* node
-# ENV PATH $PATH:/node/bin
-
 # Build Stage
 FROM base as build
 
 # Build tools
-#RUN apt-get install -y build-essential
 COPY . /app
 COPY ../contracts/build/contracts /app/abi/build
 RUN cd /app && \
