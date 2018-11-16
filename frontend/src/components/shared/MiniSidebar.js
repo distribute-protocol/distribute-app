@@ -21,12 +21,12 @@ class MiniSidebar extends React.Component {
   constructor () {
     super()
     this.state = {
-      showIcons: false,
       highlightIcons: []
     }
   }
 
   render () {
+    console.log(this.props)
     return (
       <div style={{height: '100%', width: 60, position: 'fixed', backgroundColor: '#111111', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between'}}>
         <div style={{display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between'}}>

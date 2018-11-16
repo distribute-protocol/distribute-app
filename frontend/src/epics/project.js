@@ -1,4 +1,5 @@
 import {
+  GET_PROJECT,
   GET_PROJECTS,
   PROPOSE_PROJECT,
   STAKE_PROJECT,
@@ -14,6 +15,7 @@ import {
   CHECK_FINAL_STATUS
 } from '../constants/ProjectActionTypes'
 import {
+  projectReceived,
   projectsReceived,
   projectStaked,
   projectUnstaked,
@@ -44,6 +46,40 @@ const getProjectsEpic = action$ => {
       )
     }),
     map(result => projectsReceived(state, result.data.allProjectsinState))
+  )
+}
+
+const getProject = action$ => {
+  let state
+  return action$.ofType(GET_PROJECT).pipe(
+    mergeMap(action => {
+      let query = gql`
+        query ($address: String!) {
+          project(address: $address) {
+            address,
+            id,
+            ipfsHash,
+            location {
+              lat,
+              lng,
+            },
+            name
+            nextDeadline,
+            photo,
+            reputationBalance,
+            reputationCost,
+            nextDeadline,
+            summary,
+            tokenBalance,
+            weiBal,
+            weiCost
+          }
+        }
+      `
+      return client.query({query, variables: {address: action.address}}
+      )
+    }),
+    map(result => projectReceived(result))
   )
 }
 

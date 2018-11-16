@@ -6,9 +6,11 @@ import mapboxgl from 'mapbox-gl'
 import MapboxClient from 'mapbox/lib/services/geocoding'
 import ProposeForm from '../components/Propose'
 import Sidebar from '../components/shared/Sidebar'
+import MiniSidebar from '../components/shared/MiniSidebar'
 import InitiatorWelcome from '../components/modals/InitiatorWelcome'
 import InsufficientTokens from '../components/modals/InsufficientTokens'
 import VerificationModal from '../components/modals/VerificationModal'
+import ProjectPage from './shared/ProjectPage'
 import ipfs from '../utilities/ipfs'
 import { getUserStatus } from '../actions/userActions'
 import { eth, web3 } from '../utilities/blockchain'
@@ -40,7 +42,8 @@ class Initiator extends React.Component {
         name: '',
         location: '',
         summary: ''
-      }
+      },
+      proposingProject: true
     }
     this.choosePropType = this.choosePropType.bind(this)
     this.redirect = this.redirect.bind(this)
@@ -218,27 +221,31 @@ class Initiator extends React.Component {
           ? <InsufficientTokens visible={this.state.firstTime && this.state.secondModal} continue={() => this.redirect('/dashboard')} />
           : null }
         {this.state.verificationModal
-          ? <VerificationModal visible={this.state.verificationModal} close={() => this.redirect('./finder')}
+          ? <VerificationModal
+            visible={this.state.verificationModal}
+            close={(addr) => this.setState({projAddr: addr, projectPage: true, proposingProject: false})}
             collateralType={this.state.collateralType}
             data={this.state.data}
             finder={() => this.redirect('/finder')} />
           : null }
-        <Sidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
-        <ProposeForm
-          handlePhotoChange={this.handlePhotoChange}
-          imageUrl={this.state.imageUrl}
-          // loading={this.state.loading}
-          // cost={typeof this.state.cost === 'undefined'
-          //   ? 0
-          //   : Math.ceil(this.state.cost / 20 / this.state.currPrice)}
-          // reputationCost={typeof this.state.cost === 'undefined'
-          //   ? 0
-          //   : Math.ceil(this.state.cost / this.state.weiBal * this.props.network.totalReputation / 20)}
-          handlePriceChange={this.handlePriceChange}
-          handleLocationChange={this.handleLocationChange}
-          storeData={this.storeData}
-          map={<div id='map' style={{width: 400, height: 400}} ref={el => { this.mapContainer = el }} />}
-        />
+        {this.state.proposingProject
+          ? <div>
+            <Sidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
+            <ProposeForm
+              handlePhotoChange={this.handlePhotoChange}
+              imageUrl={this.state.imageUrl}
+              handlePriceChange={this.handlePriceChange}
+              handleLocationChange={this.handleLocationChange}
+              storeData={this.storeData}
+              map={<div id='map' style={{width: 400, height: 400}} ref={el => { this.mapContainer = el }} />}
+            />
+          </div>
+          : null}
+        {this.state.projectPage
+          ? <div>
+            <ProjectPage showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
+          </div>
+          : null}
       </div>
     )
   }

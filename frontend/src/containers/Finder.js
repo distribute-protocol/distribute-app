@@ -31,7 +31,7 @@ let projQuery = gql`
     }
   }`
 
-class Initiator extends React.Component {
+class Finder extends React.Component {
   constructor () {
     super()
     this.state = {
@@ -83,4 +83,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Initiator)
+export default connect(mapStateToProps, mapDispatchToProps)(Finder)
