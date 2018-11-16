@@ -58,10 +58,10 @@ const registerUserEpic = action$ => {
         }
       })
     }),
-    map(result => from(rr.register({from: account}))),
-    flatMap(result => concat(
-      of(registeredUser(result))
-    ))
+    mergeMap(result => {
+      return from(rr.register({from: account}))
+    }),
+    map(result => registeredUser(result.tx))
   )
 }
 

@@ -7,14 +7,13 @@ const initialState = {
   name: '',
   userTokens: 0,
   userReputation: 0,
-  registering: false,
   votes: []
 }
 
 export default function userReducer (state = initialState, action) {
   switch (action.type) {
     case REGISTERED_USER:
-      return Object.assign({}, state, {userReputation: 10000, registering: true})
+      return Object.assign({}, state, {userReputation: 10000, registering: action.tx})
     case LOGGED_IN_USER:
       return Object.assign({}, state, {user: action.userObj})
     case LOGOUT_USER:

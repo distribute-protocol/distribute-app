@@ -18,9 +18,10 @@ export function registerUser (credentials, account) {
   }
 }
 
-export function registeredUser (credentials, account) {
+export function registeredUser (tx) {
   return {
-    type: REGISTERED_USER
+    type: REGISTERED_USER,
+    tx
   }
 }
 

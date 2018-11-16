@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import uport from '../utilities/uport'
 import { Button } from 'antd'
 import Onboarding from '../components/modals/Onboarding'
 import TextContinue from '../components/modals/TextContinue'
-import { loginUser } from '../actions/userActions'
-import { eth } from '../utilities/blockchain'
+import { loginUser, getUserStatus } from '../actions/userActions'
+import { eth, web3 } from '../utilities/blockchain'
+import uport from '../utilities/uport'
 import landingbackground from '../images/landingbackground.svg'
 import uportlogo from '../images/logos/uportlogo.svg'
 import metamasklogo from '../images/logos/metamaskfox.svg'
@@ -23,6 +23,7 @@ class Landing extends React.Component {
     this.handleJoin = this.handleJoin.bind(this)
     this.unclickJoin = this.unclickJoin.bind(this)
     this.profilePage = this.profilePage.bind(this)
+    this.checkTxStatus = this.checkTxStatus.bind(this)
   }
 
   componentWillMount () {
@@ -45,6 +46,7 @@ class Landing extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
+          this.props.getUserStatus(accounts[0])
           eth.getBalance(accounts[0], (err, res) => {
             if (!err) {
               if (res > 0) {
@@ -66,6 +68,7 @@ class Landing extends React.Component {
       eth.getAccounts(async (err, accounts) => {
         if (!err) {
           if (accounts.length) {
+            this.props.getUserStatus(accounts[0])
             eth.getBalance(accounts[0], (err, res) => {
               if (!err) {
                 if (res > 0) {
@@ -91,8 +94,29 @@ class Landing extends React.Component {
     uport.requestDisclosure(reqObj)
     uport.onResponse('disclosureReq').then(res => { 
       this.props.loginUser(res.payload)
-      this.setState({clickedJoin: false, loggedin: true})
+      this.setState({clickedJoin: false})
+      this.checkTxStatus()
     })
+  }
+
+  checkTxStatus () {
+    if (this.props.user.registering !== undefined) {
+      web3.eth.getTransactionReceipt(this.props.user.registering, (err, res) => {
+        if (!err) {
+          if (res.blockHash === null) {
+            setTimeout(() => {
+              this.checkTxStatus()
+            }, 1000)
+          } else {
+            this.setState({loggedIn: true})
+          }
+        }
+      })
+    } else {
+      setTimeout(() => {
+        this.checkTxStatus()
+      }, 1000)
+    }
   }
 
   getMetaMask () {
@@ -114,7 +138,10 @@ class Landing extends React.Component {
           ? <Onboarding skipFirst={this.state.hasEther} visible={this.state.clickedJoin} getUport={this.getUport} cancel={this.unclickJoin} />
           : null
         }
-        <TextContinue text={'congrats'} visible={this.state.loggedin} continue={this.profilePage} />
+        {this.state.loggedIn
+          ? <TextContinue text={'congrats'} visible={this.state.loggedIn} continue={this.profilePage} />
+          : null
+        }
         <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', backgroundImage: `url(${landingbackground})`, backgroundColor: 'rgba(0, 0, 0, 0.75)', height: '60vh'}}>
           { /* START OF TOP BAR */ }
           <div style={{display: 'flex', width: '100%', justifyContent: 'space-between'}}>
@@ -168,9 +195,16 @@ class Landing extends React.Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    user: state.user || {}
+  }
+}
+
 const mapDispatchToProps = (dispatch) => {
   return {
+    getUserStatus: (userAccount) => dispatch(getUserStatus(userAccount)),
     loginUser: (credentials) => dispatch(loginUser(credentials))
   }
 }
-export default connect(null, mapDispatchToProps)(Landing)
+export default connect(mapStateToProps, mapDispatchToProps)(Landing)
