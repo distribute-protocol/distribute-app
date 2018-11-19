@@ -1,4 +1,4 @@
-let obj = require('./build/ProjectLibrary.json')
+let obj = require('./build/contracts/ProjectLibrary.json')
 
 const ProjectLibraryAddress = obj.networks['5777'].address
 
