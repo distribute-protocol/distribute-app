@@ -3,6 +3,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import mapboxgl from 'mapbox-gl'
+import price from 'crypto-price'
 import MapboxClient from 'mapbox/lib/services/geocoding'
 import ProposeForm from '../components/Propose'
 import Sidebar from '../components/shared/Sidebar'
@@ -13,7 +14,7 @@ import ProjectPage from './finder/ProjectPage'
 import ipfs from '../utilities/ipfs'
 import { getUserStatus } from '../actions/userActions'
 import { getProject } from '../actions/projectActions'
-import { eth, web3 } from '../utilities/blockchain'
+import { eth, web3, dt, rr } from '../utilities/blockchain'
 
 const client = new MapboxClient('pk.eyJ1IjoiY29uc2Vuc3lzIiwiYSI6ImNqOHBmY2w0NjBmcmYyd3F1NHNmOXJwMWgifQ.8-GlTlTTUHLL8bJSnK2xIA')
 mapboxgl.accessToken = 'pk.eyJ1IjoiY29uc2Vuc3lzIiwiYSI6ImNqOHBmY2w0NjBmcmYyd3F1NHNmOXJwMWgifQ.8-GlTlTTUHLL8bJSnK2xIA'
@@ -29,7 +30,6 @@ class Initiator extends React.Component {
       firstModal: true,
       secondModal: false,
       tempProject: {},
-      currPrice: 0,
       loading: false,
       imageUrl: false,
       location: [0, 0],
@@ -61,6 +61,11 @@ class Initiator extends React.Component {
       if (!err) {
         if (accounts.length) {
           this.props.getUserStatus(accounts[0])
+          price.getCryptoPrice('USD', 'ETH').then(obj => { // Base for ex - USD, Crypto for ex - ETH
+            this.setState({usdPerEth: obj})
+          }).catch(err => {
+            console.log(err)
+          })
         }
       }
     })
@@ -90,20 +95,6 @@ class Initiator extends React.Component {
     this.state.map.remove()
   }
 
-  // getNetworkStatus () {
-  //   this.props.getNetworkStatus()
-  //   this.getContractValues()
-  // }
-  //
-  // async getContractValues () {
-  //   let currPrice = (await dt.currentPrice()).toNumber()
-  //   let weiBal = (await dt.weiBal()).toNumber()
-  //   this.setState({
-  //     currPrice,
-  //     weiBal
-  //   })
-  // }
-
   storeData (type, values, category) {
     // stakingPeriod in Days changed to seconds -> blockchain understands seconds
     // This is creating and storing an IPFS object
@@ -119,25 +110,6 @@ class Initiator extends React.Component {
     }
     this.setState({data: projObj, verificationModal: true, collateralType: type})
   }
-
-  // async proposeProject () {
-  //   const obj = {
-  //     Data: JSON.stringify(this.state.data),
-  //     Links: []
-  //   }
-  //   let multiHash
-  //   await ipfs.object.put(obj, {enc: 'json'}, (err, node) => {
-  //     if (err) {
-  //       throw err
-  //     }
-  //     multiHash = node.toJSON().multihash
-  //     eth.getAccounts(async (err, accounts) => {
-  //       if (!err) {
-  //         await this.props.proposeProject(this.state.collateralType, {cost: this.state.data.cost, stakingEndDate: this.state.data.stakingEndDate, multiHash: multiHash}, {from: accounts[0]})
-  //       }
-  //     })
-  //   })
-  // }
 
   handlePhotoChange (info) {
     this.handlePhotoUpload(info.file.originFileObj)
@@ -170,12 +142,16 @@ class Initiator extends React.Component {
     reader.readAsDataURL(img)
   }
 
-  handlePriceChange (val) {
+  async handlePriceChange (val) {
     try {
       this.setState({cost: web3.toWei(val.target.value, 'ether')})
     } catch (e) {
       console.log(e)
     }
+    let totalTokens = await dt.totalSupply()
+    let totalRep = await rr.totalSupply()
+    let weiBal = await dt.weiBal()
+    this.setState({totalTokens, totalRep, weiBal})
   }
 
   handleLocationChange (val) {
@@ -214,7 +190,7 @@ class Initiator extends React.Component {
 
   async handleVerification (addr) {
     await this.props.getProject(addr)
-    this.setState({projectPage: true, proposingProject: false})
+    this.setState({projectProposed: true, proposingProject: false})
   }
 
   render () {
@@ -238,6 +214,11 @@ class Initiator extends React.Component {
           ? <div>
             <Sidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
             <ProposeForm
+              totalTokens={this.state.totalTokens}
+              totalRep={this.state.totalRep}
+              totalWei={this.state.weiBal}
+              cost={this.state.cost}
+              usdPerEth={this.state.usdPerEth}
               handlePhotoChange={this.handlePhotoChange}
               imageUrl={this.state.imageUrl}
               handlePriceChange={this.handlePriceChange}
@@ -248,7 +229,7 @@ class Initiator extends React.Component {
           </div>
           : null}
 
-        {this.state.projectPage
+        {this.state.projectProposed
           ? <div>
             <ProjectPage
               showIcons={this.state.showSidebarIcons}
