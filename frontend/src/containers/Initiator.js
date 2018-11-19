@@ -9,7 +9,7 @@ import Sidebar from '../components/shared/Sidebar'
 import InitiatorWelcome from '../components/modals/InitiatorWelcome'
 import InsufficientTokens from '../components/modals/InsufficientTokens'
 import VerificationModal from '../components/modals/VerificationModal'
-import ProjectPage from './shared/ProjectPage'
+import ProjectPage from './finder/ProjectPage'
 import ipfs from '../utilities/ipfs'
 import { getUserStatus } from '../actions/userActions'
 import { getProject } from '../actions/projectActions'
@@ -67,30 +67,28 @@ class Initiator extends React.Component {
     this.timer = null
   }
 
-// UNCOMMENT THIS
-  // componentDidMount () {
-  //   const map = new mapboxgl.Map({
-  //     container: this.mapContainer,
-  //     style: 'mapbox://styles/mapbox/streets-v10'
-  //   })
-  //   this.setState({map: map})
-  //   let coordHandler = (pos) => {
-  //     let ll = new mapboxgl.LngLat(pos.coords.longitude, pos.coords.latitude)
-  //     map.setCenter(ll)
-  //     map.setZoom(12)
-  //     map.addControl(new mapboxgl.NavigationControl())
-  //     map.on('click', (e) => {
-  //       map.setCenter(e.lngLat)
-  //       this.setState({coords: e.lngLat})
-  //     })
-  //   }
-  //   window.navigator.geolocation.getCurrentPosition(coordHandler)
-  // }
+  componentDidMount () {
+    const map = new mapboxgl.Map({
+      container: this.mapContainer,
+      style: 'mapbox://styles/mapbox/streets-v10'
+    })
+    this.setState({map: map})
+    let coordHandler = (pos) => {
+      let ll = new mapboxgl.LngLat(pos.coords.longitude, pos.coords.latitude)
+      map.setCenter(ll)
+      map.setZoom(12)
+      map.addControl(new mapboxgl.NavigationControl())
+      map.on('click', (e) => {
+        map.setCenter(e.lngLat)
+        this.setState({coords: e.lngLat})
+      })
+    }
+    window.navigator.geolocation.getCurrentPosition(coordHandler)
+  }
 
-// UNCOMMENT THIS
-  // componentWillUnmount () {
-  //   this.state.map.remove()
-  // }
+  componentWillUnmount () {
+    this.state.map.remove()
+  }
 
   // getNetworkStatus () {
   //   this.props.getNetworkStatus()
@@ -216,13 +214,13 @@ class Initiator extends React.Component {
 
   async handleVerification (addr) {
     await this.props.getProject(addr)
-    this.setState({projAddr: addr, projectPage: true, proposingProject: false})
+    this.setState({projectPage: true, proposingProject: false})
   }
 
   render () {
+    console.log('level1', this.state.coords)
     return (
       <div>
-      { /* UNCOMMENT THIS
         {this.state.firstTime && this.state.firstModal
           ? <InitiatorWelcome visible={this.state.firstTime && this.state.firstModal} continue={this.choosePropType} />
           : null }
@@ -253,14 +251,13 @@ class Initiator extends React.Component {
 
         {this.state.projectPage
           ? <div>
-                  */ }
             <ProjectPage
               showIcons={this.state.showSidebarIcons}
               highlightIcon={this.state.role}
               redirect={this.redirect}
               project={this.props.projects} />
-        { /*   </div>
-          UNCOMMENT THIS : null} */ }
+          </div>
+          : null}
       </div>
     )
   }

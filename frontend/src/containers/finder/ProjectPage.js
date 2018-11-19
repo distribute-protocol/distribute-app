@@ -1,7 +1,7 @@
 import React from 'react'
 import MiniSidebar from '../../components/shared/MiniSidebar'
 import TitleBar from '../../components/shared/TitleBar'
-import ProjectPageComponent from '../../components/shared/ProjectPageComponent'
+import ProjectPageComponent from '../../components/finder/ProjectPageComponent'
 
 class ProjectPage extends React.Component {
   constructor () {
@@ -12,8 +12,7 @@ class ProjectPage extends React.Component {
 
   componentWillReceiveProps (np) {
     if (np.project !== undefined) {
-      // UNCOMMENT THIS
-      // this.setState({project: np.project.project.data.project})
+      this.setState({project: np.project.project.data.project})
     }
   }
 
@@ -28,7 +27,7 @@ class ProjectPage extends React.Component {
           <TitleBar
             role={this.props.highlightIcon} />
           <ProjectPageComponent
-            project={this.props.project} />
+            project={this.state.project} />
         </div>
       </div>
     )

@@ -40,7 +40,7 @@ class Map extends React.Component {
 
   render () {
     return this.props.lngLat.length > 0
-      ? <div id='map' style={{width: 300, height: 300}} ref={el => { this.mapContainer = el }} />
+      ? <div id='map' style={{maxWidth: 500, height: 300}} ref={el => { this.mapContainer = el }} />
       : <p />
   }
 }

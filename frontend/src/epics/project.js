@@ -58,10 +58,7 @@ const getProject = action$ => {
             address,
             id,
             ipfsHash,
-            location {
-              lat,
-              lng,
-            },
+            location,
             name
             nextDeadline,
             photo,

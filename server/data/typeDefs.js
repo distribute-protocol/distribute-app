@@ -36,7 +36,7 @@ const typeDefs = gql`
     id: ID
     ipfsHash: String
     listSubmitted: Boolean
-    location: Location
+    location: [Float]
     name: String
     nextDeadline: String
     passThreshold: Int
