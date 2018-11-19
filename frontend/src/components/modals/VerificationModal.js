@@ -135,13 +135,15 @@ class VerificationModal extends React.Component {
         bodyStyle={{height: 600, backgroundColor: backColor}}
       >
         {topText}
-        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', minHeight: 150, minWidth: '100%', border: '1px solid black', marginLeft: 0, marginRight: 0}}>
-          <p style={{textAlign: 'center'}}>project name: {this.props.data.name}</p>
-          <p style={{textAlign: 'center'}}>project summary: {this.props.data.summary}</p>
-          <p style={{textAlign: 'center'}}>project cost: {this.props.data.cost}</p>
-          <p style={{textAlign: 'center'}}>project photo: {this.props.data.photo}</p>
-          <p style={{textAlign: 'center'}}>project location: {this.props.data.location}</p>
-          <p style={{textAlign: 'center'}}>project end data: {this.props.data.stakingEndDate}</p>
+        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', height: 200, minWidth: '100%', border: '1px solid black', marginLeft: 0, marginRight: 0}}>
+          { /*
+          { this.props.data.name !== undefined ? <p style={{textAlign: 'center'}}>project name: {this.props.data.name}</p> : null }
+          { this.props.data.summary !== undefined ? <p style={{textAlign: 'center'}}>project summary: {this.props.data.summary}</p> : null }
+          { this.props.data.cost !== undefined ? <p style={{textAlign: 'center'}}>project cost: {this.props.data.cost}</p> : null }
+          { this.props.data.photo !== undefined ? <p style={{textAlign: 'center'}}>project photo: {this.props.data.photo}</p> : null }
+          { this.props.data.location !== undefined ? <p style={{textAlign: 'center'}}>project location: {this.props.data.location}</p> : null }
+          { this.props.data.staking !== undefined ? <p style={{textAlign: 'center'}}>project end data: {this.props.data.stakingEndDate}</p> : null }
+          */ }
         </div>
         {bottomText}
       </Modal>

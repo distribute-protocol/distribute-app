@@ -218,7 +218,6 @@ class Initiator extends React.Component {
   }
 
   render () {
-    console.log('level1', this.state.coords)
     return (
       <div>
         {this.state.firstTime && this.state.firstModal

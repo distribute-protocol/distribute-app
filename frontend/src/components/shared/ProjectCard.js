@@ -18,7 +18,7 @@ class ProjectCard extends React.Component {
   render () {
     let image, style, description
     this.props.project.image !== undefined
-      ? image = this.props.project.project.image
+      ? image = this.props.project.image
       : image = fillercardimage
     this.state.cardClicked
       ? style = {height: 300}
