@@ -12,7 +12,8 @@ class ProjectPage extends React.Component {
 
   componentWillReceiveProps (np) {
     if (np.project !== undefined) {
-      this.setState({project: np.project.project.data.project})
+      // UNCOMMENT THIS
+      // this.setState({project: np.project.project.data.project})
     }
   }
 
