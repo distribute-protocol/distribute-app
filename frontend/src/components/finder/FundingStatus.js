@@ -18,7 +18,7 @@ export default (props) => {
       <p style={{color: color, fontSize: 26, fontFamily: 'Avenir Next', marginTop: 5}}>{props.fundingType === 'Token' ? '$' : null }XX</p>
       <p style={{fontSize: 20, fontFamily: 'Lato', marginTop: -15}}>staked of {props.fundingType === 'tokens' ? '$' : null }XXX goal</p>
       <div style={{display: 'flex', justifyContent: 'space-between'}}>
-        <Input style={{fontSize: 14, fontFamily: 'Avenir Next', textAlign: 'center', maxWidth: 85, borderRadius: 0, border: '1px solid #989898'}} placeholder={'15,000'} />
+        <Input style={{fontSize: 20, fontFamily: 'Lato', textAlign: 'center', maxWidth: 100, borderRadius: 0, border: '1px solid #989898'}} placeholder={'15,000'} />
         {withdrawButton}
         <Button style={{border: '1px solid rgba(0, 0, 0, 0.6)'}}>
           Fund
