@@ -6,13 +6,13 @@ import mapboxgl from 'mapbox-gl'
 import MapboxClient from 'mapbox/lib/services/geocoding'
 import ProposeForm from '../components/Propose'
 import Sidebar from '../components/shared/Sidebar'
-import MiniSidebar from '../components/shared/MiniSidebar'
 import InitiatorWelcome from '../components/modals/InitiatorWelcome'
 import InsufficientTokens from '../components/modals/InsufficientTokens'
 import VerificationModal from '../components/modals/VerificationModal'
 import ProjectPage from './shared/ProjectPage'
 import ipfs from '../utilities/ipfs'
 import { getUserStatus } from '../actions/userActions'
+import { getProject } from '../actions/projectActions'
 import { eth, web3 } from '../utilities/blockchain'
 
 const client = new MapboxClient('pk.eyJ1IjoiY29uc2Vuc3lzIiwiYSI6ImNqOHBmY2w0NjBmcmYyd3F1NHNmOXJwMWgifQ.8-GlTlTTUHLL8bJSnK2xIA')
@@ -53,6 +53,7 @@ class Initiator extends React.Component {
     this.handlePhotoChange = this.handlePhotoChange.bind(this)
     this.triggerMapChange = this.triggerMapChange.bind(this)
     this.storeData = this.storeData.bind(this)
+    this.handleVerification = this.handleVerification.bind(this)
   }
 
   componentWillMount () {
@@ -211,6 +212,11 @@ class Initiator extends React.Component {
     this.setState({verificationModal: true})
   }
 
+  async handleVerification (addr) {
+    await this.props.getProject(addr)
+    this.setState({projAddr: addr, projectPage: true, proposingProject: false})
+  }
+
   render () {
     return (
       <div>
@@ -223,7 +229,7 @@ class Initiator extends React.Component {
         {this.state.verificationModal
           ? <VerificationModal
             visible={this.state.verificationModal}
-            close={(addr) => this.setState({projAddr: addr, projectPage: true, proposingProject: false})}
+            close={(addr) => this.handleVerification(addr)}
             collateralType={this.state.collateralType}
             data={this.state.data}
             finder={() => this.redirect('/finder')} />
@@ -243,7 +249,11 @@ class Initiator extends React.Component {
           : null}
         {this.state.projectPage
           ? <div>
-            <ProjectPage showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
+            <ProjectPage
+              showIcons={this.state.showSidebarIcons}
+              highlightIcon={this.state.role}
+              redirect={this.redirect}
+              project={this.props.projects} />
           </div>
           : null}
       </div>
@@ -254,13 +264,15 @@ class Initiator extends React.Component {
 const mapStateToProps = (state) => {
   return {
     network: state.network,
+    projects: state.projects,
     user: state.user
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getUserStatus: (userAccount) => dispatch(getUserStatus(userAccount))
+    getUserStatus: (userAccount) => dispatch(getUserStatus(userAccount)),
+    getProject: (projAddress) => dispatch(getProject(projAddress))
   }
 }
 

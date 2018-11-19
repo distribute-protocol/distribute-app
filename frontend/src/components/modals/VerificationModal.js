@@ -118,6 +118,11 @@ class VerificationModal extends React.Component {
         </div>
         backColor = 'rgba(126, 211, 33, 0.25)'
         break
+      default:
+        topText = null
+        bottomText = null
+        backColor = 'white'
+        break
     }
     return (
       <Modal

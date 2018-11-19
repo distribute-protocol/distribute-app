@@ -47,14 +47,14 @@ export function projectProposed (receipt) {
 
 export function getProject (address) {
   return {
-    type: GET_PROJECTS,
+    type: GET_PROJECT,
     address
   }
 }
 
 export function projectReceived (projectDetails) {
   return {
-    type: PROJECTS_RECEIVED,
+    type: PROJECT_RECEIVED,
     projectDetails
   }
 }

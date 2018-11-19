@@ -19,6 +19,10 @@ export default ({
         Discoveries
       </Button>
       break
+    default:
+      roleColor = 'white'
+      button = null
+      break
   }
   return (
     <div style={{paddingLeft: 75, display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 45, backgroundColor: roleColor}}>
