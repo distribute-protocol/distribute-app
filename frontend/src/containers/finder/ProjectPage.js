@@ -27,6 +27,7 @@ class ProjectPage extends React.Component {
           <TitleBar
             role={this.props.highlightIcon} />
           <ProjectPageComponent
+            usdPerEth={this.props.usdPerEth}
             project={this.state.project} />
         </div>
       </div>

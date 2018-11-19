@@ -70,7 +70,9 @@ class VerificationModal extends React.Component {
         topText = <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', color: 'black'}}><p style={{fontFamily: 'Avenir Next', fontSize: 30, fontWeight: 500, justifyContent: 'center'}}>You are initiating a proposal with the following details:</p></div>
         bottomText = <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'center', paddingTop: 39}}>
           <p style={{justifyContent: 'center', textAlign: 'center', fontFamily: 'Avenir Next', fontSize: 25}}>In order to initiate this proposal you are required to<br />contribute:</p>
-          <b><p style={{justifyContent: 'center', textAlign: 'center', fontFamily: 'Lato', fontSize: 40, marginTop: -20}}>XX,XXX Clout</p></b>
+          <b><p style={{justifyContent: 'center', textAlign: 'center', fontFamily: 'Lato', fontSize: 40, marginTop: -20}}>
+            {this.props.collateralType === 'tokens' ? `${this.props.tokensToStake} Tokens` : `${this.props.repToStake} Clout`}
+          </p></b>
           <div style={{display: 'flex', minWidth: '100%', justifyContent: 'space-evenly', marginTop: -20}}>
             <Button style={{borderRadius: 4, color: '#989898', backgroundColor: 'white', maxWidth: 200, height: 55, fontSize: 30, fontFamily: 'Lato', textAlign: 'center'}} key='continueclout' onClick={this.handleCancel}>
               <b>Cancel</b>

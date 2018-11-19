@@ -61,11 +61,11 @@ class Initiator extends React.Component {
       if (!err) {
         if (accounts.length) {
           this.props.getUserStatus(accounts[0])
-          price.getCryptoPrice('USD', 'ETH').then(obj => { // Base for ex - USD, Crypto for ex - ETH
-            this.setState({usdPerEth: obj})
-          }).catch(err => {
-            console.log(err)
-          })
+          let usdPerEth = await price.getCryptoPrice('USD', 'ETH')
+          let totalTokens = await dt.totalSupply()
+          let totalRep = await rr.totalSupply()
+          let weiBal = await dt.weiBal()
+          this.setState({usdPerEth, totalTokens, totalRep, weiBal})
         }
       }
     })
@@ -142,16 +142,13 @@ class Initiator extends React.Component {
     reader.readAsDataURL(img)
   }
 
-  async handlePriceChange (val) {
-    try {
-      this.setState({cost: web3.toWei(val.target.value, 'ether')})
-    } catch (e) {
-      console.log(e)
+  handlePriceChange (val) {
+    if (web3.toWei(val.target.value, 'ether') !== 'undefined') {
+      let cost = web3.toWei(val.target.value, 'ether')
+      let tokensToStake = Math.ceil((cost * this.state.totalTokens) / (this.state.weiBal * 20))
+      let repToStake = Math.ceil((cost * this.state.totalRep) / (this.state.weiBal * 20))
+      this.setState({tokensToStake, repToStake, cost})
     }
-    let totalTokens = await dt.totalSupply()
-    let totalRep = await rr.totalSupply()
-    let weiBal = await dt.weiBal()
-    this.setState({totalTokens, totalRep, weiBal})
   }
 
   handleLocationChange (val) {
@@ -208,17 +205,16 @@ class Initiator extends React.Component {
             close={(addr) => this.handleVerification(addr)}
             collateralType={this.state.collateralType}
             data={this.state.data}
+            tokensToStake={this.state.tokensToStake}
+            repToStake={this.state.repToStake}
             finder={() => this.redirect('/finder')} />
           : null }
         {this.state.proposingProject
           ? <div>
             <Sidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
             <ProposeForm
-              totalTokens={this.state.totalTokens}
-              totalRep={this.state.totalRep}
-              totalWei={this.state.weiBal}
-              cost={this.state.cost}
-              usdPerEth={this.state.usdPerEth}
+              tokensToStake={this.state.tokensToStake}
+              repToStake={this.state.repToStake}
               handlePhotoChange={this.handlePhotoChange}
               imageUrl={this.state.imageUrl}
               handlePriceChange={this.handlePriceChange}
@@ -232,6 +228,7 @@ class Initiator extends React.Component {
         {this.state.projectProposed
           ? <div>
             <ProjectPage
+              usdPerEth={this.state.usdPerEth}
               showIcons={this.state.showSidebarIcons}
               highlightIcon={this.state.role}
               redirect={this.redirect}

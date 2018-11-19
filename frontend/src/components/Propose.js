@@ -19,10 +19,6 @@ class ProposeForm extends React.Component {
     this.props.form.resetFields()
   }
 
-  calculateTokens () {
-
-  }
-
   render () {
     const collateralMenu = (
       <Menu>
@@ -137,7 +133,7 @@ class ProposeForm extends React.Component {
                     <Icon type='down' /> { this.state.collateralType === '' ? null : this.state.collateralType }
                   </Button>
                 </Dropdown>
-                { this.state.collateralType === '' && this.state.cost ? null : <p style={{justifyContent: 'flex-end'}}>You will need to contribute {this.state.collateralType === 'Tokens' ? (Math.round((this.props.cost * this.props.totalTokens) / (this.props.totalWei * 20))) : (Math.round((this.props.cost * this.props.totalRep) / (this.props.totalWei * 20)))} {this.state.collateralType.toLowerCase()}.</p> }
+                { this.state.collateralType === '' ? null : <p style={{justifyContent: 'flex-end'}}>You will need to contribute {this.state.collateralType === 'Tokens' ? this.props.tokensToStake : this.props.repToStake} {this.state.collateralType.toLowerCase()}.</p> }
               </div>
             </div>
             <div style={{display: 'flex', justifyContent: 'space-between', marginTop: 20, backgroundColor: '#FAFBFB', border: '1px solid #989898', marginLeft: '10%', marginRight: '10%'}}>
