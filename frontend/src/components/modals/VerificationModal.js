@@ -68,7 +68,7 @@ class VerificationModal extends React.Component {
     switch (this.state.txState) {
       case 'verification':
         topText = <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', color: 'black'}}><p style={{fontFamily: 'Avenir Next', fontSize: 30, fontWeight: 500, justifyContent: 'center'}}>You are initiating a proposal with the following details:</p></div>
-        bottomText = <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'center', paddingTop: 39}}>
+        bottomText = <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'center', paddingTop: 39, color: 'black'}}>
           <p style={{justifyContent: 'center', textAlign: 'center', fontFamily: 'Avenir Next', fontSize: 25}}>In order to initiate this proposal you are required to<br />contribute:</p>
           <b><p style={{justifyContent: 'center', textAlign: 'center', fontFamily: 'Lato', fontSize: 40, marginTop: -20}}>
             {this.props.collateralType === 'tokens' ? `${this.props.tokensToStake} Tokens` : `${this.props.repToStake} Clout`}
