@@ -1,4 +1,4 @@
-let obj = require('./build/DistributeToken.json')
+let obj = require('./build/contracts/DistributeToken.json')
 
 const DistributeTokenAddress = obj.networks['5777'].address
 

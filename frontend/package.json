@@ -37,17 +37,14 @@
     "web3-utils": "^1.0.0-beta.36"
   },
   "devDependencies": {
-    "react-scripts": "2.0.4"
+    "react-scripts": "2.0.4",
+    "eslint-scope": "3.7.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "server": "node server.js"
-  },
-  "resolutions": {
-    "eslint-scope": "3.7.1"
+    "eject": "react-scripts eject"
   },
   "browserslist": [
     ">0.2%",

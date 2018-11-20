@@ -63,6 +63,9 @@ npm install -g ganache-cli
 ```
 
 #### Installing MongoDB
+
+*Note: installing mongo locally is now optional, ping [Sarah](https://github.com/ana0) for the needed env vars*
+
 Open terminal and enter
 ```
 brew update
@@ -220,15 +223,42 @@ git clone https://github.com/distribute-protocol/distribute-app.git
 cd distribute-app
 git rm .gitmodules contracts
 git submodule add https://github.com/distribute-protocol/distribute-contracts.git contracts
+git submodule add git@github.com:distribute-protocol/abis.git server/abi/build
+git submodule add git@github.com:distribute-protocol/abis.git frontend/src/abi/build
 git submodule update --init --recursive
 ```
-
 *Step 2:*    
-In `distribute-app` (you should not have to change folders), install the node modules and dependencies from the `package.json` file.
+
+`cd server` and install the node modules and dependencies from the `package.json` file.
 
 ```
 yarn
 ```
+
+Then `cd ../frontend` and install dependencies with `yarn`.  
+
+Alternately, you can do these steps with docker:
+
+To do this, make sure docker is installed, then from the server subdirectory:
+
+```
+sudo docker build .
+```
+If this is successful, the container will build and log the output of each build step, eventually ending with something like `Successfully built <exampleContainerId>`
+
+Start the container with
+
+```
+sudo docker -p 3001:3001 run <exampleContainerId>
+```
+The process for the front end is the same, but should be done from the `frontend` subdirectory, and the port that should be mapped is `3000`.  
+
+You can stop the containers at any time with 
+
+```
+sudo docker stop <exampleContainerId>
+```
+
 *Step 3*:   
 Open a new terminal window and run
 ```
@@ -266,7 +296,11 @@ In a new terminal window, clear your database by running
 ```
 mongo
 use distribute
-db.dropDatabase()
+show collections
+
+Then for each collection:
+
+db.<collectionName>.drop()
 ```
 *Step 7*:   
 You are now ready to take Distribute Protocol online. Open another terminal window. Run

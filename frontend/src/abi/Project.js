@@ -1,4 +1,4 @@
-let obj = require('./build/Project.json')
+let obj = require('./build/contracts/Project.json')
 
 const ProjectABI = JSON.stringify(obj.abi)
 
