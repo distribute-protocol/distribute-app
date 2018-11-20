@@ -6,4 +6,4 @@
 	url = https://github.com:distribute-protocol/abis.git
 [submodule "frontend/src/abi/build"]
 	path = frontend/src/abi/build
-	url = git@github.com:distribute-protocol/abis.git
+	url = https://github.com:distribute-protocol/abis.git
