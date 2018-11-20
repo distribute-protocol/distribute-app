@@ -13,8 +13,6 @@
     "ethereumjs-abi": "^0.6.5",
     "ethers": "^4.0.4",
     "ethjs": "^0.4.0",
-    "get-eth-price": "^1.0.0",
-    "graphql": "^14.0.2",
     "graphql-tag": "^2.10.0",
     "history": "^4.7.2",
     "immutability-helper": "^2.8.1",
