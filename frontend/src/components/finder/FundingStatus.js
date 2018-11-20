@@ -19,10 +19,12 @@ export default (props) => {
       <p style={{fontSize: 20, fontFamily: 'Lato', marginTop: -15}}>staked of {props.fundingType === 'Token' ? `$${Math.ceil((parseInt(props.project.weiCost)) * (1 / 10 ** 18) * (parseInt(props.usdPerEth.price))).toFixed(2)}` : parseInt(props.project.reputationCost) } goal</p>
       <div style={{display: 'flex', justifyContent: 'space-between'}}>
         <Input style={{fontSize: 20, fontFamily: 'Lato', textAlign: 'center', maxWidth: 100, borderRadius: 0, border: '1px solid #989898'}} placeholder={'15,000'} />
-        {withdrawButton}
-        <Button style={{border: '1px solid rgba(0, 0, 0, 0.6)'}}>
-          Fund
-        </Button>
+        <div style={{display: 'flex'}}>
+          {withdrawButton}
+          <Button style={{marginLeft: 15, border: '1px solid rgba(0, 0, 0, 0.6)'}}>
+            Fund
+          </Button>
+        </div>
       </div>
       <p style={{fontSize: 20, fontFamily: 'Lato', marginTop: 15}}>{props.fundingType} Stakers: XX</p>
       <hr />

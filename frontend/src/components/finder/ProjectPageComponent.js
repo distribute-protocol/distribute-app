@@ -40,7 +40,7 @@ export default (props) => {
           : <p style={{fontFamily: 'Lato', fontSize: 20, color: 'black'}}><b>...</b> days to go</p>
         }
         <p style={{fontFamily: 'Lato', fontSize: 20, color: 'black'}}>Location</p>
-        {props.project !== undefined && props.project.location.length <= 0
+        {props.project !== undefined && props.project.location.length === 2
           ? <Map
             lngLat={props.project.location} />
           : <p style={{fontFamily: 'Lato', fontSize: 16, color: 'black', maxWidth: 500}}>
