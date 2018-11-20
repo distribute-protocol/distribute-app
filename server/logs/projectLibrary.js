@@ -12,7 +12,7 @@ module.exports = function () {
   const taskValidatedFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
-    address: PL.projectLibraryAddress,
+    address: PL.ProjectLibraryAddress,
     topics: [web3.sha3('LogTaskValidated(address,address,bool)')]
   })
 
@@ -71,7 +71,7 @@ module.exports = function () {
   const taskVoteFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
-    address: PL.projectLibraryAddress,
+    address: PL.ProjectLibraryAddress,
     topics: [web3.sha3('LogTaskVote(address,address,uint256)')]
   })
 
@@ -121,7 +121,7 @@ module.exports = function () {
   const rewardTaskCompleteFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
-    address: PL.projectLibraryAddress,
+    address: PL.ProjectLibraryAddress,
     topics: [web3.sha3('LogClaimTaskReward(address,uint256,address,uint256,uint256)')]
   })
 
@@ -175,7 +175,7 @@ module.exports = function () {
   const ProjectExpiredFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
-    address: PL.projectLibraryAddress,
+    address: PL.ProjectLibraryAddress,
     topics: [web3.sha3('LogProjectExpired(address)')]
   })
 

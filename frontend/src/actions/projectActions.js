@@ -13,7 +13,9 @@ import {
   SUBMIT_HASHED_TASK_LIST,
   TASK_LIST_SET,
   GET_PROJECTS,
+  GET_PROJECT,
   PROJECTS_RECEIVED,
+  PROJECT_RECEIVED,
   STAKED_STATUS_CHECKED,
   ACTIVE_STATUS_CHECKED,
   HASHED_TASK_LIST_SUBMITTED,
@@ -40,6 +42,20 @@ export function projectProposed (receipt) {
   return {
     type: PROJECT_PROPOSED,
     receipt
+  }
+}
+
+export function getProject (address) {
+  return {
+    type: GET_PROJECT,
+    address
+  }
+}
+
+export function projectReceived (projectDetails) {
+  return {
+    type: PROJECT_RECEIVED,
+    projectDetails
   }
 }
 

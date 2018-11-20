@@ -16,7 +16,7 @@ module.exports = function () {
   const projectCreatedFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
-    address: PR.projectRegistryAddress,
+    address: PR.ProjectRegistryAddress,
     topics: [web3.sha3('LogProjectCreated(address,uint256)')]
   })
   let projectAddress
@@ -52,7 +52,7 @@ module.exports = function () {
       let voteCommitPeriod = parseInt(eventParamArr[11], 16) * 1000
       let voteRevealPeriod = parseInt(eventParamArr[12], 16) * 1000
       let passThreshold = parseInt(eventParamArr[13], 16)
-      ipfs.object.get(ipfsHash, (err, node) => {
+      ipfs.object.get(ipfsHash, {enc: 'base64'}, (err, node) => {
         if (err) {
           throw err
         }
@@ -124,7 +124,7 @@ module.exports = function () {
   const projectFullyStakedFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
-    address: PR.projectRegistryAddress,
+    address: PR.ProjectRegistryAddress,
     topics: [web3.sha3('LogProjectFullyStaked(address,bool)')]
   })
   projectFullyStakedFilter.watch(async (err, result) => {
@@ -164,7 +164,7 @@ module.exports = function () {
   const taskHashSubmittedFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
-    address: PR.projectRegistryAddress,
+    address: PR.ProjectRegistryAddress,
     topics: [web3.sha3('LogTaskHashSubmitted(address,bytes32,address,uint256)')]
   })
   taskHashSubmittedFilter.watch(async (err, result) => {
@@ -204,7 +204,7 @@ module.exports = function () {
   const rewardProposerFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
-    address: PR.projectRegistryAddress,
+    address: PR.ProjectRegistryAddress,
     topics: [web3.sha3('LogRefundProposer(address,uint256,address,uint256,uint256)')]
   })
   rewardProposerFilter.watch(async (err, result) => {
@@ -255,7 +255,7 @@ module.exports = function () {
   const projectActiveFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
-    address: PR.projectRegistryAddress,
+    address: PR.ProjectRegistryAddress,
     topics: [web3.sha3('LogProjectActive(address,bytes32,bool)')]
   })
   projectActiveFilter.watch(async (err, result) => {
@@ -301,7 +301,7 @@ module.exports = function () {
   const finalTasksFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
-    address: PR.projectRegistryAddress,
+    address: PR.ProjectRegistryAddress,
     topics: [web3.sha3('LogFinalTaskCreated(address,address,bytes32,uint256)')]
   })
   finalTasksFilter.watch(async (err, result) => {
@@ -372,7 +372,7 @@ module.exports = function () {
   const taskClaimedFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
-    address: PR.projectRegistryAddress,
+    address: PR.ProjectRegistryAddress,
     topics: [web3.sha3('LogTaskClaimed(address,uint256,uint256,address)')]
   })
   taskClaimedFilter.watch(async (err, result) => {
@@ -432,7 +432,7 @@ module.exports = function () {
   const submitTaskCompleteFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
-    address: PR.projectRegistryAddress,
+    address: PR.ProjectRegistryAddress,
     topics: [web3.sha3('LogSubmitTaskComplete(address,uint256,uint256)')]
   })
   submitTaskCompleteFilter.watch(async (err, result) => {
@@ -473,7 +473,7 @@ module.exports = function () {
   const projectValidateFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
-    address: PR.projectRegistryAddress,
+    address: PR.ProjectRegistryAddress,
     topics: [web3.sha3('LogProjectValidate(address,bool)')]
   })
   projectValidateFilter.watch(async (err, result) => {
@@ -510,7 +510,7 @@ module.exports = function () {
   const projectVoteFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
-    address: PR.projectRegistryAddress,
+    address: PR.ProjectRegistryAddress,
     topics: [web3.sha3('LogProjectVoting(address,bool)')]
   })
   projectVoteFilter.watch(async (err, result) => {
@@ -547,7 +547,7 @@ module.exports = function () {
   const projectEndFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
-    address: PR.projectRegistryAddress,
+    address: PR.ProjectRegistryAddress,
     topics: [web3.sha3('LogProjectEnd(address,uint256)')]
   })
 

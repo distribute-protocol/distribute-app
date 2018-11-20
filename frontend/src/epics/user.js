@@ -4,13 +4,11 @@ import { from, of, iif, concat, merge } from 'rxjs'
 import { map, mergeMap, flatMap } from 'rxjs/operators'
 import { client } from '../index'
 import { web3, rr } from '../utilities/blockchain'
-import { push } from 'react-router-redux'
 import gql from 'graphql-tag'
 import * as _ from 'lodash'
 
 const getUserEpic = action$ => {
-  let credentials
-  let accounts
+  let credentials, accounts
   web3.eth.getAccounts((err, res) => {
     if (err) return err
     accounts = res
@@ -33,8 +31,7 @@ const getUserEpic = action$ => {
         () => !result.data.user || result.data.user.reputationBalance === 0,
         of(registerUser(credentials, accounts[0])),
         concat(
-          of(loggedInUser(result)),
-          of(push('/status'))
+          of(loggedInUser(result))
         )
       )
     })
@@ -61,11 +58,10 @@ const registerUserEpic = action$ => {
         }
       })
     }),
-    map(result => from(rr.register({from: account}))),
-    flatMap(result => concat(
-      of(registeredUser(result)),
-      of(push('/status'))
-    ))
+    mergeMap(result => {
+      return from(rr.register({from: account}))
+    }),
+    map(result => registeredUser(result.tx))
   )
 }
 
@@ -77,6 +73,7 @@ const getUserStatusEpic = action$ =>
         query ($account: String!) {
           user(account: $account) {
             id
+            name
             reputationBalance
             tokenBalance
           }

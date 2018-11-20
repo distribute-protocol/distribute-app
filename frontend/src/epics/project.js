@@ -1,4 +1,5 @@
 import {
+  GET_PROJECT,
   GET_PROJECTS,
   PROPOSE_PROJECT,
   STAKE_PROJECT,
@@ -14,6 +15,7 @@ import {
   CHECK_FINAL_STATUS
 } from '../constants/ProjectActionTypes'
 import {
+  projectReceived,
   projectsReceived,
   projectStaked,
   projectUnstaked,
@@ -22,10 +24,11 @@ import {
   proposerRewarded,
   // activeStatusChecked,
   taskListSet,
-  verifiedTaskListsReceived
+  verifiedTaskListsReceived,
   // finalStatusChecked
   // validateStatusChecked,
   // votingStatusChecked
+  projectProposed
 } from '../actions/projectActions'
 import { map, mergeMap, concatMap } from 'rxjs/operators'
 import { merge, EMPTY, of, from, concat } from 'rxjs'
@@ -34,7 +37,7 @@ import { client } from '../index'
 import { rr, tr, pr, dt, P } from '../utilities/blockchain'
 import gql from 'graphql-tag'
 
-const getProjectsEpic = action$ => {
+const getProjects = action$ => {
   let state
   return action$.ofType(GET_PROJECTS).pipe(
     mergeMap(action => {
@@ -46,16 +49,45 @@ const getProjectsEpic = action$ => {
   )
 }
 
+const getProject = action$ => {
+  return action$.ofType(GET_PROJECT).pipe(
+    mergeMap(action => {
+      let query = gql`
+        query ($address: String!) {
+          project(address: $address) {
+            address,
+            id,
+            ipfsHash,
+            location,
+            name
+            nextDeadline,
+            photo,
+            reputationBalance,
+            reputationCost,
+            nextDeadline,
+            summary,
+            tokenBalance,
+            weiBal,
+            weiCost
+          }
+        }
+      `
+      return client.query({query, variables: {address: action.address}}
+      )
+    }),
+    map(result => projectReceived(result))
+  )
+}
+
 const proposeProject = action$ =>
   action$.ofType(PROPOSE_PROJECT).pipe(
-    mergeMap(action =>
-      action.collateralType === 'tokens'
+    mergeMap(action => {
+      return action.collateralType === 'tokens'
         ? from(tr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
         : from(rr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
-    ),
-    mergeMap(result => concat(
-      of(push('/stake'))
-    ))
+    }),
+    map(result => projectProposed(result.tx)
+    )
   )
 
 const stakeProject = action$ => {
@@ -180,7 +212,7 @@ const submitHashedTaskList = action$ => {
   )
 }
 
-const getVerifiedTaskListsEpic = action$ => {
+const getVerifiedTaskLists = action$ => {
   let address
   return action$.ofType(GET_VERIFIED_TASK_LISTS).pipe(
     concatMap(action => {
@@ -284,7 +316,8 @@ const checkFinalStatus = action$ => {
 }
 
 export default (action$, store) => merge(
-  getProjectsEpic(action$, store),
+  getProjects(action$, store),
+  getProject(action$, store),
   proposeProject(action$, store),
   stakeProject(action$, store),
   unstakeProject(action$, store),
@@ -293,7 +326,7 @@ export default (action$, store) => merge(
   rewardProposer(action$, store),
   submitHashedTaskList(action$, store),
   setTaskList(action$, store),
-  getVerifiedTaskListsEpic(action$, store),
+  getVerifiedTaskLists(action$, store),
   checkValidateStatus(action$, store),
   checkVotingStatus(action$, store),
   checkFinalStatus(action$, store)
