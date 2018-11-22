@@ -249,7 +249,7 @@ If this is successful, the container will build and log the output of each build
 Start the container with
 
 ```
-sudo docker run -p 3001:3001 <exampleBuildId>
+sudo docker run -p 3001:3001 --network "host" <exampleBuildId>
 ```
 The process for the front end is the same, but should be done from the `frontend` subdirectory, and the port that should be mapped is `3000`.  
 
