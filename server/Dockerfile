@@ -11,7 +11,6 @@ FROM base as build
 
 # Build tools
 COPY . /app
-COPY ../contracts/build/contracts /app/abi/build
 RUN cd /app && \
     npm --unsafe-perm install
 RUN cd /app && \
@@ -24,7 +23,7 @@ FROM base as final
 COPY --from=build /app /app
 
 # Open port for dev
-EXPOSE 3000
+EXPOSE 3001
 
 WORKDIR /app
 
