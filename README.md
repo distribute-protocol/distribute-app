@@ -246,19 +246,19 @@ To do this, make sure docker is installed, then from the server subdirectory:
 ```
 sudo docker build .
 ```
-If this is successful, the container will build and log the output of each build step, eventually ending with something like `Successfully built <exampleContainerId>`
+If this is successful, the container will build and log the output of each build step, eventually ending with something like `Successfully built <exampleBuildId>`
 
 Start the container with
 
 ```
-sudo docker run -p 3001:3001 <exampleContainerId>
+sudo docker run -p 3001:3001 --network "host" <exampleBuildId>
 ```
 The process for the front end is the same, but should be done from the `frontend` subdirectory, and the port that should be mapped is `3000`.  
 
 You can stop the containers at any time with 
 
 ```
-sudo docker stop <exampleContainerId>
+sudo docker stop <exampleBuildId>
 ```
 
 *Step 3*:   
@@ -332,6 +332,14 @@ yarn
 yarn start
 ```
 The frontend should open up in a browser tab and be running on localhost 3000. Make sure that it runs on a browser that has the MetaMask extension installed.
+
+### Running the services with docker-compose
+
+Alternately, the services can be run with docker-compose. Before doing so, you must set up the gitmodules and `yarn` or `npm i` in both `frontend` and `server` subdirectories, then you should be able to start the services with 
+```
+sudo docker-compose up
+```
+*Note: the docker-compose file assumes a remote mongo instance is being used and that the connection string for it is set in the server `.env`.*
 
 ### Known Issues
 

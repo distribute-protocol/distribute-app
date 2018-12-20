@@ -1,15 +1,30 @@
 version: '2'
+
 services:
   server:
     build: ./server
     ports:
-      - "3000:3000"
-    links:
-      - mongodb
+      - "3001:3001"
+    network_mode: host
     depends_on:
-      - mongodb
-
-  mongodb:
-    image: mongo:latest
+      - ganache-cli
+      - ipfs
+  frontend:
+    build: ./frontend
     ports:
-      - 27017:27017
+      - "3000:3000"
+    network_mode: host
+    depends_on:
+      - server
+      - ganache-cli
+      - ipfs
+  ganache-cli:
+    ports:
+        - "8545:8545"
+    network_mode: host
+    image: 'trufflesuite/ganache-cli:latest'
+  ipfs:
+    image: jbenet/go-ipfs
+    network_mode: host
+    ports: 
+      - "5001:5001"
