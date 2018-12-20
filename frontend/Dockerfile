@@ -4,7 +4,7 @@ RUN apk update
 ENV LANGUAGE=en_US.UTF-8 LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 
 # Utilities
-RUN apk add --no-cache nodejs=8.11.4-r0
+RUN apk add --no-cache nodejs
 RUN apk add --no-cache wget jq tar yarn git python make g++
 RUN yarn global add node-gyp
 
