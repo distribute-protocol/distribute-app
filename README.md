@@ -227,6 +227,8 @@ git submodule add git@github.com:distribute-protocol/abis.git server/abi/build
 git submodule add git@github.com:distribute-protocol/abis.git frontend/src/abi/build
 git submodule update --init --recursive
 ```
+If you receive the error that `'frontend/src/abi/build' already exists in the index` then you can move to the next command
+
 *Step 2:*    
 
 `cd server` and install the node modules and dependencies from the `package.json` file.
@@ -249,7 +251,7 @@ If this is successful, the container will build and log the output of each build
 Start the container with
 
 ```
-sudo docker -p 3001:3001 run <exampleContainerId>
+sudo docker run -p 3001:3001 <exampleContainerId>
 ```
 The process for the front end is the same, but should be done from the `frontend` subdirectory, and the port that should be mapped is `3000`.  
 
