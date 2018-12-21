@@ -51,12 +51,12 @@ const server = new ApolloServer({
 server.applyMiddleware({ app })
 
 // fire logs --> network model initalized in dtLog ONLY
-dtLogs()
-rrLogs()
-prLogs()
-trLogs()
-plLogs()
-
+// dtLogs()
+// rrLogs()
+// prLogs()
+// trLogs()
+// plLogs()
+const web3 = require('./connections/web3')
 engine.listen({
   port: app.get('port'),
   graphqlPaths: ['/api/graphql'],
@@ -67,3 +67,6 @@ engine.listen({
 }, () => {
   console.log('Listening!')
 })
+
+// console.log('this is web3', web3)
+// console.log(web3.eth.net.isListening)

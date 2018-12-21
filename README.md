@@ -334,10 +334,14 @@ yarn start
 The frontend should open up in a browser tab and be running on localhost 3000. Make sure that it runs on a browser that has the MetaMask extension installed.
 
 ### Running the services with docker-compose
-
+After running yarn in the contract, frontend and server, you can use one command to start all the remaining services that is docker-compose
+First you will need to run:
+```
+docker volume create mongodbdata
+```
 Alternately, the services can be run with docker-compose. Before doing so, you must set up the gitmodules and `yarn` or `npm i` in both `frontend` and `server` subdirectories, then you should be able to start the services with 
 ```
-sudo docker-compose up
+docker-compose up
 ```
 *Note: the docker-compose file assumes a remote mongo instance is being used and that the connection string for it is set in the server `.env`.*
 

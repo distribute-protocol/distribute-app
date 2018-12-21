@@ -1,6 +1,7 @@
 const oneSecondMS = 1000;
 
-const mongoUrl = process.env.MONGODB_URI || 'mongodb://localhost:27017/distribute'
+const ganacheUrl = process.env.GANACHE_URL || 'ws://ganache-cli:8545'
+const mongoUrl = process.env.MONGODB_URI || 'mongodb://mongo:27017/distribute'
 const isProd = process.env.NODE_ENV === 'prod' ? true : false;
 
 const defaultMongoOptions = {
@@ -12,8 +13,11 @@ const defaultMongoOptions = {
   reconnectInterval: 5 * oneSecondMS
 };
 
+
 module.exports = {
   isProd,
   mongoUrl,
-  defaultMongoOptions
+  defaultMongoOptions,
+  ganacheUrl
+
 }
