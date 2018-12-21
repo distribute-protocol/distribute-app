@@ -228,6 +228,10 @@ git submodule add git@github.com:distribute-protocol/abis.git frontend/src/abi/b
 git submodule update --init --recursive
 ```
 If you receive the error that `'frontend/src/abi/build' already exists in the index` then you can move to the next command
+Updating submodules can be achieved easily from the root folder using
+```
+git submodule foreach git pull origin master
+```
 
 *Step 2:*    
 
