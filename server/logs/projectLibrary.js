@@ -1,5 +1,4 @@
-const Web3 = require('web3')
-const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
+const web3 = require('connections/web3')
 const PL = require('../abi/ProjectLibrary')
 const Project = require('../models/project')
 const Task = require('../models/task')

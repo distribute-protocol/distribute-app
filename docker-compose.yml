@@ -1,30 +1,39 @@
 version: '2'
 
 services:
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - 'mongodbdata:/data/db'
+  ganache-cli:
+    ports:
+        - "0.0.0.0:8545:8545"
+    container_name: ganache-cli
+    image: 'trufflesuite/ganache-cli:latest'
+  ipfs:
+    image: jbenet/go-ipfs
+    ports:
+      - "5001:5001"
   server:
     build: ./server
     ports:
       - "3001:3001"
-    network_mode: host
+    links:
+      - ganache-cli
     depends_on:
       - ganache-cli
       - ipfs
+      - mongo
   frontend:
     build: ./frontend
     ports:
       - "3000:3000"
-    network_mode: host
     depends_on:
       - server
       - ganache-cli
       - ipfs
-  ganache-cli:
-    ports:
-        - "8545:8545"
-    network_mode: host
-    image: 'trufflesuite/ganache-cli:latest'
-  ipfs:
-    image: jbenet/go-ipfs
-    network_mode: host
-    ports: 
-      - "5001:5001"
+volumes:
+  mongodbdata:
+    driver: local
