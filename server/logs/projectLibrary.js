@@ -1,4 +1,4 @@
-const web3 = require('connections/web3')
+const web3 = require('../connections/web3')
 const PL = require('../abi/ProjectLibrary')
 const Project = require('../models/project')
 const Task = require('../models/task')

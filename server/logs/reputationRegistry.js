@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const web3 = require('connections/web3')
+const web3 = require('../connections/web3')
 const mongoose = require('mongoose')
 
 const RR = require('../abi/ReputationRegistry')

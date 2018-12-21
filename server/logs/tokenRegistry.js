@@ -1,4 +1,4 @@
-const web3 = require('connections/web3')
+const web3 = require('../connections/web3')
 const mongoose = require('mongoose')
 const TR = require('../abi/TokenRegistry')
 const Network = require('../models/network')

@@ -1,4 +1,4 @@
-const web3 = require('connections/web3')
+const web3 = require('../connections/web3')
 const PR = require('../abi/ProjectRegistry')
 const mongoose = require('mongoose')
 const Project = require('../models/project')

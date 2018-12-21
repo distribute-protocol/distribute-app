@@ -12,12 +12,13 @@ const defaultMongoOptions = {
   reconnectInterval: 5 * oneSecondMS
 };
 
-const ganacheUrl = 'http://ganache-cli:8545'
+const ganacheUrl = 'ws://ganache-cli:8545'
 
 module.exports = {
   isProd,
   mongoUrl,
   defaultMongoOptions,
   ganacheUrl
+
 }
 // process.env.MONGODB_URI ||
