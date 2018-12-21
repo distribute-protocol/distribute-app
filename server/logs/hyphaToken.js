@@ -1,5 +1,5 @@
 const web3 = require('../connections/web3')
-const DT = require('../abi/DistributeToken')
+const HYP = require('../abi/HyphaToken')
 const assert = require('assert')
 const mongoose = require('mongoose')
 const Network = require('../models/network')
@@ -7,6 +7,10 @@ const User = require('../models/user')
 const Token = require('../models/token')
 
 module.exports = function () {
+ //'0xF5EedFb486C69D76Af2CB8e403B11FDb495853C7' 
+  console.log('address', HYP.HyphaTokenAddress)
+  const HyphaTokenContract = new web3.eth.Contract(HYP.HyphaTokenABI, HYP.HyphaTokenAddress)
+  //console.log('HyphaToken', HyphaTokenContract)
   // initialize network model --> ONLY DO THIS ONCE
   Network.findOne({}).exec((err, doc) => {
     if (err) console.error(err)
@@ -23,12 +27,17 @@ module.exports = function () {
     }
   })
 
+  HyphaTokenContract.events.LogMint({fromBlock: 0}).on('data', event => {
+    console.log(event)
+  })
+
+
   // filter for minting events
-  const mintFilter = web3.eth.filter({
+  /*const mintFilter = web3.eth.filter({
     fromBlock: 0,
     toBlock: 'latest',
     address: DT.DistributeTokenAddress,
-    topics: [web3.sha3('LogMint(uint256,uint256,address)')]
+    topics: [web3.utils.sha3('LogMint(uint256,uint256,address)')]
   })
 
   mintFilter.watch(async (err, result) => {
@@ -87,7 +96,7 @@ module.exports = function () {
     fromBlock: 0,
     toBlock: 'latest',
     address: DT.DistributeTokenAddress,
-    topics: [web3.sha3('LogWithdraw(uint256,uint256,address)')]
+    topics: [web3.utils.sha3('LogWithdraw(uint256,uint256,address)')]
   })
 
   sellFilter.watch(async (err, result) => {
@@ -125,4 +134,5 @@ module.exports = function () {
       }
     })
   })
+  */
 }

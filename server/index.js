@@ -8,7 +8,7 @@ const { ApolloServer, gql } = require('apollo-server-express')
 const { ApolloEngine } = require('apollo-engine')
 require('./connections/mongo');
 
-const dtLogs = require('./logs/distributeToken')
+const hypLogs = require('./logs/hyphaToken')
 const rrLogs = require('./logs/reputationRegistry')
 const prLogs = require('./logs/projectRegistry')
 const trLogs = require('./logs/tokenRegistry')
@@ -51,11 +51,12 @@ const server = new ApolloServer({
 server.applyMiddleware({ app })
 
 // fire logs --> network model initalized in dtLog ONLY
-// dtLogs()
-// rrLogs()
-// prLogs()
-// trLogs()
-// plLogs()
+hypLogs()
+//rrLogs()
+//prLogs()
+//trLogs()
+//plLogs()
+
 const web3 = require('./connections/web3')
 engine.listen({
   port: app.get('port'),
