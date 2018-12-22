@@ -1,4 +1,4 @@
-let obj = require('./build/contracts/DistributeToken.json')
+let obj = require('./build/contracts/HyphaToken.json')
 //This address lookup is broken...the network id will be different based on where it is being deployed, check this before deployment
 const HyphaTokenAddress = obj.networks['5777'].address
 //console.log(Object.keys(obj.networks))

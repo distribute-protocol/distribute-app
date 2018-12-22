@@ -1,14 +1,13 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const path = require('path')
-const assert = require('assert')
 const compression = require('compression')
 const cors = require('cors')
 const { ApolloServer, gql } = require('apollo-server-express')
 const { ApolloEngine } = require('apollo-engine')
 require('./connections/mongo');
 
-const Network = require('./models/network')
+const networkLogs = require('./logs/network')
 const hypLogs = require('./logs/hyphaToken')
 const rrLogs = require('./logs/reputationRegistry')
 const prLogs = require('./logs/projectRegistry')
@@ -51,20 +50,6 @@ const server = new ApolloServer({
 })
 server.applyMiddleware({ app })
 
-Network.findOne({}).exec((err, doc) => {
-  if (err) console.error(err)
-  if (!doc) {
-    let network = new Network({
-      totalTokens: 0,
-      totalReputation: 0,
-      weiBal: 0,
-      processedTxs: {_: true}
-    })
-    network.save((err) => {
-      assert.equal(err, null)
-    })
-  }
-})
 // fire logs --> network model initalized in dtLog ONLY
 hypLogs()
 //rrLogs()
