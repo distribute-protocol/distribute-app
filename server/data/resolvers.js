@@ -91,10 +91,11 @@ const resolvers = {
     getValidations: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => Task.findOne({project: project.id, index: args.index})).then(task => Validation.find({task: task.id})).then(validations => validations),
     getUserValidationsinProject: (_, args) => Validation.find({projAddress: args.address.toLowerCase(), user: args.user.toLowerCase()}).then(validations => validations),
     getPrevPollID: (obj, args) => User.findOne({account: args.account}).then(user => {
-      Vote.find({voter: user.id})
-      let insertIndex = _.sortedIndexBy(user.voteRecords, {amount: args.amount}, (o) => o.amount)
-      let prevPollID = insertIndex < 1 ? 0 : user.voteRecords[insertIndex - 1].pollID
-      return prevPollID
+      Vote.find({voter: user.id, revealed: false, rescued: false}).sort({amount: 1}).then(votes => {
+        let insertIndex = _.sortedIndexBy(votes, {amount: args.amount}, (o) => o.amount)
+        let prevPollID = insertIndex < 1 ? 0 : votes[insertIndex - 1].pollID
+        return prevPollID
+      })
     })
   },
   Mutation: {

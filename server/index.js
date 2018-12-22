@@ -54,8 +54,7 @@ hypLogs()
 rrLogs()
 prLogs()
 trLogs()
-//plLogs()
-
+plLogs()
 
 engine.listen({
   port: app.get('port'),
