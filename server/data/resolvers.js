@@ -55,7 +55,8 @@ const resolvers = {
   },
 
   Validation: {
-    task: (validation) => Task.findById(validation.task).then(task => task)
+    task: (validation) => Task.findById(validation.task).then(task => task),
+    project: (validation) => Project.findById(validation.project).then(project => project)
   },
   Vote: {
     task: (vote) => Task.findById(vote.task).then(task => task),

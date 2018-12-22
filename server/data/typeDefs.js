@@ -143,8 +143,8 @@ const typeDefs = gql`
     task: Task
     user: String
     state: Boolean
-    address: String
     rewarded: Boolean
+    project: Project
   }
 
   type Vote {

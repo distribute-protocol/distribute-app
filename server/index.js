@@ -53,7 +53,7 @@ server.applyMiddleware({ app })
 hypLogs()
 rrLogs()
 prLogs()
-//trLogs()
+trLogs()
 //plLogs()
 
 

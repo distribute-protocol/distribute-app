@@ -15,7 +15,6 @@ const netStatus = require('./network')
 module.exports = function () {
   const ProjectRegistryContract = new web3.eth.Contract(ProjectRegistryABI, ProjectRegistryAddress)
 
-  // filter for created projects
   ProjectRegistryContract.events.LogProjectCreated({fromBlock: netStatus.lastBlock}).on('data', async event => {
     let transactionHash1 = event.transactionHash
     let logIndex1 = event.logIndex
@@ -60,6 +59,7 @@ module.exports = function () {
                 location: dataObj.location,
                 name: dataObj.name,
                 nextDeadline,
+                originatorRewarded: false,
                 passThreshold,
                 photo: dataObj.photo,
                 prelimTaskLists: [],
@@ -95,7 +95,6 @@ module.exports = function () {
     }
   })
 
-  // filter for fully staked projects
   ProjectRegistryContract.events.LogProjectFullyStaked({fromBlock: netStatus.lastBlock}).on('data', async event => {
     let transactionHash = event.transactionHash
     let logIndex = event.logIndex
@@ -117,7 +116,6 @@ module.exports = function () {
     }
   })
 
-  // filter for task hash submissions
   ProjectRegistryContract.events.LogTaskHashSubmitted({fromBlock: netStatus.lastBlock}).on('data', async event => {
     let transactionHash = event.transactionHash
     let logIndex = event.logIndex
@@ -139,7 +137,6 @@ module.exports = function () {
     }
   })
 
-  // filter for refund proposer
   ProjectRegistryContract.events.LogRefundProposer({fromBlock: netStatus.lastBlock}).on('data', async event => {
     let transactionHash = event.transactionHash
     let logIndex = event.logIndex
@@ -162,7 +159,6 @@ module.exports = function () {
     }
   })
 
-  // filter for active projects
   ProjectRegistryContract.events.LogProjectActive({fromBlock: netStatus.lastBlock}).on('data', async event => {
     let transactionHash = event.transactionHash
     let logIndex = event.logIndex
@@ -185,7 +181,6 @@ module.exports = function () {
     }
   })
 
-  //  filter for final tasks submitted
   ProjectRegistryContract.events.LogFinalTaskCreated({fromBlock: netStatus.lastBlock}).on('data', async event => {
     let transactionHash = event.transactionHash
     let logIndex = event.logIndex
@@ -224,7 +219,6 @@ module.exports = function () {
     }
   })
 
-  // filter for claiming task
   ProjectRegistryContract.events.LogTaskClaimed({fromBlock: netStatus.lastBlock}).on('data', async event => {
     let transactionHash = event.transactionHash
     let logIndex = event.logIndex
@@ -247,7 +241,6 @@ module.exports = function () {
     }
   })
 
-  // filter for task submitted complete
   ProjectRegistryContract.events.LogSubmitTaskComplete({fromBlock: netStatus.lastBlock}).on('data', async event => {
     let transactionHash = event.transactionHash
     let logIndex = event.logIndex
@@ -268,7 +261,6 @@ module.exports = function () {
     }
   })
 
-  // filter for project tasks ready to be validated
   ProjectRegistryContract.events.LogProjectValidate({fromBlock: netStatus.lastBlock}).on('data', async event => {
     let transactionHash = event.transactionHash
     let logIndex = event.logIndex
@@ -289,7 +281,6 @@ module.exports = function () {
     }
   })
 
-  // filter for project tasks ready to be voted on
   ProjectRegistryContract.events.LogProjectVoting({fromBlock: netStatus.lastBlock}).on('data', async event => {
     let transactionHash = event.transactionHash
     let logIndex = event.logIndex
@@ -310,7 +301,6 @@ module.exports = function () {
     }
   })
 
-  // filter for project ended
   ProjectRegistryContract.events.LogProjectEnd({fromBlock: netStatus.lastBlock}).on('data', async event => {
     let transactionHash = event.transactionHash
     let logIndex = event.logIndex
