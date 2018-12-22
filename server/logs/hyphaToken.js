@@ -1,5 +1,5 @@
 const web3 = require('../connections/web3')
-const HYP = require('../abi/HyphaToken')
+const { HyphaTokenABI, HyphaTokenAddress } = require('../abi/HyphaToken')
 const Network = require('../models/network')
 const User = require('../models/user')
 const Token = require('../models/token')
@@ -7,7 +7,7 @@ const ProcessedTxs = require('../models/processedTxs')
 const netStatus = require('./network')
 
 module.exports = function () {
-  const HyphaTokenContract = new web3.eth.Contract(HYP.HyphaTokenABI, HYP.HyphaTokenAddress)
+  const HyphaTokenContract = new web3.eth.Contract(HyphaTokenABI, HyphaTokenAddress)
 
   HyphaTokenContract.events.LogMint({fromBlock: netStatus.lastBlock}).on('data', async event => {
     let transactionHash = event.transactionHash

@@ -1,363 +1,239 @@
-const _ = require('lodash')
 const web3 = require('../connections/web3')
-const mongoose = require('mongoose')
-
-const RR = require('../abi/ReputationRegistry')
-
+const _ = require('lodash')
+const { ReputationRegistryABI, ReputationRegistryAddress } = require('../abi/ReputationRegistry')
 const Network = require('../models/network')
 const Stake = require('../models/stake')
 const Project = require('../models/project')
 const User = require('../models/user')
 const Vote = require('../models/vote')
 const Task = require('../models/task')
+const ProcessedTxs = require('../models/processedTxs')
+const netStatus = require('./network')
 
 module.exports = function () {
-  // filter for register events
-  const registerFilter = web3.eth.filter({
-    fromBlock: 0,
-    toBlock: 'latest',
-    address: RR.ReputationRegistryAddress,
-    topics: [web3.sha3('LogRegister(address)')]
-  })
-  registerFilter.watch(async (error, result) => {
-    if (error) console.error(error)
-    let txHash = result.transactionHash
-    let eventParams = result.topics[1]
-    let account = '0x' + eventParams.substr(-40)
-    Network.findOne({}).exec((err, netStatus) => {
-      if (err) console.error(err)
-      if (netStatus) {
-        if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-          netStatus.totalReputation += 10000
-          netStatus.processedTxs[txHash] = true
-          netStatus.markModified('processedTxs')
-          netStatus.save((err, doc) => {
-            if (err) throw Error
-            console.log('network updated w/user registered')
-          })
-          User.findOne({account}).exec((err, userStatus) => {
-            if (err) throw Error
-            if (userStatus && userStatus.reputationBalance === 0) {
-              userStatus.reputationBalance += 10000
-              userStatus.save(err => {
-                if (err) throw Error
-                console.log('user registered')
-              })
+  const ReputationRegistryContract = new web3.eth.Contract(ReputationRegistryABI, ReputationRegistryAddress)
+
+  ReputationRegistryContract.events.LogRegister({from: netStatus.lastBlock}).on('data', async event => {
+    let transactionHash = event.transactionHash
+    let logIndex = event.logIndex
+    let account = event.returnValues.account
+    try {
+      const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
+      if (!processedTx) {
+        const user = await User.findOneAndUpdate({account}, {$inc: { reputationBalance: 10000 }}, {upsert: true, setDefaultsOnInsert: true, new: true})
+        if (!user) { console.error('User not successfully updated') }
+        const network = await Network.findOneAndUpdate({},
+          {
+            lastBlock: event.blockNumber,
+            $inc: {
+              totalReputation: 10000
             }
-          })
+          },
+          {new: true}
+        )
+        if (!network) { console.error('No networking database') }
+        await new ProcessedTxs({transactionHash, logIndex}).save()
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  })
+
+  ReputationRegistryContract.events.LogStakedReputation({from: netStatus.lastBlock}).on('data', async event => {
+    let transactionHash = event.transactionHash
+    let logIndex = event.logIndex
+    let projectAddress = event.returnValues.projectAddress
+    let staker = event.returnValues.staker
+    let reputationStaked = event.returnValues.reputation
+    // let projectStaked = event.returnValues.projectStaked
+    try {
+      const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
+      if (!processedTx) {
+        const user = await User.findOneAndUpdate({account: staker}, {$inc: { reputationBalance: reputationStaked * (-1) }}, {upsert: true, setDefaultsOnInsert: true, new: true})
+        if (!user) { console.error('User not successfully created or updated') }
+        const project = await Project.findOneAndUpdate({address: projectAddress}, {$inc: { reputationBalance: reputationStaked }})
+        if (!project) {
+          console.error('Project not created or updated')
+        } else {
+          await new Stake({amount: reputationStaked, projectId: project.id, type: 'reputation', user: user.id}).save()
         }
+        await new ProcessedTxs({transactionHash, logIndex}).save()
       }
-    })
+    } catch (err) {
+      console.log(err)
+    }
   })
-  // filter for staked reputation
-  const stakedReputationFilter = web3.eth.filter({
-    fromBlock: 0,
-    toBlock: 'latest',
-    address: RR.ReputationRegistryAddress,
-    topics: [web3.sha3('LogStakedReputation(address,uint256,address,bool)')]
-  })
-  stakedReputationFilter.watch(async (error, result) => {
-    if (error) console.error(error)
-    let txHash = result.transactionHash
-    let projectAddress = result.topics[1]
-    projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
-    let eventParams = result.data
-    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
-    let reputationStaked = parseInt(eventParamArr[0], 16)
-    let account = eventParamArr[1]
-    account = '0x' + account.substr(-40)
-    Network.findOne({}).exec((err, netStatus) => {
-      if (err) console.error(err)
-      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-        User.findOne({account: account}).exec((err, userStatus) => {
-          if (err) console.error(error)
-          if (userStatus !== null) {
-            userStatus.reputationBalance -= reputationStaked
-            userStatus.save(err => {
-              if (err) console.error(error)
-            })
-          }
-          Project.findOne({address: projectAddress}).exec((error, projectStatus) => {
-            if (error) console.error(error)
-            if (projectStatus !== null) {
-              let StakeEvent = new Stake({
-                _id: new mongoose.Types.ObjectId(),
-                amount: reputationStaked,
-                projectId: projectStatus.id,
-                type: 'reputation',
-                user: userStatus.id
-              })
-              projectStatus.reputationBalance += reputationStaked
-              projectStatus.save((error, saved) => {
-                if (error) console.error(error)
-              })
-              StakeEvent.save((error, saved) => {
-                if (error) console.error(error)
-                console.log('reputation staked')
-              })
-            }
-          })
-        })
-        netStatus.processedTxs[txHash] = true
-        netStatus.markModified('processedTxs')
-        netStatus.save(err => {
-          if (err) console.log(err)
-        })
+
+  ReputationRegistryContract.events.LogUnstakedReputation({from: netStatus.lastBlock}).on('data', async event => {
+    let transactionHash = event.transactionHash
+    let logIndex = event.logIndex
+    let projectAddress = event.returnValues.projectAddress
+    let staker = event.returnValues.unstaker
+    let reputationStaked = event.returnValues.reputation
+    // let projectStaked = event.returnValues.projectStaked
+    try {
+      const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
+      if (!processedTx) {
+        const user = await User.findOneAndUpdate({account: staker}, {$inc: { reputationBalance: reputationStaked }}, {upsert: true, setDefaultsOnInsert: true, new: true})
+        if (!user) { console.error('User not successfully created or updated') }
+        const project = await Project.findOneAndUpdate({address: projectAddress}, {$inc: { reputationBalance: reputationStaked * (-1) }})
+        if (!project) {
+          console.error('Project not created or updated')
+        } else {
+          await new Stake({amount: reputationStaked * (-1), projectId: project.id, type: 'reputation', user: user.id}).save()
+        }
+        await new ProcessedTxs({transactionHash, logIndex}).save()
       }
-    })
+    } catch (err) {
+      console.log(err)
+    }
   })
-  // filter for unstaked reputation
-  const unstakedReputationFilter = web3.eth.filter({
-    fromBlock: 0,
-    toBlock: 'latest',
-    address: RR.ReputationRegistryAddress,
-    topics: [web3.sha3('LogUnstakedReputation(address,uint256,address)')]
-  })
-  unstakedReputationFilter.watch(async (error, result) => {
-    if (error) console.error(error)
-    let txHash = result.transactionHash
-    let projectAddress = result.topics[1]
-    projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
-    let eventParams = result.data
-    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
-    let reputationStaked = parseInt(eventParamArr[0], 16)
-    let account = eventParamArr[1]
-    account = '0x' + account.substr(-40)
-    Network.findOne({}).exec((err, netStatus) => {
-      if (err) console.error(err)
-      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-        User.findOne({account: account}).exec((err, userStatus) => {
-          if (err) console.error(error)
-          userStatus.reputationBalance += reputationStaked
-          userStatus.save(err => {
-            if (err) console.error(error)
-          })
-          Project.findOne({address: projectAddress}).exec((error, projectStatus) => {
-            if (error) console.error(error)
-            let StakeEvent = new Stake({
-              _id: new mongoose.Types.ObjectId(),
-              amount: -1 * reputationStaked,
-              projectId: projectStatus.id,
+
+  ReputationRegistryContract.events.LogReputationVoteCommitted({from: netStatus.lastBlock}).on('data', async event => {
+    let transactionHash = event.transactionHash
+    let logIndex = event.logIndex
+    let projectAddress = event.returnValues.projectAddress
+    let index = event.returnValues.index
+    let votes = event.returnValues.votes
+    let secretHash = event.returnValues.secretHash
+    let pollId = event.returnValues.pollId
+    let voter = event.returnValues.voter
+    // let projectStaked = event.returnValues.projectStaked
+    try {
+      const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
+      if (!processedTx) {
+        const user = await User.findOneAndUpdate({account: voter}, {$inc: { reputationBalance: votes * (-1) }}, {upsert: true, setDefaultsOnInsert: true, new: true})
+        if (!user) { console.error('User not successfully created or updated') }
+        const project = await Project.findOneAndUpdate({address: projectAddress}, {$inc: { reputationBalance: votes * (-1) }})
+        if (!project) {
+          console.error('Project not created or updated')
+        } else {
+          const task = Task.findOne({project: project.id, index})
+          if (!task) {
+            console.error('Task not found')
+          } else {
+            await new Vote({
+              amount: votes,
+              revealed: false,
+              rescued: false,
+              hash: secretHash,
               type: 'reputation',
-              user: userStatus.id
-            })
-            projectStatus.reputationBalance -= reputationStaked
-            projectStatus.save((error, saved) => {
-              if (error) console.error(error)
-            })
-            StakeEvent.save((error, saved) => {
-              if (error) console.error(error)
-              console.log('reputation unstaked')
-            })
-          })
-        })
-        netStatus.processedTxs[txHash] = true
-        netStatus.markModified('processedTxs')
-        netStatus.save(err => {
-          if (err) console.log(err)
-        })
-      }
-    })
-  })
-
-  const reputationVoteCommitedFilter = web3.eth.filter({
-    fromBlock: 0,
-    toBlock: 'latest',
-    address: RR.ReputationRegistryAddress,
-    topics: [web3.sha3('LogReputationVoteCommitted(address,uint256,uint256,bytes32,uint256,address)')]
-  })
-
-  reputationVoteCommitedFilter.watch(async (error, result) => {
-    if (error) console.error(error)
-    let txHash = result.transactionHash
-    let projectAddress = result.topics[1]
-    projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
-    let eventParamArr = result.data.slice(2).match(/.{1,64}/g)
-    let taskIndex = parseInt(eventParamArr[0], 16)
-    let stakeAmount = parseInt(eventParamArr[1], 16)
-    let secretHash = eventParamArr[2]
-    let pollID = parseInt(eventParamArr[3], 16)
-    let account = eventParamArr[4]
-    account = '0x' + account.substr(-40)
-    Network.findOne({}).exec((err, netStatus) => {
-      if (err) console.error(err)
-      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-        netStatus.processedTxs[txHash] = true
-        netStatus.markModified('processedTxs')
-        User.findOne({account}).exec((err, user) => {
-          if (err) console.error(error)
-          user.reputationBalance -= stakeAmount
-          if (user !== null) {
-            Project.findOne({address: projectAddress}).exec((err, project) => {
-              if (err) console.error(error, 'Project not found')
-              Task.findOne({project: project.id, index: taskIndex}).exec((err, task) => {
-                if (err) console.error(error, 'Task not found')
-                if (task) {
-                  let vote = new Vote({
-                    _id: new mongoose.Types.ObjectId(),
-                    amount: stakeAmount,
-                    revealed: false,
-                    rescued: false,
-                    hash: secretHash,
-                    type: 'reputation',
-                    pollID,
-                    task: task.id,
-                    user: user.id
-                  })
-                  vote.save((err, saved) => {
-                    if (err) console.error(err)
-                    console.log('token vote saved')
-                  })
-                }
-              })
-            })
+              pollID: pollId,
+              task: task.id,
+              user: user.id
+            }).save()
           }
-          user.save(err => {
-            if (err) console.log(err)
-          })
-        })
-        netStatus.save(err => {
-          if (err) console.log(err)
-        })
+        }
+        await new ProcessedTxs({transactionHash, logIndex}).save()
       }
-    })
+    } catch (err) {
+      console.log(err)
+    }
   })
 
-  const reputationVoteRevealedFilter = web3.eth.filter({
-    fromBlock: 0,
-    toBlock: 'latest',
-    address: RR.ReputationRegistryAddress,
-    topics: [web3.sha3('LogReputationVoteRevealed(address,uint256,uint256,uint256,address)')]
-  })
-
-  reputationVoteRevealedFilter.watch(async (error, result) => {
-    if (error) console.error(error)
-    let txHash = result.transactionHash
-    let projectAddress = result.topics[1]
-    projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
-    let eventParamArr = result.data.slice(2).match(/.{1,64}/g)
-    let taskIndex = parseInt(eventParamArr[0], 16)
-    // let voteOption = parseInt(eventParamArr[1], 16)
-    // let salt = parseInt(eventParamArr[2], 16)
-    let account = eventParamArr[3]
-    account = '0x' + account.substr(-40)
-    Network.findOne({}).exec((err, netStatus) => {
-      if (err) console.error(err)
-      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-        netStatus.processedTxs[txHash] = true
-        netStatus.markModified('processedTxs')
-        User.findOne({account}).exec((err, user) => {
-          if (err) console.error(error)
-          if (user !== null) {
-            Project.findOne({address: projectAddress}).exec((err, project) => {
-              if (err) console.error(error)
-              if (project !== null) {
-                Task.findOne({project: project.id, index: taskIndex}).exec((err, task) => {
-                  if (err) console.error(error)
-                  if (task !== null) {
-                    Vote.findOne({task: task.id, user: user.id, type: 'reputation'}).exec((err, vote) => {
-                      if (err) console.error(error)
-                      if (vote !== null) {
-                        let changeIndex = _.findIndex(
-                          user.voteRecords,
-                          (vR) => vR.pollID === vote.pollID &&
-                          vR.task == task.id &&
-                          vR.voter == user.id &&
-                          vR.type === 'reputation'
-                        )
-                        let voteRecords = user.voteRecords
-                        let userVote = voteRecords[changeIndex]
-                        userVote.revealed = true
-                        voteRecords[changeIndex] = userVote
-                        user.voteRecords = voteRecords
-                        // user.markModified('voteRecords')
-                        user.save((err, saved) => {
-                          if (err) {
-                            console.error(err)
-                          } else {
-                            console.log('user vote record updated')
-                          }
-                        })
-                        vote.revealed = true
-                        vote.save((err, saved) => {
-                          if (err) console.error(err)
-                          console.log('token vote revealed')
-                        })
-                      }
-                    })
-                  }
-                })
+  ReputationRegistryContract.events.LogReputationVoteRevealed({from: netStatus.lastBlock}).on('data', async event => {
+    let transactionHash = event.transactionHash
+    let logIndex = event.logIndex
+    let projectAddress = event.returnValues.projectAddress
+    let index = event.returnValues.index
+    // let vote = event.returnValues.vote
+    // let salt = event.returnValues.salt
+    let voter = event.returnValues.voter
+    // let projectStaked = event.returnValues.projectStaked
+    try {
+      const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
+      if (!processedTx) {
+        const user = await User.findOne({account: voter})
+        if (!user) { console.error('User not successfully created or updated') }
+        const project = await Project.findOne({address: projectAddress})
+        if (!project) {
+          console.error('Project not created or updated')
+        } else {
+          const task = Task.findOne({project: project.id, index})
+          if (!task) {
+            console.error('Task not found')
+          } else {
+            const vote = await Vote.findOne({task: task.id, user: user.id, type: 'reputation'})
+            let changeIndex = _.findIndex(user.voteRecords, voteRecord => voteRecord.pollID === vote.pollID &&
+              voteRecord.task == task.id &&
+              voteRecord.voter == user.id &&
+              voteRecord.type === 'reputation')
+            let voteRecords = user.voteRecords
+            let userVote = voteRecords[changeIndex]
+            userVote.revealed = true
+            voteRecords[changeIndex] = userVote
+            user.voteRecords = voteRecords
+            user.save((err, saved) => {
+              if (err) {
+                console.error(err)
+              } else {
+                console.log('user vote record updated')
               }
             })
-          }
-        })
-        netStatus.save(err => {
-          if (err) console.log(err)
-        })
-      }
-    })
-  })
-
-  const reputationVoteRescuedFilter = web3.eth.filter({
-    fromBlock: 0,
-    toBlock: 'latest',
-    address: RR.ReputationRegistryAddress,
-    topics: [web3.sha3('LogReputationVoteRescued(address,uint256,uint256,address)')]
-  })
-
-  reputationVoteRescuedFilter.watch(async (error, result) => {
-    if (error) console.error(error)
-    let txHash = result.transactionHash
-    let projectAddress = result.topics[1]
-    projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
-    let eventParamArr = result.data.slice(2).match(/.{1,64}/g)
-    let taskIndex = parseInt(eventParamArr[0], 16)
-    // let pollId = parseInt(eventParamArr[1], 16)
-    let account = eventParamArr[2]
-    account = '0x' + account.substr(-40)
-    Network.findOne({}).exec((err, netStatus) => {
-      if (err) console.error(err)
-      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-        netStatus.processedTxs[txHash] = true
-        netStatus.markModified('processedTxs')
-        User.findOne({account}).exec((err, user) => {
-          if (err) console.error(error)
-          if (user !== null) {
-            Task.findOne({project: projectAddress, index: taskIndex}).exec((err, task) => {
-              if (err) console.error(error)
-              if (task !== null) {
-                Vote.findOne({task: task.id, user: user.id, type: 'reputation'}).exec((err, vote) => {
-                  if (err) console.error(error)
-                  if (vote !== null) {
-                    let changeIndex = _.findIndex(user.voteRecords, (vR) => vR.pollID === vote.pollID && vR.task == task.id && vR.voter == user.id && vR.type === 'tokens')
-                    let voteRecords = user.voteRecords
-                    let userVote = voteRecords[changeIndex]
-                    userVote.rescued = true
-                    voteRecords[changeIndex] = userVote
-                    user.voteRecords = voteRecords
-                    // user.markModified('voteRecords')
-                    user.save((err, saved) => {
-                      if (err) {
-                        console.error(err)
-                      } else {
-                        console.log('user vote record updated')
-                      }
-                    })
-                    vote.rescued = true
-                    vote.save((err, saved) => {
-                      if (err) console.error(err)
-                      console.log('rep vote rescued')
-                    })
-                  }
-                })
-              }
+            vote.revealed = true
+            vote.save((err, saved) => {
+              if (err) console.error(err)
+              console.log('token vote revealed')
             })
           }
-        })
-        netStatus.save(err => {
-          if (err) console.log(err)
-        })
+        }
+        await new ProcessedTxs({transactionHash, logIndex}).save()
       }
-    })
+    } catch (err) {
+      console.log(err)
+    }
+  })
+
+  ReputationRegistryContract.events.LogReputationVoteRescued({from: netStatus.lastBlock}).on('data', async event => {
+    let transactionHash = event.transactionHash
+    let logIndex = event.logIndex
+    let projectAddress = event.returnValues.projectAddress
+    let index = event.returnValues.index
+    let vote = event.returnValues.vote
+    let salt = event.returnValues.salt
+    let voter = event.returnValues.voter
+    // let projectStaked = event.returnValues.projectStaked
+    try {
+      const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
+      if (!processedTx) {
+        const user = await User.findOne({account: voter})
+        if (!user) { console.error('User not successfully created or updated') }
+        const project = await Project.findOne({address: projectAddress})
+        if (!project) {
+          console.error('Project not created or updated')
+        } else {
+          const task = Task.findOne({project: project.id, index})
+          if (!task) {
+            console.error('Task not found')
+          } else {
+            const vote = await Vote.findOne({task: task.id, user: user.id, type: 'reputation'})
+            let changeIndex = _.findIndex(user.voteRecords, voteRecord => voteRecord.pollID === vote.pollID &&
+              voteRecord.task == task.id &&
+              voteRecord.voter == user.id &&
+              voteRecord.type === 'reputation')
+            let voteRecords = user.voteRecords
+            let userVote = voteRecords[changeIndex]
+            userVote.rescued = true
+            voteRecords[changeIndex] = userVote
+            user.voteRecords = voteRecords
+            user.save((err, saved) => {
+              if (err) {
+                console.error(err)
+              } else {
+                console.log('user vote record updated')
+              }
+            })
+            vote.rescued = true
+            vote.save((err, saved) => {
+              if (err) console.error(err)
+              console.log('token vote revealed')
+            })
+          }
+        }
+        await new ProcessedTxs({transactionHash, logIndex}).save()
+      }
+    } catch (err) {
+      console.log(err)
+    }
   })
 }
