@@ -8,6 +8,7 @@ const { ApolloServer, gql } = require('apollo-server-express')
 const { ApolloEngine } = require('apollo-engine')
 require('./connections/mongo');
 
+const Network = require('./models/network')
 const hypLogs = require('./logs/hyphaToken')
 const rrLogs = require('./logs/reputationRegistry')
 const prLogs = require('./logs/projectRegistry')
@@ -50,6 +51,20 @@ const server = new ApolloServer({
 })
 server.applyMiddleware({ app })
 
+Network.findOne({}).exec((err, doc) => {
+  if (err) console.error(err)
+  if (!doc) {
+    let network = new Network({
+      totalTokens: 0,
+      totalReputation: 0,
+      weiBal: 0,
+      processedTxs: {_: true}
+    })
+    network.save((err) => {
+      assert.equal(err, null)
+    })
+  }
+})
 // fire logs --> network model initalized in dtLog ONLY
 hypLogs()
 //rrLogs()
@@ -57,7 +72,7 @@ hypLogs()
 //trLogs()
 //plLogs()
 
-const web3 = require('./connections/web3')
+
 engine.listen({
   port: app.get('port'),
   graphqlPaths: ['/api/graphql'],
@@ -68,6 +83,3 @@ engine.listen({
 }, () => {
   console.log('Listening!')
 })
-
-// console.log('this is web3', web3)
-// console.log(web3.eth.net.isListening)

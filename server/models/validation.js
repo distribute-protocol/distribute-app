@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 
 let validationSchema = mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
   amount: Number,
   state: Boolean,
   task: mongoose.Schema.Types.ObjectId,
