@@ -45,19 +45,21 @@ module.exports = function () {
     let projectAddress = event.returnValues.projectAddress
     let staker = event.returnValues.staker
     let reputationStaked = event.returnValues.reputation
-    // let projectStaked = event.returnValues.projectStaked
     try {
       const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
       if (!processedTx) {
-        const user = await User.findOneAndUpdate({account: staker}, {$inc: { reputationBalance: reputationStaked * (-1) }}, {upsert: true, setDefaultsOnInsert: true, new: true})
+        const user = await User.findOneAndUpdate(
+          {account: staker},
+          {$inc: { reputationBalance: reputationStaked * (-1) }},
+          {upsert: true, setDefaultsOnInsert: true, new: true}
+        )
         if (!user) { console.error('User not successfully created or updated') }
         const project = await Project.findOneAndUpdate({address: projectAddress}, {$inc: { reputationBalance: reputationStaked }})
-        if (!project) {
-          console.error('Project not created or updated')
-        } else {
-          await new Stake({amount: reputationStaked, projectId: project.id, type: 'reputation', user: user.id}).save()
-        }
+        if (!project) { console.error('Project not created or updated') }
+        await new Stake({amount: reputationStaked, projectId: project.id, type: 'reputation', user: user.id}).save()
         await new ProcessedTxs({transactionHash, logIndex}).save()
+        const network = await Network.findOneAndUpdate({}, { lastBlock: event.blockNumber }, {new: true})
+        if (!network) { console.error('No networking database') }
       }
     } catch (err) {
       console.log(err)
@@ -70,19 +72,17 @@ module.exports = function () {
     let projectAddress = event.returnValues.projectAddress
     let staker = event.returnValues.unstaker
     let reputationStaked = event.returnValues.reputation
-    // let projectStaked = event.returnValues.projectStaked
     try {
       const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
       if (!processedTx) {
         const user = await User.findOneAndUpdate({account: staker}, {$inc: { reputationBalance: reputationStaked }}, {upsert: true, setDefaultsOnInsert: true, new: true})
         if (!user) { console.error('User not successfully created or updated') }
         const project = await Project.findOneAndUpdate({address: projectAddress}, {$inc: { reputationBalance: reputationStaked * (-1) }})
-        if (!project) {
-          console.error('Project not created or updated')
-        } else {
-          await new Stake({amount: reputationStaked * (-1), projectId: project.id, type: 'reputation', user: user.id}).save()
-        }
+        if (!project) { console.error('Project not created or updated') }
+        await new Stake({amount: reputationStaked * (-1), projectId: project.id, type: 'reputation', user: user.id}).save()
         await new ProcessedTxs({transactionHash, logIndex}).save()
+        const network = await Network.findOneAndUpdate({}, { lastBlock: event.blockNumber }, {new: true})
+        if (!network) { console.error('No networking database') }
       }
     } catch (err) {
       console.log(err)
@@ -98,33 +98,31 @@ module.exports = function () {
     let secretHash = event.returnValues.secretHash
     let pollId = event.returnValues.pollId
     let voter = event.returnValues.voter
-    // let projectStaked = event.returnValues.projectStaked
     try {
       const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
       if (!processedTx) {
         const user = await User.findOneAndUpdate({account: voter}, {$inc: { reputationBalance: votes * (-1) }}, {upsert: true, setDefaultsOnInsert: true, new: true})
         if (!user) { console.error('User not successfully created or updated') }
-        const project = await Project.findOneAndUpdate({address: projectAddress}, {$inc: { reputationBalance: votes * (-1) }})
-        if (!project) {
-          console.error('Project not created or updated')
-        } else {
-          const task = Task.findOne({project: project.id, index})
-          if (!task) {
-            console.error('Task not found')
-          } else {
-            await new Vote({
-              amount: votes,
-              revealed: false,
-              rescued: false,
-              hash: secretHash,
-              type: 'reputation',
-              pollID: pollId,
-              task: task.id,
-              user: user.id
-            }).save()
-          }
-        }
+        const project = await Project.findOne({address: projectAddress})
+        if (!project) { console.error('Project not found') }
+        const task = Task.findOne({project: project.id, index})
+        if (!task) { console.error('Task not found') }
+        const vote = await Vote.findOneAndUpdate({
+          amount: votes,
+          pollID: pollId,
+          project: project.id,
+          revealed: false,
+          rescued: false,
+          task: task.id,
+          type: 'reputation',
+          voter: user.id
+        }, { $set: {
+          hash: secretHash
+        }}, {upsert: true})
+        if (!vote) console.error('vote not added successfully')
         await new ProcessedTxs({transactionHash, logIndex}).save()
+        const network = await Network.findOneAndUpdate({}, { lastBlock: event.blockNumber }, {new: true})
+        if (!network) { console.error('No networking database') }
       }
     } catch (err) {
       console.log(err)
@@ -136,48 +134,29 @@ module.exports = function () {
     let logIndex = event.logIndex
     let projectAddress = event.returnValues.projectAddress
     let index = event.returnValues.index
-    // let vote = event.returnValues.vote
-    // let salt = event.returnValues.salt
+    let voteChoice = event.returnValues.vote
+    let salt = event.returnValues.salt
     let voter = event.returnValues.voter
-    // let projectStaked = event.returnValues.projectStaked
     try {
       const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
       if (!processedTx) {
         const user = await User.findOne({account: voter})
         if (!user) { console.error('User not successfully created or updated') }
         const project = await Project.findOne({address: projectAddress})
-        if (!project) {
-          console.error('Project not created or updated')
-        } else {
-          const task = Task.findOne({project: project.id, index})
-          if (!task) {
-            console.error('Task not found')
-          } else {
-            const vote = await Vote.findOne({task: task.id, user: user.id, type: 'reputation'})
-            let changeIndex = _.findIndex(user.voteRecords, voteRecord => voteRecord.pollID === vote.pollID &&
-              voteRecord.task == task.id &&
-              voteRecord.voter == user.id &&
-              voteRecord.type === 'reputation')
-            let voteRecords = user.voteRecords
-            let userVote = voteRecords[changeIndex]
-            userVote.revealed = true
-            voteRecords[changeIndex] = userVote
-            user.voteRecords = voteRecords
-            user.save((err, saved) => {
-              if (err) {
-                console.error(err)
-              } else {
-                console.log('user vote record updated')
-              }
-            })
-            vote.revealed = true
-            vote.save((err, saved) => {
-              if (err) console.error(err)
-              console.log('token vote revealed')
-            })
-          }
-        }
+        if (!project) { console.error('Project not found') }
+        const task = Task.findOne({project: project.id, index})
+        if (!task) { console.error('Task not found') }
+        const vote = await Vote.findOneAndUpdate({
+          vote: voteChoice,
+          salt: salt,
+          task: task.id,
+          type: 'reputation',
+          voter: user.id
+        }, {$set: {revealed: true}})
+        if (!vote) console.error('vote not added successfully')
         await new ProcessedTxs({transactionHash, logIndex}).save()
+        const network = await Network.findOneAndUpdate({}, { lastBlock: event.blockNumber }, {new: true})
+        if (!network) { console.error('No networking database') }
       }
     } catch (err) {
       console.log(err)
@@ -188,49 +167,29 @@ module.exports = function () {
     let transactionHash = event.transactionHash
     let logIndex = event.logIndex
     let projectAddress = event.returnValues.projectAddress
-    let index = event.returnValues.index
-    let vote = event.returnValues.vote
-    let salt = event.returnValues.salt
+    let pollIndex = event.returnValues.index
+    let pollID = event.returnValues.pollId
     let voter = event.returnValues.voter
-    // let projectStaked = event.returnValues.projectStaked
     try {
       const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
       if (!processedTx) {
         const user = await User.findOne({account: voter})
         if (!user) { console.error('User not successfully created or updated') }
         const project = await Project.findOne({address: projectAddress})
-        if (!project) {
-          console.error('Project not created or updated')
-        } else {
-          const task = Task.findOne({project: project.id, index})
-          if (!task) {
-            console.error('Task not found')
-          } else {
-            const vote = await Vote.findOne({task: task.id, user: user.id, type: 'reputation'})
-            let changeIndex = _.findIndex(user.voteRecords, voteRecord => voteRecord.pollID === vote.pollID &&
-              voteRecord.task == task.id &&
-              voteRecord.voter == user.id &&
-              voteRecord.type === 'reputation')
-            let voteRecords = user.voteRecords
-            let userVote = voteRecords[changeIndex]
-            userVote.rescued = true
-            voteRecords[changeIndex] = userVote
-            user.voteRecords = voteRecords
-            user.save((err, saved) => {
-              if (err) {
-                console.error(err)
-              } else {
-                console.log('user vote record updated')
-              }
-            })
-            vote.rescued = true
-            vote.save((err, saved) => {
-              if (err) console.error(err)
-              console.log('token vote revealed')
-            })
-          }
-        }
+        if (!project) { console.error('Project not found') }
+        const task = Task.findOne({project: project.id, index: pollID})
+        if (!task) { console.error('Task not found') }
+        const vote = await Vote.findOneAndUpdate({
+          index: pollIndex,
+          task: task.id,
+          type: 'reputation',
+          voter: user.id,
+          pollId: pollID
+        }, {$set: {rescued: true}})
+        if (!vote) console.error('vote not updated successfully')
         await new ProcessedTxs({transactionHash, logIndex}).save()
+        const network = await Network.findOneAndUpdate({}, { lastBlock: event.blockNumber }, {new: true})
+        if (!network) { console.error('No networking database') }
       }
     } catch (err) {
       console.log(err)

@@ -1,22 +1,18 @@
 const Network = require('../models/network')
 const assert = require('assert')
 
-let network
 
-Network.findOne({}).exec((err, doc) => {
-  if (err) console.error(err)
-  if (!doc) {
-    let network = new Network({
-      totalTokens: 0,
-      totalReputation: 0,
-      weiBal: 0,
-      processedTxs: {_: true}
-    })
-    network.save((err, doc) => {
-      assert.equal(err, null)
-      network = doc
-    })
+
+let networkInit = async function () {
+  try {
+    
+    let network = await Network.findOneAndUpdate({}, {$set: {totalTokens: 0, totalReputation: 0, weiBal: 0, lastBlock: 0}}, {upsert: true, new: true})
+    if (!network) console.error('network not initiated')
+    return network
+  } catch (err) {
+    console.error(err)
   }
-})
+}
+let network = networkInit()
 
 module.exports = network
