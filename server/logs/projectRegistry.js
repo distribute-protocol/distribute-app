@@ -1,6 +1,6 @@
 const web3 = require('../connections/web3')
-const PR = require('../abi/ProjectRegistry')
-const mongoose = require('mongoose')
+const { ProjectRegistryABI, ProjectRegistryAddress } = require('../abi/ProjectRegistry')
+const { ProjectABI } = require('../abi/Project')
 const Project = require('../models/project')
 const PrelimTaskList = require('../models/prelimTaskList')
 const User = require('../models/user')
@@ -9,585 +9,327 @@ const Network = require('../models/network')
 const ipfs = require('../utilities/ipfs-api')
 const { TextDecoder } = require('text-encoding')
 const { hashTasks } = require('../utilities/hashing')
+const ProcessedTxs = require('../models/processedTxs')
+const netStatus = require('./network')
 
 module.exports = function () {
-  // filter for project created events
-  const projectCreatedFilter = web3.eth.filter({
-    fromBlock: 0,
-    toBlock: 'latest',
-    address: PR.ProjectRegistryAddress,
-    topics: [web3.sha3('LogProjectCreated(address,uint256)')]
-  })
-  let projectAddress
-  let txHash
-  projectCreatedFilter.watch(async (error, result) => {
-    if (error) console.error(error)
-    txHash = result.transactionHash
-    let eventParamArr = result.data.slice(2).match(/.{1,64}/g)
-    let proposerCost = parseInt(eventParamArr[0], 16)
-    projectAddress = result.topics[1]
-    projectAddress = '0x' + projectAddress.slice(projectAddress.length - 40, projectAddress.length)
-    const projectDetailsFilter = web3.eth.filter({
-      fromBlock: 0,
-      toBlock: 'latest',
-      address: projectAddress,
-      topics: [web3.sha3('LogProjectDetails(uint256,uint256,uint256,uint256,address,uint256,bytes,uint256,uint256,uint256,uint256,uint256,uint256,uint256)')]
-    })
-    projectDetailsFilter.watch(async (error, result) => {
-      if (error) console.error(error)
-      txHash = result.transactionHash
-      eventParamArr = result.data.slice(2).match(/.{1,64}/g)
-      let weiCost = parseInt(eventParamArr[0], 16)
-      let reputationCost = parseInt(eventParamArr[1], 16)
-      let state = parseInt(eventParamArr[2], 16)
-      let nextDeadline = parseInt(eventParamArr[3], 16) * 1000
-      let proposer = '0x' + eventParamArr[4].slice(eventParamArr[4].length - 40, eventParamArr[4].length)
-      let proposerType = parseInt(eventParamArr[5], 16)
-      let ipfsHash = web3.toAscii('0x' + eventParamArr[15] + eventParamArr[16].slice(0, 28))
-      let stakedStatePeriod = parseInt(eventParamArr[7], 16) * 1000
-      let activeStatePeriod = parseInt(eventParamArr[8], 16) * 1000
-      let turnoverTime = parseInt(eventParamArr[9], 16)
-      let validateStatePeriod = parseInt(eventParamArr[10], 16) * 1000
-      let voteCommitPeriod = parseInt(eventParamArr[11], 16) * 1000
-      let voteRevealPeriod = parseInt(eventParamArr[12], 16) * 1000
-      let passThreshold = parseInt(eventParamArr[13], 16)
-      ipfs.object.get(ipfsHash, {enc: 'base64'}, (err, node) => {
-        if (err) {
-          throw err
-        }
-        let dataObj = JSON.parse(new TextDecoder('utf-8').decode(node.toJSON().data))
-        Network.findOne({}).exec((err, netStatus) => {
-          if (err) console.error(err)
-          if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-            netStatus.processedTxs[txHash] = true
-            netStatus.markModified('processedTxs')
-            netStatus.save((err, returned) => {
-              if (err) throw Error
-            })
-            User.findOne({account: proposer}).exec((error, user) => {
-              if (error) console.error(err)
-              if (user !== null) {
-                proposerType === 1
-                  ? user.tokenBalance -= proposerCost
-                  : user.reputationBalance -= proposerCost
-                user.save((err, returned) => {
-                  if (err) throw Error
-                })
-              }
-            })
-            Project.findOne({address: projectAddress}).exec((error, doc) => {
-              if (error) console.error(error)
-              if (!doc) {
-                doc = new Project({
-                  _id: new mongoose.Types.ObjectId(),
-                  activeStatePeriod,
-                  address: projectAddress,
-                  ipfsHash,
-                  listSubmitted: false,
-                  location: dataObj.location,
-                  name: dataObj.name,
-                  nextDeadline,
-                  passThreshold,
-                  photo: dataObj.photo,
-                  prelimTaskLists: [],
-                  proposer,
-                  proposerType,
-                  proposerRewarded: false,
-                  reputationBalance: 0,
-                  reputationCost,
-                  stakedStatePeriod,
-                  state,
-                  summary: dataObj.summary,
-                  taskList: [],
-                  turnoverTime,
-                  tokenBalance: 0,
-                  validateStatePeriod,
-                  voteCommitPeriod,
-                  voteRevealPeriod,
-                  weiBal: 0,
-                  weiCost
-                })
-                doc.save(error => {
-                  if (error) console.error(error)
-                  console.log('project details updated')
-                  projectDetailsFilter.stopWatching()
-                })
-              }
+  const ProjectRegistryContract = new web3.eth.Contract(ProjectRegistryABI, ProjectRegistryAddress)
+
+  // filter for created projects
+  ProjectRegistryContract.events.LogProjectCreated({fromBlock: netStatus.lastBlock}).on('data', async event => {
+    let transactionHash1 = event.transactionHash
+    let logIndex1 = event.logIndex
+    const processedTx1 = await ProcessedTxs.findOne({transactionHash1, logIndex1})
+    if (!processedTx1) {
+      let projectAddress = event.returnValues.projectAddress
+      let proposerCost = event.returnValues.proposerCost
+      const ProjectContract = await new web3.eth.Contract(ProjectABI, projectAddress)
+      ProjectContract.once('LogProjectDetails', {fromBlock: netStatus.lastBlock - 1}, async (err, event2) => {
+        if (err) { console.error('Error in project creation'); return }
+        let transactionHash2 = event2.transactionHash
+        let logIndex2 = event2.transactionHash
+        try {
+          const processedTx2 = await ProcessedTxs.findOne({transactionHash2, logIndex2})
+          if (!processedTx2) {
+            let {
+              weiCost,
+              reputationCost,
+              state,
+              nextDeadline,
+              proposer,
+              proposerType,
+              ipfsHash,
+              turnoverTime,
+              passThreshold
+            } = event2.returnValues
+            let stakedStatePeriod = event2.returnValues.stakedStatePeriod * 1000
+            let activeStatePeriod = event2.returnValues.activeStatePeriod * 1000
+            let validateStatePeriod = event2.returnValues.validateStatePeriod * 1000
+            let voteCommitPeriod = event2.returnValues.voteCommitPeriod * 1000
+            let voteRevealPeriod = event2.returnValues.voteRevealPeriod * 1000
+            ipfs.object.get(ipfsHash, {enc: 'base64'}, async (err, node) => {
+              if (err) { console.error('ipfs failed to be retrieved'); throw err }
+              let dataObj = JSON.parse(new TextDecoder('utf-8').decode(node.toJSON().data))
+              let updateField = proposerType === 1 ? 'tokenBalance' : 'reputationBalance'
+              const user = await User.findOneAndUpdate({account: proposer}, {$set: {[updateField]: proposerCost * (-1)}}, {new: true})
+              if (!user) console.error('user not found')
+              const project = await Project.findOneAndUpdate({address: projectAddress}, {$set: {
+                activeStatePeriod,
+                ipfsHash,
+                listSubmitted: false,
+                location: dataObj.location,
+                name: dataObj.name,
+                nextDeadline,
+                passThreshold,
+                photo: dataObj.photo,
+                prelimTaskLists: [],
+                proposer,
+                proposerType,
+                proposerRewarded: false,
+                reputationBalance: 0,
+                reputationCost,
+                stakedStatePeriod,
+                state,
+                summary: dataObj.summary,
+                taskList: [],
+                turnoverTime,
+                tokenBalance: 0,
+                validateStatePeriod,
+                voteCommitPeriod,
+                voteRevealPeriod,
+                weiBal: 0,
+                weiCost
+              }}, {upsert: true, new: true})
+              if (!project) console.error('unable to update or create project')
+              const network = await Network.findOneAndUpdate({}, {lastBlock: event.blockNumber}, {new: true})
+              if (!network) { console.error('No networking database') }
+              await new ProcessedTxs({transactionHash1, logIndex1}).save()
+              await new ProcessedTxs({transactionHash2, logIndex2}).save()
             })
           }
-        })
+        // let ipfsHash = web3.toAscii('0x' + eventParamArr[15] + eventParamArr[16].slice(0, 28))
+        } catch (err) {
+          console.err('Error in database connection')
+        }
       })
-    })
+    }
   })
+
   // filter for fully staked projects
-  const projectFullyStakedFilter = web3.eth.filter({
-    fromBlock: 0,
-    toBlock: 'latest',
-    address: PR.ProjectRegistryAddress,
-    topics: [web3.sha3('LogProjectFullyStaked(address,bool)')]
-  })
-  projectFullyStakedFilter.watch(async (err, result) => {
-    if (err) console.error(err)
-    // let txHash = result.transactionHash
-    let eventParams = result.data
-    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
-    let projectAddress = eventParamArr[0]
-    projectAddress = '0x' + projectAddress.substr(-40)
-    let flag = eventParamArr[1]
-    // Network.findOne({}).exec((err, netStatus) => {
-    //   if (err) console.error(err)
-    //   if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-    //     netStatus.processedTxs[txHash] = true
-    //     netStatus.markModified('processedTxs')
-        if (parseInt(flag) === 1) {
-          Project.findOne({address: projectAddress}).exec((error, doc) => {
-            if (error) console.error(error)
-            if (doc !== null) {
-              if (doc.state === 1) {
-                doc.state = 2
-              }
-              doc.save(err => {
-                if (err) console.error(error)
-                console.log('project fully staked')
-              })
-            }
-          })
+  ProjectRegistryContract.events.LogProjectFullyStaked({fromBlock: netStatus.lastBlock}).on('data', async event => {
+    let transactionHash = event.transactionHash
+    let logIndex = event.logIndex
+    const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
+    if (!processedTx) {
+      let projectAddress = event.returnValues.projectAddress
+      let stakedStatus = event.returnValues.stakedStatus
+      try {
+        if (parseInt(stakedStatus) === 1) {
+          const project = await Project.findOneAndUpdate({address: projectAddress, state: 1}, {state: 2}, {new: true})
+          if (!project) console.error('project not updated to staked state')
         }
-    //     netStatus.save((err, returned) => {
-    //       if (err) throw Error
-    //     })
-    //   }
-    // })
+        await new ProcessedTxs({transactionHash, logIndex}).save()
+        const network = await Network.findOneAndUpdate({}, { lastBlock: event.blockNumber }, {new: true})
+        if (!network) { console.error('No networking database') }
+      } catch (err) {
+        console.log(err)
+      }
+    }
   })
+
   // filter for task hash submissions
-  const taskHashSubmittedFilter = web3.eth.filter({
-    fromBlock: 0,
-    toBlock: 'latest',
-    address: PR.ProjectRegistryAddress,
-    topics: [web3.sha3('LogTaskHashSubmitted(address,bytes32,address,uint256)')]
-  })
-  taskHashSubmittedFilter.watch(async (err, result) => {
-    if (err) console.error(err)
-    let txHash = result.transactionHash
-    let eventParams = result.data
-    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
-    let projectAddress = '0x' + eventParamArr[0].substr(-40)
-    let taskHash = '0x' + eventParamArr[1]
-    let submitter = '0x' + eventParamArr[2].substr(-40)
-    let weighting = parseInt(eventParamArr[3], 16) / (10 ** 15)
-    Network.findOne({}).exec((err, netStatus) => {
-      if (err) console.error(err)
-      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-        netStatus.processedTxs[txHash] = true
-        netStatus.markModified('processedTxs')
-        netStatus.save((err, returned) => {
-          if (err) throw Error
-        })
-        Project.findOne({address: projectAddress}).exec((error, doc) => {
-          if (error) console.error(error)
-          PrelimTaskList.findOne({submitter: submitter, address: projectAddress}).exec((error, prelimTaskList) => {
-            if (error) console.error(error)
-            if (prelimTaskList !== null && prelimTaskList.hash === taskHash) {
-              prelimTaskList.verified = true
-              prelimTaskList.weighting = '' + weighting
-              prelimTaskList.save(error => {
-                if (error) console.error(error)
-                console.log('prelim task list submitted')
-              })
-            }
-          })
-        })
+  ProjectRegistryContract.events.LogTaskHashSubmitted({fromBlock: netStatus.lastBlock}).on('data', async event => {
+    let transactionHash = event.transactionHash
+    let logIndex = event.logIndex
+    const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
+    if (!processedTx) {
+      let { projectAddress, taskHash, submitter, weighting } = event.returnValues
+      try {
+        const prelimTaskList = await PrelimTaskList.findOneAndUpdate({submitter, address: projectAddress, hash: taskHash}, {$set: {
+          verified: true,
+          weighting: '' + weighting
+        }}, {upsert: true, new: true})
+        if (!prelimTaskList) console.error('Failed to update prelimTaskList')
+        await new ProcessedTxs({transactionHash, logIndex}).save()
+        const network = await Network.findOneAndUpdate({}, { lastBlock: event.blockNumber }, {new: true})
+        if (!network) { console.error('No networking database') }
+      } catch (err) {
+        console.log(err)
       }
-    })
+    }
   })
-  const rewardProposerFilter = web3.eth.filter({
-    fromBlock: 0,
-    toBlock: 'latest',
-    address: PR.ProjectRegistryAddress,
-    topics: [web3.sha3('LogRefundProposer(address,uint256,address,uint256,uint256)')]
-  })
-  rewardProposerFilter.watch(async (err, result) => {
-    if (err) console.error(err)
-    let txHash = result.transactionHash
-    let eventParams = result.data
-    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
-    let projectAddress = '0x' + eventParamArr[0].substr(-40)
-    let isTokenRegistry = parseInt(eventParamArr[1], 16)
-    let proposer = '0x' + eventParamArr[2].substr(-40)
-    // proposed stake is in tokens or rep
-    let proposedCost = parseInt(eventParamArr[3], 16)
-    let proposedStake = parseInt(eventParamArr[4], 16)
-    let reward = Math.floor(proposedCost / 20)
-    Network.findOne({}).exec((err, netStatus) => {
-      if (err) console.error(err)
-      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-        netStatus.processedTxs[txHash] = true
-        netStatus.markModified('processedTxs')
-        User.findOne({account: proposer}).exec((err, user) => {
-          if (err) console.error(err)
-          if (user !== null) {
-            user.weiBalance += reward
-            isTokenRegistry === 1
-              ? user.tokenBalance += proposedStake
-              : user.reputationBalance += proposedStake
-            user.save(err => {
-              if (err) console.error(err)
-              console.log('added proposer reward to user wei balance & returned tokens/rep')
-            })
-          }
-        })
-        Project.findOne({address: projectAddress}).exec((err, project) => {
-          if (err) console.error(err)
-          if (project !== null) {
-            project.proposerRewarded = true
-            project.save(err => {
-              if (err) console.error(err)
-              console.log('proposerRewarded set to true')
-            })
-          }
-        })
+
+  // filter for refund proposer
+  ProjectRegistryContract.events.LogRefundProposer({fromBlock: netStatus.lastBlock}).on('data', async event => {
+    let transactionHash = event.transactionHash
+    let logIndex = event.logIndex
+    const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
+    if (!processedTx) {
+      let { projectAddress, contractCaller, proposer, proposedCost, proposedStake } = event.returnValues
+      let reward = Math.floor(proposedCost / 20)
+      try {
+        const updateField = contractCaller === 1 ? 'tokenBalance' : 'reputationBalance'
+        const user = User.findOneAndUpdate({account: proposer}, {$inc: {weiBalance: reward, [updateField]: proposedStake}}, {new: true})
+        if (!user) console.error('User not updated correctly in log refund')
+        const project = Project.findOneAndUpdate({address: projectAddress}, {$set: {proposerRewarded: true}}, {new: true})
+        if (!project) console.error('Project not updated correctly in log refund')
+        await new ProcessedTxs({transactionHash, logIndex}).save()
+        const network = await Network.findOneAndUpdate({}, { lastBlock: event.blockNumber }, {new: true})
+        if (!network) { console.error('No networking database') }
+      } catch (err) {
+        console.log(err)
       }
-    })
+    }
   })
 
   // filter for active projects
-  const projectActiveFilter = web3.eth.filter({
-    fromBlock: 0,
-    toBlock: 'latest',
-    address: PR.ProjectRegistryAddress,
-    topics: [web3.sha3('LogProjectActive(address,bytes32,bool)')]
-  })
-  projectActiveFilter.watch(async (err, result) => {
-    if (err) console.error(err)
-    let txHash = result.transactionHash
-    let eventParams = result.data
-    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
-    let projectAddress = eventParamArr[0]
-    projectAddress = '0x' + projectAddress.substr(-40)
-    let topTaskHash = '0x' + eventParamArr[1]
-    let flag = eventParamArr[2]
-    Network.findOne({}).exec((err, netStatus) => {
-      if (err) console.error(err)
-      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-        netStatus.processedTxs[txHash] = true
-        netStatus.markModified('processedTxs')
-        if (flag === '0000000000000000000000000000000000000000000000000000000000000001') {
-          PrelimTaskList.findOne({address: projectAddress, hash: topTaskHash}).exec((error, prelimTaskList) => {
-            if (error) console.error(error)
-            if (prelimTaskList !== null) {
-              Project.findOne({address: projectAddress}).exec((error, project) => {
-                if (error) console.error(error)
-                if (project) {
-                  project.state = 3
-                  project.topTaskHash = topTaskHash
-                  project.taskList = prelimTaskList.content
-                  project.save(err => {
-                    if (err) console.error(error)
-                    console.log('active project with topTaskHash')
-                  })
-                }
-              })
-            }
-          })
+  ProjectRegistryContract.events.LogProjectActive({fromBlock: netStatus.lastBlock}).on('data', async event => {
+    let transactionHash = event.transactionHash
+    let logIndex = event.logIndex
+    const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
+    if (!processedTx) {
+      let { projectAddress, topTaskHash, activeFlag } = event.returnValues
+      try {
+        if (activeFlag === '0000000000000000000000000000000000000000000000000000000000000001') {
+          const prelimTaskList = await PrelimTaskList.findOne({address: projectAddress, hash: topTaskHash})
+          if (!prelimTaskList) console.error('prelimTaskList not found in logprojectactive')
+          const project = await Project.findOneAndUpdate({address: projectAddress}, {$set: {state: 3, topTaskHash, taskList: prelimTaskList.content}}, {new: true})
+          if (!project) console.error('project not updated in log project active')
         }
-        netStatus.save((err, returned) => {
-          if (err) throw Error
-        })
+        await new ProcessedTxs({transactionHash, logIndex}).save()
+        const network = await Network.findOneAndUpdate({}, { lastBlock: event.blockNumber }, {new: true})
+        if (!network) { console.error('No networking database') }
+      } catch (err) {
+        console.log(err)
       }
-    })
-  })
-  //  filter for final tasks submitted
-  const finalTasksFilter = web3.eth.filter({
-    fromBlock: 0,
-    toBlock: 'latest',
-    address: PR.ProjectRegistryAddress,
-    topics: [web3.sha3('LogFinalTaskCreated(address,address,bytes32,uint256)')]
-  })
-  finalTasksFilter.watch(async (err, result) => {
-    if (err) console.error(err)
-    let txHash = result.transactionHash
-    let eventParams = result.data
-    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
-    let taskAddress = eventParamArr[0]
-    taskAddress = '0x' + taskAddress.substr(-40)
-    let projectAddress = eventParamArr[1]
-    projectAddress = '0x' + projectAddress.substr(-40)
-    let individualTaskHash = '0x' + eventParamArr[2]
-    let index = parseInt(eventParamArr[3], 16)
-    Network.findOne({}).exec((err, netStatus) => {
-      if (err) console.error(err)
-      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-        netStatus.processedTxs[txHash] = true
-        netStatus.markModified('processedTxs')
-        netStatus.save((err, returned) => {
-          if (err) throw Error
-        })
-        Task.findOne({address: taskAddress}).exec((error, task) => {
-          if (error) console.error(error)
-          if (!task) {
-            Project.findOne({address: projectAddress}).exec((error, doc) => {
-              if (error) console.error(error)
-              if (doc) {
-                let taskListArr = JSON.parse(doc.taskList)
-                let taskContent = [taskListArr[index]]
-                let taskHash = hashTasks(taskContent)
-                doc.listSubmitted = true
-                if (individualTaskHash === taskHash[0]) {
-                  let finalTask = new Task({
-                    _id: new mongoose.Types.ObjectId(),
-                    address: taskAddress,
-                    pollNonce: null,
-                    project: doc.id,
-                    claimed: false,
-                    complete: false,
-                    description: taskContent[0].description,
-                    index,
-                    state: true,
-                    validations: [],
-                    validationRewardClaimable: false,
-                    weighting: taskContent[0].percentage,
-                    workerRewardClaimable: false,
-                    workerRewarded: false
-                  })
-                  finalTask.save(err => {
-                    if (err) console.error(error)
-                    console.log('final tasks created')
-                  })
-                  doc.save(err => {
-                    if (err) console.error(error)
-                    console.log('list submitted')
-                  })
-                } else {
-                  console.log('task hashes do not match')
-                }
-              }
-            })
-          }
-        })
-      }
-    })
-  })
-  // filter for claiming task
-  const taskClaimedFilter = web3.eth.filter({
-    fromBlock: 0,
-    toBlock: 'latest',
-    address: PR.ProjectRegistryAddress,
-    topics: [web3.sha3('LogTaskClaimed(address,uint256,uint256,address)')]
-  })
-  taskClaimedFilter.watch(async (err, result) => {
-    if (err) console.error(err)
-    let txHash = result.transactionHash
-    let eventParams = result.data
-    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
-    let projectAddress = eventParamArr[0]
-    projectAddress = '0x' + projectAddress.substr(-40)
-    let index = parseInt(eventParamArr[1], 16)
-    let reputationVal = parseInt(eventParamArr[2], 16)
-    let claimer = eventParamArr[3]
-    claimer = '0x' + claimer.substr(-40)
-    Network.findOne({}).exec((err, netStatus) => {
-      if (err) console.error(err)
-      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-        netStatus.processedTxs[txHash] = true
-        netStatus.markModified('processedTxs')
-        netStatus.save((err, returned) => {
-          if (err) throw Error
-        })
-        User.findOne({account: claimer}).exec((error, user) => {
-          if (error) console.error(error)
-          if (user) {
-            user.reputationBalance -= reputationVal
-          }
-          if (user) {
-            Project.findOne({address: projectAddress}).exec((error, doc) => {
-              if (error) console.error(error)
-              if (doc) {
-                Task.findOne({project: doc.id, index: index}).exec((error, task) => {
-                  if (error) console.error(error)
-                  task.claimed = true
-                  task.claimer = user.id
-                  // task.claimedAt
-                  user.tasks.push(task.id)
-                  task.save(err => {
-                    if (err) console.error(err)
-                  })
-                })
-                doc.save(err => {
-                  if (err) console.error(error)
-                  console.log('doc saved')
-                })
-              }
-              user.save(err => {
-                if (err) console.error(error)
-                console.log('claimer saved')
-              })
-            })
-          }
-        })
-      }
-    })
-  })
-  // filter for task submitted complete
-  const submitTaskCompleteFilter = web3.eth.filter({
-    fromBlock: 0,
-    toBlock: 'latest',
-    address: PR.ProjectRegistryAddress,
-    topics: [web3.sha3('LogSubmitTaskComplete(address,uint256,uint256)')]
-  })
-  submitTaskCompleteFilter.watch(async (err, result) => {
-    if (err) console.error(err)
-    let txHash = result.transactionHash
-    let eventParams = result.data
-    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
-    let projectAddress = eventParamArr[0]
-    projectAddress = '0x' + projectAddress.substr(-40)
-    let index = parseInt(eventParamArr[1], 16)
-    let validationFee = parseInt(eventParamArr[2], 16)
-    Network.findOne({}).exec((err, netStatus) => {
-      if (err) console.error(err)
-      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-        netStatus.processedTxs[txHash] = true
-        netStatus.markModified('processedTxs')
-        netStatus.save((err, returned) => {
-          if (err) throw Error
-        })
-        Project.findOne({address: projectAddress}).exec((error, doc) => {
-          if (error) console.error(error)
-          if (doc) {
-            Task.findOne({project: doc.id, index: index}).exec((error, task) => {
-              if (error) console.error(error)
-              task.complete = true
-              task.validationFee = validationFee
-              task.save(err => {
-                if (err) console.error(err)
-                console.log('task submitted complete')
-              })
-            })
-          }
-        })
-      }
-    })
-  })
-  // filter for project tasks ready to be validated
-  const projectValidateFilter = web3.eth.filter({
-    fromBlock: 0,
-    toBlock: 'latest',
-    address: PR.ProjectRegistryAddress,
-    topics: [web3.sha3('LogProjectValidate(address,bool)')]
-  })
-  projectValidateFilter.watch(async (err, result) => {
-    if (err) console.error(err)
-    let eventParams = result.data
-    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
-    let projectAddress = eventParamArr[0]
-    projectAddress = '0x' + projectAddress.substr(-40)
-    let flag = eventParamArr[1]
-    Network.findOne({}).exec((err, netStatus) => {
-      if (err) console.error(err)
-      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-        netStatus.processedTxs[txHash] = true
-        netStatus.markModified('processedTxs')
-      }
-      if (parseInt(flag) === 1) {
-        Project.findOne({address: projectAddress}).exec((error, project) => {
-          if (error) console.error(error)
-          if (project && project.state === 3) {
-            project.state = 4
-            project.save(err => {
-              if (err) console.error(error)
-              console.log('validate project')
-            })
-          }
-        })
-      }
-      netStatus.save((err, returned) => {
-        if (err) throw Error
-      })
-    })
-  })
-  // filter for project tasks ready to be voted on
-  const projectVoteFilter = web3.eth.filter({
-    fromBlock: 0,
-    toBlock: 'latest',
-    address: PR.ProjectRegistryAddress,
-    topics: [web3.sha3('LogProjectVoting(address,bool)')]
-  })
-  projectVoteFilter.watch(async (err, result) => {
-    if (err) console.error(err)
-    let eventParams = result.data
-    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
-    let projectAddress = eventParamArr[0]
-    projectAddress = '0x' + projectAddress.substr(-40)
-    let flag = parseInt(eventParamArr[1])
-    Network.findOne({}).exec((err, netStatus) => {
-      if (err) console.error(err)
-      if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-        netStatus.processedTxs[txHash] = true
-        netStatus.markModified('processedTxs')
-        if (flag === 1) {
-          Project.findOne({address: projectAddress}).exec((error, project) => {
-            if (error) console.error(error)
-            if (project.state === 4) {
-              project.state = 5
-              project.save(err => {
-                if (err) console.error(error)
-                console.log('move to stage voting')
-              })
-            }
-          })
-        }
-        netStatus.save((err, returned) => {
-          if (err) throw Error
-        })
-      }
-    })
-  })
-  // filter for project ended
-  const projectEndFilter = web3.eth.filter({
-    fromBlock: 0,
-    toBlock: 'latest',
-    address: PR.ProjectRegistryAddress,
-    topics: [web3.sha3('LogProjectEnd(address,uint256)')]
+    }
   })
 
-  projectEndFilter.watch(async (err, result) => {
-    if (err) console.error(err)
-    let eventParams = result.data
-    let eventParamArr = eventParams.slice(2).match(/.{1,64}/g)
-    let projectAddress = eventParamArr[0]
-    projectAddress = '0x' + projectAddress.substr(-40)
-    let flag = parseInt(eventParamArr[1])
-    // Network.findOne({}).exec((err, netStatus) => {
-    //   if (err) console.error(err)
-    //   if (typeof netStatus.processedTxs[txHash] === 'undefined') {
-    //     netStatus.processedTxs[txHash] = true
-    //     netStatus.markModified('processedTxs')
-      if (parseInt(flag) === 1 || parseInt(flag) === 2) {
-        Project.findOne({address: projectAddress}).exec((error, project) => {
-          if (error) console.error(error)
-          if (project) {
-            flag < 2 ? project.state = 6 : project.state = 7
-            Task.find({project: project.id}).exec((error, tasks) => {
-              if (error) console.error(error)
-              tasks.map((task, i) => {
-                task.state = false
-                task.save(err => {
-                  if (err) console.error(error)
-                  console.log('task moved to final state')
-                })
-              })
-            })
-            project.save(err => {
-              if (err) console.error(error)
-              console.log(`move to stage ${flag < 2 ? 'completed' : 'failed'}`)
-            })
-          }
-        })
+  //  filter for final tasks submitted
+  ProjectRegistryContract.events.LogFinalTaskCreated({fromBlock: netStatus.lastBlock}).on('data', async event => {
+    let transactionHash = event.transactionHash
+    let logIndex = event.logIndex
+    const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
+    if (!processedTx) {
+      let { taskAddress, projectAddress, finalTaskHash, index } = event.returnValues
+      try {
+        const project = Project.findOneAndUpdate({address: projectAddress}, {$set: {listSubmitted: true}}, {new: true})
+        let taskListArr = JSON.parse(project.taskList)
+        let taskContent = [taskListArr[index]]
+        let taskHash = hashTasks(taskContent)
+        if (finalTaskHash === taskHash[0]) {
+          const task = await Task.findOneAndUpdate({address: taskAddress}, {$set: {
+            address: taskAddress,
+            pollNonce: null,
+            project: project.id,
+            claimed: false,
+            complete: false,
+            description: taskContent[0].description,
+            index,
+            state: true,
+            validations: [],
+            validationRewardClaimable: false,
+            weighting: taskContent[0].percentage,
+            workerRewardClaimable: false,
+            workerRewarded: false
+          }}, {upsert: true, new: true})
+          if (!task) console.error('task not successfully created')
+        }
+        await new ProcessedTxs({transactionHash, logIndex}).save()
+        const network = await Network.findOneAndUpdate({}, { lastBlock: event.blockNumber }, {new: true})
+        if (!network) { console.error('No networking database') }
+      } catch (err) {
+        console.log(err)
       }
-        //   netStatus.save((err, returned) => {
-        //     if (err) throw Error
-        //   })
-        // }
-    // })
+    }
+  })
+
+  // filter for claiming task
+  ProjectRegistryContract.events.LogTaskClaimed({fromBlock: netStatus.lastBlock}).on('data', async event => {
+    let transactionHash = event.transactionHash
+    let logIndex = event.logIndex
+    const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
+    if (!processedTx) {
+      let { projectAddress, index, reputationVal, claimer } = event.returnValues
+      try {
+        const user = await User.findOneAndUpdate({account: claimer}, {$inc: {reputationBalance: reputationVal * (-1)}}, {new: true})
+        if (!user) console.error('user not found')
+        const project = await Project.findOne({address: projectAddress})
+        if (!project) console.error('project not found')
+        const task = await Task.findOneAndUpdate({project: project.id, index}, {claimed: true, claimer: user.id}, {new: true})
+        if (!task) console.error('task not found')
+        await new ProcessedTxs({transactionHash, logIndex}).save()
+        const network = await Network.findOneAndUpdate({}, { lastBlock: event.blockNumber }, {new: true})
+        if (!network) { console.error('No networking database') }
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  })
+
+  // filter for task submitted complete
+  ProjectRegistryContract.events.LogSubmitTaskComplete({fromBlock: netStatus.lastBlock}).on('data', async event => {
+    let transactionHash = event.transactionHash
+    let logIndex = event.logIndex
+    const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
+    if (!processedTx) {
+      let { projectAddress, index, validationFee } = event.returnValues
+      try {
+        const project = await Project.findOne({address: projectAddress})
+        if (!project) { console.error('Project not found') };
+        const task = await Task.findOneAndUpdate({project: project.id, index}, {complete: true, validationFee}, {new: true})
+        if (!task) { console.error('Task not updated') }
+        await new ProcessedTxs({transactionHash, logIndex}).save()
+        const network = await Network.findOneAndUpdate({}, { lastBlock: event.blockNumber }, {new: true})
+        if (!network) { console.error('No networking database') }
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  })
+
+  // filter for project tasks ready to be validated
+  ProjectRegistryContract.events.LogProjectValidate({fromBlock: netStatus.lastBlock}).on('data', async event => {
+    let transactionHash = event.transactionHash
+    let logIndex = event.logIndex
+    const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
+    if (!processedTx) {
+      let { projectAddress, validate } = event.returnValues
+      try {
+        if (parseInt(validate) === 1) {
+          const project = await Project.findOneAndUpdate({address: projectAddress, state: 3}, {$set: {state: 4}}, {new: true})
+          if (!project) console.error('project not updated in log project validate')
+        }
+        await new ProcessedTxs({transactionHash, logIndex}).save()
+        const network = await Network.findOneAndUpdate({}, { lastBlock: event.blockNumber }, {new: true})
+        if (!network) { console.error('No networking database') }
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  })
+
+  // filter for project tasks ready to be voted on
+  ProjectRegistryContract.events.LogProjectVoting({fromBlock: netStatus.lastBlock}).on('data', async event => {
+    let transactionHash = event.transactionHash
+    let logIndex = event.logIndex
+    const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
+    if (!processedTx) {
+      let { projectAddress, vote } = event.returnValues
+      try {
+        if (parseInt(vote) === 1) {
+          const project = await Project.findOneAndUpdate({address: projectAddress, state: 4}, {$set: {state: 5}}, {new: true})
+          if (!project) console.error('project not updated in log project validate')
+        }
+        await new ProcessedTxs({transactionHash, logIndex}).save()
+        const network = await Network.findOneAndUpdate({}, { lastBlock: event.blockNumber }, {new: true})
+        if (!network) { console.error('No networking database') }
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  })
+
+  // filter for project ended
+  ProjectRegistryContract.events.LogProjectEnd({fromBlock: netStatus.lastBlock}).on('data', async event => {
+    let transactionHash = event.transactionHash
+    let logIndex = event.logIndex
+    const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
+    if (!processedTx) {
+      let { projectAddress, end } = event.returnValues
+      try {
+        if (parseInt(end) === 1 || parseInt(end) === 2) {
+          const project = await Project.findOneAndUpdate({address: projectAddress, state: 5}, {$set: {state: end < 2 ? 6 : 7}}, {new: true})
+          if (!project) console.error('project not updated in log project validate')
+          const tasks = await Task.updateMany({project: project.id}, {$set: {state: false}}, {new: true})
+          if (!tasks) console.error('project tasks not updated')
+        }
+        await new ProcessedTxs({transactionHash, logIndex}).save()
+        const network = await Network.findOneAndUpdate({}, { lastBlock: event.blockNumber }, {new: true})
+        if (!network) { console.error('No networking database') }
+      } catch (err) {
+        console.log(err)
+      }
+    }
   })
 }

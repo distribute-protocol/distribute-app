@@ -13,7 +13,7 @@ const netStatus = require('./network')
 module.exports = function () {
   const ReputationRegistryContract = new web3.eth.Contract(ReputationRegistryABI, ReputationRegistryAddress)
 
-  ReputationRegistryContract.events.LogRegister({from: netStatus.lastBlock}).on('data', async event => {
+  ReputationRegistryContract.events.LogRegister({fromBlock: netStatus.lastBlock}).on('data', async event => {
     let transactionHash = event.transactionHash
     let logIndex = event.logIndex
     let account = event.returnValues.account
@@ -39,7 +39,7 @@ module.exports = function () {
     }
   })
 
-  ReputationRegistryContract.events.LogStakedReputation({from: netStatus.lastBlock}).on('data', async event => {
+  ReputationRegistryContract.events.LogStakedReputation({fromBlock: netStatus.lastBlock}).on('data', async event => {
     let transactionHash = event.transactionHash
     let logIndex = event.logIndex
     let projectAddress = event.returnValues.projectAddress
@@ -66,7 +66,7 @@ module.exports = function () {
     }
   })
 
-  ReputationRegistryContract.events.LogUnstakedReputation({from: netStatus.lastBlock}).on('data', async event => {
+  ReputationRegistryContract.events.LogUnstakedReputation({fromBlock: netStatus.lastBlock}).on('data', async event => {
     let transactionHash = event.transactionHash
     let logIndex = event.logIndex
     let projectAddress = event.returnValues.projectAddress
@@ -89,7 +89,7 @@ module.exports = function () {
     }
   })
 
-  ReputationRegistryContract.events.LogReputationVoteCommitted({from: netStatus.lastBlock}).on('data', async event => {
+  ReputationRegistryContract.events.LogReputationVoteCommitted({fromBlock: netStatus.lastBlock}).on('data', async event => {
     let transactionHash = event.transactionHash
     let logIndex = event.logIndex
     let projectAddress = event.returnValues.projectAddress
@@ -129,7 +129,7 @@ module.exports = function () {
     }
   })
 
-  ReputationRegistryContract.events.LogReputationVoteRevealed({from: netStatus.lastBlock}).on('data', async event => {
+  ReputationRegistryContract.events.LogReputationVoteRevealed({fromBlock: netStatus.lastBlock}).on('data', async event => {
     let transactionHash = event.transactionHash
     let logIndex = event.logIndex
     let projectAddress = event.returnValues.projectAddress
@@ -163,7 +163,7 @@ module.exports = function () {
     }
   })
 
-  ReputationRegistryContract.events.LogReputationVoteRescued({from: netStatus.lastBlock}).on('data', async event => {
+  ReputationRegistryContract.events.LogReputationVoteRescued({fromBlock: netStatus.lastBlock}).on('data', async event => {
     let transactionHash = event.transactionHash
     let logIndex = event.logIndex
     let projectAddress = event.returnValues.projectAddress

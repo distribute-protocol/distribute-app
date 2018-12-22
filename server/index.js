@@ -52,7 +52,7 @@ server.applyMiddleware({ app })
 // fire logs --> network model initalized in dtLog ONLY
 hypLogs()
 rrLogs()
-//prLogs()
+prLogs()
 //trLogs()
 //plLogs()
 
