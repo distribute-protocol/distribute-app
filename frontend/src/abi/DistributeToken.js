@@ -1,13 +1,13 @@
-let obj = require('./build/contracts/DistributeToken.json')
+let obj = require('./build/contracts/HyphaToken.json')
 
-const DistributeTokenAddress = obj.networks['5777'].address
+const HyphaTokenAddress = Object.keys(obj.networks).sort()[Object.keys(obj.networks).length - 1].address
 
-const DistributeTokenABI = JSON.stringify(obj.abi)
+const HyphaTokenABI = JSON.stringify(obj.abi)
 
-const DistributeTokenBytecode = obj.bytecode
+const HyphaTokenBytecode = obj.bytecode
 
 module.exports = {
-  DistributeTokenAddress,
-  DistributeTokenABI,
-  DistributeTokenBytecode
+  HyphaTokenAddress,
+  HyphaTokenABI,
+  HyphaTokenBytecode
 }
