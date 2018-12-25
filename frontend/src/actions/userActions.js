@@ -5,6 +5,7 @@ import {
   REGISTER_USER,
   REGISTERED_USER,
   GET_USER_STATUS,
+  GET_USER_STATUS_WALLET,
   USER_STATUS_RECEIVED,
   GET_USER_VOTES,
   USER_VOTES_RECEIVED
@@ -48,6 +49,13 @@ export function logoutUser () {
 export function getUserStatus (userDetails) {
   return {
     type: GET_USER_STATUS,
+    payload: userDetails
+  }
+}
+
+export function getUserStatusWallet (userDetails) {
+  return {
+    type: GET_USER_STATUS_WALLET,
     payload: userDetails
   }
 }

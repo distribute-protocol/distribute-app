@@ -65,6 +65,7 @@ const resolvers = {
   Query: {
     network: () => Network.findOne({}).then(status => status),
     user: (_, args, context, info) => User.findOne({account: args.account}).then(user => user),
+    userByWallet: (_, args, context, info) => User.findOne({wallets: args.wallet}).then(user => user),
     allUsers: () => User.find({}).then(users => users),
     token: (_, args) => [{}],
     allTokens: () => [{}],

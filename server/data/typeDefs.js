@@ -164,6 +164,7 @@ const typeDefs = gql`
   type Query {
     network: Network
     user(account: String): User
+    userByWallet(wallet: String): User
     allUsers: [User]
     token(account: String): [Token]
     allTokens: [Token]

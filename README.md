@@ -245,6 +245,14 @@ Then `cd ../frontend` and install dependencies with `yarn`.
 
 Alternately, you can do these steps with docker:
 
+You can launch all the following services using docker-compose
+
+Run ```docker-compose up ganache-cli mongo ipfs frontend```
+cd into the contracts folder and run ```truffle migrate --network local```
+cd into the build folder
+Run ```git commit -am 'rebuild/deploy contracts'```
+cd into the root dir of this repo and run ```git submodule foreach git pull origin master```
+Run ```docker-compose up --build server```
 To do this, make sure docker is installed, then from the server subdirectory:
 
 ```
@@ -255,7 +263,7 @@ If this is successful, the container will build and log the output of each build
 Start the container with
 
 ```
-sudo docker run -p 3001:3001 --network "host" <exampleBuildId>
+sudo docker run -p 3001:3001 "host" <exampleBuildId>
 ```
 The process for the front end is the same, but should be done from the `frontend` subdirectory, and the port that should be mapped is `3000`.  
 

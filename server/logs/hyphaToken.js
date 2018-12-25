@@ -9,16 +9,16 @@ const netStatus = require('./network')
 module.exports = function () {
   const HyphaTokenContract = new web3.eth.Contract(HyphaTokenABI, HyphaTokenAddress)
 
-  HyphaTokenContract.events.LogMint({fromBlock: netStatus.lastBlock}).on('data', async event => {
+  HyphaTokenContract.events.LogMint({ fromBlock: netStatus.lastBlock }).on('data', async event => {
     let transactionHash = event.transactionHash
     let logIndex = event.logIndex
-    let minter = event.returnValues.minter
-    let amountMinted = event.returnValues.amountMinted
-    let totalCost = event.returnValues.totalCost
     try {
-      const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
+      const processedTx = await ProcessedTxs.findOne({ transactionHash, logIndex })
       if (!processedTx) {
-        const user = await User.findOneAndUpdate({wallets: minter}, {$inc: { tokenBalance: amountMinted }}, {upsert: true, setDefaultsOnInsert: true, new: true})
+        let minter = event.returnValues.minter
+        let amountMinted = event.returnValues.amountMinted
+        let totalCost = event.returnValues.totalCost
+        const user = await User.findOneAndUpdate({ wallets: minter }, { $inc: { tokenBalance: amountMinted } }, { upsert: true, setDefaultsOnInsert: true, new: true })
         if (!user) { console.error('User not successfully updated') }
         await new Token({ userId: user.id, amount: amountMinted, ether: totalCost }).save()
         const network = await Network.findOneAndUpdate({},
@@ -29,10 +29,10 @@ module.exports = function () {
               weiBal: totalCost
             }
           },
-          {new: true}
+          { new: true }
         )
         if (!network) { console.error('No networking database') }
-        await new ProcessedTxs({transactionHash, logIndex}).save()
+        await new ProcessedTxs({ transactionHash, logIndex }).save()
       }
     } catch (err) {
       console.log(err)

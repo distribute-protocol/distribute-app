@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const path = require('path')
 const compression = require('compression')
+const ngrok = require('ngrok')
 // const cors = require('cors')
 const { ApolloServer } = require('apollo-server-express')
 const { ApolloEngine } = require('apollo-engine')
@@ -56,6 +57,8 @@ prLogs()
 trLogs()
 plLogs()
 
+// let endpoint = ''
+
 engine.listen({
   port: app.get('port'),
   graphqlPaths: ['/api/graphql'],
@@ -66,3 +69,8 @@ engine.listen({
 }, () => {
   console.log('Listening!')
 })
+//
+// ngrok.connect(8088).then(ngrokUrl => {
+//   endpoint = ngrokUrl
+//   console.log(`Your dApp is being served!, open at ${endpoint} and scan the QR to login!`)
+// })

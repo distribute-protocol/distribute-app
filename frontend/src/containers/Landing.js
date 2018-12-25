@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Button } from 'antd'
 import Onboarding from '../components/modals/Onboarding'
 import TextContinue from '../components/modals/TextContinue'
-import { loginUser, getUserStatus } from '../actions/userActions'
+import { loginUser, getUserStatusWallet } from '../actions/userActions'
 import { eth, web3 } from '../utilities/blockchain'
 import uport from '../utilities/uport'
 import landingbackground from '../images/landingbackground.svg'
@@ -19,7 +19,7 @@ class Landing extends React.Component {
     }
     this.getUport = this.getUport.bind(this)
     this.checkMetamaskConnected = this.checkMetamaskConnected.bind(this)
-    this.checkMetamask = this.checkMetamask.bind(this)
+    this.checkMetamaskBalance = this.checkMetamaskBalance.bind(this)
     this.handleJoin = this.handleJoin.bind(this)
     this.unclickJoin = this.unclickJoin.bind(this)
     this.profilePage = this.profilePage.bind(this)
@@ -32,67 +32,57 @@ class Landing extends React.Component {
 
   checkMetamaskConnected () {
     if (!this.state.metamask && window.ethereum._metamask.isEnabled()) {
-      this.checkMetamask()
+      this.checkMetamaskBalance()
     } else if (this.state.metamask && !window.ethereum._metamask.isEnabled()) {
-      this.setState({metamask: false})
+      this.setState({ metamask: false })
       window.ethereum.enable()
+      setTimeout(() => {
+        this.checkMetamaskConnected()
+      }, 1000)
     }
-    setTimeout(() => {
-      this.checkMetamaskConnected()
-    }, 1000)
   }
 
-  checkMetamask () {
+  checkMetamaskBalance () {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
           this.props.getUserStatus(accounts[0])
           eth.getBalance(accounts[0], (err, res) => {
             if (!err) {
-              if (res > 0) {
-                this.setState({metamask: true, hasEther: true})
-              } else {
-                this.setState({metamask: true, hasEther: false})
-              }
+              this.setState({ metamask: true, hasEther: res > 0 })
             }
           })
         } else {
-          this.setState({metamask: false})
+          this.setState({ metamask: false })
         }
       }
     })
   }
 
-  handleJoin () {
+  async handleJoin () {
     if (!this.state.metamask || !this.state.hasEther) {
-      eth.getAccounts(async (err, accounts) => {
-        if (!err) {
-          if (accounts.length) {
-            this.props.getUserStatus(accounts[0])
-            eth.getBalance(accounts[0], (err, res) => {
-              if (!err) {
-                if (res > 0) {
-                  this.setState({hasEther: true, clickedJoin: true})
-                } else {
-                  this.setState({hasEther: false, clickedJoin: true})
-                }
-              }
-            })
-          }
+      try {
+        let accounts = await eth.getAccounts()
+        let balance
+        if (accounts.length) {
+          this.props.getUserStatusWallet(accounts[0])
+          balance = await eth.getBalance(accounts[0])
         }
-      })
-    } else {
-      this.setState({clickedJoin: true})
+        this.setState({ hasEther: balance, clickedJoin: true })
+      } catch (err) {
+
+      }
     }
   }
 
   getUport () {
     const reqObj = {
       requested: ['name', 'avatar', 'country'],
-      notifications: true
+      // notifications: true
     } 
     uport.requestDisclosure(reqObj)
     uport.onResponse('disclosureReq').then(res => { 
+      console.log(res, 'im the res')
       this.props.loginUser(res.payload)
       this.setState({clickedJoin: false})
       this.checkTxStatus()
@@ -203,7 +193,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getUserStatus: (userAccount) => dispatch(getUserStatus(userAccount)),
+    getUserStatus: (userAccount) => dispatch(getUserStatusWallet(userAccount)),
     loginUser: (credentials) => dispatch(loginUser(credentials))
   }
 }

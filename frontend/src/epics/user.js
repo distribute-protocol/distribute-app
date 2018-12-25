@@ -1,4 +1,4 @@
-import { LOGIN_USER, REGISTER_USER, GET_USER_STATUS, GET_USER_VOTES } from '../constants/UserActionTypes'
+import { LOGIN_USER, REGISTER_USER, GET_USER_STATUS, GET_USER_STATUS_WALLET, GET_USER_VOTES } from '../constants/UserActionTypes'
 import { userStatusReceived, loggedInUser, registerUser, registeredUser, userVotesReceived } from '../actions/userActions'
 import { from, of, iif, concat, merge } from 'rxjs'
 import { map, mergeMap, flatMap } from 'rxjs/operators'
@@ -84,6 +84,25 @@ const getUserStatusEpic = action$ =>
     map(result => userStatusReceived(result))
   )
 
+const getUserStatusWalletEpic = action$ =>
+  action$.ofType(GET_USER_STATUS_WALLET).pipe(
+  // pull value from database
+    mergeMap(action => {
+      let query = gql`
+        query ($wallet: String!) {
+          userByWallet(wallet: $wallet) {
+            id
+            name
+            reputationBalance
+            tokenBalance
+          }
+        }
+      `
+      return client.query({ query: query, variables: { wallet: action.payload } })
+    }),
+    map(result => userStatusReceived(result))
+  )
+
 const getUserVotesEpic = action$ => {
   let account
   return action$.ofType(GET_USER_VOTES).pipe(
@@ -118,6 +137,7 @@ const getUserVotesEpic = action$ => {
 export default (action$, store) => merge(
   getUserEpic(action$, store),
   getUserStatusEpic(action$, store),
+  getUserStatusWalletEpic(action$, store),
   registerUserEpic(action$, store),
   getUserVotesEpic(action$, store)
 )
