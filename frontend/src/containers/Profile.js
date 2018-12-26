@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import ProfileComponent from '../components/Profile'
 import TextContinue from '../components/modals/TextContinue'
-import { getUserStatus } from '../actions/userActions'
+import { getUserStatusWallet, saveUserProfile } from '../actions/userActions'
 import { eth } from '../utilities/blockchain'
 
 class Profile extends React.Component {
@@ -29,7 +29,7 @@ class Profile extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
-          this.props.getUserStatus(accounts[0])
+          this.props.getUserStatusWallet(accounts[0])
         }
       }
     })
@@ -88,7 +88,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getUserStatus: (userAccount) => dispatch(getUserStatus(userAccount))
+    getUserStatusWallet: (userAccount) => dispatch(getUserStatusWallet(userAccount)),
+    saveUserProfile: (userData) => dispatch(saveUserProfile(userData))
   }
 }
 

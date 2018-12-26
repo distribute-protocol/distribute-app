@@ -1,5 +1,5 @@
-import { LOGIN_USER, REGISTER_USER, GET_USER_STATUS, GET_USER_STATUS_WALLET, GET_USER_VOTES } from '../constants/UserActionTypes'
-import { userStatusReceived, loggedInUser, registerUser, registeredUser, userVotesReceived } from '../actions/userActions'
+import { LOGIN_USER, REGISTER_USER, GET_USER_STATUS, GET_USER_STATUS_WALLET, GET_USER_VOTES, SAVE_USER_PROFILE } from '../constants/UserActionTypes'
+import { userStatusReceived, loggedInUser, registerUser, registeredUser, userVotesReceived, savedUserProfile } from '../actions/userActions'
 import { from, of, iif, concat, merge } from 'rxjs'
 import { map, mergeMap, flatMap } from 'rxjs/operators'
 import { client } from '../index'
@@ -43,7 +43,6 @@ const registerUserEpic = action$ => {
   let wallet
   return action$.ofType(REGISTER_USER).pipe(
     mergeMap(action => {
-      console.log('hi')
       wallet = action.wallet
       let mutation = gql`
         mutation addUser($input: CredentialInput, $wallet: String!) {
@@ -64,6 +63,34 @@ const registerUserEpic = action$ => {
       return from(rr.register({ from: wallet }))
     }),
     map(result => registeredUser(result.tx))
+  )
+}
+
+const saveUserProfileEpic = action$ => {
+  let profile, accounts
+  web3.eth.getAccounts((err, res) => {
+    if (err) return err
+    accounts = res
+  })
+  return action$.ofType(SAVE_USER_PROFILE).pipe(
+    mergeMap(action => {
+      profile = action.profile
+      let mutation = gql`
+        mutation saveUserProfile($profile: ProfileInput, $wallet: String!) {
+          saveUserProfile(profile: $profile, wallet: $wallet) {
+            id
+          }
+        }
+      `
+      return client.mutate({
+        mutation: mutation,
+        variables: {
+          profile: profile,
+          wallet: accounts[0]
+        }
+      })
+    }),
+    map(result => savedUserProfile(result))
   )
 }
 
@@ -141,5 +168,6 @@ export default (action$, store) => merge(
   getUserStatusEpic(action$, store),
   getUserStatusWalletEpic(action$, store),
   registerUserEpic(action$, store),
-  getUserVotesEpic(action$, store)
+  getUserVotesEpic(action$, store),
+  saveUserProfileEpic(action$, store)
 )

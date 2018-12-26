@@ -210,8 +210,18 @@ const typeDefs = gql`
     pushToken: String
   }
 
+  input ProfileInput {
+    expertise: [String],
+    interests: [String],
+    contactDetails: [String],
+    wantToLearn: [String],
+    wantToTeach: [String],
+    affiliations: [String]
+  }
+
   type Mutation {
     addUser(input: CredentialInput, wallet: String): User
+    saveUserProfile(profile: ProfileInput, wallet: String): User
     addTaskList(input: String, address: String): Project
     addPrelimTaskList(address: String, taskHash: String, submitter: String, weighting: String): Project
     addVote(type: String, projectAddress: String, taskIndex: Int, amount: Int, vote: String, salt: String, pollID: Int, voter: String): Vote

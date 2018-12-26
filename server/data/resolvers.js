@@ -192,6 +192,14 @@ const resolvers = {
       } catch (err) {
         console.error('Error Adding Vote')
       }
+    },
+    saveUserProfile: async (obj, args) => {
+      try {
+        const user = await User.findOneAndUpdate({ wallet: args.wallet }, { $set: { profile: args.profile } }, { new: true })
+        if (!user) { console.error('error finding user') };
+      } catch (err) {
+        console.error('Error saving user profile')
+      }
     }
     // let prelimTaskListSubmitted = new PrelimTaskList({
     //   _id: new mongoose.Types.ObjectId(),

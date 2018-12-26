@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button } from 'antd'
 import share from '../../images/titlebaricons/share.svg'
+import { font1 } from '../../styles/fonts'
 
 export default ({
   role
@@ -15,7 +16,7 @@ export default ({
       break
     case 'Finder':
       roleColor = '#FF8E6F'
-      button = <Button style={{marginRight: 15, color: 'white', border: '1px solid white', fontSize: 12, fontFamily: 'PingFang SC', borderRadius: 4, cursor: 'pointer', backgroundColor: roleColor}}>
+      button = <Button style={{marginRight: 15, color: 'white', border: '1px solid white', fontSize: 12, fontFamily: font1, borderRadius: 4, cursor: 'pointer', backgroundColor: roleColor}}>
         Discoveries
       </Button>
       break

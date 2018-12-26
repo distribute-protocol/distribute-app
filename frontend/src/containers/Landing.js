@@ -10,6 +10,7 @@ import landingbackground from '../images/landingbackground3.png'
 import hyphalogo from '../images/hyphalogo.png'
 import uportlogo from '../images/logos/uportlogo.svg'
 import metamasklogo from '../images/logos/metamaskfox.svg'
+import { font1 } from '../styles/fonts'
 
 class Landing extends React.Component {
   constructor () {
@@ -144,7 +145,7 @@ class Landing extends React.Component {
 
               </div>
               <div>
-                <p style={{paddingLeft: 9, paddingTop: 20, fontSize: 25, fontFamily: 'PingFang SC', fontWeight: 600, color: 'white'}}>HYPHA</p>
+                <p style={{paddingLeft: 9, paddingTop: 20, fontSize: 25, fontFamily: font1, fontWeight: 600, color: 'white'}}>HYPHA</p>
               </div>
             </div>
             <p style={{marginTop: 20, marginRight: 22.5, color: 'white', fontSize: 20, fontFamily: 'NowAltRegular'}}>SIGN UP | LOGIN</p>
@@ -156,10 +157,10 @@ class Landing extends React.Component {
               <div style={{fontSize: 36, fontFamily: 'NowAltRegular', textAlign: 'center', color: 'white'}}>A Platform for the Commons</div>
               { this.state.metamask
                 ? <Button style={{backgroundColor: '#A4D573', marginTop: 10, paddingLeft: 30, paddingRight: 30, paddingTop: 3, paddingBottom: 5, border: '#D9D9D9'}} onClick={this.handleJoin}>
-                  <p style={{color: 'white', fontSize: 18, fontFamily: 'PingFang SC'}}>JOIN</p>
+                  <p style={{color: 'white', fontSize: 18, fontFamily: font1}}>JOIN</p>
                 </Button>
                 : <Button style={{marginTop: 10, paddingTop: 4}} onClick={this.getMetaMask}>
-                  <p style={{fontSize: 14, fontFamily: 'PingFang SC'}}>Please Connect to MetaMask</p>
+                  <p style={{fontSize: 14, fontFamily: font1}}>Please Connect to MetaMask</p>
                 </Button>
               }
             </div>
@@ -169,15 +170,15 @@ class Landing extends React.Component {
           <div /> { /* DO NOT DELETE --> NEED THESE FOR POSITIONING */ }
         </div>
         { /* START OF WHITE SPACE */ }
-        <p style={{display: 'flex', justifyContent: 'center', marginTop: 15, fontSize: 18, fontFamily: 'PingFang SC', color: 'black'}}>
+        <p style={{display: 'flex', justifyContent: 'center', marginTop: 15, fontSize: 18, fontFamily: font1, color: 'black'}}>
           This distributed organization requires:
         </p>
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-around', marginTop: 15}}>
-          <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 16, fontFamily: 'PingFang SC'}}>
+          <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 16, fontFamily: font1}}>
             <img src={uportlogo} alt='uPort logo' />
             <p style={{textAlign: 'center', marginTop: 10, color: 'black'}}>uPort is a decentralized self-sovereign<br />identity platform.</p>
           </div>
-          <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 16, fontFamily: 'PingFang SC'}}>
+          <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 16, fontFamily: font1}}>
             <img src={metamasklogo} alt='MetaMask fox' />
             <p style={{textAlign: 'center', marginTop: 10, color: 'black'}}>Metamask is an in-browser wallet that grants easy<br />access to the Ethereum blockchain.</p>
           </div>

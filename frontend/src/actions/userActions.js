@@ -8,7 +8,9 @@ import {
   GET_USER_STATUS_WALLET,
   USER_STATUS_RECEIVED,
   GET_USER_VOTES,
-  USER_VOTES_RECEIVED
+  USER_VOTES_RECEIVED,
+  SAVE_USER_PROFILE,
+  SAVED_USER_PROFILE
 } from '../constants/UserActionTypes'
 
 export function registerUser (credentials, wallet) {
@@ -78,5 +80,19 @@ export function userVotesReceived (votes) {
   return {
     type: USER_VOTES_RECEIVED,
     votes
+  }
+}
+
+export function saveUserProfile (profile) {
+  return {
+    type: SAVE_USER_PROFILE,
+    profile
+  }
+}
+
+export function savedUserProfile (user) {
+  return {
+    type: SAVED_USER_PROFILE,
+    user
   }
 }

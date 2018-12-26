@@ -2,6 +2,7 @@ import React from 'react'
 import { Button, Col, Row, Pagination } from 'antd'
 import ProjectCard from './ProjectCard'
 import mapicon from '../../images/mapicon.svg'
+import { font1 } from '../../styles/fonts'
 
 export default (
   projectData
@@ -19,7 +20,7 @@ export default (
     <div>
       <div style={{marginTop: 20, display: 'flex', justifyContent: 'space-between', color: 'black'}}>
         <p style={{paddingLeft: 95, fontFamily: 'Lato', fontSize: 20}}>Explore 12,367 proposals</p>
-        <Button style={{color: 'black', marginRight: 25, border: '1px solid black', borderRadius: 4, fontFamily: 'PingFang SC', fontSize: 12}}>
+        <Button style={{color: 'black', marginRight: 25, border: '1px solid black', borderRadius: 4, fontFamily: font1, fontSize: 12}}>
           Map
           <img style={{marginLeft: 5}}src={mapicon} alt='map' />
         </Button>
