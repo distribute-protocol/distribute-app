@@ -11,11 +11,11 @@ import {
   USER_VOTES_RECEIVED
 } from '../constants/UserActionTypes'
 
-export function registerUser (credentials, account) {
+export function registerUser (credentials, wallet) {
   return {
     type: REGISTER_USER,
     credentials,
-    account
+    wallet
   }
 }
 

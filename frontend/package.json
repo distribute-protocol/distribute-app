@@ -4,7 +4,7 @@
   "private": true,
   "proxy": "http://localhost:3001/",
   "dependencies": {
-    "antd": "^3.10.0",
+    "antd": "^3.11.6",
     "apollo-boost": "^0.1.16",
     "bignumber.js": "^7.2.1",
     "crypto-price": "^0.0.6",

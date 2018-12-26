@@ -15,6 +15,7 @@ const getUserEpic = action$ => {
   })
   return action$.ofType(LOGIN_USER).pipe(
     mergeMap(action => {
+      console.log('hello')
       credentials = action.credentials
       let query = gql`
         query ($account: String!) {
@@ -24,7 +25,7 @@ const getUserEpic = action$ => {
           }
         }
       `
-      return client.query({query, variables: {account: accounts[0]}})
+      return client.query({ query, variables: { account: credentials.did } })
     }),
     flatMap(result => {
       return iif(
@@ -39,13 +40,14 @@ const getUserEpic = action$ => {
 }
 
 const registerUserEpic = action$ => {
-  let account
+  let wallet
   return action$.ofType(REGISTER_USER).pipe(
     mergeMap(action => {
-      account = action.account
+      console.log('hi')
+      wallet = action.wallet
       let mutation = gql`
-        mutation addUser($input: CredentialInput, $account: String!) {
-          addUser(input: $input, account: $account) {
+        mutation addUser($input: CredentialInput, $wallet: String!) {
+          addUser(input: $input, wallet: $wallet) {
             id
           }
         }
@@ -53,13 +55,13 @@ const registerUserEpic = action$ => {
       return client.mutate({
         mutation: mutation,
         variables: {
-          input: _.omit(action.credentials, ['@type', '@context']),
-          account: action.account
+          input: action.credentials,
+          wallet: action.wallet
         }
       })
     }),
     mergeMap(result => {
-      return from(rr.register({from: account}))
+      return from(rr.register({ from: wallet }))
     }),
     map(result => registeredUser(result.tx))
   )

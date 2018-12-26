@@ -6,7 +6,8 @@ import TextContinue from '../components/modals/TextContinue'
 import { loginUser, getUserStatusWallet } from '../actions/userActions'
 import { eth, web3 } from '../utilities/blockchain'
 import uport from '../utilities/uport'
-import landingbackground from '../images/landingbackground.svg'
+import landingbackground from '../images/landingbackground3.png'
+import hyphalogo from '../images/hyphalogo.png'
 import uportlogo from '../images/logos/uportlogo.svg'
 import metamasklogo from '../images/logos/metamaskfox.svg'
 
@@ -46,7 +47,7 @@ class Landing extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
-          this.props.getUserStatus(accounts[0])
+          this.props.getUserStatusWallet(accounts[0])
           eth.getBalance(accounts[0], (err, res) => {
             if (!err) {
               this.setState({ metamask: true, hasEther: res > 0 })
@@ -61,6 +62,7 @@ class Landing extends React.Component {
 
   async handleJoin () {
     if (!this.state.metamask || !this.state.hasEther) {
+      console.log('made it')
       try {
         let accounts = await eth.getAccounts()
         let balance
@@ -72,17 +74,18 @@ class Landing extends React.Component {
       } catch (err) {
 
       }
+    } else {
+      this.setState({ clickedJoin: true })
     }
   }
 
   getUport () {
     const reqObj = {
-      requested: ['name', 'avatar', 'country'],
+      requested: ['name', 'avatar', 'country', 'email']
       // notifications: true
     } 
     uport.requestDisclosure(reqObj)
     uport.onResponse('disclosureReq').then(res => { 
-      console.log(res, 'im the res')
       this.props.loginUser(res.payload)
       this.setState({clickedJoin: false})
       this.checkTxStatus()
@@ -132,20 +135,19 @@ class Landing extends React.Component {
           ? <TextContinue text={'congrats'} visible={this.state.loggedIn} continue={this.profilePage} />
           : null
         }
-        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', backgroundImage: `url(${landingbackground})`, backgroundColor: 'rgba(0, 0, 0, 0.75)', height: '60vh'}}>
+        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', backgroundImage: `url(${landingbackground})`, backgroundColor: 'rgba(0, 0, 0, 0.75)', backgroundRepeat: 'no-repeat', backgroundSize: 'cover', height: '60vh'}}>
           { /* START OF TOP BAR */ }
           <div style={{display: 'flex', width: '100%', justifyContent: 'space-between'}}>
-            <div style={{display: 'flex', alignItems: 'center', paddingTop: 24, paddingLeft: 23}}>
+            <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', marginLeft: 15}}>
               <div>
-                <svg width='64' height='64' viewBox='0 0 64 64' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                  <path fillRule='evenodd' clipRule='evenodd' d='M32 64C49.6731 64 64 49.6731 64 32C64 14.3269 49.6731 0 32 0C14.3269 0 0 14.3269 0 32C0 49.6731 14.3269 64 32 64Z' fill='#A4D573' />
-                </svg>
+                <img src={hyphalogo} alt='hypha logo' width='50' height='50'/>
+
               </div>
               <div>
                 <p style={{paddingLeft: 9, paddingTop: 20, fontSize: 25, fontFamily: 'PingFang SC', fontWeight: 600, color: 'white'}}>HYPHA</p>
               </div>
             </div>
-            <p style={{paddingTop: 28.5, paddingRight: 66.5, color: 'white', fontSize: 20, fontFamily: 'NowAltRegular'}}>SIGN UP | LOGIN</p>
+            <p style={{marginTop: 20, marginRight: 22.5, color: 'white', fontSize: 20, fontFamily: 'NowAltRegular'}}>SIGN UP | LOGIN</p>
           </div>
           { /* END OF TOP BAR
                START OF PLATFORM TITLE */ }
@@ -153,7 +155,7 @@ class Landing extends React.Component {
             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
               <div style={{fontSize: 36, fontFamily: 'NowAltRegular', textAlign: 'center', color: 'white'}}>A Platform for the Commons</div>
               { this.state.metamask
-                ? <Button style={{backgroundColor: '#A4D573', marginTop: 10, paddingTop: 3, border: '#D9D9D9'}} onClick={this.handleJoin}>
+                ? <Button style={{backgroundColor: '#A4D573', marginTop: 10, paddingLeft: 30, paddingRight: 30, paddingTop: 3, paddingBottom: 5, border: '#D9D9D9'}} onClick={this.handleJoin}>
                   <p style={{color: 'white', fontSize: 18, fontFamily: 'PingFang SC'}}>JOIN</p>
                 </Button>
                 : <Button style={{marginTop: 10, paddingTop: 4}} onClick={this.getMetaMask}>
@@ -167,15 +169,15 @@ class Landing extends React.Component {
           <div /> { /* DO NOT DELETE --> NEED THESE FOR POSITIONING */ }
         </div>
         { /* START OF WHITE SPACE */ }
-        <p style={{display: 'flex', justifyContent: 'center', marginTop: 15, fontSize: 18, fontFamily: 'NowAltRegular', color: 'black'}}>
+        <p style={{display: 'flex', justifyContent: 'center', marginTop: 15, fontSize: 18, fontFamily: 'PingFang SC', color: 'black'}}>
           This distributed organization requires:
         </p>
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-around', marginTop: 15}}>
-          <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 16, fontFamily: 'NowAltRegular'}}>
+          <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 16, fontFamily: 'PingFang SC'}}>
             <img src={uportlogo} alt='uPort logo' />
             <p style={{textAlign: 'center', marginTop: 10, color: 'black'}}>uPort is a decentralized self-sovereign<br />identity platform.</p>
           </div>
-          <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 16, fontFamily: 'NowAltRegular'}}>
+          <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 16, fontFamily: 'PingFang SC'}}>
             <img src={metamasklogo} alt='MetaMask fox' />
             <p style={{textAlign: 'center', marginTop: 10, color: 'black'}}>Metamask is an in-browser wallet that grants easy<br />access to the Ethereum blockchain.</p>
           </div>
@@ -193,7 +195,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getUserStatus: (userAccount) => dispatch(getUserStatusWallet(userAccount)),
+    getUserStatusWallet: (userAccount) => dispatch(getUserStatusWallet(userAccount)),
     loginUser: (credentials) => dispatch(loginUser(credentials))
   }
 }

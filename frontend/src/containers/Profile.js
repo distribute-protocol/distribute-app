@@ -11,12 +11,12 @@ class Profile extends React.Component {
     this.state = {
       firstProfile: true,
       data: {
-        expertise: ['electrical wiring'],
-        interests: ['land trusts'],
-        contactDetails: ['twitter: @ashokafinley'],
-        wantToLearn: ['mesh node installation'],
-        wantToTeach: ['urban gardening'],
-        affiliations: ['distribute.network']
+        expertise: [],
+        interests: [],
+        contactDetails: [],
+        wantToLearn: [],
+        wantToTeach: [],
+        affiliations: []
       }
     }
     this.roleSelection = this.roleSelection.bind(this)
@@ -51,7 +51,11 @@ class Profile extends React.Component {
     this.setState({data})
   }
 
-  addItem (i) {
+  addItem (i, category) {
+    let arr = this.state.data[category]
+    arr.push(i)
+    let newData = Object.assign(this.state.data, {[category]: arr})
+    this.setState({data: newData})
     // console.log('add', i)
   }
 

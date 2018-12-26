@@ -19,7 +19,7 @@ module.exports = function () {
     try {
       const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
       if (!processedTx) {
-        const user = await User.findOneAndUpdate({account}, {$inc: { reputationBalance: 10000 }}, {upsert: true, setDefaultsOnInsert: true, new: true})
+        const user = await User.findOneAndUpdate({wallets: [account]}, {$inc: { reputationBalance: 10000 }}, {upsert: true, setDefaultsOnInsert: true, new: true})
         if (!user) { console.error('User not successfully updated') }
         const network = await Network.findOneAndUpdate({},
           {

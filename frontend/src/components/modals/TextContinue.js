@@ -59,7 +59,7 @@ class TextContinue extends React.Component {
         onOk={this.handleOk}
         onCancel={this.handleCancel}
         footer={[
-          <Button style={{backgroundColor: '#A4D573'}} key='submit' type='primary' onClick={this.handleOk}>
+          <Button style={{backgroundColor: '#A4D573', borderColor: '#A4D573'}} key='submit' type='primary' onClick={this.handleOk}>
             Continue
           </Button>
         ]}
