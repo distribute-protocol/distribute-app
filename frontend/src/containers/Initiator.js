@@ -2,23 +2,18 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import mapboxgl from 'mapbox-gl'
 import price from 'crypto-price'
-import MapboxClient from 'mapbox/lib/services/geocoding'
-import ProposeForm from '../components/Propose'
+import ProposeForm from '../components/propose/form'
+import ProposeLanding from '../components/propose/landing'
 import Sidebar from '../components/shared/Sidebar'
 import InitiatorWelcome from '../components/modals/InitiatorWelcome'
 import InsufficientTokens from '../components/modals/InsufficientTokens'
 import VerificationModal from '../components/modals/VerificationModal'
 import ProjectPage from './finder/ProjectPage'
 import ipfs from '../utilities/ipfs'
-import { getUserStatus } from '../actions/userActions'
+import { getUserStatusWallet } from '../actions/userActions'
 import { getProject } from '../actions/projectActions'
 import { eth, web3, dt, rr } from '../utilities/blockchain'
-
-const client = new MapboxClient('pk.eyJ1IjoiY29uc2Vuc3lzIiwiYSI6ImNqOHBmY2w0NjBmcmYyd3F1NHNmOXJwMWgifQ.8-GlTlTTUHLL8bJSnK2xIA')
-mapboxgl.accessToken = 'pk.eyJ1IjoiY29uc2Vuc3lzIiwiYSI6ImNqOHBmY2w0NjBmcmYyd3F1NHNmOXJwMWgifQ.8-GlTlTTUHLL8bJSnK2xIA'
-const WAIT_INTERVAL = 1500
 
 class Initiator extends React.Component {
   constructor () {
@@ -27,7 +22,7 @@ class Initiator extends React.Component {
       firstTime: true,
       role: 'Initiator',
       showSidebarIcons: true,
-      firstModal: true,
+      firstModal: false,
       secondModal: false,
       tempProject: {},
       loading: false,
@@ -43,15 +38,15 @@ class Initiator extends React.Component {
         location: '',
         summary: ''
       },
-      proposingProject: true
+      proposalLanding: true,
+      proposingProject: false
     }
     this.choosePropType = this.choosePropType.bind(this)
+    this.chooseResource = this.chooseResource.bind(this)
     this.redirect = this.redirect.bind(this)
     this.handlePhotoUpload = this.handlePhotoUpload.bind(this)
     this.handlePriceChange = this.handlePriceChange.bind(this)
-    this.handleLocationChange = this.handleLocationChange.bind(this)
     this.handlePhotoChange = this.handlePhotoChange.bind(this)
-    this.triggerMapChange = this.triggerMapChange.bind(this)
     this.storeData = this.storeData.bind(this)
     this.handleVerification = this.handleVerification.bind(this)
   }
@@ -60,42 +55,19 @@ class Initiator extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
-          this.props.getUserStatus(accounts[0])
+          this.props.getUserStatusWallet(accounts[0])
           let usdPerEth = await price.getCryptoPrice('USD', 'ETH')
           let totalTokens = await dt.totalSupply()
           let totalRep = await rr.totalSupply()
           let weiBal = await dt.weiBal()
-          this.setState({usdPerEth, totalTokens, totalRep, weiBal})
+          this.setState({ usdPerEth, totalTokens, totalRep, weiBal })
         }
       }
     })
     this.timer = null
   }
 
-  componentDidMount () {
-    const map = new mapboxgl.Map({
-      container: this.mapContainer,
-      style: 'mapbox://styles/mapbox/streets-v10'
-    })
-    this.setState({map: map})
-    let coordHandler = (pos) => {
-      let ll = new mapboxgl.LngLat(pos.coords.longitude, pos.coords.latitude)
-      map.setCenter(ll)
-      map.setZoom(12)
-      map.addControl(new mapboxgl.NavigationControl())
-      map.on('click', (e) => {
-        map.setCenter(e.lngLat)
-        this.setState({coords: e.lngLat})
-      })
-    }
-    window.navigator.geolocation.getCurrentPosition(coordHandler)
-  }
-
-  componentWillUnmount () {
-    this.state.map.remove()
-  }
-
-  storeData (type, values, category) {
+  storeData (type, values, category, coords) {
     // stakingPeriod in Days changed to seconds -> blockchain understands seconds
     // This is creating and storing an IPFS object
     let projObj = {
@@ -103,12 +75,12 @@ class Initiator extends React.Component {
       stakingEndDate: Math.floor(values.date.valueOf() / 1000),
       photo: this.state.photo,
       name: values.name,
-      location: this.state.coords,
+      location: coords,
       summary: values.summary,
       category: category,
       collateralType: type
     }
-    this.setState({data: projObj, verificationModal: true, collateralType: type})
+    this.setState({ data: projObj, verificationModal: true, collateralType: type })
   }
 
   handlePhotoChange (info) {
@@ -117,7 +89,7 @@ class Initiator extends React.Component {
       imageUrl,
       loading: false
     }))
-    this.setState({loading: true})
+    this.setState({ loading: true })
   }
 
   handlePhotoUpload (photoObj) {
@@ -130,7 +102,7 @@ class Initiator extends React.Component {
           return
         }
         let url = `https://ipfs.io/ipfs/${result[0].hash}`
-        this.setState({photo: url, loading: false})
+        this.setState({ photo: url, loading: false })
       })
     }
     reader.readAsArrayBuffer(photoObj) // Read Provided File
@@ -147,34 +119,22 @@ class Initiator extends React.Component {
       let cost = web3.toWei(val.target.value, 'ether')
       let tokensToStake = Math.ceil((cost * this.state.totalTokens) / (this.state.weiBal * 20))
       let repToStake = Math.ceil((cost * this.state.totalRep) / (this.state.weiBal * 20))
-      this.setState({tokensToStake, repToStake, cost})
+      this.setState({ tokensToStake, repToStake, cost })
     }
-  }
-
-  handleLocationChange (val) {
-    clearTimeout(this.timer)
-    this.setState({location: val.target.value})
-    this.timer = setTimeout(this.triggerMapChange, WAIT_INTERVAL)
-  }
-
-  triggerMapChange () {
-    const { location } = this.state
-    client.geocodeForward(location, (err, data, res) => {
-      if (err) { console.error(err) }
-      this.state.map.setCenter(data.features[0].geometry.coordinates)
-      this.state.map.setZoom(18)
-      new mapboxgl.Marker()
-        .setLngLat(data.features[0].geometry.coordinates)
-        .addTo(this.state.map)
-      this.setState({coords: data.features[0].geometry.coordinates})
-    })
   }
 
   choosePropType (propType) {
-    this.setState({firstModal: false, propType: propType})
+    this.setState({ firstModal: false, propType: propType })
     if (propType === 'tokens' && this.props.user.userTokens === 0) {
-      this.setState({secondModal: true})
+      this.setState({ secondModal: true })
+    } else {
+      this.setState({ proposingProject: true, proposalLanding: false })
     }
+  }
+
+  chooseResource () {
+    console.log('hello')
+    this.setState({ firstModal: true })
   }
 
   redirect (url) {
@@ -182,17 +142,18 @@ class Initiator extends React.Component {
   }
 
   areYouSure () {
-    this.setState({verificationModal: true})
+    this.setState({ verificationModal: true })
   }
 
   async handleVerification (addr) {
     await this.props.getProject(addr)
-    this.setState({projectProposed: true, proposingProject: false})
+    this.setState({ projectProposed: true, proposingProject: false })
   }
 
   render () {
     return (
       <div>
+
         {this.state.firstTime && this.state.firstModal
           ? <InitiatorWelcome visible={this.state.firstTime && this.state.firstModal} continue={this.choosePropType} />
           : null }
@@ -209,6 +170,14 @@ class Initiator extends React.Component {
             repToStake={this.state.repToStake}
             finder={() => this.redirect('/finder')} />
           : null }
+        {this.state.proposalLanding
+          ? <div>
+            <Sidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
+            <ProposeLanding
+              chooseResource={this.chooseResource}
+            />
+          </div>
+          : null}
         {this.state.proposingProject
           ? <div>
             <Sidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
@@ -220,7 +189,6 @@ class Initiator extends React.Component {
               handlePriceChange={this.handlePriceChange}
               handleLocationChange={this.handleLocationChange}
               storeData={this.storeData}
-              map={<div id='map' style={{width: 400, height: 400}} ref={el => { this.mapContainer = el }} />}
             />
           </div>
           : null}
@@ -250,7 +218,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getUserStatus: (userAccount) => dispatch(getUserStatus(userAccount)),
+    getUserStatusWallet: (userAccount) => dispatch(getUserStatusWallet(userAccount)),
     getProject: (projAddress) => dispatch(getProject(projAddress))
   }
 }

@@ -25,30 +25,55 @@ class Sidebar extends React.Component {
   }
 
   render () {
+    let iconSize = 66
+    let iconMargin = 35
     return (
-      <div style={{height: '100%', width: 100, position: 'fixed', backgroundColor: '#111111', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-        <h1 className='App-title' style={{color: 'white', marginTop: 5, fontSize: 18}}>HYPHA</h1>
-        <div style={{width: 60, height: 60, borderRadius: 30, backgroundColor: '#fcfcfc'}}>
-          <img style={{width: 60, height: 60, borderRadius: 30, cursor: 'pointer'}} onClick={() => this.props.redirect('/profile')} alt='profile' src={typeof this.props.user.avatar !== 'undefined' ? this.props.user.avatar.uri : 'http://busybridgeng.com/wp-content/uploads/2017/05/generic-avatar.png'} />
+      <div style={{ height: '100%', width: 100, position: 'fixed', backgroundColor: '#111111', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div>
+          <h1 className='App-title' style={{ color: 'white', marginTop: 5, fontSize: 18 }}>HYPHA</h1>
+          <div style={{ display: 'flex', marginLeft: 2, width: 60, height: 60, borderRadius: 30, backgroundColor: '#fcfcfc', alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>
+            <img style={{ width: 60, height: 60, borderRadius: 30, cursor: 'pointer' }} onClick={() => this.props.redirect('/profile')} alt='profile' src={typeof this.props.user.avatar !== 'undefined' ? this.props.user.avatar.uri : 'http://busybridgeng.com/wp-content/uploads/2017/05/generic-avatar.png'} />
+          </div>
+          <h3 style={{ color: '#FCFCFC', fontSize: 15 }}>{this.props.user.name.split(' ')[0]}</h3>
         </div>
-        <h3 style={{color: '#FCFCFC', fontSize: 15}}>{this.props.user.name.split(' ')[0]}</h3>
         <div>
           { this.props.showIcons
-            ? <div style={{display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between'}}>
-              { this.props.highlightIcon === 'Initiator' ? <img style={{paddingBottom: 5, cursor: 'pointer'}} src={initiatorcolor} alt='initiator' onClick={() => this.props.redirect('/initiator')} /> : <img style={{cursor: 'pointer'}} src={initiatorgray} alt='initiator' onClick={() => this.props.redirect('/initiator')} /> }
-              { this.props.highlightIcon === 'Finder' ? <img style={{paddingTop: 5, paddingBottom: 5, cursor: 'pointer'}} src={findercolor} alt='finder' onClick={() => this.props.redirect('/finder')} /> : <img style={{cursor: 'pointer'}} src={findergray} alt='finder' onClick={() => this.props.redirect('/finder')} /> }
-              { this.props.highlightIcon === 'Planner' ? <img style={{paddingTop: 5, paddingBottom: 5, cursor: 'pointer'}} src={plannercolor} alt='planner' onClick={() => this.props.redirect('/planner')} /> : <img style={{cursor: 'pointer'}} src={plannergray} alt='planner' onClick={() => this.props.redirect('/planner')} /> }
-              { this.props.highlightIcon === 'Doer' ? <img style={{paddingTop: 5, paddingBottom: 5, cursor: 'pointer'}} src={doercolor} alt='doer' onClick={() => this.props.redirect('/doer')} /> : <img style={{cursor: 'pointer'}} src={doergray} alt='doer' onClick={() => this.props.redirect('/doer')} /> }
-              { this.props.highlightIcon === 'Validator' ? <img style={{paddingTop: 5, paddingBottom: 5, cursor: 'pointer'}} src={validatorcolor} alt='validator' onClick={() => this.props.redirect('/validator')} /> : <img style={{cursor: 'pointer'}} src={validatorgray} alt='validator' onClick={() => this.props.redirect('/validator')} /> }
-              { this.props.highlightIcon === 'Resolver' ? <img style={{paddingTop: 5, cursor: 'pointer'}} src={resolvercolor} alt='resolver' onClick={() => this.props.redirect('/resolver')} /> : <img style={{cursor: 'pointer'}} src={resolvergray} alt='resolver' onClick={() => this.props.redirect('resolver')} /> }
-              <div style={{paddingTop: 5, paddingBottom: 10}}>
-                <img style={{paddingRight: 5, cursor: 'pointer'}} onClick={() => this.props.redirect('/activitymonitor')} src={network} alt='network' />
-                <img style={{paddingLeft: 5, cursor: 'pointer'}} onClick={() => this.props.redirect('/dashboard')} src={dashboard} alt='dashboard' />
-              </div>
+            ? <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between' }}>
+              { this.props.highlightIcon === 'Initiator'
+                ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={initiatorcolor} alt='initiator' onClick={() => this.props.redirect('/initiator')} />
+                : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} alt='initiator' onClick={() => this.props.redirect('/initiator')} />
+              }
+              { this.props.highlightIcon === 'Finder'
+                ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={findercolor} alt='finder' onClick={() => this.props.redirect('/finder')} />
+                : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={findergray} alt='finder' onClick={() => this.props.redirect('/finder')} />
+              }
+              { this.props.highlightIcon === 'Planner'
+                ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={plannercolor} alt='planner' onClick={() => this.props.redirect('/planner')} />
+                : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={plannergray} alt='planner' onClick={() => this.props.redirect('/planner')} />
+              }
+              { this.props.highlightIcon === 'Doer'
+                ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={doercolor} alt='doer' onClick={() => this.props.redirect('/doer')} />
+                : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={doergray} alt='doer' onClick={() => this.props.redirect('/doer')} />
+              }
+              { this.props.highlightIcon === 'Validator'
+                ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={validatorcolor} alt='validator' onClick={() => this.props.redirect('/validator')} />
+                : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={validatorgray} alt='validator' onClick={() => this.props.redirect('/validator')} />
+              }
+              { this.props.highlightIcon === 'Resolver'
+                ? <img style={{ width: iconSize, height: iconSize, cursor: 'pointer' }} src={resolvercolor} alt='resolver' onClick={() => this.props.redirect('/resolver')} />
+                : <img style={{ width: iconSize, height: iconSize, cursor: 'pointer' }} src={resolvergray} alt='resolver' onClick={() => this.props.redirect('resolver')} />
+              }
             </div>
             : null
           }
         </div>
+        { this.props.showIcons
+          ? <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 30 }}>
+            <img style={{ marginBottom: 15, cursor: 'pointer', height: 40, width: 40 }} onClick={() => this.props.redirect('/activitymonitor')} src={network} alt='network' />
+            <img style={{ cursor: 'pointer', height: 40, width: 40 }} onClick={() => this.props.redirect('/dashboard')} src={dashboard} alt='dashboard' />
+          </div>
+          : null
+        }
       </div>
     )
   }
