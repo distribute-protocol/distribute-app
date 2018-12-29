@@ -2,7 +2,9 @@ import React from 'react'
 import { Button, Form, Input, DatePicker, Upload, Icon, Dropdown, Menu } from 'antd'
 import mapboxgl from 'mapbox-gl'
 import MapboxClient from 'mapbox/lib/services/geocoding'
-import grayx from '../../images/grayplus.svg'
+import picture from '../../images/initiator/shape.png'
+import { gradient1, lightgradient1, black, white, grey1, grey0 } from '../../styles/colors'
+import { font1 } from '../../styles/fonts'
 const { TextArea } = Input
 const FormItem = Form.Item
 
@@ -12,16 +14,19 @@ const WAIT_INTERVAL = 1500
 
 const styles = {
   header: {
-    fontFamily: 'Lato',
-    fontSize: 20
+    fontFamily: font1,
+    fontSize: 20,
+    color: black
   },
   subheader: {
-    fontFamily: 'Lato',
-    fontSize: 14
+    fontFamily: font1,
+    fontSize: 14,
+    color: black
   },
   text: {
-    fontFamily: 'Lato',
-    fontSize: 10
+    fontFamily: font1,
+    fontSize: 10,
+    color: black
   }
 }
 class ProposeForm extends React.Component {
@@ -124,17 +129,23 @@ class ProposeForm extends React.Component {
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
+        // justifyContent: 'center',
+        alignItems: 'center',
         marginLeft: 100,
-        backgroundColor: 'rgba(218, 218, 218, 0.5)',
-        color: 'black'
+        backgroundColor: lightgradient1,
+        color: black
       }}>
-        <b><p style={{
-          paddingTop: 20,
-          textAlign: 'center',
-          fontFamily: 'Lato',
-          fontSize: 36
-        }}>Initiating a Proposal</p></b>
+        <div style={{ flexDirection: 'row', backgroundColor: gradient1, justifyContent: 'center', alignItems: 'center', width: '100%', height: 55 }}>
+          <p style={{
+            fontWeight: '500',
+            marginTop: 5,
+            textAlign: 'center',
+            alignSelf: 'center',
+            fontFamily: font1,
+            fontSize: 28
+          }}>Create Proposal
+          </p>
+        </div>
         <p style={{
           paddingTop: 20,
           textAlign: 'center',
@@ -148,20 +159,17 @@ class ProposeForm extends React.Component {
           <div style={{
             marginTop: 20,
             marginBottom: 40,
-            backgroundColor: 'white',
-            border: '1px solid #989898',
+            backgroundColor: white,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
-            marginLeft: '15%',
-            marginRight: '15%'
+            width: '60vw'
           }}>
             <div style={{
               display: 'flex',
               justifyContent: 'space-between',
               marginTop: 40,
-              backgroundColor: '#FAFBFB',
-              border: '1px solid #989898',
+              backgroundColor: grey0,
               marginLeft: '10%',
               marginRight: '10%'
             }}>
@@ -183,8 +191,8 @@ class ProposeForm extends React.Component {
               }}>
                 <FormItem>
                   {getFieldDecorator('name')(<Input
-                    style={{ maxWidth: 350, borderRadius: 0, border: '1px solid #989898' }}
-                    placeholder='' />
+                    style={{ minWidth: 250, maxWidth: 350, borderRadius: 0, border: `1px solid ${grey1}` }}
+                    placeholder='Project Name' />
                   )}
                 </FormItem>
               </div>
@@ -193,8 +201,7 @@ class ProposeForm extends React.Component {
               display: 'flex',
               justifyContent: 'space-between',
               marginTop: 20,
-              backgroundColor: '#FAFBFB',
-              border: '1px solid #989898',
+              backgroundColor: grey0,
               marginLeft: '10%',
               marginRight: '10%'
             }}>
@@ -221,9 +228,11 @@ class ProposeForm extends React.Component {
               }}>
                 <FormItem>
                   {getFieldDecorator('summary')(<TextArea style={{
+                    minWidth: 250,
                     maxWidth: 350,
                     borderRadius: 0,
-                    border: '1px solid #989898'
+                    border: `1px solid ${grey1}`,
+                    placeholder: 'Project Description'
                   }} rows={10} type='textarea' />)}
                 </FormItem>
               </div>
@@ -232,16 +241,15 @@ class ProposeForm extends React.Component {
               display: 'flex',
               justifyContent: 'space-between',
               marginTop: 20,
-              backgroundColor: '#FAFBFB',
-              border: '1px solid #989898',
+              backgroundColor: grey0,
               marginLeft: '10%',
               marginRight: '10%'
             }}>
               <div style={{ marginLeft: 15, marginTop: 20 }}>
                 <b><p style={styles.header}>Project Category:</p></b>
                 <p style={styles.subheader}>
-                  Pick a project category to connect with a specific community.<br />
-                  You can always update this later.
+                  Pick a project category to connect with a<br />specific community.
+                  You can always update<br />this later.
                 </p>
               </div>
               <div style={{
@@ -255,8 +263,9 @@ class ProposeForm extends React.Component {
                 {getFieldDecorator('category')(
                   <Dropdown overlay={categoryMenu} style={{ justifyContent: 'flex-end' }}>
                     <Button style={{
+                      minWidth: 250,
                       maxWidth: 350,
-                      border: '1px solid #989898',
+                      border: `1px solid ${grey1}`,
                       borderRadius: 0,
                       textAlign: 'left'
                     }}>
@@ -270,8 +279,7 @@ class ProposeForm extends React.Component {
               display: 'flex',
               justifyContent: 'space-between',
               marginTop: 20,
-              backgroundColor: '#FAFBFB',
-              border: '1px solid #989898',
+              backgroundColor: grey0,
               marginLeft: '10%',
               marginRight: '10%'
             }}>
@@ -288,7 +296,7 @@ class ProposeForm extends React.Component {
               </div>
               <div style={{ marginRight: 50, marginTop: 10 }}>
                 <FormItem>
-                  {getFieldDecorator('date')(<DatePicker style={{ borderRadius: 0, border: '1px solid #989898' }} />)}
+                  {getFieldDecorator('date')(<DatePicker style={{ minWidth: 250, borderRadius: 0, border: `1px solid ${grey1}` }} />)}
                 </FormItem>
               </div>
             </div>
@@ -296,8 +304,7 @@ class ProposeForm extends React.Component {
               display: 'flex',
               justifyContent: 'space-between',
               marginTop: 20,
-              backgroundColor: '#FAFBFB',
-              border: '1px solid #989898',
+              backgroundColor: grey0,
               marginLeft: '10%',
               marginRight: '10%'
             }}>
@@ -324,7 +331,7 @@ class ProposeForm extends React.Component {
                 paddingBottom: '5%'
               }}>
                 <FormItem>
-                  {getFieldDecorator('cost')(<Input style={{ maxWidth: 350, borderRadius: 0, border: '1px solid #989898' }} placeholder='ETH' type='number' onChange={this.props.handlePriceChange} />)}
+                  {getFieldDecorator('cost')(<Input style={{ minWidth: 250, maxWidth: 350, borderRadius: 0, border: `1px solid ${grey1}` }} placeholder='Project Cost' type='number' onChange={this.props.handlePriceChange} />)}
                 </FormItem>
               </div>
             </div>
@@ -332,8 +339,7 @@ class ProposeForm extends React.Component {
               display: 'flex',
               justifyContent: 'space-between',
               marginTop: 20,
-              backgroundColor: '#FAFBFB',
-              border: '1px solid #989898',
+              backgroundColor: grey0,
               marginLeft: '10%',
               marginRight: '10%'
             }}>
@@ -355,8 +361,9 @@ class ProposeForm extends React.Component {
               }}>
                 <Dropdown overlay={collateralMenu} style={{ justifyContent: 'flex-end' }}>
                   <Button style={{
+                    minWidth: 250,
                     maxWidth: 350,
-                    border: '1px solid #989898',
+                    border: `1px solid ${grey1}`,
                     borderRadius: 0,
                     textAlign: 'left'
                   }}>
@@ -374,8 +381,7 @@ class ProposeForm extends React.Component {
               display: 'flex',
               justifyContent: 'space-between',
               marginTop: 20,
-              backgroundColor: '#FAFBFB',
-              border: '1px solid #989898',
+              backgroundColor: grey0,
               marginLeft: '10%',
               marginRight: '10%'
             }}>
@@ -393,7 +399,7 @@ class ProposeForm extends React.Component {
                 <FormItem style={{ marginBottom: -0, backgroundColor: 'black' }}>
                   {getFieldDecorator('location')(
                     <Input
-                      style={{ borderRadius: 0, border: '1px solid #989898' }}
+                      style={{ borderRadius: 0, border: `1px solid ${grey1}` }}
                       placeholder='Enter Address'
                       onChange={this.props.handleLocationChange}
                     />
@@ -406,8 +412,7 @@ class ProposeForm extends React.Component {
               display: 'flex',
               justifyContent: 'space-between',
               marginTop: 20,
-              backgroundColor: '#FAFBFB',
-              border: '1px solid #989898',
+              backgroundColor: grey0,
               marginLeft: '10%',
               marginRight: '10%'
             }}>
@@ -425,7 +430,7 @@ class ProposeForm extends React.Component {
                 justifyContent: 'center',
                 alignItems: 'center',
                 backgroundColor: 'rgba(218, 218, 218, 0.5)',
-                border: '1px solid #989898',
+                border: `1px solid ${grey1}`,
                 margin: 20,
                 marginRight: 50,
                 paddingLeft: '15%',
@@ -441,7 +446,11 @@ class ProposeForm extends React.Component {
                   >
                     {this.props.imageUrl
                       ? <img style={{ maxWidth: 200, maxHeight: 200 }} src={this.props.imageUrl} alt='' />
-                      : <img style={{ cursor: 'pointer' }} src={grayx} alt='gray x' />}
+                      : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+                        <img style={{ cursor: 'pointer' }} src={picture} alt='gray x' />
+                        <p style={[styles.text, { paddingTop: 20 }]}>Click to Add Photo</p>
+                      </div>
+                    }
                   </Upload>
                 </FormItem>
               </div>
@@ -457,12 +466,13 @@ class ProposeForm extends React.Component {
             }}>
               <Button style={{
                 textAlign: 'center',
-                backgroundColor: '#A4D573',
+                backgroundColor: gradient1,
                 borderRadius: 4,
                 color: 'white',
                 height: 46,
                 fontFamily: 'Lato',
-                fontSize: 24
+                fontSize: 24,
+                borderColor: gradient1
               }} onClick={() => this.submitHandler(this.state.collateralType.toLowerCase())}>
                 Create Proposal
               </Button>

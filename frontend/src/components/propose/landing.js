@@ -1,6 +1,6 @@
 import React from 'react'
-import { Button, Form, Input, DatePicker, Upload, Icon, Dropdown, Menu } from 'antd'
-import { font3 } from '../../styles/fonts'
+import { Button } from 'antd'
+import { font1 } from '../../styles/fonts'
 import { white, brandColor } from '../../styles/colors'
 import farm from '../../images/initiator/farm.png'
 import mesh from '../../images/initiator/mesh.png'
@@ -9,7 +9,7 @@ import solar from '../../images/initiator/solar.png'
 const styles = {
   heading: {
     fontSize: 32,
-    fontFamily: 'Avenir Next',
+    fontFamily: font1,
     marginTop: 50
   },
   buttonStyle: {
@@ -20,8 +20,9 @@ const styles = {
     alignSelf: 'flex-start',
     marginLeft: 345,
     fontSize: 20,
-    fontFamily: 'Avenir Next',
-    textAlign: 'center'
+    fontFamily: font1,
+    textAlign: 'center',
+    borderColor: brandColor
   },
   textBox: {
     backgroundColor: 'white',

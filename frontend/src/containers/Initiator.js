@@ -3,9 +3,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import price from 'crypto-price'
-import ProposeForm from '../components/propose/form'
-import ProposeLanding from '../components/propose/landing'
 import Sidebar from '../components/shared/Sidebar'
+import ProposeLanding from '../components/propose/landing'
+import ProposeForm from '../components/propose/form'
 import InitiatorWelcome from '../components/modals/InitiatorWelcome'
 import InsufficientTokens from '../components/modals/InsufficientTokens'
 import VerificationModal from '../components/modals/VerificationModal'
@@ -21,7 +21,6 @@ class Initiator extends React.Component {
     this.state = {
       firstTime: true,
       role: 'Initiator',
-      showSidebarIcons: true,
       firstModal: false,
       secondModal: false,
       tempProject: {},
@@ -49,6 +48,7 @@ class Initiator extends React.Component {
     this.handlePhotoChange = this.handlePhotoChange.bind(this)
     this.storeData = this.storeData.bind(this)
     this.handleVerification = this.handleVerification.bind(this)
+    this.handleVerifyCancel = this.handleVerifyCancel.bind(this)
   }
 
   componentWillMount () {
@@ -133,7 +133,6 @@ class Initiator extends React.Component {
   }
 
   chooseResource () {
-    console.log('hello')
     this.setState({ firstModal: true })
   }
 
@@ -141,38 +140,32 @@ class Initiator extends React.Component {
     this.props.history.push(url)
   }
 
-  areYouSure () {
-    this.setState({ verificationModal: true })
-  }
-
   async handleVerification (addr) {
     await this.props.getProject(addr)
-    this.setState({ projectProposed: true, proposingProject: false })
+    this.setState({ verificationModal: false, projectProposed: true, proposingProject: false })
+  }
+
+  handleVerifyCancel () {
+    this.setState({ verificationModal: false })
   }
 
   render () {
     return (
       <div>
-
-        {this.state.firstTime && this.state.firstModal
-          ? <InitiatorWelcome visible={this.state.firstTime && this.state.firstModal} continue={this.choosePropType} />
-          : null }
-        {this.state.firstTime && this.state.secondModal
-          ? <InsufficientTokens visible={this.state.firstTime && this.state.secondModal} continue={() => this.redirect('/dashboard')} />
-          : null }
-        {this.state.verificationModal
-          ? <VerificationModal
-            visible={this.state.verificationModal}
-            close={(addr) => this.handleVerification(addr)}
-            collateralType={this.state.collateralType}
-            data={this.state.data}
-            tokensToStake={this.state.tokensToStake}
-            repToStake={this.state.repToStake}
-            finder={() => this.redirect('/finder')} />
-          : null }
+        <InitiatorWelcome visible={this.state.firstTime && this.state.firstModal} continue={this.choosePropType} />
+        <InsufficientTokens visible={this.state.firstTime && this.state.secondModal} continue={() => this.redirect('/fund')} />
+        <VerificationModal
+          visible={this.state.verificationModal}
+          close={(addr) => this.handleVerification(addr)}
+          collateralType={this.state.collateralType}
+          data={this.state.data}
+          tokensToStake={this.state.tokensToStake}
+          repToStake={this.state.repToStake}
+          finder={() => this.redirect('/finder')}
+        />
         {this.state.proposalLanding
           ? <div>
-            <Sidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
+            <Sidebar showIcons highlightIcon={this.state.role} redirect={this.redirect} />
             <ProposeLanding
               chooseResource={this.chooseResource}
             />
@@ -180,7 +173,7 @@ class Initiator extends React.Component {
           : null}
         {this.state.proposingProject
           ? <div>
-            <Sidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
+            <Sidebar showIcons highlightIcon={this.state.role} redirect={this.redirect} />
             <ProposeForm
               tokensToStake={this.state.tokensToStake}
               repToStake={this.state.repToStake}
@@ -192,12 +185,11 @@ class Initiator extends React.Component {
             />
           </div>
           : null}
-
         {this.state.projectProposed
           ? <div>
             <ProjectPage
               usdPerEth={this.state.usdPerEth}
-              showIcons={this.state.showSidebarIcons}
+              showIcons
               highlightIcon={this.state.role}
               redirect={this.redirect}
               project={this.props.projects} />

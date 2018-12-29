@@ -13,6 +13,7 @@ import Complete from './finished/Complete'
 import Failed from './finished/Failed'
 import Expired from './finished/Expired'
 import Landing from './Landing'
+import Fund from './Fund'
 import Initiator from './Initiator'
 import Finder from './Finder'
 
@@ -22,6 +23,7 @@ const Main = () =>
       <Route exact path='/' component={Landing} />
       <Route path='/status' component={Status} />
       <Route path='/profile' component={Profile} />
+      <Route path='/fund' component={Fund} />
       <Route path='/roleselection' component={RoleSelection} />
       <Route path='/initiator' component={Initiator} />
       <Route path='/finder' component={Finder} />

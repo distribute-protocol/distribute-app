@@ -28,7 +28,7 @@ class Sidebar extends React.Component {
     let iconSize = 66
     let iconMargin = 35
     return (
-      <div style={{ height: '100%', width: 100, position: 'fixed', backgroundColor: '#111111', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ height: '100%', width: 100, position: 'fixed', backgroundColor: 'black', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
           <h1 className='App-title' style={{ color: 'white', marginTop: 5, fontSize: 18 }}>HYPHA</h1>
           <div style={{ display: 'flex', marginLeft: 2, width: 60, height: 60, borderRadius: 30, backgroundColor: '#fcfcfc', alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>
@@ -41,7 +41,7 @@ class Sidebar extends React.Component {
             ? <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between' }}>
               { this.props.highlightIcon === 'Initiator'
                 ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={initiatorcolor} alt='initiator' onClick={() => this.props.redirect('/initiator')} />
-                : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} alt='initiator' onClick={() => this.props.redirect('/initiator')} />
+                : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={initiatorgray} alt='initiator' onClick={() => this.props.redirect('/initiator')} />
               }
               { this.props.highlightIcon === 'Finder'
                 ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={findercolor} alt='finder' onClick={() => this.props.redirect('/finder')} />

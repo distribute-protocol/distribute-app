@@ -1,4 +1,4 @@
-export const font1 = 'PingFang SC'
+export const font1 = 'Avenir Next'
 export const font2 = 'NowAltRegular'
 export const font3 = 'Lato'
 export const font4 = 'Roboto'
