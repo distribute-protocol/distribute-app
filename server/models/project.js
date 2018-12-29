@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 
 let projectSchema = mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
   activeStatePeriod: Number,
   address: String,
   ipfsHash: String,

@@ -1,8 +1,8 @@
 let obj = require('./build/contracts/ProjectLibrary.json')
 
-const ProjectLibraryAddress = obj.networks['5777'].address
+const ProjectLibraryAddress = Object.keys(obj.networks).sort()[Object.keys(obj.networks).length - 1].address
 
-const ProjectLibraryABI = JSON.stringify(obj.abi)
+const ProjectLibraryABI = obj.abi
 
 const ProjectLibraryBytecode = obj.deployedBytecode
 

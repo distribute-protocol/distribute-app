@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 
 let taskSchema = mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
   address: String,
   claimed: Boolean,
   claimedAt: Date,
@@ -16,7 +15,6 @@ let taskSchema = mongoose.Schema({
   state: Number,
   validationFee: Number,
   validationRewardClaimable: Boolean, // is the reward claimable by the correct validator?
-  validations: [],
   weighting: Number,
   workerRewarded: Boolean, // did the worker pull their reward already?
   workerRewardClaimable: Boolean // is the reward claimable by worker who completed the task?

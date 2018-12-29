@@ -1,8 +1,8 @@
 let obj = require('./build/contracts/TokenRegistry.json')
 
-const TokenRegistryAddress = obj.networks['5777'].address
+const TokenRegistryAddress = Object.keys(obj.networks).sort()[Object.keys(obj.networks).length - 1].address
 
-const TokenRegistryABI = JSON.stringify(obj.abi)
+const TokenRegistryABI = obj.abi
 
 const TokenRegistryBytecode = obj.bytecode
 

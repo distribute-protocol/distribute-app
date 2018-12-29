@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 
 let prelimTaskListSchema = mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
   address: String,
   submitter: String,
   hash: String,

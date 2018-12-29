@@ -12,7 +12,6 @@ const User = require('../models/user')
 const Validation = require('../models/validation')
 const Vote = require('../models/vote')
 const PrelimTaskList = require('../models/prelimTaskList')
-const { VoteRecord } = require('../models/voteRecord')
 const _ = require('lodash')
 // The resolvers
 const resolvers = {
@@ -52,19 +51,16 @@ const resolvers = {
     tasks: (user) => Task.find({claimer: user.id}).then(tasks => tasks),
     tokenChanges: (user) => Token.find({userId: user.id}).then(tokens => tokens),
     validations: (user) => Validation.find({userId: user.id}).then(validations => validations),
-    votes: (user) => Vote.find({userId: user.id}).then(votes => votes),
-    voteRecords: (user) => User.findOne({_id: user.id}).then(userDoc => userDoc.voteRecords)
+    votes: (user) => Vote.find({voter: user.id}).then(votes => votes)
   },
-  VoteRecord: {
-    voter: (vote) => User.findOne({account: vote.voter}).then(user => user),
-    task: (vote) => Task.findById(vote.task).then(voteRecord => voteRecord)
-  },
+
   Validation: {
-    task: (validation) => Task.findById(validation.task).then(task => task)
+    task: (validation) => Task.findById(validation.task).then(task => task),
+    project: (validation) => Project.findById(validation.project).then(project => project)
   },
   Vote: {
-    task: (vote) => Task.findById(vote.taskId).then(vote => vote),
-    user: (vote) => User.findById(vote.userId).then(user => user)
+    task: (vote) => Task.findById(vote.task).then(task => task),
+    voter: (vote) => User.findById(vote.voter).then(user => user)
   },
   Query: {
     network: () => Network.findOne({}).then(status => status),
@@ -87,18 +83,19 @@ const resolvers = {
     verifiedPrelimTaskLists: (_, args) => PrelimTaskList.find({address: args.address.toLowerCase(), verified: true}).then(prelimTaskLists => prelimTaskLists),
     userPrelimTaskLists: (_, args) => PrelimTaskList.findOne({submitter: args.account.toLowerCase()}).then(prelimTaskLists => prelimTaskLists),
     taskValidations: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => Task.find({project: project.id}).then(task => Validation.find({task: task.id})).then(validations => validations)),
-    userVotes: (account) => [{}],
-    userVoteRecords: (_, args) => User.findOne({account: args.account}).then(user => user.voteRecords),
+    userVotes: (_, args) => User.findOne({account: args.account}).then(user => Vote.find({voter: user.id}).then(votes => votes)),
     taskVotes: (address) => [{}],
     findFinalTaskHash: (_, args) => PrelimTaskList.findOne({hash: args.topTaskHash, address: args.address.toLowerCase()}).then(prelimTaskList => prelimTaskList),
     findTaskByIndex: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => Task.findOne({project: project.id, index: args.index})).then(task => task),
     allTasksinProject: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => Task.find({project: project.id})).then(tasks => tasks),
     getValidations: (_, args) => Project.findOne({address: args.address.toLowerCase()}).then(project => Task.findOne({project: project.id, index: args.index})).then(task => Validation.find({task: task.id})).then(validations => validations),
     getUserValidationsinProject: (_, args) => Validation.find({projAddress: args.address.toLowerCase(), user: args.user.toLowerCase()}).then(validations => validations),
-    getPrevPollID: (obj, args) => User.findOne({account: args.account}).then((user) => {
-      let insertIndex = _.sortedIndexBy(user.voteRecords, {amount: args.amount}, (o) => o.amount)
-      let prevPollID = insertIndex < 1 ? 0 : user.voteRecords[insertIndex - 1].pollID
-      return prevPollID
+    getPrevPollID: (obj, args) => User.findOne({account: args.account}).then(user => {
+      Vote.find({voter: user.id, revealed: false, rescued: false}).sort({amount: 1}).then(votes => {
+        let insertIndex = _.sortedIndexBy(votes, {amount: args.amount}, (o) => o.amount)
+        let prevPollID = insertIndex < 1 ? 0 : votes[insertIndex - 1].pollID
+        return prevPollID
+      })
     })
   },
   Mutation: {
@@ -174,50 +171,28 @@ const resolvers = {
         }
       })
     },
-    addVote: (obj, args) => {
-      User.findOne({account: args.voter}).exec((err, user) => {
-        if (err) {
-          console.error(err)
-        } else {
-          Project.findOne({address: args.projectAddress}).exec((err, project) => {
-            if (err) { console.error(err) }
-            Task.findOne({project: project.id, index: args.taskIndex}).exec((err, task) => {
-              if (err) { console.error(err) }
-              let userVoteObj = new VoteRecord({
-                _id: new mongoose.Types.ObjectId(),
-                amount: args.amount,
-                pollID: args.pollID,
-                project: args.projectAddress,
-                revealed: false,
-                rescued: false,
-                salt: args.salt,
-                task: task.id,
-                type: args.type,
-                vote: args.vote,
-                voter: user.id
-              })
-              let index = _.sortedIndexBy(user.voteRecords, userVoteObj, (o) => o.amount)
-              user.voteRecords.splice(index, 0, userVoteObj)
-              user.markModified('voteRecords')
-              user.save(err => {
-                if (err) return console.log(err)
-                return userVoteObj
-              })
-            })
-          })
-
-          // userVoteObj.save((err, vote) => {
-          //   if (err) return console.log(err)
-          //   let index = _.sortedIndexBy(user.voteRecords, vote, (o) => o.amount)
-          //   user.voteRecords.splice(index, 0, vote)
-          //   user.markModified('voteRecords')
-          //   user.save((err) => {
-          //     if (err) return console.log(err)
-          //     return vote
-          //   })
-          // })
-        }
-      })
+    addVote: async (obj, args) => {
+      try {
+        const user = await User.findOne({account: args.voter})
+        const project = await Project.findOne({account: args.projectAddress})
+        const task = await Task.findOne({project: project.id, index: args.taskIndex})
+        const vote = await Vote.findOneAndUpdate({
+          amount: args.amount,
+          pollID: args.pollID,
+          project: project.id,
+          revealed: false,
+          rescued: false,
+          task: task.id,
+          type: args.type,
+          voter: user.id
+        }, { $set: {
+          salt: args.salt,
+          vote: args.vote
+        }}, {upsert: true})
+        if (!vote) console.error('vote not added successfully')
+      } catch (err) {
+        console.error('Error Adding Vote')
+      }
     }
     // let prelimTaskListSubmitted = new PrelimTaskList({
     //   _id: new mongoose.Types.ObjectId(),
