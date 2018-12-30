@@ -8,6 +8,7 @@ import FundVerificationModal from '../components/modals/FundVerificationModal'
 import price from 'crypto-price'
 import { eth, web3, dt, rr } from '../utilities/blockchain'
 import { getUserStatusWallet } from '../actions/userActions'
+import { clearTransaction } from '../actions/transactionActions'
 
 class Fund extends React.Component {
   constructor () {
@@ -54,14 +55,14 @@ class Fund extends React.Component {
         let currentPrice = (await dt.currentPrice()).toNumber()
         let ethToSend = this.state.fundingType === 'ether' ? web3.toWei(value, 'ether') : web3.toWei((value / this.state.price), 'ether')
         if (totalSupply === 0) {
-          this.setState({ tokensToBuy: ethToSend / (currentPrice * 2), ethToSend, currentPrice, totalSupply, value })
+          this.setState({ tokensToBuy: ethToSend / (currentPrice * 2) - 10, ethToSend, currentPrice, totalSupply, value })
         } else {
           let a = 1
           let b = (totalSupply * currentPrice - ethToSend) / (2 * currentPrice)
           let c = -(ethToSend * totalSupply) / (2 * currentPrice)
           let result1 = (-b + Math.sqrt(b * b - 4 * (a) * (c))) / 2 * a
           let result2 = (-b - Math.sqrt(b * b - 4 * (a) * (c))) / 2 * a
-          this.setState({ tokensToBuy: result1 > result2 ? Math.floor(result1) : Math.floor(result2), ethToSend, currentPrice, totalSupply, value })
+          this.setState({ tokensToBuy: result1 > result2 ? Math.floor(result1) - 10 : Math.floor(result2) - 10, ethToSend, currentPrice, totalSupply, value })
         }
 
         // let ethRequired, refund
@@ -86,8 +87,9 @@ class Fund extends React.Component {
     this.setState({ verificationModal: true })
   }
 
-  async handleVerification (addr) {
+  handleVerification () {
     // await this.props.getProject(addr)
+    this.props.transactionClear()
     this.setState({ verificationModal: false })
   }
 
@@ -106,7 +108,7 @@ class Fund extends React.Component {
         <FundVerificationModal
           handleVerifyCancel={this.handleVerifyCancel}
           visible={this.state.verificationModal}
-          // close={(addr) => this.handleVerification(addr)}
+          close={this.handleVerification}
           // collateralType={this.state.collateralType}
           wallet={this.state.user.wallet}
           tokensToBuy={this.state.tokensToBuy}
@@ -121,10 +123,10 @@ class Fund extends React.Component {
             <div style={{ backgroundColor: 'black', height: 55 }}>
               <h1 style={{ fontFamily: font1, color: 'white', fontSize: 24, height: 55, marginTop: 10, marginLeft: 20, fontWeight: 300 }}>Fund Network</h1>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '70vw', alignSelf: 'center' }}>
               <div style={{ marginTop: 65, textAlign: 'center' }}>
                 <div style={{ fontFamily: font1, fontSize: 24 }}>Funding the network requires ether, the cryptocurrency of the ethereum network, or Dai a stablecoin.</div>
-                <div style={{ fontFamily: font1, fontSize: 24 }}>In order to begin the funding process you'll need to sign in using your metamast account</div>
+                <div style={{ fontFamily: font1, fontSize: 24, marginTop: 20 }}>In order to begin the funding process you'll need to sign in using your metamast account</div>
               </div>
               <div style={{ textAlign: 'center', marginTop: 80 }}>
                 <div style={{ fontFamily: font1, fontSize: 24 }}>How much money would you like to fund the network with?</div>
@@ -159,4 +161,10 @@ class Fund extends React.Component {
   }
 }
 
-export default connect()(Form.create()(Fund))
+const mapDispatchToProps = (dispatch) => {
+  return {
+    transactionClear: () => dispatch(clearTransaction())
+  }
+}
+
+export default connect(null, mapDispatchToProps)(Form.create()(Fund))
