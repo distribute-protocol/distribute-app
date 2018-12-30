@@ -7,7 +7,7 @@ import { web3, rr } from '../utilities/blockchain'
 import gql from 'graphql-tag'
 
 const getUserEpic = action$ => {
-  let credentials, accounts
+  let credentials, accounts, avatar
   web3.eth.getAccounts((err, res) => {
     if (err) return err
     accounts = res
@@ -15,11 +15,16 @@ const getUserEpic = action$ => {
   return action$.ofType(LOGIN_USER).pipe(
     mergeMap(action => {
       credentials = action.credentials
+      avatar = action.credentials.avatar.uri
       let query = gql`
         query ($account: String!) {
           user(account: $account) {
-            id,
+            id
+            name
             reputationBalance
+            tokenBalance
+            account
+            wallets
           }
         }
       `
@@ -29,7 +34,7 @@ const getUserEpic = action$ => {
       return iif(
         () => !result.data.user || result.data.user.reputationBalance === 0,
         of(registerUser(credentials, accounts[0])),
-        of(loggedInUser(result))
+        of(loggedInUser(result, avatar))
       )
     })
   )
@@ -102,10 +107,17 @@ const getUserStatusEpic = action$ =>
             name
             reputationBalance
             tokenBalance
+            account
+            wallets
+            credentials {
+              avatar {
+                uri
+              }
+            }
           }
         }
       `
-      return client.query({query: query, variables: {account: action.payload}})
+      return client.query({ query: query, variables: { account: action.payload } })
     }),
     map(result => userStatusReceived(result))
   )
@@ -121,6 +133,13 @@ const getUserStatusWalletEpic = action$ =>
             name
             reputationBalance
             tokenBalance
+            account
+            wallets
+            credentials {
+              avatar {
+                uri
+              }
+            }
           }
         }
       `

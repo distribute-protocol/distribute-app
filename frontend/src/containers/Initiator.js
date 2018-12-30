@@ -125,7 +125,7 @@ class Initiator extends React.Component {
 
   choosePropType (propType) {
     this.setState({ firstModal: false, propType: propType })
-    if (propType === 'tokens' && this.props.user.userTokens === 0) {
+    if (propType === 'tokens' && this.props.user.tokenBalance === 0) {
       this.setState({ secondModal: true })
     } else {
       this.setState({ proposingProject: true, proposalLanding: false })

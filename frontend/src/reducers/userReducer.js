@@ -5,29 +5,32 @@ import * as _ from 'lodash'
 
 const initialState = {
   name: '',
-  userTokens: 0,
-  userReputation: 0,
-  votes: []
+  tokenBalance: 0,
+  reputationBalance: 0,
+  votes: [],
+  avatar: ''
 }
 
 export default function userReducer (state = initialState, action) {
   switch (action.type) {
     case REGISTERED_USER:
-      return Object.assign({}, state, {userReputation: 10000, registering: action.tx})
+      return Object.assign({}, state, {reputationBalance: 10000, registering: action.tx})
     case LOGGED_IN_USER:
-      return Object.assign({}, state, {user: action.userObj})
+      return Object.assign({}, state, {user: action.userObj, loggedIn: true})
     case LOGOUT_USER:
       return Object.assign({}, state, {user: {}})
     case USER_STATUS_RECEIVED:
-      if (!action.responseDetails.data.user) {
+      let user = typeof action.responseDetails.data.userByWallet === 'undefined' ? action.responseDetails.data.user : action.responseDetails.data.userByWallet
+      if (!user) {
         return state
       } else {
-        return Object.assign({}, state, {name: action.responseDetails.data.user.name, userTokens: action.responseDetails.data.user.tokenBalance, userReputation: action.responseDetails.data.user.reputationBalance})
+        let { name, tokenBalance, reputationBalance, account, wallets, credentials } = user
+        return Object.assign({}, state, { name, tokenBalance, reputationBalance, account, wallets, avatar: credentials.avatar.uri })
       }
     case TOKENS_MINTED:
-      return Object.assign({}, state, {userTokens: state.userTokens + action.receipt.amountMinted.toNumber()})
+      return Object.assign({}, state, {tokenBalance: state.tokenBalance + action.receipt.amountMinted.toNumber()})
     case TOKENS_SOLD:
-      return Object.assign({}, state, {userTokens: state.userTokens - action.receipt.amountWithdrawn.toNumber()})
+      return Object.assign({}, state, {tokenBalance: state.tokenBalance - action.receipt.amountWithdrawn.toNumber()})
     case USER_VOTES_RECEIVED:
       return Object.assign({}, state, {votes: action.votes})
     case VOTE_COMMITTED:

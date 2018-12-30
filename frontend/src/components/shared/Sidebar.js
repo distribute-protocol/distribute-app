@@ -32,9 +32,9 @@ class Sidebar extends React.Component {
         <div>
           <h1 className='App-title' style={{ color: 'white', marginTop: 5, fontSize: 18, cursor: 'pointer' }} onClick={() => this.props.history.push('/')}>HYPHA</h1>
           <div style={{ display: 'flex', marginLeft: 2, width: 60, height: 60, borderRadius: 30, backgroundColor: '#fcfcfc', alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>
-            <img style={{ width: 60, height: 60, borderRadius: 30, cursor: 'pointer' }} onClick={() => this.props.history.push('/profile')} alt='profile' src={typeof this.props.user.avatar !== 'undefined' ? this.props.user.avatar.uri : 'http://busybridgeng.com/wp-content/uploads/2017/05/generic-avatar.png'} />
+            <img style={{ width: 60, height: 60, borderRadius: 30, cursor: 'pointer' }} onClick={() => this.props.history.push('/profile')} alt='profile' src={typeof this.props.user.avatar !== 'undefined' ? this.props.user.avatar : 'http://busybridgeng.com/wp-content/uploads/2017/05/generic-avatar.png'} />
           </div>
-          <h3 style={{ color: '#FCFCFC', fontSize: 15 }}>{this.props.user.name.split(' ')[0]}</h3>
+          <h3 style={{ color: '#FCFCFC', fontSize: 15, textAlign: 'center' }}>{this.props.user.name.split(' ')[0]}</h3>
         </div>
         <div>
           { this.props.showIcons

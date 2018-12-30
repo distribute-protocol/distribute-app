@@ -101,8 +101,6 @@ class Landing extends React.Component {
             setTimeout(() => {
               this.checkTxStatus()
             }, 1000)
-          } else {
-            this.setState({loggedIn: true})
           }
         }
       })
@@ -132,8 +130,8 @@ class Landing extends React.Component {
           ? <Onboarding skipFirst={this.state.hasEther} visible={this.state.clickedJoin} getUport={this.getUport} cancel={this.unclickJoin} />
           : null
         }
-        {this.state.loggedIn
-          ? <TextContinue text={'congrats'} visible={this.state.loggedIn} continue={this.profilePage} />
+        {this.props.user.loggedIn
+          ? <TextContinue text={'congrats'} visible={this.props.user.loggedIn} continue={this.profilePage} />
           : null
         }
         <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', backgroundImage: `url(${landingbackground})`, backgroundColor: 'rgba(0, 0, 0, 0.75)', backgroundRepeat: 'no-repeat', backgroundSize: 'cover', height: '60vh'}}>

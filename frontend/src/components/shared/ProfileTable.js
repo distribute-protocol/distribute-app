@@ -23,7 +23,7 @@ class ProfileTable extends React.Component {
         return {
           key: i,
           address: datum,
-          close: <Button onClick={() => this.props.deleteItem(i)} style={{ cursor: 'pointer' }} shape='circle' icon='close' />
+          close: <Button onClick={() => this.props.deleteItem(i)} style={{ cursor: 'pointer' }} size='small' shape='circle' icon='close' />
         }
       })
     } else {

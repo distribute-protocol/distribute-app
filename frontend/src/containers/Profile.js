@@ -68,6 +68,7 @@ class Profile extends React.Component {
         }
         <ProfileComponent
           name={this.props.user.name}
+          avatar={this.props.user.avatar}
           location={'Brooklyn, NY'}
           handleSave={this.roleSelection}
           deleteItem={(i, category) => this.deleteItem(i, category)}

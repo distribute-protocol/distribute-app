@@ -35,10 +35,11 @@ export function loginUser (credentials) {
   }
 }
 
-export function loggedInUser (userObj) {
+export function loggedInUser (userObj, avatar) {
   return {
     type: LOGGED_IN_USER,
-    userObj
+    userObj,
+    avatar
   }
 }
 

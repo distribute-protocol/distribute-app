@@ -10,15 +10,16 @@ export default ({
   editContent,
   deleteItem,
   addItem,
-  data
+  data,
+  avatar
 }) => {
   return (
     <div>
-      <div style={{display: 'flex', alignItems: 'center', paddingTop: 47, paddingLeft: 100}}>
+      <div style={{ display: 'flex', alignItems: 'center', paddingTop: 47, paddingLeft: 100 }}>
         <div>
-          <img style={{cursor: 'pointer'}} src={addavatar} alt='add avatar' />
+          <img style={{ cursor: 'pointer', height: 150, width: 150, borderRadius: 75 }} src={avatar} alt={addavatar} />
         </div>
-        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', fontSize: 20, fontFamily: 'NowAltRegular', paddingLeft: 25, paddingTop: 20}}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', fontSize: 20, fontFamily: 'NowAltRegular', paddingLeft: 25, paddingTop: 20 }}>
           <p>{name}</p>
           <p>{location}</p>
         </div>

@@ -5,8 +5,6 @@ import { REGISTERED_USER } from '../constants/UserActionTypes'
 const initialState = {
   totalTokens: 0,
   totalReputation: 0,
-  userTokens: 0,
-  userReputation: 0
 }
 
 export default function networkReducer (state = initialState, action) {

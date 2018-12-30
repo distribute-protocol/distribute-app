@@ -107,13 +107,14 @@ const resolvers = {
           _id: new mongoose.Types.ObjectId(),
           account: args.input.did,
           wallets: [args.wallet],
+          avatar: args.input.avatar.uri,
           name: args.input.name,
           tokenBalance: 0,
           reputationBalance: 0,
           tasks: [],
           validations: [],
           weiBalance: 0
-        }).save()
+        })
         if (!user) console.error('user not saved')
         let credential = await new Credential(Object.assign({ userId: user.id }, credentialObj)).save()
         if (!credential) console.error('credential not saved')
