@@ -30,9 +30,9 @@ class Sidebar extends React.Component {
     return (
       <div style={{ height: '100%', width: 100, position: 'fixed', backgroundColor: 'black', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <h1 className='App-title' style={{ color: 'white', marginTop: 5, fontSize: 18 }}>HYPHA</h1>
+          <h1 className='App-title' style={{ color: 'white', marginTop: 5, fontSize: 18, cursor: 'pointer' }} onClick={() => this.props.history.push('/')}>HYPHA</h1>
           <div style={{ display: 'flex', marginLeft: 2, width: 60, height: 60, borderRadius: 30, backgroundColor: '#fcfcfc', alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>
-            <img style={{ width: 60, height: 60, borderRadius: 30, cursor: 'pointer' }} onClick={() => this.props.redirect('/profile')} alt='profile' src={typeof this.props.user.avatar !== 'undefined' ? this.props.user.avatar.uri : 'http://busybridgeng.com/wp-content/uploads/2017/05/generic-avatar.png'} />
+            <img style={{ width: 60, height: 60, borderRadius: 30, cursor: 'pointer' }} onClick={() => this.props.history.push('/profile')} alt='profile' src={typeof this.props.user.avatar !== 'undefined' ? this.props.user.avatar.uri : 'http://busybridgeng.com/wp-content/uploads/2017/05/generic-avatar.png'} />
           </div>
           <h3 style={{ color: '#FCFCFC', fontSize: 15 }}>{this.props.user.name.split(' ')[0]}</h3>
         </div>
@@ -40,28 +40,28 @@ class Sidebar extends React.Component {
           { this.props.showIcons
             ? <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between' }}>
               { this.props.highlightIcon === 'Initiator'
-                ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={initiatorcolor} alt='initiator' onClick={() => this.props.redirect('/initiator')} />
-                : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={initiatorgray} alt='initiator' onClick={() => this.props.redirect('/initiator')} />
+                ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={initiatorcolor} alt='initiator' onClick={() => this.props.history.push('/initiator')} />
+                : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={initiatorgray} alt='initiator' onClick={() => this.props.history.push('/initiator')} />
               }
               { this.props.highlightIcon === 'Finder'
-                ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={findercolor} alt='finder' onClick={() => this.props.redirect('/finder')} />
-                : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={findergray} alt='finder' onClick={() => this.props.redirect('/finder')} />
+                ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={findercolor} alt='finder' onClick={() => this.props.history.push('/finder')} />
+                : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={findergray} alt='finder' onClick={() => this.props.history.push('/finder')} />
               }
               { this.props.highlightIcon === 'Planner'
-                ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={plannercolor} alt='planner' onClick={() => this.props.redirect('/planner')} />
-                : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={plannergray} alt='planner' onClick={() => this.props.redirect('/planner')} />
+                ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={plannercolor} alt='planner' onClick={() => this.props.history.push('/planner')} />
+                : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={plannergray} alt='planner' onClick={() => this.props.history.push('/planner')} />
               }
               { this.props.highlightIcon === 'Doer'
-                ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={doercolor} alt='doer' onClick={() => this.props.redirect('/doer')} />
-                : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={doergray} alt='doer' onClick={() => this.props.redirect('/doer')} />
+                ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={doercolor} alt='doer' onClick={() => this.props.history.push('/doer')} />
+                : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={doergray} alt='doer' onClick={() => this.props.history.push('/doer')} />
               }
               { this.props.highlightIcon === 'Validator'
-                ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={validatorcolor} alt='validator' onClick={() => this.props.redirect('/validator')} />
-                : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={validatorgray} alt='validator' onClick={() => this.props.redirect('/validator')} />
+                ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={validatorcolor} alt='validator' onClick={() => this.props.history.push('/validator')} />
+                : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={validatorgray} alt='validator' onClick={() => this.props.history.push('/validator')} />
               }
               { this.props.highlightIcon === 'Resolver'
-                ? <img style={{ width: iconSize, height: iconSize, cursor: 'pointer' }} src={resolvercolor} alt='resolver' onClick={() => this.props.redirect('/resolver')} />
-                : <img style={{ width: iconSize, height: iconSize, cursor: 'pointer' }} src={resolvergray} alt='resolver' onClick={() => this.props.redirect('resolver')} />
+                ? <img style={{ width: iconSize, height: iconSize, cursor: 'pointer' }} src={resolvercolor} alt='resolver' onClick={() => this.props.history.push('/resolver')} />
+                : <img style={{ width: iconSize, height: iconSize, cursor: 'pointer' }} src={resolvergray} alt='resolver' onClick={() => this.props.history.push('resolver')} />
               }
             </div>
             : null
@@ -69,8 +69,8 @@ class Sidebar extends React.Component {
         </div>
         { this.props.showIcons
           ? <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 30 }}>
-            <img style={{ marginBottom: 15, cursor: 'pointer', height: 40, width: 40 }} onClick={() => this.props.redirect('/activitymonitor')} src={network} alt='network' />
-            <img style={{ cursor: 'pointer', height: 40, width: 40 }} onClick={() => this.props.redirect('/dashboard')} src={dashboard} alt='dashboard' />
+            <img style={{ marginBottom: 15, cursor: 'pointer', height: 40, width: 40 }} onClick={() => this.props.history.push('/activitymonitor')} src={network} alt='network' />
+            <img style={{ cursor: 'pointer', height: 40, width: 40 }} onClick={() => this.props.history.push('/fund')} src={dashboard} alt='dashboard' />
           </div>
           : null
         }

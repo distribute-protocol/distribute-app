@@ -42,7 +42,7 @@ class Initiator extends React.Component {
     }
     this.choosePropType = this.choosePropType.bind(this)
     this.chooseResource = this.chooseResource.bind(this)
-    this.redirect = this.redirect.bind(this)
+    // this.redirect = this.redirect.bind(this)
     this.handlePhotoUpload = this.handlePhotoUpload.bind(this)
     this.handlePriceChange = this.handlePriceChange.bind(this)
     this.handlePhotoChange = this.handlePhotoChange.bind(this)
@@ -136,9 +136,9 @@ class Initiator extends React.Component {
     this.setState({ firstModal: true })
   }
 
-  redirect (url) {
-    this.props.history.push(url)
-  }
+  // redirect (url) {
+  //   this.props.history.push(url)
+  // }
 
   async handleVerification (addr) {
     await this.props.getProject(addr)
@@ -155,6 +155,7 @@ class Initiator extends React.Component {
         <InitiatorWelcome visible={this.state.firstTime && this.state.firstModal} continue={this.choosePropType} />
         <InsufficientTokens visible={this.state.firstTime && this.state.secondModal} continue={() => this.redirect('/fund')} />
         <VerificationModal
+          handleVerifyCancel={this.handleVerifyCancel}
           visible={this.state.verificationModal}
           close={(addr) => this.handleVerification(addr)}
           collateralType={this.state.collateralType}
@@ -165,7 +166,7 @@ class Initiator extends React.Component {
         />
         {this.state.proposalLanding
           ? <div>
-            <Sidebar showIcons highlightIcon={this.state.role} redirect={this.redirect} />
+            <Sidebar showIcons highlightIcon={this.state.role} history={this.props.history} />
             <ProposeLanding
               chooseResource={this.chooseResource}
             />

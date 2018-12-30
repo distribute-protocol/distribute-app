@@ -1,28 +1,9 @@
 import { MINT_TOKENS, SELL_TOKENS } from '../constants/TokenActionTypes'
 import { tokensMinted, tokensSold } from '../actions/tokenActions'
 import { transactionPending, transactionSuccess, transactionFailure } from '../actions/transactionActions'
-import { map, mergeMap, catchError, flatMap } from 'rxjs/operators'
+import { map, mergeMap, catchError } from 'rxjs/operators'
 import { from, merge, concat, of } from 'rxjs'
 import { dt } from '../utilities/blockchain'
-
-// const mintTokensEpic = action$ =>
-//   action$.ofType(MINT_TOKENS).pipe(
-//     mergeMap(action => {
-//       transactionPending()
-//       return Promise.resolve(action)
-//     }),
-//     mergeMap(action =>
-//       from(dt.mint(action.amount, action.txObj))
-//     ),
-//     map(receipt => {
-//       if (receipt.receipt.status === '0x1') {
-//         tokensMinted(receipt.logs[0].args)
-//         return transactionSuccess()
-//       } else {
-//         return transactionFailure()
-//       }
-//     })
-//   )
 
 const mintTokensEpic = action$ =>
   action$.ofType(MINT_TOKENS).pipe(

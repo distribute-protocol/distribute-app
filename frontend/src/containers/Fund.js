@@ -25,6 +25,7 @@ class Fund extends React.Component {
     this.verifyChoice = this.verifyChoice.bind(this)
     this.handleVerifyCancel = this.handleVerifyCancel.bind(this)
     this.onRadioChange = this.onRadioChange.bind(this)
+    this.handleClose = this.handleClose.bind(this)
   }
   componentWillMount () {
     eth.getAccounts(async (err, accounts) => {
@@ -87,7 +88,7 @@ class Fund extends React.Component {
     this.setState({ verificationModal: true })
   }
 
-  handleVerification () {
+  handleClose () {
     // await this.props.getProject(addr)
     this.props.transactionClear()
     this.setState({ verificationModal: false })
@@ -108,17 +109,18 @@ class Fund extends React.Component {
         <FundVerificationModal
           handleVerifyCancel={this.handleVerifyCancel}
           visible={this.state.verificationModal}
-          close={this.handleVerification}
+          close={this.handleClose}
           // collateralType={this.state.collateralType}
           wallet={this.state.user.wallet}
           tokensToBuy={this.state.tokensToBuy}
           ethToSend={this.state.ethToSend}
+          ethPrice={this.state.price}
           currentPrice={this.state.currentPrice}
           totalSupply={this.state.totalSupply}
           // finder={() => this.redirect('/finder')}
         />
         <div>
-          <Sidebar showIcons />
+          <Sidebar showIcons history={this.props.history} />
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', marginLeft: 100, color: 'black' }}>
             <div style={{ backgroundColor: 'black', height: 55 }}>
               <h1 style={{ fontFamily: font1, color: 'white', fontSize: 24, height: 55, marginTop: 10, marginLeft: 20, fontWeight: 300 }}>Fund Network</h1>

@@ -3,12 +3,13 @@ import { connect } from 'react-redux'
 import { Modal, Button } from 'antd'
 import ButtonMintTokens from '../../contractComponents/stage0/MintTokens'
 import { clearTransaction } from '../../actions/transactionActions'
-import cancel from '../../images/tximages/cancel.svg'
+import cancel from '../../images/tximages/cancel-1.svg'
 import txpending from '../../images/tximages/txpending.svg'
 import txconfirmed from '../../images/tximages/txconfirmed.svg'
 import txfailed from '../../images/tximages/txfailed.svg'
 import { web3 } from '../../utilities/blockchain'
 import { font1 } from '../../styles/fonts'
+import { grey1, affirmLight, cancelLight } from '../../styles/colors'
 
 class VerificationModal extends React.Component {
   constructor () {
@@ -18,7 +19,6 @@ class VerificationModal extends React.Component {
     }
     // this.checkIfProjectPending = this.checkIfProjectPending.bind(this)
     // this.checkTxStatus = this.checkTxStatus.bind(this)
-    this.close = this.close.bind(this)
   }
 
   shouldComponentUpdate (nextProps, nextState) {
@@ -54,10 +54,6 @@ class VerificationModal extends React.Component {
   //   }
   // }
 
-  close () {
-    // this.props.close(this.state.projAddr)
-  }
-
   render () {
     let topText, body, bottomText, backColor
     switch (this.props.tx.txStatus) {
@@ -77,51 +73,106 @@ class VerificationModal extends React.Component {
           </div>
         </div>
         bottomText =
-          <div style={{ display: 'flex', flexDirection: 'row', minWidth: '100%', justifyContent: 'space-evenly', marginTop: 90 }}>
-            <Button ghost style={{ color: '#000000', borderColor: 'black', width: 200, height: 50, fontSize: 22, fontFamily: 'Avenir Next', textAlign: 'center' }} onClick={this.props.handleVerifyCancel}>
-              Cancel
-            </Button>
-            <ButtonMintTokens
-              wallet={this.props.wallet}
-              ethToSend={this.props.ethToSend}
-              tokensToBuy={this.props.tokensToBuy}
-            />
+          <div>
+            <div style={{ display: 'flex', flexDirection: 'row', minWidth: '100%', justifyContent: 'space-evenly', marginTop: 90 }}>
+              <Button ghost style={{ color: '#000000', borderColor: 'black', width: 200, height: 50, fontSize: 22, fontFamily: 'Avenir Next', textAlign: 'center' }} onClick={this.props.handleVerifyCancel}>
+                Cancel
+              </Button>
+              <ButtonMintTokens
+                wallet={this.props.wallet}
+                ethToSend={this.props.ethToSend}
+                tokensToBuy={this.props.tokensToBuy}
+              />
+            </div>
+            <div style={{ marginTop: 20, textAlign: 'center', color: grey1, alignSelf: 'center' }}>Note: This transaction like all blockchain transactions is non-reversible.</div>
           </div>
         backColor = 'white'
         break
       case 'pending':
-        topText = <div style={{ display: 'flex', justifyContent: 'space-around', color: 'black' }}><img style={{ cursor: 'pointer' }} src={cancel} alt={cancel} onClick={this.handleCancel} /><p style={{ marginTop: 15, fontFamily: 'Avenir Next', fontSize: 30, fontWeight: 500, justifyContent: 'center' }}>
-          PENDING</p></div>
-        bottomText = <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'center', color: 'black', paddingTop: 39 }}>
-          <b><p style={{ textAlign: 'center', fontFamily: 'Lato', fontSize: 24 }}>Transaction Pending</p></b>
-          <p style={{ justifyContent: 'center', textAlign: 'center', fontFamily: 'Lato', fontSize: 18, marginTop: -20 }}>The average rate that the ethereum blockchain adds blocks is 15 seconds.<br />Block time differs between chains with some blockchains such as bitcoin taking<br />10 minutes to add blocks.</p>
-          <img style={{ justifyContent: 'center' }} src={txpending} alt={txpending} />
+        topText = <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', color: 'black', height: 75, width: '100%' }}>
+          <img style={{ height: 30, width: 30, marginLeft: 20 }} src={cancel} alt={cancel} onClick={this.props.close} />
+          <div style={{ fontFamily: 'Avenir Next', fontSize: 24, justifyContent: 'center' }}>
+            Funding Transaction Pending
+          </div>
+          <div style={{ minHeight: 30, minWidth: 30 }} />
         </div>
-        backColor = 'white'
+        body = <div style={{ display: 'flex', flexDirection: 'row', height: 400 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: 20, marginRight: 20, width: 360, textAlign: 'center' }}>
+            <div style={{ margin: 40, fontFamily: font1, fontSize: 26 }}>You are funding the network with</div>
+            <div style={{ fontFamily: font1, fontSize: 26 }}>
+              <b>
+                {`${web3.fromWei(this.props.ethToSend, 'ether')} Ether ~= $${web3.fromWei(this.props.ethToSend, 'ether') * this.props.ethPrice}`}
+              </b>
+            </div>
+            <div style={{ marginTop: 40, marginRight: 40, marginLeft: 40, fontFamily: font1, fontSize: 26 }}>You will receive</div>
+            <div style={{ fontFamily: font1, fontSize: 26 }}><b>{`${this.props.tokensToBuy} HYP`}</b></div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: grey1, marginLeft: 20, marginRight: 20, width: 360, textAlign: 'center' }}>
+            <div style={{ margin: 40, fontFamily: font1, fontSize: 20 }}>The Ethereum blockchain was conceived in 2014 by Vitalik Buterin</div>
+            <div style={{ marginBottom: 40, marginLeft: 40, marginRight: 40, fontFamily: font1, fontSize: 20 }}>It has since become the world's most valuable programmable blockchain.</div>
+            <img style={{ fontFamily: font1, fontSize: 20, justifyContent: 'center' }} src={txpending} alt={txpending} />
+
+          </div>
+        </div>
+        bottomText = <div style={{ marginTop: 20, textAlign: 'center', color: grey1, alignSelf: 'center' }}>You can close this window and you will be updated on the status of the transaction.</div>
         break
       case 'success':
-        topText = <div style={{display: 'flex', justifyContent: 'space-between', color: 'black'}}><img style={{cursor: 'pointer'}} src={cancel} alt={cancel} onClick={this.handleCancel} /><p style={{marginTop: 15, fontFamily: 'Avenir Next', fontSize: 30, fontWeight: 500}}>Success!</p><p /></div>
-        bottomText = <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'center', color: 'black', paddingTop: 20}}>
-          <b><p style={{textAlign: 'center', fontFamily: 'Lato', fontSize: 24}}>Transaction Successful</p></b>
-          <p style={{justifyContent: 'center', textAlign: 'center', fontFamily: 'Lato', fontSize: 18, marginTop: -20}}>Your proposal was successfully submitted. People can now find your project.</p>
-          <img style={{justifyContent: 'center'}} src={txconfirmed} alt={txconfirmed} />
-          <Button style={{marginTop: 10, borderRadius: 4, border: '1px solid rgba(0, 0, 0, 0.6)', color: 'rgba(0, 0, 0, 0.6)', maxWidth: 200, height: 45, fontSize: 24, fontFamily: 'Lato', textAlign: 'center'}} key='continuemoney' onClick={this.close}>
-            Close
-          </Button>
+        topText = <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', color: 'black', height: 75, width: '100%' }}>
+          <img style={{ height: 30, width: 30, marginLeft: 20 }} src={cancel} alt={cancel} onClick={this.props.close} />
+          <div style={{ fontFamily: 'Avenir Next', fontSize: 24, justifyContent: 'center' }}>
+            Funding Transaction Successul
+          </div>
+          <div style={{ minHeight: 30, minWidth: 30 }} />
         </div>
-        backColor = 'rgba(126, 211, 33, 0.25)'
+        body = <div style={{ display: 'flex', flexDirection: 'row', height: 400 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: 20, marginRight: 20, width: 360, textAlign: 'center' }}>
+            <div style={{ margin: 40, fontFamily: font1, fontSize: 26 }}>You funded the network with</div>
+            <div style={{ fontFamily: font1, fontSize: 26 }}>
+              <b>
+                {`${web3.fromWei(this.props.ethToSend, 'ether')} Ether ~= $${web3.fromWei(this.props.ethToSend, 'ether') * this.props.ethPrice}`}
+              </b>
+            </div>
+            <div style={{ marginTop: 40, marginRight: 40, marginLeft: 40, fontFamily: font1, fontSize: 26 }}>You received</div>
+            <div style={{ fontFamily: font1, fontSize: 26 }}><b>{`${this.props.tokensToBuy} HYP`}</b></div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: affirmLight, marginLeft: 20, marginRight: 20, width: 360, textAlign: 'center' }}>
+            <div style={{ margin: 40, marginBottom: 30, fontFamily: font1, fontSize: 20 }}>Your transaction was confirmed!</div>
+            {/* TODO: nsert transaction link */}
+            <div style={{ marginBottom: 20, marginLeft: 40, marginRight: 40, fontFamily: font1, fontSize: 20 }}>You can view the receipt of your transaction here (insert link)</div>
+            <div style={{ marginLeft: 40, marginRight: 40, fontFamily: font1, fontSize: 18 }}>Transaction Number:</div>
+            <div style={{ marginBottom: 20, fontFamily: font1, fontSize: 20 }}>0</div>
+            <img style={{ fontFamily: font1, fontSize: 20, justifyContent: 'center', height: 58, width: 58 }} src={txconfirmed} alt={txconfirmed} />
+          </div>
+        </div>
+        bottomText = <div style={{ marginTop: 20, textAlign: 'center', color: grey1, alignSelf: 'center' }}>Note: This transaction like all blockchain transactions is non-reversible.</div>
         break
       case 'failure':
-        topText = <div style={{display: 'flex', justifyContent: 'space-between', color: 'black'}}><img style={{cursor: 'pointer', justifyContent: 'flex-start'}} src={cancel} alt={cancel} onClick={this.handleCancel} /><p style={{marginTop: 15, fontFamily: 'Avenir Next', fontSize: 30, fontWeight: 500, justifyContent: 'center'}}>Failed</p><p /></div>
-        bottomText = <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'center', color: 'black', paddingTop: 20}}>
-          <b><p style={{textAlign: 'center', fontFamily: 'Lato', fontSize: 24}}>Transaction Failed</p></b>
-          <p style={{justifyContent: 'center', textAlign: 'center', fontFamily: 'Lato', fontSize: 18, marginTop: -20}}>Unfortunately your proposal was not submitted. Please try again.</p>
-          <img style={{justifyContent: 'center'}} src={txfailed} alt={txfailed} />
-          <Button style={{marginTop: 10, borderRadius: 4, border: '1px solid rgba(0, 0, 0, 0.6)', color: 'rgba(0, 0, 0, 0.6)', maxWidth: 200, height: 45, fontSize: 24, fontFamily: 'Lato', textAlign: 'center'}} key='continuemoney' onClick={this.handleCancel}>
-            Close
-          </Button>
+        topText = <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', color: 'black', height: 75, width: '100%' }}>
+          <img style={{ height: 30, width: 30, marginLeft: 20 }} src={cancel} alt={cancel} onClick={this.props.close} />
+          <div style={{ fontFamily: 'Avenir Next', fontSize: 24, justifyContent: 'center' }}>
+            Funding Transaction Failed
+          </div>
+          <div style={{ minHeight: 30, minWidth: 30 }} />
         </div>
-        backColor = 'rgba(126, 211, 33, 0.25)'
+        body = <div style={{ display: 'flex', flexDirection: 'row', height: 400 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: 20, marginRight: 20, width: 360, textAlign: 'center' }}>
+            <div style={{ margin: 40, fontFamily: font1, fontSize: 26 }}>You unsuccessfully tried to fund the network with</div>
+            <div style={{ fontFamily: font1, fontSize: 26 }}>
+              <b>
+                {`${web3.fromWei(this.props.ethToSend, 'ether')} Ether ~= $${web3.fromWei(this.props.ethToSend, 'ether') * this.props.ethPrice}`}
+              </b>
+            </div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: cancelLight, marginLeft: 20, marginRight: 20, width: 360, textAlign: 'center' }}>
+            <div style={{ margin: 40, fontFamily: font1, fontSize: 20 }}>Your transaction was unsuccesful</div>
+            {/* TODO: nsert transaction link */}
+            <div style={{ marginBottom: 40, marginLeft: 40, marginRight: 40, fontFamily: font1, fontSize: 20 }}>You can view the receipt of your transaction here (insert link)</div>
+            <div style={{ marginBottom: 40, marginLeft: 40, marginRight: 40, fontFamily: font1, fontSize: 18 }}>Transaction Number:</div>
+            <div style={{ marginBottom: 40, marginLeft: 40, marginRight: 40, fontFamily: font1, fontSize: 20 }}>0</div>
+            <img style={{ fontFamily: font1, fontSize: 20, justifyContent: 'center', height: 58, width: 58 }} src={txfailed} alt={txfailed} />
+          </div>
+        </div>
+        bottomText = <div style={{ marginTop: 20, textAlign: 'center', color: grey1, alignSelf: 'center' }}>Note: This transaction like all blockchain transactions is non-reversible.</div>
         break
       default:
         topText = null
@@ -137,22 +188,11 @@ class VerificationModal extends React.Component {
         footer={null}
         maskClosable={false}
         width={760}
-        bodyStyle={{ height: 540, backgroundColor: backColor, margin: 0, padding: 0 }}
+        bodyStyle={{ height: 540, margin: 0, padding: 0 }}
       >
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           {topText}
           {body}
-            { /*
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', height: 200, minWidth: '100%' }}>
-            { this.props.data.name !== undefined ? <p style={{textAlign: 'center'}}>project name: {this.props.data.name}</p> : null }
-            { this.props.data.summary !== undefined ? <p style={{textAlign: 'center'}}>project summary: {this.props.data.summary}</p> : null }
-            { this.props.data.cost !== undefined ? <p style={{textAlign: 'center'}}>project cost: {this.props.data.cost}</p> : null }
-            { this.props.data.photo !== undefined ? <p style={{textAlign: 'center'}}>project photo: {this.props.data.photo}</p> : null }
-            { this.props.data.location !== undefined ? <p style={{textAlign: 'center'}}>project location: {this.props.data.location}</p> : null }
-            { this.props.data.staking !== undefined ? <p style={{textAlign: 'center'}}>project end data: {this.props.data.stakingEndDate}</p> : null }
-                    </div>
-            */ }
-
           {bottomText}
         </div>
       </Modal>

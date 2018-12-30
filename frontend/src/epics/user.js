@@ -1,11 +1,10 @@
 import { LOGIN_USER, REGISTER_USER, GET_USER_STATUS, GET_USER_STATUS_WALLET, GET_USER_VOTES, SAVE_USER_PROFILE } from '../constants/UserActionTypes'
 import { userStatusReceived, loggedInUser, registerUser, registeredUser, userVotesReceived, savedUserProfile } from '../actions/userActions'
-import { from, of, iif, concat, merge } from 'rxjs'
-import { map, mergeMap, flatMap } from 'rxjs/operators'
+import { from, of, iif, merge } from 'rxjs'
+import { map, mergeMap } from 'rxjs/operators'
 import { client } from '../index'
 import { web3, rr } from '../utilities/blockchain'
 import gql from 'graphql-tag'
-import * as _ from 'lodash'
 
 const getUserEpic = action$ => {
   let credentials, accounts
@@ -15,7 +14,6 @@ const getUserEpic = action$ => {
   })
   return action$.ofType(LOGIN_USER).pipe(
     mergeMap(action => {
-      console.log('hello')
       credentials = action.credentials
       let query = gql`
         query ($account: String!) {
@@ -27,13 +25,11 @@ const getUserEpic = action$ => {
       `
       return client.query({ query, variables: { account: credentials.did } })
     }),
-    flatMap(result => {
+    mergeMap(result => {
       return iif(
         () => !result.data.user || result.data.user.reputationBalance === 0,
         of(registerUser(credentials, accounts[0])),
-        concat(
-          of(loggedInUser(result))
-        )
+        of(loggedInUser(result))
       )
     })
   )
@@ -60,6 +56,7 @@ const registerUserEpic = action$ => {
       })
     }),
     mergeMap(result => {
+      console.log('there', result)
       return from(rr.register({ from: wallet }))
     }),
     map(result => registeredUser(result.tx))

@@ -18,7 +18,7 @@ module.exports = function () {
         let minter = event.returnValues.minter
         let amountMinted = event.returnValues.amountMinted
         let totalCost = event.returnValues.totalCost
-        const user = await User.findOneAndUpdate({ wallets: minter }, { $inc: { tokenBalance: amountMinted } }, { upsert: true, setDefaultsOnInsert: true, new: true })
+        const user = await User.findOneAndUpdate({ wallets: minter }, { $inc: { tokenBalance: amountMinted } }, { setDefaultsOnInsert: true, new: true })
         if (!user) { console.error('User not successfully updated') }
         await new Token({ userId: user.id, amount: amountMinted, ether: totalCost }).save()
         const network = await Network.findOneAndUpdate({},
