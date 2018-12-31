@@ -46,7 +46,6 @@ class ProposeForm extends React.Component {
       container: this.mapContainer,
       style: 'mapbox://styles/mapbox/streets-v10'
     })
-    this.setState({ map: map })
     let coordHandler = (pos) => {
       let ll = new mapboxgl.LngLat(pos.coords.longitude, pos.coords.latitude)
       map.setCenter(ll)
@@ -58,6 +57,7 @@ class ProposeForm extends React.Component {
       })
     }
     window.navigator.geolocation.getCurrentPosition(coordHandler)
+    this.setState({ map: map })
   }
 
   componentWillUnmount () {
@@ -84,7 +84,7 @@ class ProposeForm extends React.Component {
   }
 
   submitHandler (type) {
-    this.props.storeData(type, this.props.form.getFieldsValue(), this.state.category)
+    this.props.storeData(type, this.props.form.getFieldsValue(), this.state.category, this.state.coords)
     this.props.form.resetFields()
   }
 
@@ -103,27 +103,26 @@ class ProposeForm extends React.Component {
     const categoryMenu = (
       <Menu>
         <Menu.Item>
-          <p onClick={() => this.setState({ category: 'community mesh networks' })} target='_blank' rel='noopener noreferrer'>community mesh networks</p>
+          <p onClick={() => this.setState({ category: 'Community Mesh Networks' })} target='_blank' rel='noopener noreferrer'>Community Mesh Networks</p>
         </Menu.Item>
         <Menu.Item>
-          <p onClick={() => this.setState({ category: 'urban agriculture' })} target='_blank' rel='noopener noreferrer'>urban agriculture</p>
+          <p onClick={() => this.setState({ category: 'Urban Agriculture' })} target='_blank' rel='noopener noreferrer'>Urban Agriculture</p>
         </Menu.Item>
         <Menu.Item>
-          <p onClick={() => this.setState({ category: 'land trusts' })} target='_blank' rel='noopener noreferrer'>land trusts</p>
+          <p onClick={() => this.setState({ category: 'Land Trusts' })} target='_blank' rel='noopener noreferrer'>Land Trusts</p>
         </Menu.Item>
         <Menu.Item>
-          <p onClick={() => this.setState({ category: 'sustainable energy systems' })} target='_blank' rel='noopener noreferrer'>sustainable energy systems</p>
+          <p onClick={() => this.setState({ category: 'Sustainable Energy Systems' })} target='_blank' rel='noopener noreferrer'>Sustainable Energy Systems</p>
         </Menu.Item>
         <Menu.Item>
-          <p onClick={() => this.setState({ category: 'open source software' })} target='_blank' rel='noopener noreferrer'>open source software</p>
+          <p onClick={() => this.setState({ category: 'Open Source Software' })} target='_blank' rel='noopener noreferrer'>Open Source Software</p>
         </Menu.Item>
         <Menu.Item>
-          <p onClick={() => this.setState({ category: 'other' })} target='_blank' rel='noopener noreferrer'>other</p>
+          <p onClick={() => this.setState({ category: 'Other' })} target='_blank' rel='noopener noreferrer'>Other</p>
         </Menu.Item>
       </Menu>
     )
     const { getFieldDecorator } = this.props.form
-
     return (
       <div style={{
         minHeight: '100vh',
@@ -318,7 +317,7 @@ class ProposeForm extends React.Component {
                   </p>
                 </b>
                 <p style={styles.subheader}>
-                  How much will this project cost?
+                  How much will this project cost in dollars?
                 </p>
               </div>
               <div style={{
@@ -372,8 +371,8 @@ class ProposeForm extends React.Component {
                 </Dropdown>
                 { this.state.collateralType === ''
                   ? null
-                  : <p style={{ justifyContent: 'flex-end' }}>
-                    You will need to contribute %{this.state.collateralType === 'Tokens' ? this.props.tokensToStake : this.props.repToStake} {this.state.collateralType.toLowerCase()}.
+                  : <p style={{ justifyContent: 'flex-end', marginTop: 10 }}>
+                    You will need to contribute <b>{this.state.collateralType === 'Tokens' ? this.props.tokensToStake : this.props.repToStake}</b> {this.state.collateralType.toLowerCase()}.
                   </p> }
               </div>
             </div>
@@ -401,7 +400,7 @@ class ProposeForm extends React.Component {
                     <Input
                       style={{ borderRadius: 0, border: `1px solid ${grey1}` }}
                       placeholder='Enter Address'
-                      onChange={this.props.handleLocationChange}
+                      onChange={this.handleLocationChange}
                     />
                   )}
                 </FormItem>

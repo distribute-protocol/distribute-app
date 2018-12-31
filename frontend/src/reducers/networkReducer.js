@@ -4,7 +4,7 @@ import { REGISTERED_USER } from '../constants/UserActionTypes'
 
 const initialState = {
   totalTokens: 0,
-  totalReputation: 0,
+  totalReputation: 0
 }
 
 export default function networkReducer (state = initialState, action) {
@@ -13,10 +13,7 @@ export default function networkReducer (state = initialState, action) {
       if (!action.responseDetails.data.network) {
         return state
       } else {
-        return Object.assign({}, state, {
-          totalTokens: action.responseDetails.data.network.totalTokens,
-          totalReputation: action.responseDetails.data.network.totalReputation }
-        )
+        return Object.assign({}, state, action.responseDetails.data.network)
       }
     case REGISTERED_USER:
       return Object.assign({}, state, {

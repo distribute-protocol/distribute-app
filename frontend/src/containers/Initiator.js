@@ -8,10 +8,11 @@ import ProposeLanding from '../components/propose/landing'
 import ProposeForm from '../components/propose/form'
 import InitiatorWelcome from '../components/modals/InitiatorWelcome'
 import InsufficientTokens from '../components/modals/InsufficientTokens'
-import VerificationModal from '../components/modals/VerificationModal'
+import InitiatorVerificationModal from '../components/modals/InitiatorVerificationModal'
 import ProjectPage from './finder/ProjectPage'
 import ipfs from '../utilities/ipfs'
 import { getUserStatusWallet } from '../actions/userActions'
+import { getNetworkStatus } from '../actions/networkActions'
 import { getProject } from '../actions/projectActions'
 import { eth, web3, dt, rr } from '../utilities/blockchain'
 
@@ -26,7 +27,6 @@ class Initiator extends React.Component {
       tempProject: {},
       loading: false,
       imageUrl: false,
-      location: [0, 0],
       verificationModal: false,
       collateralType: '',
       data: {
@@ -34,7 +34,7 @@ class Initiator extends React.Component {
         stakingEndDate: '',
         photo: '',
         name: '',
-        location: '',
+        location: [0, 0],
         summary: ''
       },
       proposalLanding: true,
@@ -52,6 +52,7 @@ class Initiator extends React.Component {
   }
 
   componentWillMount () {
+    this.props.getNetworkStatus()
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
@@ -74,6 +75,7 @@ class Initiator extends React.Component {
       cost: this.state.cost,
       stakingEndDate: Math.floor(values.date.valueOf() / 1000),
       photo: this.state.photo,
+      imageUrl: this.state.imageUrl,
       name: values.name,
       location: coords,
       summary: values.summary,
@@ -114,12 +116,15 @@ class Initiator extends React.Component {
     reader.readAsDataURL(img)
   }
 
-  handlePriceChange (val) {
-    if (web3.toWei(val.target.value, 'ether') !== 'undefined') {
-      let cost = web3.toWei(val.target.value, 'ether')
+  async handlePriceChange (val) {
+    let projectCost = val.target.value
+    let ethPrice = (await price.getCryptoPrice('USD', 'ETH')).price
+    let ethAmount = projectCost ? (projectCost / parseFloat(ethPrice)) : null
+    if (ethAmount) {
+      let cost = web3.toWei(ethAmount, 'ether')
       let tokensToStake = Math.ceil((cost * this.state.totalTokens) / (this.state.weiBal * 20))
       let repToStake = Math.ceil((cost * this.state.totalRep) / (this.state.weiBal * 20))
-      this.setState({ tokensToStake, repToStake, cost })
+      this.setState({ tokensToStake, repToStake, cost, fiatCost: projectCost, ethPrice })
     }
   }
 
@@ -154,15 +159,18 @@ class Initiator extends React.Component {
       <div>
         <InitiatorWelcome visible={this.state.firstTime && this.state.firstModal} continue={this.choosePropType} />
         <InsufficientTokens visible={this.state.firstTime && this.state.secondModal} continue={() => this.redirect('/fund')} />
-        <VerificationModal
+        <InitiatorVerificationModal
           handleVerifyCancel={this.handleVerifyCancel}
           visible={this.state.verificationModal}
           close={(addr) => this.handleVerification(addr)}
           collateralType={this.state.collateralType}
           data={this.state.data}
+          fiatCost={this.state.fiatCost}
+          ethPrice={this.state.ethPrice}
           tokensToStake={this.state.tokensToStake}
           repToStake={this.state.repToStake}
           finder={() => this.redirect('/finder')}
+          networkStatus={this.props.network}
         />
         {this.state.proposalLanding
           ? <div>
@@ -181,7 +189,6 @@ class Initiator extends React.Component {
               handlePhotoChange={this.handlePhotoChange}
               imageUrl={this.state.imageUrl}
               handlePriceChange={this.handlePriceChange}
-              handleLocationChange={this.handleLocationChange}
               storeData={this.storeData}
             />
           </div>
@@ -212,6 +219,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getUserStatusWallet: (userAccount) => dispatch(getUserStatusWallet(userAccount)),
+    getNetworkStatus: () => dispatch(getNetworkStatus()),
     getProject: (projAddress) => dispatch(getProject(projAddress))
   }
 }
