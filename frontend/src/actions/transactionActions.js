@@ -6,15 +6,17 @@ export function transactionPending () {
   }
 }
 
-export function transactionSuccess () {
+export function transactionSuccess (receipt) {
   return {
-    type: TRANSACTION_SUCCESS
+    type: TRANSACTION_SUCCESS,
+    receipt
   }
 }
 
-export function transactionFailure () {
+export function transactionFailure (receipt) {
   return {
-    type: TRANSACTION_FAILURE
+    type: TRANSACTION_FAILURE,
+    receipt
   }
 }
 

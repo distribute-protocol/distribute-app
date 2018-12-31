@@ -17,15 +17,20 @@ class ButtonProposeProject extends React.Component {
       Links: []
     }
     let multiHash
-    await ipfs.object.put(obj, {enc: 'json'}, (err, node) => {
+    await ipfs.object.put(obj, { enc: 'json' }, (err, node) => {
       if (err) {
         throw err
       }
-      multiHash = node.toJSON().multihash
+      multiHash = node.toString()
       eth.getAccounts(async (err, accounts) => {
         if (!err) {
-          await this.props.proposeProject(this.props.collateralType, {cost: this.props.data.cost, stakingEndDate: this.props.data.stakingEndDate, multiHash: multiHash}, {from: accounts[0]})
-          this.props.checkPending()
+          await this.props.proposeProject(
+            this.props.collateralType,
+            {
+              cost: this.props.data.cost,
+              stakingEndDate: this.props.data.stakingEndDate,
+              multiHash
+            }, { from: accounts[0] })
         }
       })
     })

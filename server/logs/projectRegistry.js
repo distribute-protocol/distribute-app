@@ -15,21 +15,21 @@ const netStatus = require('./network')
 module.exports = function () {
   const ProjectRegistryContract = new web3.eth.Contract(ProjectRegistryABI, ProjectRegistryAddress)
 
-  ProjectRegistryContract.events.LogProjectCreated({fromBlock: netStatus.lastBlock}).on('data', async event => {
+  ProjectRegistryContract.events.LogProjectCreated({fromBlock: 0}).on('data', async event => {
     let transactionHash1 = event.transactionHash
     let logIndex1 = event.logIndex
     const processedTx1 = await ProcessedTxs.findOne({transactionHash1, logIndex1})
-    if (!processedTx1) {
+    // if (!processedTx1) {
       let projectAddress = event.returnValues.projectAddress
       let proposerCost = event.returnValues.proposerCost
       const ProjectContract = await new web3.eth.Contract(ProjectABI, projectAddress)
-      ProjectContract.once('LogProjectDetails', {fromBlock: netStatus.lastBlock - 1}, async (err, event2) => {
-        if (err) { console.error('Error in project creation'); return }
+      ProjectContract.events.LogProjectDetails({fromBlock: 0}).on('data', async event2 => {
+        // if (err) { console.error('Error in project creation'); return }
         let transactionHash2 = event2.transactionHash
         let logIndex2 = event2.transactionHash
         try {
           const processedTx2 = await ProcessedTxs.findOne({transactionHash2, logIndex2})
-          if (!processedTx2) {
+          // if (!processedTx2) {
             let {
               weiCost,
               reputationCost,
@@ -46,7 +46,8 @@ module.exports = function () {
             let validateStatePeriod = event2.returnValues.validateStatePeriod * 1000
             let voteCommitPeriod = event2.returnValues.voteCommitPeriod * 1000
             let voteRevealPeriod = event2.returnValues.voteRevealPeriod * 1000
-            ipfs.object.get(ipfsHash, {enc: 'base64'}, async (err, node) => {
+            let parsedHash = web3.utils.hexToAscii(ipfsHash)
+            ipfs.object.get(parsedHash, async (err, node) => {
               if (err) { console.error('ipfs failed to be retrieved'); throw err }
               let dataObj = JSON.parse(new TextDecoder('utf-8').decode(node.toJSON().data))
               let updateField = proposerType === 1 ? 'tokenBalance' : 'reputationBalance'
@@ -54,7 +55,7 @@ module.exports = function () {
               if (!user) console.error('user not found')
               const project = await Project.findOneAndUpdate({address: projectAddress}, {$set: {
                 activeStatePeriod,
-                ipfsHash,
+                parsedHash,
                 listSubmitted: false,
                 location: dataObj.location,
                 name: dataObj.name,
@@ -83,16 +84,15 @@ module.exports = function () {
               if (!project) console.error('unable to update or create project')
               const network = await Network.findOneAndUpdate({}, {lastBlock: event.blockNumber}, {new: true})
               if (!network) { console.error('No networking database') }
-              await new ProcessedTxs({transactionHash1, logIndex1}).save()
-              await new ProcessedTxs({transactionHash2, logIndex2}).save()
+              // await new ProcessedTxs({transactionHash1, logIndex1}).save()
+              // await new ProcessedTxs({transactionHash2, logIndex2}).save()
             })
-          }
-        // let ipfsHash = web3.toAscii('0x' + eventParamArr[15] + eventParamArr[16].slice(0, 28))
+          // }
         } catch (err) {
           console.err('Error in database connection')
         }
       })
-    }
+    // }
   })
 
   ProjectRegistryContract.events.LogProjectFullyStaked({fromBlock: netStatus.lastBlock}).on('data', async event => {

@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Modal, Button } from 'antd'
 import ButtonMintTokens from '../../contractComponents/stage0/MintTokens'
-import { clearTransaction } from '../../actions/transactionActions'
 import cancel from '../../images/tximages/cancel-1.svg'
 import txpending from '../../images/tximages/txpending.svg'
 import txconfirmed from '../../images/tximages/txconfirmed.svg'
@@ -17,45 +16,14 @@ class VerificationModal extends React.Component {
     this.state = {
       txState: 'verification'
     }
-    // this.checkIfProjectPending = this.checkIfProjectPending.bind(this)
-    // this.checkTxStatus = this.checkTxStatus.bind(this)
   }
 
   shouldComponentUpdate (nextProps, nextState) {
     return true
   }
 
-  // checkIfProjectPending () {
-  //   if (this.props.projects !== undefined && this.props.projects.projectProposed === true) {
-  //     this.setState({txState: 'pending'})
-  //     setTimeout(() => {
-  //       this.checkTxStatus()
-  //     }, 3000)
-  //   } else if (this.state.txState === 'verification') {
-  //     setTimeout(() => {
-  //       this.checkIfProjectPending()
-  //     }, 1000)
-  //   }
-  // }
-  //
-  // checkTxStatus () {
-  //   if (this.props.projects.txHash !== undefined) {
-  //     web3.eth.getTransactionReceipt(this.props.projects.txHash, (err, res) => {
-  //       if (!err) {
-  //         if (res.blockHash === null) {
-  //           setTimeout(() => {
-  //             this.checkTxStatus()
-  //           }, 1000)
-  //         } else {
-  //           this.setState({projAddr: res.logs[0].address, txState: 'txConfirmed'})
-  //         }
-  //       }
-  //     })
-  //   }
-  // }
-
   render () {
-    let topText, body, bottomText, backColor
+    let topText, body, bottomText
     switch (this.props.tx.txStatus) {
       case null:
         topText = <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'black', height: 75, width: '100%', borderBottom: '1px solid black' }}>
@@ -86,7 +54,6 @@ class VerificationModal extends React.Component {
             </div>
             <div style={{ marginTop: 20, textAlign: 'center', color: grey1, alignSelf: 'center' }}>Note: This transaction like all blockchain transactions is non-reversible.</div>
           </div>
-        backColor = 'white'
         break
       case 'pending':
         topText = <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', color: 'black', height: 75, width: '100%' }}>
@@ -111,7 +78,6 @@ class VerificationModal extends React.Component {
             <div style={{ margin: 40, fontFamily: font1, fontSize: 20 }}>The Ethereum blockchain was conceived in 2014 by Vitalik Buterin</div>
             <div style={{ marginBottom: 40, marginLeft: 40, marginRight: 40, fontFamily: font1, fontSize: 20 }}>It has since become the world's most valuable programmable blockchain.</div>
             <img style={{ fontFamily: font1, fontSize: 20, justifyContent: 'center' }} src={txpending} alt={txpending} />
-
           </div>
         </div>
         bottomText = <div style={{ marginTop: 20, textAlign: 'center', color: grey1, alignSelf: 'center' }}>You can close this window and you will be updated on the status of the transaction.</div>
@@ -177,7 +143,6 @@ class VerificationModal extends React.Component {
       default:
         topText = null
         bottomText = null
-        backColor = 'white'
         break
     }
     return (

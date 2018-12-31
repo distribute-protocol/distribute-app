@@ -13,6 +13,7 @@ import ProjectPage from './finder/ProjectPage'
 import ipfs from '../utilities/ipfs'
 import { getUserStatusWallet } from '../actions/userActions'
 import { getNetworkStatus } from '../actions/networkActions'
+import { clearTransaction } from '../actions/transactionActions'
 import { getProject } from '../actions/projectActions'
 import { eth, web3, dt, rr } from '../utilities/blockchain'
 
@@ -98,7 +99,7 @@ class Initiator extends React.Component {
     const reader = new FileReader()
     reader.onloadend = () => {
       const buf = Buffer.from(reader.result) // Convert data into buffer
-      ipfs.files.add(buf, (err, result) => { // Upload buffer to IPFS
+      ipfs.add(buf, (err, result) => { // Upload buffer to IPFS
         if (err) {
           console.error(err)
           return
@@ -141,11 +142,8 @@ class Initiator extends React.Component {
     this.setState({ firstModal: true })
   }
 
-  // redirect (url) {
-  //   this.props.history.push(url)
-  // }
-
   async handleVerification (addr) {
+    this.props.clearTransaction()
     await this.props.getProject(addr)
     this.setState({ verificationModal: false, projectProposed: true, proposingProject: false })
   }
@@ -162,7 +160,7 @@ class Initiator extends React.Component {
         <InitiatorVerificationModal
           handleVerifyCancel={this.handleVerifyCancel}
           visible={this.state.verificationModal}
-          close={(addr) => this.handleVerification(addr)}
+          close={this.handleVerification}
           collateralType={this.state.collateralType}
           data={this.state.data}
           fiatCost={this.state.fiatCost}
@@ -220,7 +218,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getUserStatusWallet: (userAccount) => dispatch(getUserStatusWallet(userAccount)),
     getNetworkStatus: () => dispatch(getNetworkStatus()),
-    getProject: (projAddress) => dispatch(getProject(projAddress))
+    getProject: (projAddress) => dispatch(getProject(projAddress)),
+    clearTransaction: () => dispatch(clearTransaction())
   }
 }
 

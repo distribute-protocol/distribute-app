@@ -16,7 +16,6 @@ class Fund extends React.Component {
     this.state = {
       balance: 0,
       price: 0,
-      txSending: false,
       user: {},
       verificationModal: false,
       fundingType: 'ether'
@@ -89,7 +88,6 @@ class Fund extends React.Component {
   }
 
   handleClose () {
-    // await this.props.getProject(addr)
     this.props.transactionClear()
     this.setState({ verificationModal: false })
   }
@@ -110,14 +108,12 @@ class Fund extends React.Component {
           handleVerifyCancel={this.handleVerifyCancel}
           visible={this.state.verificationModal}
           close={this.handleClose}
-          // collateralType={this.state.collateralType}
           wallet={this.state.user.wallet}
           tokensToBuy={this.state.tokensToBuy}
           ethToSend={this.state.ethToSend}
           ethPrice={this.state.price}
           currentPrice={this.state.currentPrice}
           totalSupply={this.state.totalSupply}
-          // finder={() => this.redirect('/finder')}
         />
         <div>
           <Sidebar showIcons history={this.props.history} />

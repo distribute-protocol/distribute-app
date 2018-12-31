@@ -13,11 +13,11 @@ const mintTokensEpic = action$ =>
         mergeMap(receipt => {
           if (receipt.receipt.status === '0x1') {
             return concat(
-              of(tokensMinted(receipt.logs[0].args)),
-              of(transactionSuccess())
+              of(tokensMinted(receipt)),
+              of(transactionSuccess(receipt))
             )
           } else {
-            return transactionFailure()
+            return transactionFailure(receipt)
           }
         }),
         catchError(err => {
@@ -32,7 +32,7 @@ const sellTokensEpic = action$ =>
     mergeMap(action =>
       from(dt.sell(action.amount, action.txObj))
     ),
-    map(receipt => tokensSold(receipt.logs[0].args))
+    map(receipt => tokensSold(receipt))
   )
 
 export default (action$, store) => merge(

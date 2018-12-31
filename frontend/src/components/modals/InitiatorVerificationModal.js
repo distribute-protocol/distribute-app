@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import mapboxgl from 'mapbox-gl'
 import moment from 'moment'
 import { Button } from 'antd'
 import ButtonProposeProject from '../../contractComponents/stage0/ProposeProject'
+import Map from '../shared/ModalMap'
 import ModalTemplate from './ModalTemplate.js'
-import cancel from '../../images/tximages/cancel.svg'
+// import cancel from '../../images/tximages/cancel.svg'
 import txpending from '../../images/tximages/txpending.svg'
 import txconfirmed from '../../images/tximages/txconfirmed.svg'
 import txfailed from '../../images/tximages/txfailed.svg'
@@ -13,35 +13,6 @@ import picture from '../../images/initiator/shape.png'
 import { font1 } from '../../styles/fonts'
 import { grey1, brandColor, affirmLight, cancelLight } from '../../styles/colors'
 import { web3 } from '../../utilities/blockchain'
-
-mapboxgl.accessToken = 'pk.eyJ1IjoiY29uc2Vuc3lzIiwiYSI6ImNqOHBmY2w0NjBmcmYyd3F1NHNmOXJwMWgifQ.8-GlTlTTUHLL8bJSnK2xIA'
-
-class Map extends React.Component {
-  constructor () {
-    super()
-    this.state = {}
-  }
-  componentDidMount () {
-    const map = new mapboxgl.Map({
-      container: this.mapContainer2,
-      style: 'mapbox://styles/mapbox/streets-v10'
-    })
-    map.setCenter(this.props.location)
-    map.setZoom(18)
-    new mapboxgl.Marker()
-      .setLngLat(this.props.location)
-      .addTo(map)
-    this.setState({ map })
-  }
-  componentWillUnmount () {
-    this.state.map.remove()
-  }
-  render () {
-    return (
-      <div id='map' style={{ width: 375, height: 375, textAlign: 'left', overflow: 'hidden', position: 'relative' }} ref={el => { this.mapContainer2 = el }} />
-    )
-  }
-}
 
 class VerificationModal extends React.Component {
   constructor () {
@@ -51,43 +22,11 @@ class VerificationModal extends React.Component {
       txState: 'verification',
       map: ''
     }
-    this.checkIfProjectPending = this.checkIfProjectPending.bind(this)
-    this.checkTxStatus = this.checkTxStatus.bind(this)
     this.close = this.close.bind(this)
   }
 
-  checkIfProjectPending () {
-    if (this.props.projects !== undefined && this.props.projects.projectProposed === true) {
-      this.setState({ txState: 'pending' })
-      setTimeout(() => {
-        this.checkTxStatus()
-      }, 3000)
-    } else if (this.state.txState === 'verification') {
-      setTimeout(() => {
-        this.checkIfProjectPending()
-      }, 1000)
-    }
-  }
-
-  checkTxStatus () {
-    if (this.props.projects.txHash !== undefined) {
-      web3.eth.getTransactionReceipt(this.props.projects.txHash, (err, res) => {
-        if (!err) {
-          if (res.blockHash === null) {
-            setTimeout(() => {
-              this.checkTxStatus()
-            }, 1000)
-          } else {
-            this.setState({ projAddr: res.logs[0].address, txState: 'txConfirmed' })
-          }
-        }
-      })
-    }
-  }
-
   close () {
-    this.props.close(this.state.projAddr)
-    this.props.handleVerifyCancel()
+    this.props.close()
   }
 
   render () {
@@ -117,8 +56,8 @@ class VerificationModal extends React.Component {
         <Map mapSetter={this.mapSetter} location={this.props.data.location} />
       </div>
     </div>
-    switch (this.state.txState) {
-      case 'verification':
+    switch (this.props.tx.txStatus) {
+      case null:
         rightSide = <div style={{ flexDirection: 'column', alignItems: 'center', margin: 20, textAlign: 'center' }}>
           <div style={{ fontFamily: font1, fontSize: 25, marginTop: 20 }}>
             In order to initiate this proposal you are required to contribute:
@@ -152,7 +91,6 @@ class VerificationModal extends React.Component {
                 textAlign: 'center',
                 borderColor: brandColor
               }}
-              checkPending={this.checkIfProjectPending}
             />
           </div>
         </div>
@@ -177,9 +115,9 @@ class VerificationModal extends React.Component {
         </div>
 
         break
-      case 'txConfirmed':
-        rightSide = <div style={{ flexDirection: 'column', alignItems: 'center', margin: 20, textAlign: 'center', backgroundColor: affirmLight }}>
-          <div style={{ fontFamily: font1, fontSize: 24, fontWeight: 400, marginTop: 20 }}>
+      case 'success':
+        rightSide = <div style={{ flexDirection: 'column', alignItems: 'center', margin: 20, textAlign: 'center', backgroundColor: affirmLight, height: 680 }}>
+          <div style={{ fontFamily: font1, fontSize: 24, fontWeight: 400, marginTop: 40 }}>
             Transaction Successul
           </div>
           <div style={{ fontFamily: font1, fontSize: 20, margin: 20 }}>
@@ -206,9 +144,9 @@ class VerificationModal extends React.Component {
           </Button>
         </div>
         break
-      case 'txFailed':
-        rightSide = <div style={{ flexDirection: 'column', alignItems: 'center', margin: 20, textAlign: 'center', backgroundColor: cancelLight }}>
-          <div style={{ fontFamily: font1, fontSize: 24, fontWeight: 400, marginTop: 20 }}>
+      case 'failure':
+        rightSide = <div style={{ flexDirection: 'column', alignItems: 'center', margin: 20, textAlign: 'center', height: 680, backgroundColor: cancelLight }}>
+          <div style={{ fontFamily: font1, fontSize: 24, fontWeight: 400, marginTop: 40 }}>
             Transaction Failed
           </div>
           <div style={{ fontFamily: font1, fontSize: 20, margin: 20 }}>
@@ -247,8 +185,8 @@ class VerificationModal extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    projects: state.projects,
-    network: state.network
+    network: state.network,
+    tx: state.tx
   }
 }
 

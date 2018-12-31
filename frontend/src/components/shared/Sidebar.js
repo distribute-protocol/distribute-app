@@ -26,7 +26,7 @@ class Sidebar extends React.Component {
 
   render () {
     let iconSize = 66
-    let iconMargin = 35
+    let iconMargin = 25
     return (
       <div style={{ height: '100%', width: 100, position: 'fixed', backgroundColor: 'black', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

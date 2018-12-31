@@ -30,7 +30,8 @@ import {
   // votingStatusChecked
   projectProposed
 } from '../actions/projectActions'
-import { map, mergeMap, concatMap } from 'rxjs/operators'
+import { transactionPending, transactionSuccess, transactionFailure } from '../actions/transactionActions'
+import { map, mergeMap, concatMap, catchError } from 'rxjs/operators'
 import { merge, EMPTY, of, from, concat } from 'rxjs'
 import { push } from 'react-router-redux'
 import { client } from '../index'
@@ -42,8 +43,7 @@ const getProjects = action$ => {
   return action$.ofType(GET_PROJECTS).pipe(
     mergeMap(action => {
       state = action.state
-      return client.query({query: action.query}
-      )
+      return client.query({ query: action.query })
     }),
     map(result => projectsReceived(state, result.data.allProjectsinState))
   )
@@ -72,8 +72,7 @@ const getProject = action$ => {
           }
         }
       `
-      return client.query({query, variables: {address: action.address}}
-      )
+      return client.query({ query, variables: { address: action.address } })
     }),
     map(result => projectReceived(result))
   )
@@ -82,12 +81,28 @@ const getProject = action$ => {
 const proposeProject = action$ =>
   action$.ofType(PROPOSE_PROJECT).pipe(
     mergeMap(action => {
-      return action.collateralType === 'tokens'
+      let contractCall = action.collateralType === 'tokens'
         ? from(tr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
         : from(rr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
-    }),
-    map(result => projectProposed(result.tx)
-    )
+      return concat(
+        of(transactionPending()),
+        contractCall.pipe(
+          mergeMap(receipt => {
+            if (receipt.receipt.status === '0x1') {
+              return concat(
+                of(projectProposed(receipt)),
+                of(transactionSuccess(receipt))
+              )
+            } else {
+              return transactionFailure(receipt)
+            }
+          }),
+          catchError(err => {
+            if (err) { console.log(err); return of(transactionFailure()) }
+          })
+        )
+      )
+    })
   )
 
 const stakeProject = action$ => {
