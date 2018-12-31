@@ -91,33 +91,34 @@ class VerificationModal extends React.Component {
   }
 
   render () {
-    let title, headerLeft, leftSide, headerRight, rightSide
+    let rightSide
+    let ethCost = web3.fromWei(this.props.data.cost, 'ether')
+    let title = 'Project Proposal'
+    let headerLeft = 'Project Details'
+    let headerRight = 'Transaction Details'
+    let leftSide = <div style={{ flexDirection: 'column', alignItems: 'center', margin: 20, maxHeight: 680, overflow: 'auto', border: `1px ${grey1} solid` }}>
+      <div style={{ margin: 20, overflow: 'scroll', flexDirection: 'column', display: 'flex' }}>
+        <div style={{ margin: 20, marginLeft: 0, alignSelf: 'flex-start', fontFamily: font1, fontSize: 20 }}>
+          Name: {this.props.data.name}
+        </div>
+        <div style={{ margin: 20, marginLeft: 0, alignSelf: 'flex-start', fontFamily: font1, fontSize: 20 }}>
+          Cost: ${this.props.fiatCost} ~ {parseFloat(ethCost).toFixed(2)} Eth
+        </div>
+        <img src={this.props.data.photo || this.props.data.imageUrl || picture} style={this.props.data.photo ? { width: 375, height: 335, marginBottom: 20 } : { width: 275, height: 235, alignSelf: 'center' }} />
+        <div style={{ margin: 20, marginLeft: 0, alignSelf: 'flex-start', fontFamily: font1, fontSize: 20 }}>
+          Summary:
+        </div>
+        <div style={{ marginLeft: 20, marginRight: 20, alignSelf: 'flex-start', fontFamily: font1, fontSize: 20 }}>
+          {this.props.data.summary}
+        </div>
+        <div style={{ margin: 20, marginBottom: 0, marginLeft: 0, alignSelf: 'flex-start', fontFamily: font1, fontSize: 20 }}>
+          Location
+        </div>
+        <Map mapSetter={this.mapSetter} location={this.props.data.location} />
+      </div>
+    </div>
     switch (this.state.txState) {
       case 'verification':
-        title = 'Project Proposal'
-        headerLeft = 'Project Details'
-        leftSide = <div style={{ flexDirection: 'column', alignItems: 'center', margin: 20, maxHeight: 680, overflow: 'auto', border: `1px ${grey1} solid` }}>
-          <div style={{ margin: 20, overflow: 'scroll', flexDirection: 'column', display: 'flex' }}>
-            <div style={{ margin: 20, marginLeft: 0, alignSelf: 'flex-start' }}>
-              Name: {this.props.data.name}
-            </div>
-            <div style={{ margin: 20, marginLeft: 0, alignSelf: 'flex-start' }}>
-              Cost: ${this.props.fiatCost} ~ {web3.fromWei(this.props.data.cost, 'ether')} Eth
-            </div>
-            <img src={this.props.data.photo || this.props.data.imageUrl || picture} style={this.props.data.photo ? { width: 375, height: 335, marginBottom: 20 } : { width: 275, height: 235, alignSelf: 'center' }} />
-            <div style={{ margin: 20, marginLeft: 0, alignSelf: 'flex-start' }}>
-              Summary:
-            </div>
-            <div style={{ marginLeft: 20, marginRight: 20, alignSelf: 'flex-start' }}>
-              {this.props.data.summary}
-            </div>
-            <div style={{ margin: 20, marginBottom: 0, marginLeft: 0, alignSelf: 'flex-start' }}>
-              Location
-            </div>
-            <Map mapSetter={this.mapSetter} location={this.props.data.location} />
-          </div>
-        </div>
-        headerRight = 'Transaction Details'
         rightSide = <div style={{ flexDirection: 'column', alignItems: 'center', margin: 20, textAlign: 'center' }}>
           <div style={{ fontFamily: font1, fontSize: 25, marginTop: 20 }}>
             In order to initiate this proposal you are required to contribute:
@@ -157,149 +158,84 @@ class VerificationModal extends React.Component {
         </div>
         break
       case 'pending':
-        // topText = <div style={{
-        //   display: 'flex',
-        //   justifyContent: 'space-around',
-        //   color: 'black'
-        // }}>
-        //   <img style={{ cursor: 'pointer' }} src={cancel} alt={cancel} onClick={this.props.handleVerifyCancel} />
-        //   <p style={{ marginTop: 15, fontFamily: 'Avenir Next', fontSize: 30, fontWeight: 500, justifyContent: 'center' }}>
-        //     You are initiating a proposal with the following details:
-        //   </p>
-        // </div>
-        // bottomText = <div style={{
-        //   display: 'flex',
-        //   flexDirection: 'column',
-        //   justifyContent: 'space-evenly',
-        //   alignItems: 'center',
-        //   color: 'black',
-        //   paddingTop: 39
-        // }}>
-        //   <b>
-        //     <p style={{
-        //       textAlign: 'center',
-        //       fontFamily: 'Lato',
-        //       fontSize: 24
-        //     }}>
-        //       Transaction Pending
-        //     </p>
-        //   </b>
-        //   <p style={{
-        //     justifyContent: 'center',
-        //     textAlign: 'center',
-        //     fontFamily: 'Lato',
-        //     fontSize: 18,
-        //     marginTop: -20
-        //   }}>
-        //     The average rate that the ethereum blockchain adds blocks is 15 seconds.<br />
-        //     Block time differs between chains with some blockchains such as bitcoin taking<br />
-        //     10 minutes to add blocks.
-        //   </p>
-        //   <img style={{ justifyContent: 'center' }} src={txpending} alt={txpending} />
-        // </div>
+        rightSide = <div style={{ flexDirection: 'column', alignItems: 'center', margin: 20, textAlign: 'center' }}>
+          <div style={{ fontFamily: font1, fontSize: 24, fontWeight: 400, marginTop: 20 }}>
+            Transaction Pending
+          </div>
+          <div style={{ fontFamily: font1, fontSize: 20, margin: 20 }}>
+            The average rate that the ethereum blockchain adds blocks is 15 seconds.
+            Block time differs between chains with some blockchains such as bitcoin taking
+            10 minutes to add blocks..
+          </div>
+          <img style={{ justifyContent: 'center', marginTop: 30 }} src={txpending} alt={txpending} />
+          <div style={{ fontFamily: font1, fontSize: 20, margin: 20 }}>
+            Your Cost: <b>{this.props.collateralType === 'tokens' ? `${this.props.tokensToStake} Tokens` : `${this.props.repToStake} Clout`}</b>
+          </div>
+          <div style={{ fontFamily: font1, fontSize: 20, margin: 20 }}>
+            Proposal Expiration: <b>{moment(this.props.data.stakingEndDate * 1000).fromNow()}</b>
+          </div>
+        </div>
+
         break
       case 'txConfirmed':
-        // topText = <div style={{
-        //   display: 'flex',
-        //   justifyContent: 'space-between',
-        //   color: 'black'
-        // }}>
-        //   <img style={{ cursor: 'pointer' }} src={cancel} alt={cancel} onClick={this.props.handleVerifyCancel} />
-        //   <p style={{ marginTop: 15, fontFamily: 'Avenir Next', fontSize: 30, fontWeight: 500 }}>Success!</p>
-        // </div>
-        // bottomText = <div style={{
-        //   display: 'flex',
-        //   flexDirection: 'column',
-        //   justifyContent: 'space-evenly',
-        //   alignItems: 'center',
-        //   color: 'black',
-        //   paddingTop: 20
-        // }}>
-        //   <b><p style={{
-        //     textAlign: 'center',
-        //     fontFamily: 'Lato',
-        //     fontSize: 24
-        //   }}>Transaction Successful</p></b>
-        //   <p style={{ justifyContent: 'center', textAlign: 'center', fontFamily: 'Lato', fontSize: 18, marginTop: -20 }}>
-        //     Your proposal was successfully submitted. People can now find your project.
-        //   </p>
-        //   <img style={{ justifyContent: 'center' }} src={txconfirmed} alt={txconfirmed} />
-        //   <Button style={{
-        //     marginTop: 10,
-        //     borderRadius: 4,
-        //     border: '1px solid rgba(0, 0, 0, 0.6)',
-        //     color: 'rgba(0, 0, 0, 0.6)',
-        //     maxWidth: 200,
-        //     height: 45,
-        //     fontSize: 24,
-        //     fontFamily: 'Lato',
-        //     textAlign: 'center'
-        //   }} key='continuemoney' onClick={this.close}>
-        //     Close
-        //   </Button>
-        // </div>
+        rightSide = <div style={{ flexDirection: 'column', alignItems: 'center', margin: 20, textAlign: 'center', backgroundColor: affirmLight }}>
+          <div style={{ fontFamily: font1, fontSize: 24, fontWeight: 400, marginTop: 20 }}>
+            Transaction Successul
+          </div>
+          <div style={{ fontFamily: font1, fontSize: 20, margin: 20 }}>
+            Your proposal was successfully submitted. People can now find your project. You can share it with the following link.
+          </div>
+          <img style={{ justifyContent: 'center', marginTop: 40 }} src={txconfirmed} alt={txconfirmed} />
+          <div style={{ fontFamily: font1, fontSize: 14, margin: 20, marginBottom: 0 }}>
+            Transaction ID:
+          </div>
+          <div style={{ fontFamily: font1, fontSize: 16, margin: 20, marginTop: 0 }}>
+            (Insert Transaction ID)
+          </div>
+          <Button style={{
+            marginTop: 20,
+            border: '1px solid black',
+            color: 'black',
+            maxWidth: 180,
+            height: 50,
+            fontSize: 24,
+            fontFamily: font1,
+            textAlign: 'center'
+          }} key='continuemoney' onClick={this.close}>
+            Close
+          </Button>
+        </div>
         break
       case 'txFailed':
-        // topText = <div style={{
-        //   display: 'flex',
-        //   justifyContent: 'space-between',
-        //   color: 'black'
-        // }}>
-        //   <img style={{
-        //     cursor: 'pointer',
-        //     justifyContent: 'flex-start'
-        //   }} src={cancel} alt={cancel} onClick={this.props.handleVerifyCancel} />
-        //   <p style={{
-        //     marginTop: 15,
-        //     fontFamily: 'Avenir Next',
-        //     fontSize: 30,
-        //     fontWeight: 500,
-        //     justifyContent: 'center'
-        //   }}>Failed</p>
-        // </div>
-        // bottomText = <div style={{
-        //   display: 'flex',
-        //   flexDirection: 'column',
-        //   justifyContent: 'space-evenly',
-        //   alignItems: 'center',
-        //   color: 'black',
-        //   paddingTop: 20
-        // }}>
-        //   <b><p style={{
-        //     textAlign: 'center',
-        //     fontFamily: 'Lato',
-        //     fontSize: 24
-        //   }}>Transaction Failed</p></b>
-        //   <p style={{
-        //     justifyContent: 'center',
-        //     textAlign: 'center',
-        //     fontFamily: 'Lato',
-        //     fontSize: 18,
-        //     marginTop: -20
-        //   }}>
-        //     Unfortunately your proposal was not submitted. Please try again.
-        //   </p>
-        //   <img style={{ justifyContent: 'center' }} src={txfailed} alt={txfailed} />
-        //   <Button style={{
-        //     marginTop: 10,
-        //     borderRadius: 4,
-        //     border: '1px solid rgba(0, 0, 0, 0.6)',
-        //     color: 'rgba(0, 0, 0, 0.6)',
-        //     maxWidth: 200,
-        //     height: 45,
-        //     fontSize: 24,
-        //     fontFamily: 'Lato',
-        //     textAlign: 'center'
-        //   }} key='continuemoney' onClick={this.props.handleVerifyCancel}>
-        //     Close
-        //   </Button>
-        // </div>
+        rightSide = <div style={{ flexDirection: 'column', alignItems: 'center', margin: 20, textAlign: 'center', backgroundColor: cancelLight }}>
+          <div style={{ fontFamily: font1, fontSize: 24, fontWeight: 400, marginTop: 20 }}>
+            Transaction Failed
+          </div>
+          <div style={{ fontFamily: font1, fontSize: 20, margin: 20 }}>
+            Your proposal was not successfully submitted. Please try again.
+          </div>
+          <img style={{ justifyContent: 'center', marginTop: 60 }} src={txfailed} alt={txfailed} />
+          <div style={{ fontFamily: font1, fontSize: 14, margin: 20, marginBottom: 0 }}>
+            Transaction ID:
+          </div>
+          <div style={{ fontFamily: font1, fontSize: 16, margin: 20, marginTop: 0 }}>
+            (Insert Transaction ID)
+          </div>
+          <Button style={{
+            marginTop: 20,
+            border: '1px solid black',
+            color: 'black',
+            maxWidth: 180,
+            height: 50,
+            fontSize: 24,
+            fontFamily: font1,
+            textAlign: 'center'
+          }} key='continuemoney' onClick={this.close}>
+            Close
+          </Button>
+        </div>
         break
       default:
-        title = null
-        headerLeft = null
-        headerRight = null
-        leftSide = null
         rightSide = null
         break
     }
