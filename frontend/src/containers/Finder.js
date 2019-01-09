@@ -36,20 +36,22 @@ class Finder extends React.Component {
     this.state = {
       firstTime: true,
       role: 'Finder',
-      showSidebarIcons: true
+      showSidebarIcons: true,
+      ethPrice: 0
     }
     this.redirect = this.redirect.bind(this)
   }
 
   componentWillMount () {
-    eth.getAccounts(async (err, accounts) => {
+    let ethPrice
+    eth.getAccounts((err, accounts) => {
       if (!err) {
         if (accounts.length) {
           this.props.getUserStatusWallet(accounts[0])
           this.props.getProjects()
-          let ethPrice = await price.getCryptoPrice('USD', 'ETH')
-          if (ethPrice) ethPrice = parseFloat(ethPrice.price)
-          this.setState({ ethPrice })
+          price.getCryptoPrice('USD', 'ETH').then(res => {
+            this.setState({ ethPrice: parseFloat(res.price) })
+          })
         }
       }
     })
