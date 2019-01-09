@@ -26,11 +26,12 @@ class MiniSidebar extends React.Component {
   }
 
   render () {
+    console.log(this.props.user)
     return (
       <div style={{height: '100%', width: 60, position: 'fixed', backgroundColor: '#111111', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between'}}>
         <div style={{display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between'}}>
           <img style={{cursor: 'pointer', marginTop: 15}} alt='hamburger' src={hamburger} />
-          <img style={{width: 40, height: 40, borderRadius: 50, cursor: 'pointer', marginTop: 20}} onClick={() => this.props.redirect('/profile')} alt='profile' src={typeof this.props.user.avatar !== 'undefined' ? this.props.user.avatar.uri : avatar} />
+          <img style={{width: 40, height: 40, borderRadius: 50, cursor: 'pointer', marginTop: 20}} onClick={() => this.props.redirect('/profile')} alt='profile' src={typeof this.props.user.avatar !== 'undefined' ? this.props.user.avatar : avatar} />
           { this.props.showIcons
             ? <div style={{display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between', marginTop: 10}}>
               { this.props.highlightIcon === 'Initiator' ? <img style={{paddingBottom: 5, cursor: 'pointer'}} src={initiatorcolor} alt='initiator' onClick={() => this.props.redirect('/initiator')} /> : <img style={{paddingBottom: 5, cursor: 'pointer'}} src={initiatorgray} alt='initiator' onClick={() => this.props.redirect('/initiator')} /> }

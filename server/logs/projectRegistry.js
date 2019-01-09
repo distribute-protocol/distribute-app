@@ -15,21 +15,21 @@ const netStatus = require('./network')
 module.exports = function () {
   const ProjectRegistryContract = new web3.eth.Contract(ProjectRegistryABI, ProjectRegistryAddress)
 
-  ProjectRegistryContract.events.LogProjectCreated({fromBlock: 0}).on('data', async event => {
+  ProjectRegistryContract.events.LogProjectCreated({ fromBlock: netStatus.lastBlock }).on('data', async event => {
     let transactionHash1 = event.transactionHash
     let logIndex1 = event.logIndex
-    const processedTx1 = await ProcessedTxs.findOne({transactionHash1, logIndex1})
-    // if (!processedTx1) {
+    const processedTx1 = await ProcessedTxs.findOne({ transactionHash1, logIndex1 })
+    if (!processedTx1) {
       let projectAddress = event.returnValues.projectAddress
       let proposerCost = event.returnValues.proposerCost
       const ProjectContract = await new web3.eth.Contract(ProjectABI, projectAddress)
-      ProjectContract.events.LogProjectDetails({fromBlock: 0}).on('data', async event2 => {
+      ProjectContract.events.LogProjectDetails({ fromBlock: 0 }).on('data', async event2 => {
         // if (err) { console.error('Error in project creation'); return }
         let transactionHash2 = event2.transactionHash
-        let logIndex2 = event2.transactionHash
+        let logIndex2 = event2.logIndex
         try {
-          const processedTx2 = await ProcessedTxs.findOne({transactionHash2, logIndex2})
-          // if (!processedTx2) {
+          const processedTx2 = await ProcessedTxs.findOne({ transactionHash2, logIndex2 })
+          if (!processedTx2) {
             let {
               weiCost,
               reputationCost,
@@ -51,9 +51,9 @@ module.exports = function () {
               if (err) { console.error('ipfs failed to be retrieved'); throw err }
               let dataObj = JSON.parse(new TextDecoder('utf-8').decode(node.toJSON().data))
               let updateField = proposerType === 1 ? 'tokenBalance' : 'reputationBalance'
-              const user = await User.findOneAndUpdate({account: proposer}, {$set: {[updateField]: proposerCost * (-1)}}, {new: true})
+              const user = await User.findOneAndUpdate({ wallets: proposer.toLowerCase() }, { $inc: { [updateField]: proposerCost * (-1) } }, { new: true })
               if (!user) console.error('user not found')
-              const project = await Project.findOneAndUpdate({address: projectAddress}, {$set: {
+              const project = await Project.findOneAndUpdate({ address: projectAddress }, { $set: {
                 activeStatePeriod,
                 parsedHash,
                 listSubmitted: false,
@@ -80,19 +80,19 @@ module.exports = function () {
                 voteRevealPeriod,
                 weiBal: 0,
                 weiCost
-              }}, {upsert: true, new: true})
+              } }, { upsert: true, new: true })
               if (!project) console.error('unable to update or create project')
-              const network = await Network.findOneAndUpdate({}, {lastBlock: event.blockNumber}, {new: true})
+              const network = await Network.findOneAndUpdate({}, { lastBlock: event.blockNumber }, { new: true })
               if (!network) { console.error('No networking database') }
-              // await new ProcessedTxs({transactionHash1, logIndex1}).save()
-              // await new ProcessedTxs({transactionHash2, logIndex2}).save()
+              await new ProcessedTxs({ transactionHash1, logIndex1 }).save()
+              await new ProcessedTxs({ transactionHash2, logIndex2 }).save()
             })
-          // }
+          }
         } catch (err) {
           console.err('Error in database connection')
         }
       })
-    // }
+    }
   })
 
   ProjectRegistryContract.events.LogProjectFullyStaked({fromBlock: netStatus.lastBlock}).on('data', async event => {

@@ -4,9 +4,10 @@ import MiniSidebar from '../components/shared/MiniSidebar'
 import TitleBar from '../components/shared/TitleBar'
 import SearchProjectBar from '../components/shared/SearchProjectBar'
 import ProjectCardGrid from '../components/shared/ProjectCardGrid'
-import { getUserStatus } from '../actions/userActions'
+import { getUserStatusWallet } from '../actions/userActions'
 import { getProjects } from '../actions/projectActions'
 import { eth } from '../utilities/blockchain'
+import { gradient2, lightgradient2 } from '../styles/colors'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -43,7 +44,7 @@ class Finder extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
-          this.props.getUserStatus(accounts[0])
+          this.props.getUserStatusWallet(accounts[0])
           this.props.getProjects()
         }
       }
@@ -56,7 +57,7 @@ class Finder extends React.Component {
 
   render () {
     return (
-      <div style={{backgroundColor: 'white'}}>
+      <div style={{ backgroundColor: lightgradient2, height: '100vh' }}>
         <MiniSidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
         <TitleBar role={this.state.role} />
         <SearchProjectBar />
@@ -75,7 +76,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getUserStatus: (userAccount) => dispatch(getUserStatus(userAccount)),
+    getUserStatusWallet: (userAccount) => dispatch(getUserStatusWallet(userAccount)),
     getProjects: () => dispatch(getProjects(1, projQuery))
   }
 }
