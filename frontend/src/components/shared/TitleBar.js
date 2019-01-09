@@ -27,7 +27,7 @@ export default ({
   }
   return (
     <div style={{ flexDirection: 'row', marginLeft: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 55, backgroundColor: roleColor }}>
-      <b><p style={{ color: 'white', fontFamily: 'Avenir', fontSize: 28, margin: 0, marginLeft: 20 }}>{role}</p></b>
+      <p style={{ color: 'white', fontFamily: font1, fontSize: 28, margin: 0, marginLeft: 20, fontWeight: 500 }}>{role}</p>
       {button}
     </div>
   )

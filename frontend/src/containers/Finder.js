@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import price from 'crypto-price'
 import MiniSidebar from '../components/shared/MiniSidebar'
 import TitleBar from '../components/shared/TitleBar'
 import SearchProjectBar from '../components/shared/SearchProjectBar'
@@ -46,6 +47,9 @@ class Finder extends React.Component {
         if (accounts.length) {
           this.props.getUserStatusWallet(accounts[0])
           this.props.getProjects()
+          let ethPrice = await price.getCryptoPrice('USD', 'ETH')
+          if (ethPrice) ethPrice = parseFloat(ethPrice.price)
+          this.setState({ ethPrice })
         }
       }
     })
@@ -61,7 +65,7 @@ class Finder extends React.Component {
         <MiniSidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
         <TitleBar role={this.state.role} />
         <SearchProjectBar />
-        <ProjectCardGrid projectData={this.props.projects['1']} />
+        <ProjectCardGrid projectData={this.props.projects['1']} ethPrice={this.state.ethPrice} />
       </div>
     )
   }

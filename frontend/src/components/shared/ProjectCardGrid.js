@@ -5,13 +5,13 @@ import mapicon from '../../images/mapicon.svg'
 import { font1 } from '../../styles/fonts'
 
 export default (
-  projectData
+  props
 ) => {
-  const projects = typeof projectData.projectData !== `undefined`
-    ? Object.keys(projectData.projectData).map((address, i) => {
+  const projects = typeof props.projectData !== `undefined`
+    ? Object.keys(props.projectData).map((address, i) => {
       return <Col key={i} index={i} span={6} style={{ marginBottom: 32 }}>
         <ProjectCard
-          project={projectData.projectData[address]} />
+          project={props.projectData[address]} ethPrice={props.ethPrice} />
       </Col>
     })
     : null

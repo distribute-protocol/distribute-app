@@ -26,7 +26,6 @@ class MiniSidebar extends React.Component {
   }
 
   render () {
-    console.log(this.props.user)
     return (
       <div style={{height: '100%', width: 60, position: 'fixed', backgroundColor: '#111111', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between'}}>
         <div style={{display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between'}}>
