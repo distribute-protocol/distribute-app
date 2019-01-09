@@ -59,15 +59,15 @@ class Finder extends React.Component {
     })
   }
 
-  redirect (url) {
-    this.props.history.push(url)
+  redirect (url, state) {
+    this.props.history.push(url, Object.assign({}, state, {user: this.props.user}))
   }
 
   render () {
     return (
       <div style={{ backgroundColor: lightgradient2, height: '100vh' }}>
         <MiniSidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
-        <TitleBar role={this.state.role} />
+        <TitleBar title={this.state.role} role={this.state.role} />
         <SearchProjectBar />
         <ProjectCardGrid projectData={this.props.projects['1']} ethPrice={this.state.ethPrice} redirect={this.redirect} />
       </div>
@@ -77,8 +77,8 @@ class Finder extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    projects: state.projects
-    // user: state.user
+    projects: state.projects,
+    user: state.user
   }
 }
 

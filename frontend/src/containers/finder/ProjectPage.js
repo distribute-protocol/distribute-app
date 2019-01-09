@@ -2,6 +2,7 @@ import React from 'react'
 import MiniSidebar from '../../components/shared/MiniSidebar'
 import TitleBar from '../../components/shared/TitleBar'
 import ProjectPageComponent from '../../components/finder/ProjectPageComponent'
+import { lightgradient1, lightgradient2, lightgradient3, lightgradient4, lightgradient5, lightgradient6 } from '../../styles/colors'
 
 class ProjectPage extends React.Component {
   constructor () {
@@ -13,25 +14,58 @@ class ProjectPage extends React.Component {
 
   componentWillReceiveProps (np) {
     if (np.project !== undefined) {
-      this.setState({project: np.project.project.data.project})
+      this.setState({ project: np.project.project.data.project })
     }
   }
 
+  componentWillMount () {
+    let color
+    switch (this.props.location.pathname.split('/')[1]) {
+      case 'initiator':
+        color = lightgradient1
+        break
+      case 'finder':
+        color = lightgradient2
+        break
+      case 'planner':
+        color = lightgradient3
+        break
+      case 'doer':
+        color = lightgradient4
+        break
+      case 'validator':
+        color = lightgradient5
+        break
+      case 'resolver':
+        color = lightgradient6
+        break
+      default:
+        color = 'black'
+    }
+    this.setState({ color })
+  }
+
   render () {
-    console.log(this.props.location.pathname  )
+    console.log(this.props.location.state)
+    console.log(this.props)
+    let { user, project } = this.props.location.state
+    let role = this.props.location.pathname.split('/')[1]
+    console.log(this.state.color)
     return (
-      <div>
-        <div style={{backgroundColor: 'white'}}>
-          <MiniSidebar
-            showIcons={true}
-            highlightIcon={this.props.location.pathname.split('/')[1]}
-            redirect={this.props.redirect} />
-          <TitleBar
-            role={this.props.highlightIcon} />
-          <ProjectPageComponent
-            usdPerEth={this.props.usdPerEth}
-            project={this.state.project} />
-        </div>
+      <div style={{ backgroundColor: this.state.color, height: '100vh' }}>
+        <MiniSidebar
+          showIcons={true}
+          user={user}
+          highlightIcon={this.props.location.pathname.split('/')[1]}
+          redirect={this.props.redirect} />
+        <TitleBar
+          title={project.name}
+          role={role}
+          project
+        />
+        <ProjectPageComponent
+          usdPerEth={this.props.usdPerEth}
+          project={this.state.project} />
       </div>
     )
   }

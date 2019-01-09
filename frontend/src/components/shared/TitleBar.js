@@ -4,17 +4,17 @@ import share from '../../images/titlebaricons/share.svg'
 import { font1 } from '../../styles/fonts'
 
 export default ({
-  role
+  role, title, project
 }) => {
   let roleColor, button
-  switch (role) {
-    case 'Initiator':
+  switch (role.toLowerCase()) {
+    case 'initiator':
       roleColor = '#FFC161'
       button = <img style={{ marginRight: 30, cursor: 'pointer' }}
         // onClick={() => this.props.redirect('/profile')}
         alt='profile' src={share} />
       break
-    case 'Finder':
+    case 'finder':
       roleColor = '#FF8E6F'
       button = <Button style={{ marginRight: 15, color: 'white', border: '1px solid white', fontSize: 12, fontFamily: font1, borderRadius: 4, cursor: 'pointer', backgroundColor: roleColor }}>
         Discoveries
@@ -27,8 +27,8 @@ export default ({
   }
   return (
     <div style={{ flexDirection: 'row', marginLeft: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 55, backgroundColor: roleColor }}>
-      <p style={{ color: 'white', fontFamily: font1, fontSize: 28, margin: 0, marginLeft: 20, fontWeight: 500 }}>{role}</p>
-      {button}
+      <p style={{ color: 'white', fontFamily: font1, fontSize: 28, margin: 0, marginLeft: 20, fontWeight: 500 }}>{title}</p>
+      {project ? null : button}
     </div>
   )
 }
