@@ -7,6 +7,7 @@ class ProjectPage extends React.Component {
   constructor () {
     super()
     this.state = {
+
     }
   }
 
@@ -17,12 +18,13 @@ class ProjectPage extends React.Component {
   }
 
   render () {
+    console.log(this.props.location.pathname  )
     return (
       <div>
         <div style={{backgroundColor: 'white'}}>
           <MiniSidebar
-            showIcons={this.props.showIcons}
-            highlightIcon={this.props.highlightIcon}
+            showIcons={true}
+            highlightIcon={this.props.location.pathname.split('/')[1]}
             redirect={this.props.redirect} />
           <TitleBar
             role={this.props.highlightIcon} />

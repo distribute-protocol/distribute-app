@@ -17,7 +17,7 @@ class ProjectCard extends React.Component {
   }
 
   clickCard () {
-
+    this.props.redirect(`/finder/project/${this.props.project.address}`)
   }
 
   render () {

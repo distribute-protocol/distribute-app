@@ -50,7 +50,9 @@ class Finder extends React.Component {
           this.props.getUserStatusWallet(accounts[0])
           this.props.getProjects()
           price.getCryptoPrice('USD', 'ETH').then(res => {
-            this.setState({ ethPrice: parseFloat(res.price) })
+            if (res) {
+              this.setState({ ethPrice: parseFloat(res.price) })
+            }
           })
         }
       }
@@ -67,7 +69,7 @@ class Finder extends React.Component {
         <MiniSidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
         <TitleBar role={this.state.role} />
         <SearchProjectBar />
-        <ProjectCardGrid projectData={this.props.projects['1']} ethPrice={this.state.ethPrice} />
+        <ProjectCardGrid projectData={this.props.projects['1']} ethPrice={this.state.ethPrice} redirect={this.redirect} />
       </div>
     )
   }

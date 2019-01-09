@@ -16,6 +16,7 @@ import Landing from './Landing'
 import Fund from './Fund'
 import Initiator from './Initiator'
 import Finder from './Finder'
+import ProjectPage from './finder/ProjectPage'
 
 const Main = () =>
   <main>
@@ -26,6 +27,7 @@ const Main = () =>
       <Route path='/fund' component={Fund} />
       <Route path='/roleselection' component={RoleSelection} />
       <Route path='/initiator' component={Initiator} />
+      <Route path='/finder/project/:id' component={ProjectPage} />
       <Route path='/finder' component={Finder} />
       <Route path='/stake' component={Stake} />
       <Route path='/add' component={Add} />
@@ -35,6 +37,7 @@ const Main = () =>
       <Route path='/complete' component={Complete} />
       <Route path='/failed' component={Failed} />
       <Route path='/expired' component={Expired} />
+
     </Switch>
   </main>
 
