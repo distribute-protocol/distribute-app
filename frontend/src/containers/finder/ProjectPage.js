@@ -48,10 +48,11 @@ class ProjectPage extends React.Component {
   render () {
     console.log(this.props.location.state)
     console.log(this.props)
-    let user, project
+    let user, project, ethPrice
     if (typeof this.props.location.state !== 'undefined') {
       user = this.props.location.state.user
       project = this.props.location.state.project
+      ethPrice = this.props.location.state.ethPrice
     }
 
     let role = this.props.location.pathname.split('/')[1]
@@ -68,8 +69,8 @@ class ProjectPage extends React.Component {
           project
         />
         <ProjectPageComponent
-          usdPerEth={this.props.usdPerEth}
-          project={this.state.project} />
+          ethPrice={ethPrice}
+          project={project} />
       </div>
     )
   }

@@ -40,7 +40,6 @@ import gql from 'graphql-tag'
 
 const getProjects = action$ => {
   let state
-  console.log('hi')
   return action$.ofType(GET_PROJECTS).pipe(
     mergeMap(action => {
       state = action.state
@@ -107,24 +106,37 @@ const proposeProject = action$ =>
   )
 
 const stakeProject = action$ => {
-  let collateralType, stakeResult
+  let collateralType
   return action$.ofType(STAKE_PROJECT).pipe(
     mergeMap(action => {
       collateralType = action.collateralType
-      return action.collateralType === 'tokens'
+      let contractCall = action.collateralType === 'tokens'
         ? from(tr.stakeTokens(action.projectAddress, parseInt(action.value, 10), action.txObj))
         : from(rr.stakeReputation(action.projectAddress, parseInt(action.value, 10), action.txObj))
-    }),
-    mergeMap(result => {
-      stakeResult = result
-      return from(dt.currentPrice())
-    }),
-    mergeMap(result => {
-      if (stakeResult.logs[0].args.staked === true) {
-        return of(push('/add'))
-      } else {
-        return of(projectStaked(collateralType, stakeResult.logs[0].args, result))
-      }
+      return concat(
+        of(transactionPending()),
+        contractCall.pipe(
+          mergeMap(receipt => {
+            if (receipt.receipt.status === '0x1') {
+              return concat(
+                from(dt.currentPrice()).pipe(
+                  map(currPrice => {
+                    return concat(
+                      of(transactionSuccess(receipt)),
+                      of(projectStaked(collateralType, receipt.logs[0].args, currPrice))
+                      // stakeResult.logs[0].args.staked === true ? of(push('/add')) : null
+                    )
+                  })
+                )
+              )
+            } else {
+              return of(transactionFailure())
+            }
+          }),
+          catchError(err => {
+            if (err) { console.log(err); return of(transactionFailure()) }
+          })
+        ))
     })
   )
 }
