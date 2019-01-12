@@ -17,7 +17,7 @@ const ConnectionTable = (props) => {
           </Button>
         </div>
       </div>
-      <Button style={{ backgroundColor: '#A4D573', width: 222, height: '10%', marginTop: 30, justifyContent: 'center', alignItems: 'center', display: 'flex' }} onClick={props.handleSave}>
+      <Button style={{ backgroundColor: '#A4D573', width: 222, height: '10%', marginTop: 30, justifyContent: 'center', alignItems: 'center', display: 'flex', marginBottom: 30 }} onClick={props.handleSave}>
         <p style={{ color: 'white', fontSize: 24, fontFamily: 'Avenir Next', margin: 0, padding: 0 }}>Save & Continue</p>
       </Button>
     </div>
@@ -35,7 +35,7 @@ export default ({
 }) => {
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', paddingTop: 47, paddingLeft: 100 }}>
+      <div style={{ display: 'flex', alignItems: 'center', marginTop: 50, marginLeft: 100 }}>
         <div>
           <img style={{ cursor: 'pointer', height: 150, width: 150, borderRadius: 75 }} src={avatar} alt={addavatar} />
         </div>
@@ -45,7 +45,7 @@ export default ({
         </div>
       </div>
       <div style={{ display: 'flex', paddingTop: 40, flexWrap: 'wrap', flexDirection: 'row', marginLeft: 50, marginRight: 50 }}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', flexBasis: '75%', flex: 3 }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', flexBasis: '75%', flex: 3, justifyContent: 'center', alignItems: 'center' }}>
           <ProfileTable title={'Expertise / Skills'} datakey={'expertise'} input={data.expertise} add={'Add Expertise'} deleteItem={(i) => deleteItem(i, 'expertise')} addItem={addItem} />
           <ProfileTable title={'Interests'} datakey={'interests'} input={data.interests} add={'Add Interest'} deleteItem={(i) => deleteItem(i, 'interests')} addItem={addItem} />
           <ProfileTable title={'Contact Details'} datakey={'contactDetails'} input={data.contactDetails} add={'Add Contact Details'} deleteItem={(i) => deleteItem(i, 'contactDetails')} addItem={addItem} />
