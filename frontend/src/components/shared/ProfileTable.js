@@ -30,15 +30,17 @@ class ProfileTable extends React.Component {
       data = []
     }
     return (
-      <div style={{ width: 250 }}>
+      <div style={{ width: 250, padding: 10 }}>
         <Table
           dataSource={data}
           className={this.props.tableCSS}
           pagination={false}
           locale={{ emptyText: null }}
+          title={() => this.props.title}
+          // bordered
+          showHeader={false}
         >
           <Table.Column
-            title={this.props.title}
             dataIndex='address'
             key='address'
           />
