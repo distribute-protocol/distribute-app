@@ -29,7 +29,7 @@ class Sidebar extends React.Component {
     let iconMargin = 25
     return (
       <div style={{ height: '100%', width: 100, position: 'fixed', backgroundColor: 'black', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div style={{ height: '15.625%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <h1 className='App-title' style={{ color: 'white', marginTop: 5, fontSize: 18, cursor: 'pointer' }} onClick={() => this.props.history.push('/')}>HYPHA</h1>
           <div style={{
             display: 'flex',
@@ -48,7 +48,7 @@ class Sidebar extends React.Component {
           }} onClick={() => this.props.history.push('/profile')} />
           <h3 style={{ color: '#FCFCFC', fontSize: 15, textAlign: 'center' }}>{this.props.user.name.split(' ')[0]}</h3>
         </div>
-        <div>
+        <div style={{ height: '62.5%' }}>
           { this.props.showIcons
             ? <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between' }}>
               { this.props.highlightIcon === 'Initiator'
@@ -80,7 +80,7 @@ class Sidebar extends React.Component {
           }
         </div>
         { this.props.showIcons
-          ? <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 30 }}>
+          ? <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 30, height: '11.71875%' }}>
             <img style={{ marginBottom: 15, cursor: 'pointer', height: 40, width: 40 }} onClick={() => this.props.history.push('/activitymonitor')} src={network} alt='network' />
             <img style={{ cursor: 'pointer', height: 40, width: 40 }} onClick={() => this.props.history.push('/fund')} src={dashboard} alt='dashboard' />
           </div>

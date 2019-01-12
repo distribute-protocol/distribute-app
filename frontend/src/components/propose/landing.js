@@ -10,7 +10,8 @@ const styles = {
   heading: {
     fontSize: 32,
     fontFamily: font1,
-    marginTop: 50
+    margin: 50,
+    marginBottom: 15
   },
   buttonStyle: {
     backgroundColor: brandColor,
@@ -18,7 +19,7 @@ const styles = {
     height: 50,
     width: 180,
     alignSelf: 'flex-start',
-    marginLeft: 345,
+    marginLeft: 250,
     fontSize: 20,
     fontFamily: font1,
     textAlign: 'center',
@@ -39,20 +40,20 @@ export default (props) => {
       <Button onClick={props.chooseResource} style={styles.buttonStyle}>
         Initiate project
       </Button>
-      <div style={{ display: 'flex', flexDirection: 'row', height: '75vh', marginTop: 30 }}>
-        <div style={{ width: 609, justifyContent: 'flex-end', display: 'flex', flex: 2, marginRight: 20, alignItems: 'center', flexDirection: 'column', backgroundImage: `url(${mesh})` }}>
+      <div style={{ display: 'flex', flexDirection: 'row', height: '75vh', marginTop: 30, flexWrap: 'wrap', marginLeft: 100, marginRight: 100 }}>
+        <div style={{ minWidth: 400, minHeight: 500, marginRight: '2%', width: '42.29166667%', height: '100%', justifyContent: 'flex-end', display: 'flex', flex: 1, alignItems: 'center', flexDirection: 'column', backgroundImage: `url(${mesh})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}>
           <p style={styles.textBox}>
             The Equitable Internet Initiative is building a local Internet Service Provider (ISP)
             to service communities that don't have access.
           </p>
         </div>
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', marginLeft: 10 }}>
-          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', width: 540, height: 330, marginBottom: 20, backgroundImage: `url(${farm})`, backgroundRepeat: 'no-repeat' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', marginLeft: '2%', height: '100%', width: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', width: '100%', height: '50%', marginBottom: '3.90625%', backgroundImage: `url(${farm})`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover' }}>
             <p style={styles.textBox}>
               Urban Tilth is teaching farming in their community to increase the resiliency of their neighborhood.
             </p>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', width: 540, height: 330, marginTop: 20, backgroundImage: `url(${solar})`, backgroundRepeat: 'no-repeat' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', width: '100%', height: '50%', backgroundImage: `url(${solar})`, backgroundRepeat: 'no-repeats', backgroundSize: 'cover' }}>
             <p style={styles.textBox}>
               Urban Tilth is teaching farming in their community to increase the resiliency of their neighborhood.
             </p>

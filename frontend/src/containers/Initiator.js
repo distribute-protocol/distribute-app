@@ -154,7 +154,7 @@ class Initiator extends React.Component {
 
   render () {
     return (
-      <div>
+      <div style={{ height: '100vh', width: '100vw' }}>
         <InitiatorWelcome visible={this.state.firstTime && this.state.firstModal} continue={this.choosePropType} />
         <InsufficientTokens visible={this.state.firstTime && this.state.secondModal} continue={() => this.redirect('/fund')} />
         <InitiatorVerificationModal
