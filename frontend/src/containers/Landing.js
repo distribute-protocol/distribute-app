@@ -125,7 +125,7 @@ class Landing extends React.Component {
 
   render () {
     return (
-      <div>
+      <div style={{width: '100vw', height: '100vh'}}>
         {this.state.clickedJoin
           ? <Onboarding skipFirst={this.state.hasEther} visible={this.state.clickedJoin} getUport={this.getUport} cancel={this.unclickJoin} />
           : null
@@ -134,7 +134,7 @@ class Landing extends React.Component {
           ? <TextContinue text={'congrats'} visible={this.props.user.loggedIn} continue={this.profilePage} />
           : null
         }
-        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', backgroundImage: `url(${landingbackground})`, backgroundColor: 'rgba(0, 0, 0, 0.75)', backgroundRepeat: 'no-repeat', backgroundSize: 'cover', height: '60vh'}}>
+        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', backgroundImage: `url(${landingbackground})`, backgroundColor: 'rgba(0, 0, 0, 0.75)', backgroundRepeat: 'no-repeat', backgroundSize: 'cover', height: '67.96875%'}}>
           { /* START OF TOP BAR */ }
           <div style={{display: 'flex', width: '100%', justifyContent: 'space-between'}}>
             <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', marginLeft: 15}}>
@@ -171,14 +171,14 @@ class Landing extends React.Component {
         <p style={{display: 'flex', justifyContent: 'center', marginTop: 15, fontSize: 18, fontFamily: font1, color: 'black'}}>
           This distributed organization requires:
         </p>
-        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-around', marginTop: 15}}>
-          <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 16, fontFamily: font1}}>
-            <img src={uportlogo} alt='uPort logo' />
-            <p style={{textAlign: 'center', marginTop: 10, color: 'black'}}>uPort is a decentralized self-sovereign<br />identity platform.</p>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around', marginTop: 15, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 16, fontFamily: font1 }}>
+            <img src={ uportlogo } alt='uPort logo' />
+            <p style={{ textAlign: 'center', marginTop: 10, color: 'black' }}>uPort is a decentralized self-sovereign<br />identity platform.</p>
           </div>
-          <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 16, fontFamily: font1}}>
-            <img src={metamasklogo} alt='MetaMask fox' />
-            <p style={{textAlign: 'center', marginTop: 10, color: 'black'}}>Metamask is an in-browser wallet that grants easy<br />access to the Ethereum blockchain.</p>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 16, fontFamily: font1 }}>
+            <img src={ metamasklogo } alt='MetaMask fox' />
+            <p style={{ textAlign: 'center', marginTop: 10, color: 'black' }}>Metamask is an in-browser wallet that grants easy<br />access to the Ethereum blockchain.</p>
           </div>
         </div>
       </div>
