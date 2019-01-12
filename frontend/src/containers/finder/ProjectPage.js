@@ -48,18 +48,22 @@ class ProjectPage extends React.Component {
   render () {
     console.log(this.props.location.state)
     console.log(this.props)
-    let { user, project } = this.props.location.state
+    let user, project
+    if (typeof this.props.location.state !== 'undefined') {
+      user = this.props.location.state.user
+      project = this.props.location.state.project
+    }
+
     let role = this.props.location.pathname.split('/')[1]
-    console.log(this.state.color)
     return (
       <div style={{ backgroundColor: this.state.color, height: '100vh' }}>
         <MiniSidebar
-          showIcons={true}
+          showIcons
           user={user}
           highlightIcon={this.props.location.pathname.split('/')[1]}
           redirect={this.props.redirect} />
         <TitleBar
-          title={project.name}
+          title={project ? project.name : 'Project Title'}
           role={role}
           project
         />

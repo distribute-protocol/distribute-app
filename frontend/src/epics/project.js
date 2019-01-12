@@ -40,6 +40,7 @@ import gql from 'graphql-tag'
 
 const getProjects = action$ => {
   let state
+  console.log('hi')
   return action$.ofType(GET_PROJECTS).pipe(
     mergeMap(action => {
       state = action.state

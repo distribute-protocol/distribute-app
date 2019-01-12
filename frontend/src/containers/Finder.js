@@ -66,7 +66,7 @@ class Finder extends React.Component {
   render () {
     return (
       <div style={{ backgroundColor: lightgradient2, height: '100vh' }}>
-        <MiniSidebar showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
+        <MiniSidebar user={this.props.user} showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
         <TitleBar title={this.state.role} role={this.state.role} />
         <SearchProjectBar />
         <ProjectCardGrid projectData={this.props.projects['1']} ethPrice={this.state.ethPrice} redirect={this.redirect} />
