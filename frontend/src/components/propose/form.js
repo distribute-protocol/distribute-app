@@ -125,7 +125,8 @@ class ProposeForm extends React.Component {
     const { getFieldDecorator } = this.props.form
     return (
       <div style={{
-        minHeight: '100vh',
+        minHeight: '100%',
+        minWidth: '100%',
         display: 'flex',
         flexDirection: 'column',
         // justifyContent: 'center',
@@ -170,9 +171,10 @@ class ProposeForm extends React.Component {
               marginTop: 40,
               backgroundColor: grey0,
               marginLeft: '10%',
-              marginRight: '10%'
+              marginRight: '10%',
+              flexWrap: 'wrap'
             }}>
-              <div style={{ marginLeft: 15, marginTop: 20 }}>
+              <div style={{ marginTop: 20, marginLeft: 15 }}>
                 <b><p style={styles.header}>Project Name:</p></b>
                 <p style={styles.subheader}>
                   Let's give your project a name<br />
@@ -183,14 +185,14 @@ class ProposeForm extends React.Component {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                marginRight: 50,
                 paddingLeft: '15%',
                 paddingTop: '5%',
-                paddingBottom: '5%'
+                paddingBottom: '5%',
+                marginRight: 15
               }}>
                 <FormItem>
                   {getFieldDecorator('name')(<Input
-                    style={{ minWidth: 250, maxWidth: 350, borderRadius: 0, border: `1px solid ${grey1}` }}
+                    style={{ width: '100%', borderRadius: 0, border: `1px solid ${grey1}` }}
                     placeholder='Project Name' />
                   )}
                 </FormItem>
@@ -202,7 +204,8 @@ class ProposeForm extends React.Component {
               marginTop: 20,
               backgroundColor: grey0,
               marginLeft: '10%',
-              marginRight: '10%'
+              marginRight: '10%',
+              flexWrap: 'wrap'
             }}>
               <div style={{ marginLeft: 15, marginTop: 20 }}>
                 <b>
@@ -220,15 +223,14 @@ class ProposeForm extends React.Component {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                marginRight: 50,
+                marginRight: 15,
                 paddingLeft: '15%',
                 paddingTop: '7%',
                 paddingBottom: '4%'
               }}>
                 <FormItem>
                   {getFieldDecorator('summary')(<TextArea style={{
-                    minWidth: 250,
-                    maxWidth: 350,
+                    width: '100%',
                     borderRadius: 0,
                     border: `1px solid ${grey1}`,
                     placeholder: 'Project Description'
@@ -242,7 +244,8 @@ class ProposeForm extends React.Component {
               marginTop: 20,
               backgroundColor: grey0,
               marginLeft: '10%',
-              marginRight: '10%'
+              marginRight: '10%',
+              flexWrap: 'wrap'
             }}>
               <div style={{ marginLeft: 15, marginTop: 20 }}>
                 <b><p style={styles.header}>Project Category:</p></b>
@@ -262,8 +265,7 @@ class ProposeForm extends React.Component {
                 {getFieldDecorator('category')(
                   <Dropdown overlay={categoryMenu} style={{ justifyContent: 'flex-end' }}>
                     <Button style={{
-                      minWidth: 250,
-                      maxWidth: 350,
+                      width: '100%',
                       border: `1px solid ${grey1}`,
                       borderRadius: 0,
                       textAlign: 'left'
@@ -280,7 +282,8 @@ class ProposeForm extends React.Component {
               marginTop: 20,
               backgroundColor: grey0,
               marginLeft: '10%',
-              marginRight: '10%'
+              marginRight: '10%',
+              flexWrap: 'wrap'
             }}>
               <div style={{ marginLeft: 15, marginTop: 20 }}>
                 <b><p style={styles.header}>Project Duration:</p></b>
@@ -295,7 +298,7 @@ class ProposeForm extends React.Component {
               </div>
               <div style={{ marginRight: 50, marginTop: 10 }}>
                 <FormItem>
-                  {getFieldDecorator('date')(<DatePicker style={{ minWidth: 250, borderRadius: 0, border: `1px solid ${grey1}` }} />)}
+                  {getFieldDecorator('date')(<DatePicker style={{ width: '100%', borderRadius: 0, border: `1px solid ${grey1}` }} />)}
                 </FormItem>
               </div>
             </div>
@@ -305,7 +308,8 @@ class ProposeForm extends React.Component {
               marginTop: 20,
               backgroundColor: grey0,
               marginLeft: '10%',
-              marginRight: '10%'
+              marginRight: '10%',
+              flexWrap: 'wrap'
             }}>
               <div style={{
                 marginLeft: 15,
@@ -330,7 +334,7 @@ class ProposeForm extends React.Component {
                 paddingBottom: '5%'
               }}>
                 <FormItem>
-                  {getFieldDecorator('cost')(<Input style={{ minWidth: 250, maxWidth: 350, borderRadius: 0, border: `1px solid ${grey1}` }} placeholder='Project Cost' type='number' onChange={this.props.handlePriceChange} />)}
+                  {getFieldDecorator('cost')(<Input style={{ width: '100%', borderRadius: 0, border: `1px solid ${grey1}` }} placeholder='Project Cost' type='number' onChange={this.props.handlePriceChange} />)}
                 </FormItem>
               </div>
             </div>
@@ -340,7 +344,8 @@ class ProposeForm extends React.Component {
               marginTop: 20,
               backgroundColor: grey0,
               marginLeft: '10%',
-              marginRight: '10%'
+              marginRight: '10%',
+              flexWrap: 'wrap'
             }}>
               <div style={{ marginLeft: 15, marginTop: 20 }}>
                 <b><p style={styles.header}>
@@ -358,10 +363,9 @@ class ProposeForm extends React.Component {
                 marginBottom: '5%',
                 marginRight: '7%'
               }}>
-                <Dropdown overlay={collateralMenu} style={{ justifyContent: 'flex-end' }}>
+                <Dropdown overlay={collateralMenu} style={{ justifyContent: 'flex-end', width: '100%' }}>
                   <Button style={{
-                    minWidth: 250,
-                    maxWidth: 350,
+                    width: '100%',
                     border: `1px solid ${grey1}`,
                     borderRadius: 0,
                     textAlign: 'left'
@@ -382,7 +386,8 @@ class ProposeForm extends React.Component {
               marginTop: 20,
               backgroundColor: grey0,
               marginLeft: '10%',
-              marginRight: '10%'
+              marginRight: '10%',
+              flexWrap: 'wrap'
             }}>
               <div style={{ marginLeft: 15, marginTop: 20 }}>
                 <b><p style={styles.header}>
@@ -413,7 +418,8 @@ class ProposeForm extends React.Component {
               marginTop: 20,
               backgroundColor: grey0,
               marginLeft: '10%',
-              marginRight: '10%'
+              marginRight: '10%',
+              flexWrap: 'flexWrap'
             }}>
               <div style={{ marginLeft: 15, marginTop: 20 }}>
                 <b><p style={styles.header}>Project Image:</p></b>
@@ -471,7 +477,10 @@ class ProposeForm extends React.Component {
                 height: 46,
                 fontFamily: 'Lato',
                 fontSize: 24,
-                borderColor: gradient1
+                borderColor: gradient1,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
               }} onClick={() => this.submitHandler(this.state.collateralType.toLowerCase())}>
                 Create Proposal
               </Button>
