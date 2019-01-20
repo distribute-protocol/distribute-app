@@ -1,23 +1,9 @@
 import React from 'react'
-import { Input, Button } from 'antd'
-import { color1, color2, grey3 } from '../../styles/colors'
+import { grey3 } from '../../styles/colors'
 import StakeProject from '../../contractComponents/stage1/StakeProject'
 import UnstakeProject from '../../contractComponents/stage1/UnstakeProject'
 
-
 export default (props) => {
-  let color, withdrawButton
-  if (props.fundingType === 'Token') {
-    color = '#326BC1'
-    withdrawButton = <Button style={{ border: `1px solid ${color1}`, backgroundColor: color1, color: 'white', width: 111 }}>
-      Withdraw
-    </Button>
-  } else {
-    color = '#F5A623'
-    withdrawButton = <Button style={{ border: `1px solid ${color1}`, backgroundColor: color1, color: 'white', width: 111 }}>
-      Withdraw
-    </Button>
-  }
   return (
     <div style={{ marginBottom: 5 }}>
       <div style={{ display: 'flex' }}>
