@@ -46,8 +46,8 @@ class ProjectPage extends React.Component {
   }
 
   render () {
-    console.log(this.props.location.state)
-    console.log(this.props)
+    // console.log(this.props.location.state)
+    // console.log(this.props)
     let user, project, ethPrice
     if (typeof this.props.location.state !== 'undefined') {
       user = this.props.location.state.user
@@ -57,7 +57,7 @@ class ProjectPage extends React.Component {
 
     let role = this.props.location.pathname.split('/')[1]
     return (
-      <div style={{ backgroundColor: this.state.color, height: '100vh' }}>
+      <div style={{ backgroundColor: this.state.color, minHeight: '100vh' }}>
         <MiniSidebar
           showIcons
           user={user}
@@ -67,6 +67,7 @@ class ProjectPage extends React.Component {
           title={project ? project.name : 'Project Title'}
           role={role}
           project
+          style={{ display: 'fixed' }}
         />
         <ProjectPageComponent
           ethPrice={ethPrice}

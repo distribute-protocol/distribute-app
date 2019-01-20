@@ -131,7 +131,7 @@ class ProposeForm extends React.Component {
         flexDirection: 'column',
         // justifyContent: 'center',
         alignItems: 'center',
-        marginLeft: 100,
+        // marginLeft: 100,
         backgroundColor: lightgradient1,
         color: black
       }}>

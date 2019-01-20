@@ -52,16 +52,17 @@ class Fund extends React.Component {
     if (value > 0) {
       try {
         let totalSupply = (await dt.totalSupply()).toNumber()
-        let currentPrice = (await dt.currentPrice()).toNumber()
+        let currentPrice = (await dt.currentPrice())
         let ethToSend = this.state.fundingType === 'ether' ? web3.toWei(value, 'ether') : web3.toWei((value / this.state.price), 'ether')
         if (totalSupply === 0) {
-          this.setState({ tokensToBuy: ethToSend / (currentPrice * 2) - 10, ethToSend, currentPrice, totalSupply, value })
+          this.setState({ tokensToBuy: ethToSend / (50000000000000 * 2) - 10, ethToSend, currentPrice: 50000000000000, totalSupply, value })
         } else {
           let a = 1
           let b = (totalSupply * currentPrice - ethToSend) / (2 * currentPrice)
           let c = -(ethToSend * totalSupply) / (2 * currentPrice)
           let result1 = (-b + Math.sqrt(b * b - 4 * (a) * (c))) / 2 * a
           let result2 = (-b - Math.sqrt(b * b - 4 * (a) * (c))) / 2 * a
+          console.log(result1, result2)
           this.setState({ tokensToBuy: result1 > result2 ? Math.floor(result1) - 10 : Math.floor(result2) - 10, ethToSend, currentPrice, totalSupply, value })
         }
 
