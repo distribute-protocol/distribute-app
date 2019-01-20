@@ -1,7 +1,7 @@
 import React from 'react'
 import MiniSidebar from '../../components/shared/MiniSidebar'
 import TitleBar from '../../components/shared/TitleBar'
-import ProjectPageComponent from '../../components/(2) finder/ProjectPageComponent'
+import ProjectPageComponent from '../../components/(3) planner/ProjectPageComponent'
 import { lightgradient1, lightgradient2, lightgradient3, lightgradient4, lightgradient5, lightgradient6 } from '../../styles/colors'
 
 class ProjectPage extends React.Component {

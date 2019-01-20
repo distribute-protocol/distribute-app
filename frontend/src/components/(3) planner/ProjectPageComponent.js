@@ -2,7 +2,6 @@ import React from 'react'
 import { Progress } from 'antd'
 import moment from 'moment'
 import Map from '../shared/Map'
-import FundingStatus from './FundingStatus'
 import fillercardimage from '../../images/fillercardimage.svg'
 import { grey1, color3, color4 } from '../../styles/colors'
 import { font1 } from '../../styles/fonts'
@@ -56,11 +55,11 @@ export default (props) => {
             <Progress strokeWidth={20} style={{ fontFamily: 'Arimo', fontSize: 12, width: '33vw' }} strokeColor={color3} strokeLinecap='square' percent={parseInt(project.weiBal) / parseInt(project.weiCost) * 100} showInfo={false} />
             <p style={{ fontFamily: font1, fontSize: 32, color: color3, margin: 0, marginTop: 15 }}>${isNaN(amount) ? 0 : amount}</p>
             <p style={{ fontFamily: font1, fontSize: 24, color: 'black', margin: 0, marginBottom: 10 }}>staked out of <span style={{ fontFamily: font1, fontWeight: '400', fontSize: 24 }}>{(web3.fromWei(project.weiCost, 'ether') * ethPrice).toFixed(2)}</span> goal</p>
-            <FundingStatus fundingType={'Token'} project={project} usdPerEth={usdPerEth} participants={project.funders} />
+            {/* <FundingStatus fundingType={'Token'} project={project} usdPerEth={usdPerEth} participants={project.funders} /> */}
             <Progress strokeWidth={20} style={{ fontFamily: 'Arimo', fontSize: 12, width: '33vw', marginTop: 15 }} strokeColor={color4} strokeLinecap='square' percent={project.reputationBalance / project.reputationCost * 100} showInfo={false} />
             <p style={{ fontFamily: font1, fontSize: 32, color: color4, margin: 0, marginTop: 15 }}>{project.reputationBalance}</p>
             <p style={{ fontFamily: font1, fontSize: 24, color: 'black', margin: 0, marginBottom: 10 }}>staked out of <span style={{ fontFamily: font1, fontWeight: '400', fontSize: 24 }}>{project.reputationCost}</span> goal</p>
-            <FundingStatus fundingType={'Reputation'} project={project} usdPerEth={usdPerEth} participants={project.supporters} />
+            {/* <FundingStatus fundingType={'Reputation'} project={project} usdPerEth={usdPerEth} participants={project.supporters} /> */}
             <p style={{ fontFamily: font1, fontSize: 24, color: 'black', margin: 0 }}>
               Expires {moment(parseInt(project.nextDeadline * 1000)).fromNow()}
             </p>

@@ -17,6 +17,14 @@ import Fund from './Fund'
 import Initiator from './(1) initiator/Initiator'
 import Finder from './(2) finder/Finder'
 import FinderProjectPage from './(2) finder/ProjectPage'
+import Planner from './(3) planner/Planner'
+import PlannerProjectPage from './(3) planner/ProjectPage'
+import Doer from './(4) doer/Doer'
+// import DoerProjectPage from './(4) doer/ProjectPage'
+import Validator from './(5) validator/Validator'
+// import ValidatorProjectPage from './(5) validator/ProjectPage'
+import Resolver from './(6) resolver/Resolver'
+// import ResolverProjectPage from './(6) resolver/ProjectPage'
 
 const Main = () =>
   <main>
@@ -29,6 +37,11 @@ const Main = () =>
       <Route path='/initiator' component={Initiator} />
       <Route path='/finder/project/:id' component={FinderProjectPage} />
       <Route path='/finder' component={Finder} />
+      <Route path='/planner/project/:id' component={PlannerProjectPage} />
+      <Route path='/planner' component={Planner} />
+      <Route path='/doer' component={Planner} />
+      <Route path='/validator' component={Planner} />
+      <Route path='/resolver' component={Planner} />
       {/*
       // <Route path='/stake' component={Stake} />
       // <Route path='/add' component={Add} />

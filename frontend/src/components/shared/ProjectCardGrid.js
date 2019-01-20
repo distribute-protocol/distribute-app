@@ -37,11 +37,10 @@ export default (
           : <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', alignSelf: 'center', marginTop: 200, marginLeft: 60 }}>
             <img src={lightning} alt='lightning' />
             <div style={{ marginTop: 60, fontFamily: font1, fontSize: 24 }}>
-              No proposals have currently been initiated.<br />
-              Do you have an idea that could help the network?
+              {props.nullText}
             </div>
             <Button style={{ marginTop: 40, width: 180, height: 50, fontFamily: font1, fontSize: 24 }} onClick={() => props.redirect('/initiator', {})}>
-              Initiate
+              {props.nullAction}
             </Button>
           </div>
         }
