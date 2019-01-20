@@ -39,9 +39,9 @@ const Main = () =>
       <Route path='/finder' component={Finder} />
       <Route path='/planner/project/:id' component={PlannerProjectPage} />
       <Route path='/planner' component={Planner} />
-      <Route path='/doer' component={Planner} />
-      <Route path='/validator' component={Planner} />
-      <Route path='/resolver' component={Planner} />
+      <Route path='/doer' component={Doer} />
+      <Route path='/validator' component={Validator} />
+      <Route path='/resolver' component={Resolver} />
       {/*
       // <Route path='/stake' component={Stake} />
       // <Route path='/add' component={Add} />

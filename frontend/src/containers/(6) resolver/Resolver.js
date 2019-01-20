@@ -8,7 +8,7 @@ import ProjectCardGrid from '../../components/shared/ProjectCardGrid'
 import { getUserStatusWallet } from '../../actions/userActions'
 import { getProjects } from '../../actions/projectActions'
 import { eth } from '../../utilities/blockchain'
-import { lightgradient3 } from '../../styles/colors'
+import { lightgradient6 } from '../../styles/colors'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
@@ -65,7 +65,7 @@ class Resolver extends React.Component {
 
   render () {
     return (
-      <div style={{ backgroundColor: lightgradient3, height: '100vh' }}>
+      <div style={{ backgroundColor: lightgradient6, height: '100vh' }}>
         <MiniSidebar user={this.props.user} showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
         <TitleBar title={this.state.role} role={this.state.role} />
         <SearchProjectBar />

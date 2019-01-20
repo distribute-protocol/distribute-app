@@ -34,13 +34,13 @@ export default ({
       </Button>
       break
     case 'validator':
-      roleColor = gradient4
+      roleColor = gradient5
       button = <Button style={{ marginRight: 15, color: 'white', border: '1px solid white', fontSize: 12, fontFamily: font1, borderRadius: 4, cursor: 'pointer', backgroundColor: roleColor }}>
         Plans
       </Button>
       break
     case 'resolver':
-      roleColor = gradient4
+      roleColor = gradient6
       button = <Button style={{ marginRight: 15, color: 'white', border: '1px solid white', fontSize: 12, fontFamily: font1, borderRadius: 4, cursor: 'pointer', backgroundColor: roleColor }}>
         Plans
       </Button>
