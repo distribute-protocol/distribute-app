@@ -146,7 +146,12 @@ class Landing extends React.Component {
                 <p style={{paddingLeft: 9, paddingTop: 20, fontSize: 25, fontFamily: font1, fontWeight: 600, color: 'white'}}>HYPHA</p>
               </div>
             </div>
-            <p style={{marginTop: 20, marginRight: 22.5, color: 'white', fontSize: 20, fontFamily: 'NowAltRegular'}}>SIGN UP | LOGIN</p>
+            <div style={{display: 'flex', flexDirection: 'row'}}>
+              <Button style={{backgroundColor: '#A4D573', marginTop: 18, paddingLeft: 15, paddingRight: 15, paddingTop: 3, paddingBottom: 5, border: '#D9D9D9'}} onClick={this.handleJoin}>
+                <p style={{color: 'white', fontSize: 18, fontFamily: font1}}>CONTRIBUTE</p>
+              </Button>
+              <p style={{marginTop: 20, marginLeft: 20, marginRight: 22.5, color: 'white', fontSize: 20, fontFamily: 'NowAltRegular'}}>SIGN UP | LOGIN</p>
+            </div>
           </div>
           { /* END OF TOP BAR
                START OF PLATFORM TITLE */ }

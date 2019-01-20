@@ -34,7 +34,7 @@ export default (
         </div>
         {projects
           ? null
-          : <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', alignSelf: 'center', marginTop: 200, marginLeft: 60 }}>
+          : <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', alignSelf: 'center', marginTop: '7%', marginLeft: 60 }}>
             <img src={lightning} alt='lightning' />
             <div style={{ marginTop: 60, fontFamily: font1, fontSize: 24 }}>
               {props.nullText}
