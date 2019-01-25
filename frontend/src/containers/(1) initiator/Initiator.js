@@ -43,7 +43,7 @@ class Initiator extends React.Component {
     }
     this.choosePropType = this.choosePropType.bind(this)
     this.chooseResource = this.chooseResource.bind(this)
-    // this.redirect = this.redirect.bind(this)
+    this.redirect = this.redirect.bind(this)
     this.handlePhotoUpload = this.handlePhotoUpload.bind(this)
     this.handlePriceChange = this.handlePriceChange.bind(this)
     this.handlePhotoChange = this.handlePhotoChange.bind(this)
@@ -150,6 +150,10 @@ class Initiator extends React.Component {
 
   handleVerifyCancel () {
     this.setState({ verificationModal: false })
+  }
+
+  redirect (url, state) {
+    this.props.history.push(url, Object.assign({}, state, { user: this.props.user }))
   }
 
   render () {

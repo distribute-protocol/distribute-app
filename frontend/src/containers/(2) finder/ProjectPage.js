@@ -10,6 +10,7 @@ class ProjectPage extends React.Component {
     this.state = {
 
     }
+    this.redirect = this.redirect.bind(this)
   }
 
   componentWillReceiveProps (np) {
@@ -45,6 +46,10 @@ class ProjectPage extends React.Component {
     this.setState({ color })
   }
 
+  redirect (url, state) {
+    this.props.history.push(url, Object.assign({}, state, { user: this.props.user }))
+  }
+
   render () {
     // console.log(this.props.location.state)
     // console.log(this.props)
@@ -62,7 +67,7 @@ class ProjectPage extends React.Component {
           showIcons
           user={user}
           highlightIcon={this.props.location.pathname.split('/')[1]}
-          redirect={this.props.redirect} />
+          redirect={this.redirect} />
         <TitleBar
           title={project ? project.name : 'Project Title'}
           role={role}
