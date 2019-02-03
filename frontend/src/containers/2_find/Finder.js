@@ -43,7 +43,6 @@ class Finder extends React.Component {
   }
 
   componentWillMount () {
-    let ethPrice
     eth.getAccounts((err, accounts) => {
       if (!err) {
         if (accounts.length) {
@@ -71,6 +70,7 @@ class Finder extends React.Component {
         <SearchProjectBar />
         <ProjectCardGrid nullText={<p>No proposals have currently been initiated.<br /> Do you have an idea that could help the network?</p>}
           nullAction={'Initiate'}
+          role='Find'
           projectData={this.props.projects['1']} ethPrice={this.state.ethPrice} redirect={this.redirect} />
       </div>
     )
@@ -79,8 +79,8 @@ class Finder extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    // projects: state.projects,
-    projects: {'1':[{address: '0x150y10571'}]},
+    projects: state.projects,
+    // projects: {'1':[{address: '0x150y10571'}]},
     user: state.user
   }
 }

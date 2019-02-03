@@ -51,23 +51,23 @@ class Sidebar extends React.Component {
         <div style={{ height: '62.5%' }}>
           { this.props.showIcons
             ? <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between' }}>
-              { this.props.highlightIcon === 'Initiator'
+              { this.props.highlightIcon === 'Initiate'
                 ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={initiatorcolor} alt='initiator' onClick={() => this.props.history.push('/initiator')} />
                 : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={initiatorgray} alt='initiator' onClick={() => this.props.history.push('/initiator')} />
               }
-              { this.props.highlightIcon === 'Finder'
+              { this.props.highlightIcon === 'Find'
                 ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={findercolor} alt='finder' onClick={() => this.props.history.push('/finder')} />
                 : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={findergray} alt='finder' onClick={() => this.props.history.push('/finder')} />
               }
-              { this.props.highlightIcon === 'Planner'
+              { this.props.highlightIcon === 'Plan'
                 ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={plannercolor} alt='planner' onClick={() => this.props.history.push('/planner')} />
                 : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={plannergray} alt='planner' onClick={() => this.props.history.push('/planner')} />
               }
-              { this.props.highlightIcon === 'Doer'
+              { this.props.highlightIcon === 'Do'
                 ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={doercolor} alt='doer' onClick={() => this.props.history.push('/doer')} />
                 : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={doergray} alt='doer' onClick={() => this.props.history.push('/doer')} />
               }
-              { this.props.highlightIcon === 'Validator'
+              { this.props.highlightIcon === 'Validate'
                 ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={validatorcolor} alt='validator' onClick={() => this.props.history.push('/validator')} />
                 : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={validatorgray} alt='validator' onClick={() => this.props.history.push('/validator')} />
               }

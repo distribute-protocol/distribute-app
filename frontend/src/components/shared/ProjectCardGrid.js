@@ -12,7 +12,11 @@ export default (
     ? Object.keys(props.projectData).map((address, i) => {
       return <Col key={i} index={i} span={6} style={{ marginBottom: 32 }}>
         <ProjectCard
-          project={props.projectData[address]} ethPrice={props.ethPrice} redirect={props.redirect} />
+          role={props.role}
+          project={props.projectData[address]}
+          ethPrice={props.ethPrice}
+          redirect={props.redirect}
+        />
       </Col>
     })
     : null

@@ -34,14 +34,14 @@ const Main = () =>
       <Route path='/profile' component={Profile} />
       <Route path='/fund' component={Fund} />
       <Route path='/roleselection' component={RoleSelection} />
-      <Route path='/initiator' component={Initiator} />
-      <Route path='/finder/project/:id' component={FinderProjectPage} />
-      <Route path='/finder' component={Finder} />
-      <Route path='/planner/project/:id' component={PlannerProjectPage} />
-      <Route path='/planner' component={Planner} />
-      <Route path='/doer' component={Doer} />
-      <Route path='/validator' component={Validator} />
-      <Route path='/resolver' component={Resolver} />
+      <Route path='/initiate' component={Initiator} />
+      <Route path='/find/project/:id' component={FinderProjectPage} />
+      <Route path='/find' component={Finder} />
+      <Route path='/plan/project/:id' component={PlannerProjectPage} />
+      <Route path='/plan' component={Planner} />
+      <Route path='/do' component={Doer} />
+      <Route path='/validate' component={Validator} />
+      <Route path='/resolve' component={Resolver} />
       {/*
       // <Route path='/stake' component={Stake} />
       // <Route path='/add' component={Add} />

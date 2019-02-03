@@ -56,6 +56,7 @@ class ProjectPage extends React.Component {
     }
 
     let role = this.props.location.pathname.split('/')[1]
+    console.log(role)
     return (
       <div style={{ backgroundColor: this.state.color, minHeight: '100vh' }}>
         <MiniSidebar
