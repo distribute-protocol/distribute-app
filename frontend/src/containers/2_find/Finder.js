@@ -8,11 +8,11 @@ import ProjectCardGrid from '../../components/shared/ProjectCardGrid'
 import { getUserStatusWallet } from '../../actions/userActions'
 import { getProjects } from '../../actions/projectActions'
 import { eth } from '../../utilities/blockchain'
-import { lightgradient3 } from '../../styles/colors'
+import { lightgradient2 } from '../../styles/colors'
 import gql from 'graphql-tag'
 
 let projQuery = gql`
-  { allProjectsinState(state: 2){
+  { allProjectsinState(state: 1){
       address,
       id,
       ipfsHash,
@@ -30,12 +30,12 @@ let projQuery = gql`
     }
   }`
 
-class Planner extends React.Component {
+class Finder extends React.Component {
   constructor () {
     super()
     this.state = {
       firstTime: true,
-      role: 'Planner',
+      role: 'Finder',
       showSidebarIcons: true,
       ethPrice: 0
     }
@@ -65,13 +65,13 @@ class Planner extends React.Component {
 
   render () {
     return (
-      <div style={{ backgroundColor: lightgradient3, height: '100vh' }}>
+      <div style={{ backgroundColor: lightgradient2, height: '100vh' }}>
         <MiniSidebar user={this.props.user} showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
         <TitleBar title={this.state.role} role={this.state.role} />
         <SearchProjectBar />
-        <ProjectCardGrid nullText={<p>No proposals have currently been funded.<br />Go ahead and look for a project to support</p>}
-          nullAction={'Find'}
-          projectData={this.props.projects['2']} ethPrice={this.state.ethPrice} redirect={this.redirect} />
+        <ProjectCardGrid nullText={<p>No proposals have currently been initiated.<br /> Do you have an idea that could help the network?</p>}
+          nullAction={'Initiate'}
+          projectData={this.props.projects['1']} ethPrice={this.state.ethPrice} redirect={this.redirect} />
       </div>
     )
   }
@@ -79,7 +79,8 @@ class Planner extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    projects: state.projects,
+    // projects: state.projects,
+    projects: {'1':[{address: '0x150y10571'}]},
     user: state.user
   }
 }
@@ -87,8 +88,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getUserStatusWallet: (userAccount) => dispatch(getUserStatusWallet(userAccount)),
-    getProjects: () => dispatch(getProjects(2, projQuery))
+    getProjects: () => dispatch(getProjects(1, projQuery))
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Planner)
+export default connect(mapStateToProps, mapDispatchToProps)(Finder)
