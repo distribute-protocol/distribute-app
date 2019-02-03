@@ -1,14 +1,14 @@
 import React from 'react'
-import Sidebar from '../components/shared/Sidebar'
+import Sidebar from 'components/shared/Sidebar'
 import { connect } from 'react-redux'
-import { grey1, brandColor } from '../styles/colors'
+import { grey1, brandColor } from 'styles/colors'
 import { font1 } from '../styles/fonts'
 import { Button, Form, Input, Radio } from 'antd'
-import FundVerificationModal from '../components/modals/FundVerificationModal'
+import FundVerificationModal from 'components/2_find/modals/FundVerificationModal'
 import price from 'crypto-price'
-import { eth, web3, dt, rr } from '../utilities/blockchain'
-import { getUserStatusWallet } from '../actions/userActions'
-import { clearTransaction } from '../actions/transactionActions'
+import { eth, web3, dt, rr } from 'utilities/blockchain'
+import { getUserStatusWallet } from 'actions/userActions'
+import { clearTransaction } from 'actions/transactionActions'
 
 class Fund extends React.Component {
   constructor () {

@@ -1,14 +1,14 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Modal, Button } from 'antd'
-import ButtonMintTokens from '../../contractComponents/stage0/MintTokens'
-import cancel from '../../images/tximages/cancel-1.svg'
-import txpending from '../../images/tximages/txpending.svg'
-import txconfirmed from '../../images/tximages/txconfirmed.svg'
-import txfailed from '../../images/tximages/txfailed.svg'
-import { web3 } from '../../utilities/blockchain'
-import { font1 } from '../../styles/fonts'
-import { grey1, affirmLight, cancelLight } from '../../styles/colors'
+import ButtonMintTokens from 'contractComponents/stage0/MintTokens'
+import cancel from 'images/tximages/cancel-1.svg'
+import txpending from 'images/tximages/txpending.svg'
+import txconfirmed from 'images/tximages/txconfirmed.svg'
+import txfailed from 'images/tximages/txfailed.svg'
+import { web3 } from 'utilities/blockchain'
+import { font1 } from 'styles/fonts'
+import { grey1, affirmLight, cancelLight } from 'styles/colors'
 
 class VerificationModal extends React.Component {
   constructor () {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import ProfileComponent from '../components/Profile'
-import TextContinue from '../components/modals/TextContinue'
+import ProfileComponent from 'components/Profile'
+import TextContinue from 'components/onboarding/modals/TextContinue'
 import { getUserStatusWallet, saveUserProfile } from '../actions/userActions'
 import { eth } from '../utilities/blockchain'
 

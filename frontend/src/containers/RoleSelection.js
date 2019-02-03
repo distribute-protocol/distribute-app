@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Sidebar from '../components/shared/Sidebar'
-import RoleIntro from '../components/modals/RoleIntro'
-import TextContinue from '../components/modals/TextContinue'
-import RoleSelectionModal from '../components/modals/RoleSelectionModal'
-import { getUserStatusWallet } from '../actions/userActions'
-import { eth } from '../utilities/blockchain'
+import Sidebar from 'components/shared/Sidebar'
+import RoleIntro from 'components/onboarding/modals/RoleIntro'
+import TextContinue from 'components/onboarding/modals/TextContinue'
+import RoleSelectionModal from 'components/shared/modals/RoleSelectionModal'
+import { getUserStatusWallet } from 'actions/userActions'
+import { eth } from 'utilities/blockchain'
 
 class RoleSelection extends React.Component {
   constructor () {

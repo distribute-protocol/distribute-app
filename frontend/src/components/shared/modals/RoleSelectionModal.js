@@ -1,12 +1,12 @@
 import React from 'react'
 import { Modal, Button } from 'antd'
-import InitiatorGroup from '../../images/roleselection/InitiatorGroup.png'
-import FinderGroup from '../../images/roleselection/FinderGroup.png'
-import PlannerGroup from '../../images/roleselection/PlannerGroup.png'
-import DoerGroup from '../../images/roleselection/DoerGroup.png'
-import ValidatorGroup from '../../images/roleselection/ValidatorGroup.png'
-import ResolverGroup from '../../images/roleselection/ResolverGroup.png'
-import closeButton from '../../images/ButtonClose.png'
+import InitiatorGroup from 'images/roleselection/InitiatorGroup.png'
+import FinderGroup from 'images/roleselection/FinderGroup.png'
+import PlannerGroup from 'images/roleselection/PlannerGroup.png'
+import DoerGroup from 'images/roleselection/DoerGroup.png'
+import ValidatorGroup from 'images/roleselection/ValidatorGroup.png'
+import ResolverGroup from 'images/roleselection/ResolverGroup.png'
+import closeButton from 'images/ButtonClose.png'
 
 class RoleSelectionModal extends React.Component {
   constructor () {
