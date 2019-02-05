@@ -10,7 +10,8 @@ import landingbackground from 'images/landingbackground3.png'
 import hyphalogo from 'images/hyphalogo.png'
 import uportlogo from 'images/logos/uportlogo.svg'
 import metamasklogo from 'images/logos/metamaskfox.svg'
-import { font1 } from 'styles/fonts'
+import styles from 'styles'
+let { colors, fonts, typography, container } = styles
 
 class Landing extends React.Component {
   constructor () {
@@ -124,8 +125,42 @@ class Landing extends React.Component {
   }
 
   render () {
+    const styles = {
+      coverImage: {
+        backgroundImage: `url(${landingbackground})`,
+        backgroundColor: 'rgba(0, 0, 0, 0.75)',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+        position: 'absolute',
+        width: '100%',
+        height: '68.06%',
+        left: 0,
+        top: 0
+      },
+      headerRow: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        position: 'absolute',
+        left: '1.6%',
+        top: '2.47%',
+        right: '1.6%',
+        width: '100%'
+      },
+      brandText: {
+        height: 35,
+        width: 118,
+        color: colors.white,
+        fontFamily: fonts.font1,
+        fontSize: 25,
+        fontStyle: 'normal',
+        fontWeight: '600',
+        textAlign: 'center'
+      }
+
+    }
     return (
-      <div style={{width: '100vw', height: '100vh'}}>
+      <div style={container.body}>
         {this.state.clickedJoin
           ? <Onboarding skipFirst={this.state.hasEther} visible={this.state.clickedJoin} getUport={this.getUport} cancel={this.unclickJoin} />
           : null
@@ -134,57 +169,127 @@ class Landing extends React.Component {
           ? <TextContinue text={'congrats'} visible={this.props.user.loggedIn} continue={this.profilePage} />
           : null
         }
-        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', backgroundImage: `url(${landingbackground})`, backgroundColor: 'rgba(0, 0, 0, 0.75)', backgroundRepeat: 'no-repeat', backgroundSize: 'cover', height: '67.96875%'}}>
+        <div style={styles.coverImage}>
           { /* START OF TOP BAR */ }
-          <div style={{display: 'flex', width: '100%', justifyContent: 'space-between'}}>
-            <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', marginLeft: 15}}>
-              <div>
-                <img src={hyphalogo} alt='hypha logo' width='50' height='50'/>
-
-              </div>
-              <div>
-                <p style={{paddingLeft: 9, paddingTop: 20, fontSize: 25, fontFamily: font1, fontWeight: 600, color: 'white'}}>HYPHA</p>
+          <div style={styles.headerRow}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <img style={{
+                height: 50,
+                width: 50,
+              }} src={hyphalogo} alt='hypha logo' />
+              <div style={styles.brandText}>
+                HYPHA
               </div>
             </div>
-            <div style={{display: 'flex', flexDirection: 'row'}}>
-              <Button style={{backgroundColor: '#A4D573', marginTop: 18, paddingLeft: 15, paddingRight: 15, paddingTop: 3, paddingBottom: 5, border: '#D9D9D9'}} onClick={this.handleJoin}>
-                <p style={{color: 'white', fontSize: 18, fontFamily: font1}}>CONTRIBUTE</p>
+
+            <div style={{
+              position: 'relative',
+              top: '3.03%',
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center'
+            }}>
+              <Button style={Object.assign({},
+                typography.text,
+                { width: 135,
+                  height: 42,
+                  backgroundColor: colors.brandColor,
+                  color: colors.white,
+                  borderColor: colors.brandColor
+                }
+              )} onClick={this.handleJoin}>
+                CONTRIBUTE
               </Button>
-              <p style={{marginTop: 20, marginLeft: 20, marginRight: 22.5, color: 'white', fontSize: 20, fontFamily: 'NowAltRegular'}}>SIGN UP | LOGIN</p>
+              <div style={{ display: 'flex', flexDirection: 'row', marginRight: 20, flexWrap: 'wrap', justifyContent: 'center' }}>
+                <Button style={{ color: colors.white, backgroundColor: 'rgba(0, 0, 0, 0.0)', borderWidth: 0 }}>
+                  SIGN UP
+                </Button>
+
+                <Button style={{ color: colors.white, backgroundColor: 'rgba(0, 0, 0, 0.0)', borderWidth: 0 }}>
+                  LOGIN
+                </Button>
+              </div>
             </div>
           </div>
           { /* END OF TOP BAR
                START OF PLATFORM TITLE */ }
-          <div style={{display: 'flex', justifyContent: 'center'}}>
-            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-              <div style={{fontSize: 36, fontFamily: 'NowAltRegular', textAlign: 'center', color: 'white'}}>A Platform for the Commons</div>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            position: 'absolute',
+            top: '40.86%',
+            width: '100%',
+            flexWrap: 'wrap',
+            height: '40%'
+          }}>
+            <div style={{
+              fontFamily: fonts.font1,
+              fontWeight: '600',
+              fontSize: 36,
+              textAlign: 'center',
+              color: colors.white
+            }}>
+              A Platform for the Commons
+            </div>
+            <div>
               { this.state.metamask
-                ? <Button style={{backgroundColor: '#A4D573', marginTop: 10, paddingLeft: 30, paddingRight: 30, paddingTop: 3, paddingBottom: 5, border: '#D9D9D9'}} onClick={this.handleJoin}>
-                  <p style={{color: 'white', fontSize: 18, fontFamily: font1}}>JOIN</p>
-                </Button>
-                : <Button style={{marginTop: 10, paddingTop: 4}} onClick={this.getMetaMask}>
-                  <p style={{fontSize: 14, fontFamily: font1}}>Please Connect to MetaMask</p>
-                </Button>
+                ? <Button style={{
+                  width: 120,
+                  height: 35,
+                  marginTop: 20,
+                  backgroundColor: colors.brandColor,
+                  color: colors.white,
+                  borderWidth: 0
+                }} onClick={this.handleJoin}>
+                  JOIN
+                  </Button>
+                : <Button style={{
+                  height: 35,
+                  marginTop: 20,
+                  borderStyle: 'dashed',
+                  borderColor: colors.black
+                }} onClick={this.getMetaMask}>
+                  Please Connect to MetaMask
+                  </Button>
               }
             </div>
           </div>
           { /* END OF PLATFORM TITLE */ }
-          <div /> { /* DO NOT DELETE --> NEED THESE FOR POSITIONING */ }
-          <div /> { /* DO NOT DELETE --> NEED THESE FOR POSITIONING */ }
         </div>
         { /* START OF WHITE SPACE */ }
-        <p style={{display: 'flex', justifyContent: 'center', marginTop: 15, fontSize: 18, fontFamily: font1, color: 'black'}}>
-          This distributed organization requires:
-        </p>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around', marginTop: 15, flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 16, fontFamily: font1 }}>
-            <img src={ uportlogo } alt='uPort logo' />
-            <p style={{ textAlign: 'center', marginTop: 10, color: 'black' }}>uPort is a decentralized self-sovereign<br />identity platform.</p>
+        <div style={{
+          // height: '31.94%',
+          width: '100%',
+          position: 'absolute',
+          top: '68.06%',
+          display: 'flex',
+          flexDirection: 'column'
+        }}>
+          <div style={Object.assign({}, typography.text, { fontSize: 20, position: 'relative', marginTop: '2vh' })}>
+            This distributed organization requires:
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 16, fontFamily: font1 }}>
-            <img src={ metamasklogo } alt='MetaMask fox' />
-            <p style={{ textAlign: 'center', marginTop: 10, color: 'black' }}>Metamask is an in-browser wallet that grants easy<br />access to the Ethereum blockchain.</p>
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center', marginTop: '1vh'}}>
+            <div style={{ display: 'flex', flexDirection: 'column', width: '50%', alignItems: 'center', justifyContent: 'center', minWidth: 300, marginTop: '1vh' }}>
+              <div style={{ height: 150, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <a href='https://uport.me' target='_blank'>
+                  <img src={ uportlogo } alt='uPort logo' />
+                </a>
+              </div>
+              <div style={Object.assign({}, typography.text, { paddingTop: 5 })}>
+                uPort is a decentralized self-sovereign identity platform.
+              </div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', width: '50%', alignItems: 'center', justifyContent: 'center', minWidth: 300, marginTop: '1vh' }}>
+              <div style={{ height: 150, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <a href='https://metamask.io' target='_black'>
+                  <img src={ metamasklogo } alt='MetaMask fox' />
+                </a>
+              </div>
+              <div style={Object.assign({}, typography.text, { paddingTop: 5 })}>Metamask is an in-browser wallet that grants easy<br />access to the Ethereum blockchain.</div>
+            </div>
           </div>
+          <div style={{ marginTop: 20, height: 200, width: '100%', backgroundColor: colors.black }} />
         </div>
       </div>
     )

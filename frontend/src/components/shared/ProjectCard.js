@@ -73,7 +73,7 @@ class ProjectCard extends React.Component {
         style={{ height: 350, width: 300, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.25)' }}
         bodyStyle={{ padding: 0, height: 150, width: 300, backgroundColor: 'white', position: 'fixed' }}
         cover={<div style={{ display: 'flex', flexDirection: 'row', height: 200, overflow: 'hidden', backgroundImage: `url(${image})`, backgroundPosition: 'center', backgroundSize: 'cover' }}>
-          <p style={{ fontFamily: font1, fontWeigth: '400', color: 'white', fontSize: 20, marginLeft: 20, marginBottom: 15, alignSelf: 'flex-end' }}>
+          <p style={{ fontFamily: font1, fontWeight: '400', color: 'white', fontSize: 20, marginLeft: 20, marginBottom: 15, alignSelf: 'flex-end' }}>
             {project.name}
           </p>
         </div>}
