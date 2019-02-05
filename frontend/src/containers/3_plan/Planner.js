@@ -21,7 +21,7 @@ let projQuery = gql`
       name
       nextDeadline,
       photo,
-      plansSubmitted,
+      prelimTaskLists,
       reputationBalance,
       reputationCost,
       nextDeadline,
@@ -38,7 +38,7 @@ class Planner extends React.Component {
     super()
     this.state = {
       firstTime: true,
-      role: 'Planner',
+      role: 'Plan',
       showSidebarIcons: true,
       ethPrice: 0
     }
@@ -89,7 +89,7 @@ class Planner extends React.Component {
 const mapStateToProps = (state) => {
   return {
     // projects: state.projects,
-    projects: { '2': [{ address: '0x150y10571' }] },
+    projects: { '2': [{ name: 'Project 1', address: '0x150y10571' }] },
     user: state.user
   }
 }

@@ -21,22 +21,22 @@ class ProjectPage extends React.Component {
   componentWillMount () {
     let color
     switch (this.props.location.pathname.split('/')[1]) {
-      case 'initiator':
+      case 'initiate':
         color = lightgradient1
         break
-      case 'finder':
+      case 'find':
         color = lightgradient2
         break
-      case 'planner':
+      case 'plan':
         color = lightgradient3
         break
-      case 'doer':
+      case 'do':
         color = lightgradient4
         break
-      case 'validator':
+      case 'validate':
         color = lightgradient5
         break
-      case 'resolver':
+      case 'resolve':
         color = lightgradient6
         break
       default:
@@ -56,7 +56,6 @@ class ProjectPage extends React.Component {
     }
 
     let role = this.props.location.pathname.split('/')[1]
-    console.log(role)
     return (
       <div style={{ backgroundColor: this.state.color, minHeight: '100vh' }}>
         <MiniSidebar

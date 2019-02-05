@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal } from 'antd'
-import { font1 } from '../../styles/fonts'
+import { font1 } from 'styles/fonts'
 
 export default (props) => (
   <Modal

@@ -9,37 +9,37 @@ export default ({
 }) => {
   let roleColor, button
   switch (role.toLowerCase()) {
-    case 'initiator':
+    case 'initiate':
       roleColor = gradient1
       button = <img style={{ marginRight: 30, cursor: 'pointer' }}
         // onClick={() => this.props.redirect('/profile')}
         alt='profile' src={share} />
       break
-    case 'finder':
+    case 'find':
       roleColor = gradient2
       button = <Button style={{ marginRight: 15, color: 'white', border: '1px solid white', fontSize: 12, fontFamily: font1, borderRadius: 4, cursor: 'pointer', backgroundColor: roleColor }}>
         Discoveries
       </Button>
       break
-    case 'planner':
+    case 'plan':
       roleColor = gradient3
       button = <Button style={{ marginRight: 15, color: 'white', border: '1px solid white', fontSize: 12, fontFamily: font1, borderRadius: 4, cursor: 'pointer', backgroundColor: roleColor }}>
         Plans
       </Button>
       break
-    case 'doer':
+    case 'do':
       roleColor = gradient4
       button = <Button style={{ marginRight: 15, color: 'white', border: '1px solid white', fontSize: 12, fontFamily: font1, borderRadius: 4, cursor: 'pointer', backgroundColor: roleColor }}>
         Plans
       </Button>
       break
-    case 'validator':
+    case 'validate':
       roleColor = gradient5
       button = <Button style={{ marginRight: 15, color: 'white', border: '1px solid white', fontSize: 12, fontFamily: font1, borderRadius: 4, cursor: 'pointer', backgroundColor: roleColor }}>
         Plans
       </Button>
       break
-    case 'resolver':
+    case 'resolve':
       roleColor = gradient6
       button = <Button style={{ marginRight: 15, color: 'white', border: '1px solid white', fontSize: 12, fontFamily: font1, borderRadius: 4, cursor: 'pointer', backgroundColor: roleColor }}>
         Plans

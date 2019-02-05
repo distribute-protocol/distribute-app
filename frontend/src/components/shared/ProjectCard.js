@@ -17,7 +17,7 @@ class ProjectCard extends React.Component {
   }
 
   clickCard () {
-    this.props.redirect(`/${this.props.role}/project/${this.props.project.address}`, { project: this.props.project, ethPrice: this.props.ethPrice })
+    this.props.redirect(`/${this.props.role.toLowerCase()}/project/${this.props.project.address}`, { project: this.props.project, ethPrice: this.props.ethPrice })
   }
 
   render () {
