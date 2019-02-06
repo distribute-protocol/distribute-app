@@ -21,7 +21,8 @@ class ProjectPage extends React.Component {
 
   componentWillMount () {
     let color
-    switch (this.props.location.pathname.split('/')[1]) {
+    let pathname = this.props.location ? this.props.location.pathname.split('/')[1] : null
+    switch (pathname) {
       case 'initiator':
         color = lightgradient1
         break

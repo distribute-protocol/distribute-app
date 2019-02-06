@@ -101,24 +101,32 @@ class Initiator extends React.Component {
 
   handlePhotoUpload (photoObj) {
     const reader = new FileReader()
-    reader.onloadend = () => {
-      const buf = Buffer.from(reader.result) // Convert data into buffer
-      ipfs.add(buf, (err, result) => { // Upload buffer to IPFS
-        if (err) {
-          console.error(err)
-          return
-        }
-        let url = `https://ipfs.io/ipfs/${result[0].hash}`
-        this.setState({ photo: url, loading: false })
-      })
+    try {
+      reader.onloadend = () => {
+        const buf = Buffer.from(reader.result) // Convert data into buffer
+        ipfs.add(buf, (err, result) => { // Upload buffer to IPFS
+          if (err) {
+            console.error(err, "ERROR: Couldn't add to IPFS")
+            return
+          }
+          let url = `https://ipfs.io/ipfs/${result[0].hash}`
+          this.setState({ photo: url, loading: false })
+        })
+      }
+      reader.readAsArrayBuffer(photoObj) // Read Provided File
+    } catch (error) {
+      console.log('im the fuccking error', error)
     }
-    reader.readAsArrayBuffer(photoObj) // Read Provided File
   }
 
   getBase64 (img, callback) {
     const reader = new FileReader()
-    reader.addEventListener('load', () => callback(reader.result))
-    reader.readAsDataURL(img)
+    try {
+      reader.addEventListener('load', () => callback(reader.result))
+      reader.readAsDataURL(img)
+    } catch (error) {
+      console.log('im another error', error)
+    }
   }
 
   async handlePriceChange (val) {

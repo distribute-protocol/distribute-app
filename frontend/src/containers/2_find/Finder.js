@@ -35,7 +35,7 @@ class Finder extends React.Component {
     super()
     this.state = {
       firstTime: true,
-      role: 'Finder',
+      role: 'Find',
       showSidebarIcons: true,
       ethPrice: 0
     }
