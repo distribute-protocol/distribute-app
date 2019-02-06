@@ -22,7 +22,7 @@ class Initiator extends React.Component {
     super()
     this.state = {
       firstTime: true,
-      role: 'Initiator',
+      role: 'initiate',
       firstModal: false,
       secondModal: false,
       tempProject: {},
@@ -67,6 +67,10 @@ class Initiator extends React.Component {
       }
     })
     this.timer = null
+  }
+  componentDidMount () {
+    console.log(this.props.form)
+    this.setState({ proposingProject: !!this.props.form, proposalLanding: !this.props.form })
   }
 
   storeData (type, values, category, coords) {
@@ -171,12 +175,12 @@ class Initiator extends React.Component {
           ethPrice={this.state.ethPrice}
           tokensToStake={this.state.tokensToStake}
           repToStake={this.state.repToStake}
-          finder={() => this.redirect('/finder')}
+          finder={() => this.redirect('/find')}
           networkStatus={this.props.network}
         />
         {this.state.proposalLanding
           ? <div>
-            <Sidebar showIcons highlightIcon={this.state.role} history={this.props.history} />
+            <Sidebar showIcons highlightIcon={this.state.role} history={this.props.history} minimized />
             <ProposeLanding
               chooseResource={this.chooseResource}
             />
@@ -184,7 +188,7 @@ class Initiator extends React.Component {
           : null}
         {this.state.proposingProject
           ? <div>
-            <Sidebar showIcons highlightIcon={this.state.role} redirect={this.redirect} />
+            <Sidebar showIcons highlightIcon={this.state.role} redirect={this.redirect} minimized />
             <ProposeForm
               tokensToStake={this.state.tokensToStake}
               repToStake={this.state.repToStake}

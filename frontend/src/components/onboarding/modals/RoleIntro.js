@@ -43,12 +43,12 @@ class RoleIntro extends React.Component {
           <p style={{ margin: 20 }}>On the distribute network there are 6 roles. Each role has a specific task they<br />complete to help further the purpose of the distribute network. The roles are<br />Initiators, Discoverers, Planners, Doers, Validators, and Resolvers.</p>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', flexWrap: 'wrap', paddingLeft: 40, paddingRight: 40, marginTop: 40 }} >
-          <RoleIntroIcon roleName={'INITIATE'} roleIcon={initiator} roleDescription={'Spark the Ideas'} onClick={() => this.clickedRole('Initiator')} />
-          <RoleIntroIcon roleName={'SUPPORT'} roleIcon={finder} roleDescription={'Quest for the Best'} onClick={() => this.clickedRole('Finder')} />
-          <RoleIntroIcon roleName={'PLAN'} roleIcon={planner} roleDescription={'How Should It Be Done'} onClick={() => this.clickedRole('Planner')} />
-          <RoleIntroIcon roleName={'DO'} roleIcon={doer} roleDescription={'Makers Welcome'} onClick={() => this.clickedRole('Doer')} />
-          <RoleIntroIcon roleName={'VALIDATE'} roleIcon={validator} roleDescription={'Protect the Network'} onClick={() => this.clickedRole('Validator')} />
-          <RoleIntroIcon roleName={'RESOLVE'} roleIcon={resolver} roleDescription={'Find the Solution'} onClick={() => this.clickedRole('Resolver')} />
+          <RoleIntroIcon roleName={'INITIATE'} roleIcon={initiator} roleDescription={'Spark the Ideas'} onClick={() => this.clickedRole('initiate')} />
+          <RoleIntroIcon roleName={'SUPPORT'} roleIcon={finder} roleDescription={'Quest for the Best'} onClick={() => this.clickedRole('find')} />
+          <RoleIntroIcon roleName={'PLAN'} roleIcon={planner} roleDescription={'How Should It Be Done'} onClick={() => this.clickedRole('plan')} />
+          <RoleIntroIcon roleName={'DO'} roleIcon={doer} roleDescription={'Makers Welcome'} onClick={() => this.clickedRole('do')} />
+          <RoleIntroIcon roleName={'VALIDATE'} roleIcon={validator} roleDescription={'Protect the Network'} onClick={() => this.clickedRole('validate')} />
+          <RoleIntroIcon roleName={'RESOLVE'} roleIcon={resolver} roleDescription={'Find the Solution'} onClick={() => this.clickedRole('resolve')} />
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', paddingLeft: 15, paddingRight: 15 }}>
           <p style={{ fontFamily: 'Avenir Next', color: '#989898', fontSize: 14 }}>You will select one role now, but you are able to switch roles any time.</p>

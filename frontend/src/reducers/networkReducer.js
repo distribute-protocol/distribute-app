@@ -20,9 +20,9 @@ export default function networkReducer (state = initialState, action) {
         totalReputation: state.totalReputation + 10000
       })
     case TOKENS_MINTED:
-      return Object.assign({}, state, { totalTokens: state.totalTokens + action.receipt.amountMinted.toNumber() })
+      return Object.assign({}, state, { totalTokens: state.totalTokens + action.receipt.logs[0].args.amountMinted.toNumber()})
     case TOKENS_SOLD:
-      return Object.assign({}, state, { totalTokens: state.totalTokens - action.receipt.amountWithdrawn.toNumber() })
+      return Object.assign({}, state, { totalTokens: state.totalTokens - action.receipt.logs[0].args.amountWithdrawn.toNumber() })
     default:
   }
   return state

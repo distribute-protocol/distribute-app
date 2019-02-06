@@ -38,10 +38,10 @@ class InitiatorWelcome extends React.Component {
             <p style={{paddingTop: 30, fontSize: 20, fontFamily: 'Lato'}}>Are you ready to initiate?</p>
           </div>
           <div style={{display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', paddingTop: 39}}>
-            <Button style={{backgroundColor: '#326BC1', color: 'white', width: 270, height: 65, fontSize: 20, fontFamily: 'NowAltRegular', textAlign: 'center'}} key='continuemoney' onClick={() => this.handleOk('tokens')}>
+            <Button style={{backgroundColor: '#326BC1', color: 'white', width: 270, height: 65, fontSize: 20, textAlign: 'center'}} key='continuemoney' onClick={() => this.handleOk('tokens')}>
               Continue With Money
             </Button>
-            <Button style={{backgroundColor: '#F5A623', color: 'white', width: 270, height: 65, fontSize: 20, fontFamily: 'NowAltRegular', textAlign: 'center'}} key='continueclout' onClick={() => this.handleOk('rep')}>
+            <Button style={{backgroundColor: '#F5A623', color: 'white', width: 270, height: 65, fontSize: 20, textAlign: 'center'}} key='continueclout' onClick={() => this.handleOk('rep')}>
               Continue With Clout
             </Button>
           </div>

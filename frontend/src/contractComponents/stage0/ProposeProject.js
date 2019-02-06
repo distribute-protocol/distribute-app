@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Button } from 'antd'
-import { proposeProject } from '../../actions/projectActions'
-import ipfs from '../../utilities/ipfs'
-import { eth } from '../../utilities/blockchain'
+import { proposeProject } from 'actions/projectActions'
+import ipfs from 'utilities/ipfs'
+import { eth } from 'utilities/blockchain'
 
 class ButtonProposeProject extends React.Component {
   constructor () {

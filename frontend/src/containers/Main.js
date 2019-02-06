@@ -34,6 +34,7 @@ const Main = () =>
       <Route path='/profile' component={Profile} />
       <Route path='/fund' component={Fund} />
       <Route path='/roleselection' component={RoleSelection} />
+      <Route path='/initiate/form' component={props => <Initiator {...props} form />} />
       <Route path='/initiate' component={Initiator} />
       <Route path='/find/project/:id' component={FinderProjectPage} />
       <Route path='/find' component={Finder} />

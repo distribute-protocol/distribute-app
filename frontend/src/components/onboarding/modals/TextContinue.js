@@ -21,12 +21,12 @@ class TextContinue extends React.Component {
         case 'firstprofile':
           text = <p>We already started a profile for you based on<br />your uPort profile. You can add more to your<br />profile to give people more information about<br />you and what you like.</p>
           break
-        case 'Initiator':
-        case 'Finder':
-        case 'Planner':
-        case 'Doer':
-        case 'Validator':
-        case 'Resolver':
+        case 'initiate':
+        case 'find':
+        case 'plan':
+        case 'do':
+        case 'validate':
+        case 'resolve':
           text = <p>You have selected the {this.props.text.toLowerCase()} role.<br />You can see your current role and the other<br />available ones on the dashboard on the left.</p>
           break
         default:

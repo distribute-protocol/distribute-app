@@ -1,7 +1,8 @@
 import { LOGIN_USER, REGISTER_USER, GET_USER_STATUS, GET_USER_STATUS_WALLET, GET_USER_VOTES, SAVE_USER_PROFILE } from '../constants/UserActionTypes'
 import { userStatusReceived, loggedInUser, registerUser, registeredUser, userVotesReceived, savedUserProfile } from '../actions/userActions'
 import { from, of, iif, merge } from 'rxjs'
-import { map, mergeMap } from 'rxjs/operators'
+import { map, mergeMap, concat } from 'rxjs/operators'
+import { push } from 'react-router-redux'
 import { client } from '../index'
 import { web3, rr } from '../utilities/blockchain'
 import gql from 'graphql-tag'
@@ -60,8 +61,7 @@ const registerUserEpic = action$ => {
         }
       })
     }),
-    mergeMap(result => {
-      console.log('there', result)
+    map(result => {
       return from(rr.register({ from: wallet }))
     }),
     map(result => registeredUser(result.tx))
@@ -145,7 +145,9 @@ const getUserStatusWalletEpic = action$ =>
       `
       return client.query({ query: query, variables: { wallet: action.payload } })
     }),
-    map(result => userStatusReceived(result))
+    map(result => {
+      return userStatusReceived(result)
+    })
   )
 
 const getUserVotesEpic = action$ => {

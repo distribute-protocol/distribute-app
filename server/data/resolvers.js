@@ -64,7 +64,7 @@ const resolvers = {
   Query: {
     network: () => Network.findOne({ }).then(status => status),
     user: (_, args, context, info) => User.findOne({ account: args.account }).then(user => user),
-    userByWallet: (_, args, context, info) => User.findOne({ wallets: args.wallet }).then(user => user),
+    userByWallet: async (_, args, context, info) => User.findOne({ wallets: args.wallet.toLowerCase() }),
     allUsers: () => User.find({ }).then(users => users),
     token: (_, args) => [{}],
     allTokens: () => [{}],
@@ -106,7 +106,7 @@ const resolvers = {
         let user = await new User({
           _id: new mongoose.Types.ObjectId(),
           account: args.input.did,
-          wallets: [args.wallet],
+          wallets: [args.wallet.toLowerCase()],
           avatar: args.input.avatar.uri,
           name: args.input.name,
           tokenBalance: 0,
@@ -114,7 +114,7 @@ const resolvers = {
           tasks: [],
           validations: [],
           weiBalance: 0
-        })
+        }).save()
         if (!user) console.error('user not saved')
         let credential = await new Credential(Object.assign({ userId: user.id }, credentialObj)).save()
         if (!credential) console.error('credential not saved')

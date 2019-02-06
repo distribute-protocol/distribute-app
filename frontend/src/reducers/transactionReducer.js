@@ -12,13 +12,13 @@ export default function transactionReducer (state = initialState, action) {
   let newTx
   switch (action.type) {
     case TRANSACTION_PENDING:
-      return { txStatus: 'pending' }
+      return Object.assign({}, state, { txStatus: 'pending' })
     case TRANSACTION_SUCCESS:
       newTx = state.txReceipts.push(action.txReceipt)
-      return { txStatus: 'success', txReceipts: newTx }
+      return Object.assign({}, state, { txStatus: 'success', txReceipts: newTx })
     case TRANSACTION_FAILURE:
       newTx = state.txReceipts.push(action.txReceipt)
-      return { txStatus: 'failure', txReceipts: newTx }
+      return Object.assign({}, state, { txStatus: 'failure', txReceipts: newTx })
     case CLEAR_TRANSACTION:
       return { txStatus: null }
   }
