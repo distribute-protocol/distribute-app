@@ -33,7 +33,7 @@ export default (props) => {
   // let projectInstance = Project.at(project.address)
   let usdPerEth = ethPrice.price
   let amount = (web3.fromWei(project.weiBal, 'ether') * ethPrice).toFixed(2)
-  console.log(project)
+  // console.log(project)
   return (
     <div style={{ marginLeft: 60, display: 'flex', alignItems: 'center', flexDirection: 'column', minHeight: '100vh' }}>
       <div style={{ width: '70vw', backgroundColor: 'white', minHeight: '100vh', marginTop: 55 }}>
@@ -53,28 +53,28 @@ export default (props) => {
               </div>
             }
           </div>
-          <div style={{ height: 500, width: 400, flex: 1, flexDirection: 'column', padding: 20, marginTop: 30, paddingTop: 0 }}>
+          <div style={{ flex: 1, flexDirection: 'column', padding: 20, marginTop: 30, paddingTop: 0 }}>
             <Progress strokeWidth={20} style={{ fontFamily: 'Arimo', fontSize: 12, width: '33vw' }} strokeColor={color3} strokeLinecap='square' percent={parseInt(project.weiBal) / parseInt(project.weiCost) * 100} showInfo={false} />
             <p style={{ fontFamily: font1, fontSize: 32, color: color3, margin: 0, marginTop: 15 }}>${isNaN(amount) ? 0 : amount}</p>
             <p style={{ fontFamily: font1, fontSize: 24, color: 'black', margin: 0, marginBottom: 10 }}>staked out of $<span style={{ fontFamily: font1, fontWeight: '400', fontSize: 24 }}>{(web3.fromWei(project.weiCost, 'ether') * ethPrice).toFixed(2)}</span> goal</p>
-            <FundingStatus fundingType={'Token'} launchModal={props.launchModal} project={project} usdPerEth={usdPerEth} participants={project.funders} />
+            <FundingStatus fundingType={'tokens'} launchModal={props.launchModal} project={project} usdPerEth={usdPerEth} participants={project.funders} />
             <Progress strokeWidth={20} style={{ fontFamily: 'Arimo', fontSize: 12, width: '33vw', marginTop: 15 }} strokeColor={color4} strokeLinecap='square' percent={project.reputationBalance / project.reputationCost * 100} showInfo={false} />
             <p style={{ fontFamily: font1, fontSize: 32, color: color4, margin: 0, marginTop: 15 }}>{project.reputationBalance}</p>
             <p style={{ fontFamily: font1, fontSize: 24, color: 'black', margin: 0, marginBottom: 10 }}>staked out of <span style={{ fontFamily: font1, fontWeight: '400', fontSize: 24 }}>{project.reputationCost}</span> goal</p>
-            <FundingStatus fundingType={'Reputation'} launchModal={props.launchModal} project={project} usdPerEth={usdPerEth} participants={project.supporters} />
+            <FundingStatus fundingType={'reputation'} launchModal={props.launchModal} project={project} usdPerEth={usdPerEth} participants={project.supporters} />
             <p style={{ fontFamily: font1, fontSize: 24, color: 'black', margin: 0 }}>
               Expires {moment(parseInt(project.nextDeadline * 1000)).fromNow()}
             </p>
           </div>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', flexWrap: 'wrap', marginTop: 40 }}>
-          <div style={{ display: 'flex', flexDirection: 'column', height: 500, width: 400, flex: 1, paddingLeft: 20 }}>
+        <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', marginTop: 40 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', height: 500, minWidth: 300, flex: 1, paddingLeft: 20 }}>
             <h3 style={{ fontSize: 24, fontFamily: font1, marginTop: 15 }}>
               Description
             </h3>
             <p style={{ paddingRight: 30 }}>{project.summary}</p>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', height: 500, width: 400, flex: 1, paddingRight: 20 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', height: 500, minWidth: 300, flex: 1, paddingRight: 20 }}>
             <h3 style={{ fontSize: 24, fontFamily: font1, marginTop: 15 }}>
               Location
             </h3>

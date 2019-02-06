@@ -1,14 +1,22 @@
 import React from 'react'
-import { grey3 } from '../../styles/colors'
-import StakeProject from '../../contractComponents/stage1/StakeProject'
-import UnstakeProject from '../../contractComponents/stage1/UnstakeProject'
+import { Button } from 'antd'
+import { color1, color2, grey3 } from 'styles/colors'
 
 export default (props) => {
   return (
     <div style={{ marginBottom: 5 }}>
       <div style={{ display: 'flex' }}>
-        <UnstakeProject fundingType={props.fundingType} launchModal={props.launchModal} />
-        <StakeProject fundingType={props.fundingType} launchModal={props.launchModal} style={{ marginLeft: 35 }} />
+        <Button
+          style={Object.assign({}, { backgroundColor: color2, color: 'white', width: 111, border: `1px solid ${color2}` }, props.style)}
+          onClick={() => props.launchModal(props.fundingType, 'unstake')}>
+          Withdraw
+        </Button>
+        <Button
+          style={Object.assign({ backgroundColor: color1, color: 'white', width: 111, border: `1px solid ${color1}`, marginLeft: 35 }, props.style)}
+          onClick={() => props.launchModal(props.fundingType, 'stake')}
+        >
+          Fund
+        </Button>
       </div>
       <p style={{ fontSize: 20, fontFamily: 'Lato', marginTop: 15 }}>{props.fundingType} Stakers: {props.participants ? props.participants.length : 0}</p>
       <hr style={{ marginLeft: 10, marginRight: 10, color: grey3, backgroundColor: grey3 }} />

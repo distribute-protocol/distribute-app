@@ -36,7 +36,7 @@ class ProjectCard extends React.Component {
           <p style={{ fontFamily: font1, fontSize: 14, textAlign: 'center', marginTop: 15 }}>{description}</p>
           <div style={{ display: 'flex', flexDirection: 'row' }}>
             <div style={{ flex: 3, paddingLeft: 15 }}>
-              <Progress style={{ fontFamily: 'Arimo', fontSize: 12, width: 200 }} strokeColor={color3} width={75} strokeWidth={8} percent={parseInt(project.weiBal) / parseInt(project.weiCost * 100)} format={percent => `${percent}%`} />
+              <Progress style={{ fontFamily: 'Arimo', fontSize: 12, width: 200 }} strokeColor={color3} width={75} strokeWidth={8} percent={parseInt(project.weiBal) / parseInt(project.weiCost * 10000)} format={percent => `${Math.floor(parseFloat(percent))}%`} />
               <p style={{ fontFamily: font1, fontSize: 12 }}>${(web3.fromWei(project.weiCost - project.weiBal, 'ether') * this.props.ethPrice).toFixed(2)} Remaining</p>
               <Progress style={{ fontFamily: 'Arimo', fontSize: 12, width: 200 }} strokeColor={color4} width={75} strokeWidth={8} percent={project.reputationBalance / project.reputationCost * 100} format={percent => `${percent}%`} />
               <p style={{ fontFamily: font1, fontSize: 12 }}>{project.reputationCost - project.reputationBalance} Clout Remaining</p>

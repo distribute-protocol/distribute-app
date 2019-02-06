@@ -1,7 +1,7 @@
 import React from 'react'
 import MiniSidebar from '../../components/shared/MiniSidebar'
 import TitleBar from '../../components/shared/TitleBar'
-import FundVerificationModal from 'components/2_find/modals/FundVerificationModal'
+import FindVerificationModal from 'components/2_find/modals/FindVerificationModal'
 import ProjectPageComponent from '../../components/2_find/ProjectPageComponent'
 import { lightgradient1, lightgradient2, lightgradient3, lightgradient4, lightgradient5, lightgradient6 } from '../../styles/colors'
 
@@ -14,6 +14,7 @@ class ProjectPage extends React.Component {
     }
     this.redirect = this.redirect.bind(this)
     this.launchModal = this.launchModal.bind(this)
+    this.closeModal = this.closeModal.bind(this)
   }
 
   componentWillReceiveProps (np) {
@@ -53,8 +54,12 @@ class ProjectPage extends React.Component {
   redirect (url, state) {
     this.props.history.push(url, Object.assign({}, state, { user: this.props.user }))
   }
-  launchModal (type) {
-    this.setState({ txModal: true, type })
+  launchModal (type, action) {
+    this.setState({ txModal: true, type, action })
+  }
+
+  closeModal (type, action) {
+    this.setState({ txModal: false })
   }
   render () {
     // console.log(this.props.location.state)
@@ -67,10 +72,10 @@ class ProjectPage extends React.Component {
     }
 
     let role = this.props.location.pathname.split('/')[1]
-    console.log(user, project, ethPrice, role)
+    // console.log(user, project, ethPrice, role)
     return (
       <div style={{ backgroundColor: this.state.color, minHeight: '100vh' }}>
-        <FundVerificationModal visible={this.state.txModal} type={this.state.type} />
+        <FindVerificationModal user={user} ethPrice={ethPrice} visible={this.state.txModal} closeModal={this.closeModal} action={this.state.action} type={this.state.type} data={project} />
         <MiniSidebar
           showIcons
           user={user}

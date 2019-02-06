@@ -10,7 +10,7 @@ export default (props) => (
     footer={null}
     maskClosable={false}
     width={930}
-    bodyStyle={{ height: 850, backgroundColor: 'white', padding: 0, overflow: 'hidden' }}
+    bodyStyle={{ maxHeight: window.innerHeight * 0.80, backgroundColor: 'white', padding: 0, overflow: 'auto' }}
   >
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 90, color: 'black' }}>
       <div style={{ fontFamily: font1, fontSize: 30, textAlign: 'center' }}>{props.title}</div>
