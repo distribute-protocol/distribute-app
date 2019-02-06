@@ -7,10 +7,12 @@ const ButtonStakeProject = (props) => {
   let style = Object.assign({ backgroundColor: color1, color: 'white', width: 111, border: `1px solid ${color1}` }, props.style)
   return (<Button
     style={style}
-    onClick={() => props.stakeProject(props.type, props.address, props.val, { from: props.user })}>
+    onClick={() => props.launchModal(props.fundingType)}
+  >
     Fund
   </Button>)
 }
+// onClick={() => props.stakeProject(props.type, props.address, props.val, { from: props.user })}
 
 const mapDispatchToProps = (dispatch) => {
   return {

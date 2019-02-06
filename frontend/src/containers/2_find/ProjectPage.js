@@ -1,6 +1,7 @@
 import React from 'react'
 import MiniSidebar from '../../components/shared/MiniSidebar'
 import TitleBar from '../../components/shared/TitleBar'
+import FundVerificationModal from 'components/2_find/modals/FundVerificationModal'
 import ProjectPageComponent from '../../components/2_find/ProjectPageComponent'
 import { lightgradient1, lightgradient2, lightgradient3, lightgradient4, lightgradient5, lightgradient6 } from '../../styles/colors'
 
@@ -8,9 +9,11 @@ class ProjectPage extends React.Component {
   constructor () {
     super()
     this.state = {
-
+      txModal: false,
+      type: ''
     }
     this.redirect = this.redirect.bind(this)
+    this.launchModal = this.launchModal.bind(this)
   }
 
   componentWillReceiveProps (np) {
@@ -23,22 +26,22 @@ class ProjectPage extends React.Component {
     let color
     let pathname = this.props.location ? this.props.location.pathname.split('/')[1] : null
     switch (pathname) {
-      case 'initiator':
+      case 'initiate':
         color = lightgradient1
         break
-      case 'finder':
+      case 'find':
         color = lightgradient2
         break
-      case 'planner':
+      case 'plan':
         color = lightgradient3
         break
-      case 'doer':
+      case 'do':
         color = lightgradient4
         break
-      case 'validator':
+      case 'validate':
         color = lightgradient5
         break
-      case 'resolver':
+      case 'resolve':
         color = lightgradient6
         break
       default:
@@ -50,7 +53,9 @@ class ProjectPage extends React.Component {
   redirect (url, state) {
     this.props.history.push(url, Object.assign({}, state, { user: this.props.user }))
   }
-
+  launchModal (type) {
+    this.setState({ txModal: true, type })
+  }
   render () {
     // console.log(this.props.location.state)
     // console.log(this.props)
@@ -62,8 +67,10 @@ class ProjectPage extends React.Component {
     }
 
     let role = this.props.location.pathname.split('/')[1]
+    console.log(user, project, ethPrice, role)
     return (
       <div style={{ backgroundColor: this.state.color, minHeight: '100vh' }}>
+        <FundVerificationModal visible={this.state.txModal} type={this.state.type} />
         <MiniSidebar
           showIcons
           user={user}
@@ -73,9 +80,9 @@ class ProjectPage extends React.Component {
           title={project ? project.name : 'Project Title'}
           role={role}
           project
-          style={{ display: 'fixed' }}
         />
         <ProjectPageComponent
+          launchModal={this.launchModal}
           ethPrice={ethPrice}
           project={project} />
       </div>

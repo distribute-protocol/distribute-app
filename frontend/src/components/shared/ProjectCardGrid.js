@@ -43,7 +43,7 @@ export default (
             <div style={{ marginTop: 60, fontFamily: font1, fontSize: 24 }}>
               {props.nullText}
             </div>
-            <Button style={{ marginTop: 40, width: 180, height: 50, fontFamily: font1, fontSize: 24 }} onClick={() => props.redirect('/initiator', {})}>
+            <Button style={{ marginTop: 40, width: 180, height: 50, fontFamily: font1, fontSize: 24 }} onClick={() => props.redirect('/initiate', {})}>
               {props.nullAction}
             </Button>
           </div>

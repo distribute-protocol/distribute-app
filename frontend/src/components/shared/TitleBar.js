@@ -51,7 +51,7 @@ export default ({
       break
   }
   return (
-    <div style={{ flexDirection: 'row', marginLeft: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 55, backgroundColor: roleColor }}>
+    <div style={{ flexDirection: 'row', marginLeft: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 55, backgroundColor: roleColor, position: 'fixed', width: window.innerWidth, zIndex: 30 }}>
       <p style={{ color: 'white', fontFamily: font1, fontSize: 28, margin: 0, marginLeft: 20, fontWeight: 500 }}>{title}</p>
       {project ? null : button}
     </div>

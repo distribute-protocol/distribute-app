@@ -7,10 +7,10 @@ export default (props) => {
   return (
     <div style={{ marginBottom: 5 }}>
       <div style={{ display: 'flex' }}>
-        <UnstakeProject />
-        <StakeProject style={{ marginLeft: 35 }} />
+        <UnstakeProject fundingType={props.fundingType} launchModal={props.launchModal} />
+        <StakeProject fundingType={props.fundingType} launchModal={props.launchModal} style={{ marginLeft: 35 }} />
       </div>
-      <p style={{ fontSize: 20, fontFamily: 'Lato', marginTop: 15 }}>{props.fundingType} Stakers: {props.participants.length}</p>
+      <p style={{ fontSize: 20, fontFamily: 'Lato', marginTop: 15 }}>{props.fundingType} Stakers: {props.participants ? props.participants.length : 0}</p>
       <hr style={{ marginLeft: 10, marginRight: 10, color: grey3, backgroundColor: grey3 }} />
     </div>
   )

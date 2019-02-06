@@ -9,36 +9,37 @@ import { font1 } from '../../styles/fonts'
 import { web3, P } from '../../utilities/blockchain'
 const { TextArea } = Input
 export default (props) => {
-  //let { project, ethPrice } = props
-  let ethPrice = 132.34
+  let { project, ethPrice } = props
+  // let ethPrice = 132.34
 
-  let project = {
-    address: '0xA4AE3a0cebE0Eb5AB4EC4a541d8F2BF7a14C9B3A',
-    weiCost: web3.toWei('1', 'ether'),
-    weiBal: web3.toWei('.25', 'ether'),
-    reputationBalance: 20000,
-    reputationCost: 100000,
-    nextDeadline: 1548070343,
-    location: [],
-    funders: [],
-    supporters: [],
-    photo: null,
-    description: `Morbi fringilla lorem ipsum, ac maximus neque ornare eget. Nulla facilisi.
-    Integer velit orci, pellentesque sed est eu, ultrices elementum tortor.
-    Vivamus quis mauris fringilla, pulvinar nibh vitae, sagittis ex.
-    Proin ut nunc at felis gravida mollis. Fusce lectus lorem,
-    faucibus vel nisl a, finibus feugiat nulla. In hac habitasse platea dictumst.
-    Ut scelerisque maximus felis et vestibulum.`
-  }
+  // let project = {
+  //   address: '0xA4AE3a0cebE0Eb5AB4EC4a541d8F2BF7a14C9B3A',
+  //   weiCost: web3.toWei('1', 'ether'),
+  //   weiBal: web3.toWei('.25', 'ether'),
+  //   reputationBalance: 20000,
+  //   reputationCost: 100000,
+  //   nextDeadline: 1548070343,
+  //   location: [],
+  //   funders: [],
+  //   supporters: [],
+  //   photo: null,
+  //   description: `Morbi fringilla lorem ipsum, ac maximus neque ornare eget. Nulla facilisi.
+  //   Integer velit orci, pellentesque sed est eu, ultrices elementum tortor.
+  //   Vivamus quis mauris fringilla, pulvinar nibh vitae, sagittis ex.
+  //   Proin ut nunc at felis gravida mollis. Fusce lectus lorem,
+  //   faucibus vel nisl a, finibus feugiat nulla. In hac habitasse platea dictumst.
+  //   Ut scelerisque maximus felis et vestibulum.`
+  // }
   // let projectInstance = Project.at(project.address)
-  let usdPerEth = { price: 132.34 }
+  let usdPerEth = ethPrice.price
   let amount = (web3.fromWei(project.weiBal, 'ether') * ethPrice).toFixed(2)
+  console.log(project)
   return (
     <div style={{ marginLeft: 60, display: 'flex', alignItems: 'center', flexDirection: 'column', minHeight: '100vh' }}>
-      <div style={{ width: '70vw', backgroundColor: 'white', minHeight: '100vh' }}>
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', flexWrap: 'wrap' }}>
+      <div style={{ width: '70vw', backgroundColor: 'white', minHeight: '100vh', marginTop: 55 }}>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', flexWrap: 'wrap', marginTop: 20 }}>
           <div style={{ height: 500, width: 400, flex: 1, justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
-            {typeof project === 'undefined' && project.photo !== null
+            {typeof project !== 'undefined' && project.photo !== null
               ? <div>
                 <img style={{ height: 500, width: 400 }} src={project.photo} alt='projectPhoto' />
               </div>
@@ -56,11 +57,11 @@ export default (props) => {
             <Progress strokeWidth={20} style={{ fontFamily: 'Arimo', fontSize: 12, width: '33vw' }} strokeColor={color3} strokeLinecap='square' percent={parseInt(project.weiBal) / parseInt(project.weiCost) * 100} showInfo={false} />
             <p style={{ fontFamily: font1, fontSize: 32, color: color3, margin: 0, marginTop: 15 }}>${isNaN(amount) ? 0 : amount}</p>
             <p style={{ fontFamily: font1, fontSize: 24, color: 'black', margin: 0, marginBottom: 10 }}>staked out of $<span style={{ fontFamily: font1, fontWeight: '400', fontSize: 24 }}>{(web3.fromWei(project.weiCost, 'ether') * ethPrice).toFixed(2)}</span> goal</p>
-            <FundingStatus fundingType={'Token'} project={project} usdPerEth={usdPerEth} participants={project.funders} />
+            <FundingStatus fundingType={'Token'} launchModal={props.launchModal} project={project} usdPerEth={usdPerEth} participants={project.funders} />
             <Progress strokeWidth={20} style={{ fontFamily: 'Arimo', fontSize: 12, width: '33vw', marginTop: 15 }} strokeColor={color4} strokeLinecap='square' percent={project.reputationBalance / project.reputationCost * 100} showInfo={false} />
             <p style={{ fontFamily: font1, fontSize: 32, color: color4, margin: 0, marginTop: 15 }}>{project.reputationBalance}</p>
             <p style={{ fontFamily: font1, fontSize: 24, color: 'black', margin: 0, marginBottom: 10 }}>staked out of <span style={{ fontFamily: font1, fontWeight: '400', fontSize: 24 }}>{project.reputationCost}</span> goal</p>
-            <FundingStatus fundingType={'Reputation'} project={project} usdPerEth={usdPerEth} participants={project.supporters} />
+            <FundingStatus fundingType={'Reputation'} launchModal={props.launchModal} project={project} usdPerEth={usdPerEth} participants={project.supporters} />
             <p style={{ fontFamily: font1, fontSize: 24, color: 'black', margin: 0 }}>
               Expires {moment(parseInt(project.nextDeadline * 1000)).fromNow()}
             </p>
@@ -71,7 +72,7 @@ export default (props) => {
             <h3 style={{ fontSize: 24, fontFamily: font1, marginTop: 15 }}>
               Description
             </h3>
-            <p style={{ paddingRight: 30 }}>{project.description}</p>
+            <p style={{ paddingRight: 30 }}>{project.summary}</p>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', height: 500, width: 400, flex: 1, paddingRight: 20 }}>
             <h3 style={{ fontSize: 24, fontFamily: font1, marginTop: 15 }}>
@@ -88,79 +89,47 @@ export default (props) => {
             }
           </div>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', flexWrap: 'wrap', marginTop: 20 }}>
-          <div style={{ display: 'flex', flexDirection: 'column', width: 400, flex: 1, paddingLeft: 20 }}>
-            <h3 style={{ fontSize: 24, fontFamily: font1, marginTop: 15 }}>
-              Timeline
-            </h3>
-            <div style={{ height: 100, width: 400, margin: 20, marginTop: 10, marginBottom: 10, borderRadius: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 2px 1px rgba(0, 0, 0, 0.25)', border: `1px solid ${grey1}` }}>
-              Event #1
-            </div>
-            <div style={{ height: 100, width: 400, margin: 20, marginTop: 10, marginBottom: 10, borderRadius: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 2px 1px rgba(0, 0, 0, 0.25)', border: `1px solid ${grey1}` }}>
-              Event #2
-            </div>
-            <div style={{ height: 100, width: 400, margin: 20, marginTop: 10, marginBottom: 10, borderRadius: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 2px 1px rgba(0, 0, 0, 0.25)', border: `1px solid ${grey1}` }}>
-              Event #3
-            </div>
-            <div style={{ height: 100, width: 400, margin: 20, marginTop: 10, marginBottom: 10, borderRadius: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 2px 1px rgba(0, 0, 0, 0.25)', border: `1px solid ${grey1}` }}>
-              Event #4
-            </div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', width: 400, flex: 1, paddingLeft: 20 }}>
-            <h3 style={{ fontSize: 24, fontFamily: font1, marginTop: 15 }}>
-              Discussion
-            </h3>
-            <div style={{ height: 80, width: 400, margin: 20, marginTop: 10, marginBottom: 10, borderRadius: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 2px 1px rgba(0, 0, 0, 0.25)', border: `1px solid ${grey1}` }}>
-              Discussion #1
-            </div>
-            <div style={{ height: 80, width: 400, margin: 20, marginTop: 10, marginBottom: 10, borderRadius: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 2px 1px rgba(0, 0, 0, 0.25)', border: `1px solid ${grey1}` }}>
-              Discussion #2
-            </div>
-            <div style={{ height: 80, width: 400, margin: 20, marginTop: 10, marginBottom: 10, borderRadius: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 2px 1px rgba(0, 0, 0, 0.25)', border: `1px solid ${grey1}` }}>
-              Discussion #3
-            </div>
-            <div style={{ height: 80, width: 400, margin: 20, marginTop: 10, marginBottom: 10, borderRadius: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 2px 1px rgba(0, 0, 0, 0.25)', border: `1px solid ${grey1}` }}>
-              Discussion # 4
-            </div>
-            <TextArea style={{ height: 80, width: 400, margin: 20, marginTop: 10, marginBottom: 10, borderRadius: 4 }} placeholder='Add Comment' />
-            <Button style={{ height: 40, width: 200, margin: 20, marginRight: 70, marginTop: 10, alignSelf: 'flex-end' }}>
-              Add Comment
-            </Button>
-          </div>
-        </div>
       </div>
     </div>
   )
 }
-// <div>
-
-//   {project !== undefined && project.name !== null
-//     ? <p style={{fontFamily: 'Lato', fontSize: 20, color: 'black', marginTop: 50}}>{project.name}</p>
-//     : <p style={{fontFamily: 'Lato', fontSize: 16, color: 'black', maxWidth: 400}}>
-//       This project was not proposed with a name.
-//     </p>
-//   }
-//   {project !== undefined && project.summary !== null
-//     ? <p style={{fontFamily: 'Lato', fontSize: 16, color: 'black', maxWidth: 400}}>{project.summary}</p>
-//     : <p style={{fontFamily: 'Lato', fontSize: 16, color: 'black', maxWidth: 400}}>
-//       This project was not proposed with a description.
-//     </p>
-//   }
-// </div>
-// <div>
-//   {project !== undefined
-//     ? <FundingStatus fundingType={'Token'} project={project} usdPerEth={props.usdPerEth} />
-//     : null
-//   }
-//   {project !== undefined
-//     ? <FundingStatus fundingType={'Clout'} project={project} usdPerEth={props.usdPerEth} />
-//     : null
-//   }
-//   {project !== undefined && project.nextDeadline !== null
-//     ? <p style={{fontFamily: 'Lato', fontSize: 20, color: 'black'}}>
-//       <b>{(Math.floor((project.nextDeadline - Date.now()) / 86400000))}</b> days to go
-//     </p>
-//     : <p style={{fontFamily: 'Lato', fontSize: 20, color: 'black'}}><b>...</b> days to go</p>
-//   }
-//   <p style={{fontFamily: 'Lato', fontSize: 20, color: 'black'}}>Location</p>
+// <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', flexWrap: 'wrap', marginTop: 20 }}>
+//   <div style={{ display: 'flex', flexDirection: 'column', width: 400, flex: 1, paddingLeft: 20 }}>
+//     <h3 style={{ fontSize: 24, fontFamily: font1, marginTop: 15 }}>
+//       Timeline
+//     </h3>
+//     <div style={{ height: 100, width: 400, margin: 20, marginTop: 10, marginBottom: 10, borderRadius: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 2px 1px rgba(0, 0, 0, 0.25)', border: `1px solid ${grey1}` }}>
+//       Event #1
+//     </div>
+//     <div style={{ height: 100, width: 400, margin: 20, marginTop: 10, marginBottom: 10, borderRadius: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 2px 1px rgba(0, 0, 0, 0.25)', border: `1px solid ${grey1}` }}>
+//       Event #2
+//     </div>
+//     <div style={{ height: 100, width: 400, margin: 20, marginTop: 10, marginBottom: 10, borderRadius: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 2px 1px rgba(0, 0, 0, 0.25)', border: `1px solid ${grey1}` }}>
+//       Event #3
+//     </div>
+//     <div style={{ height: 100, width: 400, margin: 20, marginTop: 10, marginBottom: 10, borderRadius: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 2px 1px rgba(0, 0, 0, 0.25)', border: `1px solid ${grey1}` }}>
+//       Event #4
+//     </div>
+//   </div>
+//   <div style={{ display: 'flex', flexDirection: 'column', width: 400, flex: 1, paddingLeft: 20 }}>
+//     <h3 style={{ fontSize: 24, fontFamily: font1, marginTop: 15 }}>
+//       Discussion
+//     </h3>
+//     <div style={{ height: 80, width: 400, margin: 20, marginTop: 10, marginBottom: 10, borderRadius: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 2px 1px rgba(0, 0, 0, 0.25)', border: `1px solid ${grey1}` }}>
+//       Discussion #1
+//     </div>
+//     <div style={{ height: 80, width: 400, margin: 20, marginTop: 10, marginBottom: 10, borderRadius: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 2px 1px rgba(0, 0, 0, 0.25)', border: `1px solid ${grey1}` }}>
+//       Discussion #2
+//     </div>
+//     <div style={{ height: 80, width: 400, margin: 20, marginTop: 10, marginBottom: 10, borderRadius: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 2px 1px rgba(0, 0, 0, 0.25)', border: `1px solid ${grey1}` }}>
+//       Discussion #3
+//     </div>
+//     <div style={{ height: 80, width: 400, margin: 20, marginTop: 10, marginBottom: 10, borderRadius: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 2px 1px rgba(0, 0, 0, 0.25)', border: `1px solid ${grey1}` }}>
+//       Discussion # 4
+//     </div>
+//     <TextArea style={{ height: 80, width: 400, margin: 20, marginTop: 10, marginBottom: 10, borderRadius: 4 }} placeholder='Add Comment' />
+//     <Button style={{ height: 40, width: 200, margin: 20, marginRight: 70, marginTop: 10, alignSelf: 'flex-end' }}>
+//       Add Comment
+//     </Button>
+//   </div>
 // </div>
