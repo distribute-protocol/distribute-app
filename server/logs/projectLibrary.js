@@ -58,7 +58,7 @@ module.exports = function () {
       const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
       if (!processedTx) {
         let { projectAddress, index, claimer, weiReward, reputationReward } = event.returnValues
-        const user = await User.findOneAndUpdate({account: claimer}, {$inc: {reputationBalance: reputationReward, weiBalance: weiReward}}, {new: true})
+        const user = await User.findOneAndUpdate({wallets: claimer}, {$inc: {reputationBalance: reputationReward, weiBalance: weiReward}}, {new: true})
         if (!user) console.error('user not successfully updated')
         const project = await Project.findOne({address: projectAddress})
         if (!project) console.error('project not successfully updated')
@@ -98,7 +98,7 @@ module.exports = function () {
       const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
       if (!processedTx) {
         let { staker, refund } = event.returnValues
-        const user = await User.findOneAndUpdate({account: staker}, {$inc: {tokenBalance: refund}}, {new: true})
+        const user = await User.findOneAndUpdate({wallets: staker}, {$inc: {tokenBalance: refund}}, {new: true})
         if (!user) console.error('user not successfully updated')
         await new ProcessedTxs({transactionHash, logIndex}).save()
         const network = await Network.findOneAndUpdate({}, { lastBlock: event.blockNumber }, {new: true})
@@ -116,7 +116,7 @@ module.exports = function () {
       const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
       if (!processedTx) {
         let { staker, refund } = event.returnValues
-        const user = await User.findOneAndUpdate({account: staker}, {$inc: {reputationBalance: refund}}, {new: true})
+        const user = await User.findOneAndUpdate({wallets: staker}, {$inc: {reputationBalance: refund}}, {new: true})
         if (!user) console.error('user not successfully updated')
         await new ProcessedTxs({transactionHash, logIndex}).save()
         const network = await Network.findOneAndUpdate({}, { lastBlock: event.blockNumber }, {new: true})

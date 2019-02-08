@@ -1,9 +1,9 @@
 import React from 'react'
-import MiniSidebar from '../../components/shared/MiniSidebar'
-import TitleBar from '../../components/shared/TitleBar'
+import Sidebar from 'components/shared/Sidebar'
+import TitleBar from 'components/shared/TitleBar'
 import FindVerificationModal from 'components/2_find/modals/FindVerificationModal'
-import ProjectPageComponent from '../../components/2_find/ProjectPageComponent'
-import { lightgradient1, lightgradient2, lightgradient3, lightgradient4, lightgradient5, lightgradient6 } from '../../styles/colors'
+import ProjectPageComponent from 'components/2_find/ProjectPageComponent'
+import { lightgradient1, lightgradient2, lightgradient3, lightgradient4, lightgradient5, lightgradient6 } from 'styles/colors'
 
 class ProjectPage extends React.Component {
   constructor () {
@@ -74,22 +74,25 @@ class ProjectPage extends React.Component {
     let role = this.props.location.pathname.split('/')[1]
     // console.log(user, project, ethPrice, role)
     return (
-      <div style={{ backgroundColor: this.state.color, minHeight: '100vh' }}>
+      <div style={{ backgroundColor: this.state.color, minHeight: '100vh', display: 'flex' }}>
         <FindVerificationModal user={user} ethPrice={ethPrice} visible={this.state.txModal} closeModal={this.closeModal} action={this.state.action} type={this.state.type} data={project} />
-        <MiniSidebar
+        <Sidebar
           showIcons
           user={user}
           highlightIcon={this.props.location.pathname.split('/')[1]}
           redirect={this.redirect} />
-        <TitleBar
-          title={project ? project.name : 'Project Title'}
-          role={role}
-          project
-        />
-        <ProjectPageComponent
-          launchModal={this.launchModal}
-          ethPrice={ethPrice}
-          project={project} />
+        <div style={{ flexGrow: 100 }}>
+          <TitleBar
+            title={project ? project.name : 'Project Title'}
+            role={role}
+            project
+          />
+          <ProjectPageComponent
+            launchModal={this.launchModal}
+            user={user}
+            ethPrice={ethPrice}
+            project={project} />
+        </div>
       </div>
     )
   }

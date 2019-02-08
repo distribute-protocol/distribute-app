@@ -146,7 +146,7 @@ module.exports = function () {
       let reward = Math.floor(proposedCost / 20)
       try {
         const updateField = contractCaller === 1 ? 'tokenBalance' : 'reputationBalance'
-        const user = User.findOneAndUpdate({account: proposer}, {$inc: {weiBalance: reward, [updateField]: proposedStake}}, {new: true})
+        const user = User.findOneAndUpdate({wallets: proposer}, {$inc: {weiBalance: reward, [updateField]: proposedStake}}, {new: true})
         if (!user) console.error('User not updated correctly in log refund')
         const project = Project.findOneAndUpdate({address: projectAddress}, {$set: {proposerRewarded: true}}, {new: true})
         if (!project) console.error('Project not updated correctly in log refund')
@@ -226,7 +226,7 @@ module.exports = function () {
     if (!processedTx) {
       let { projectAddress, index, reputationVal, claimer } = event.returnValues
       try {
-        const user = await User.findOneAndUpdate({account: claimer}, {$inc: {reputationBalance: reputationVal * (-1)}}, {new: true})
+        const user = await User.findOneAndUpdate({wallets: claimer}, {$inc: {reputationBalance: reputationVal * (-1)}}, {new: true})
         if (!user) console.error('user not found')
         const project = await Project.findOne({address: projectAddress})
         if (!project) console.error('project not found')

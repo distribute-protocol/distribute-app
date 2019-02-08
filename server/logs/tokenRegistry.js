@@ -127,7 +127,7 @@ module.exports = function () {
       const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
       if (!processedTx) {
         let { projectAddress, index, votes, secretHash, pollId, voter } = event.returnValues
-        const user = await User.findOneAndUpdate({account: voter}, {$inc: { tokenBalance: votes * (-1) }}, {upsert: true, setDefaultsOnInsert: true, new: true})
+        const user = await User.findOneAndUpdate({wallets: voter}, {$inc: { tokenBalance: votes * (-1) }}, {upsert: true, setDefaultsOnInsert: true, new: true})
         if (!user) { console.error('User not successfully created or updated') }
         const project = await Project.findOne({address: projectAddress})
         if (!project) { console.error('Project not found') }
