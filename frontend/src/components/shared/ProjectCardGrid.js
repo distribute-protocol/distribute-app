@@ -10,31 +10,31 @@ export default (
 ) => {
   const projects = typeof props.projectData !== `undefined`
     ? Object.keys(props.projectData).map((address, i) => {
-      return <Col key={i} index={i} span={6} style={{ marginBottom: 32 }}>
+      return <div key={i} index={i} span={6} style={{ margin: 16 }}>
         <ProjectCard
           role={props.role}
           project={props.projectData[address]}
           ethPrice={props.ethPrice}
           redirect={props.redirect}
         />
-      </Col>
+      </div>
     })
     : null
   const gutter = { xs: 8, sm: 16, md: 24, lg: 32 }
   return (
     <div style={{ height: '80%', flex: 1, display: 'flex', justifyContent: 'space-between', flexDirection: 'column' }}>
       <div>
-        <div style={{ marginTop: 20, display: 'flex', justifyContent: 'space-between', color: 'black' }}>
-          <p style={{ paddingLeft: 95, fontFamily: 'Lato', fontSize: 20 }}>{projects ? `${projects.length} ${projects.length > 1 ? 'proposals' : 'proposal'}` : `0 proposals`}</p>
+        <div style={{ marginTop: 20, display: 'flex', justifyContent: 'space-between', color: 'black', flexWrap: 'wrap' }}>
+          <p style={{ paddingLeft: 35, fontFamily: 'Lato', fontSize: 20 }}>{projects ? `${projects.length} ${projects.length > 1 ? 'proposals' : 'proposal'}` : `0 proposals`}</p>
           <Button style={{ color: 'black', marginRight: 25, border: '1px solid black', borderRadius: 4, fontFamily: font1, fontSize: 12 }}>
             Map
             <img style={{ marginLeft: 5 }}src={mapicon} alt='map' />
           </Button>
         </div>
-        <div style={{ marginLeft: 85, marginRight: 25 }}>
-          <Row gutter={gutter}>
+        <div style={{ marginLeft: 25, marginRight: 25 }}>
+          <div style={{ margin: '1%', marginTop: 0, display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }} gutter={gutter}>
             {projects}
-          </Row>
+          </div>
         </div>
         {projects
           ? null

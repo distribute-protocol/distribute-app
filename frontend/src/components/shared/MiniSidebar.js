@@ -27,55 +27,55 @@ class MiniSidebar extends React.Component {
 
   render () {
     return (
-      <div style={{height: '100%', width: 60, position: 'fixed', backgroundColor: '#111111', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between'}}>
+      <div style={{width: 60, height: '100%', position: 'fixed', backgroundColor: 'black', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between'}}>
         <div style={{display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between'}}>
-          <img style={{cursor: 'pointer', marginTop: 15}} alt='hamburger' src={hamburger} />
-          <img style={{width: 40, height: 40, borderRadius: 50, cursor: 'pointer', marginTop: 20}} onClick={() => this.props.redirect('/profile')} alt='profile' src={this.props.user && typeof this.props.user.avatar !== 'undefined' ? this.props.user.avatar : avatar} />
+          <img style={{cursor: 'pointer', marginTop: 15}} alt='hamburger' src={hamburger} onClick={this.props.toggleMinimize} />
+          <img style={{width: 40, height: 40, borderRadius: 50, cursor: 'pointer', marginTop: 20}} onClick={() => this.props.history.push('/profile')} alt='profile' src={this.props.user && typeof this.props.user.avatar !== 'undefined' ? this.props.user.avatar : avatar} />
           { this.props.showIcons
             ? <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between', marginTop: 10 }}>
               <img
                 style={{ paddingBottom: 5, cursor: 'pointer' }}
-                src={this.props.highlightIcon.toLowerCase() === 'initiate' ? initiatorcolor : initiatorgray}
+                src={this.props.highlightIcon && this.props.highlightIcon.toLowerCase() === 'initiate' ? initiatorcolor : initiatorgray}
                 alt='initiator'
-                onClick={() => this.props.redirect('/initiate')}
+                onClick={() => this.props.history.push('/initiate')}
               />
               <img
                 style={{ paddingTop: 5, paddingBottom: 5, cursor: 'pointer' }}
-                src={this.props.highlightIcon.toLowerCase() === 'find' ? findercolor : findergray}
+                src={this.props.highlightIcon && this.props.highlightIcon.toLowerCase() === 'find' ? findercolor : findergray}
                 alt='finder'
-                onClick={() => this.props.redirect('/find')}
+                onClick={() => this.props.history.push('/find')}
               />
               <img
                 style={{ paddingTop: 5, paddingBottom: 5, cursor: 'pointer', height: 52 }}
-                src={this.props.highlightIcon.toLowerCase() === 'plan' ? plannercolor : plannergray}
+                src={this.props.highlightIcon && this.props.highlightIcon.toLowerCase() === 'plan' ? plannercolor : plannergray}
                 alt='planner'
-                onClick={() => this.props.redirect('/plan')}
+                onClick={() => this.props.history.push('/plan')}
               />
               <img
                 style={{ paddingTop: 5, paddingBottom: 5, cursor: 'pointer', height: 52 }}
-                src={this.props.highlightIcon.toLowerCase() === 'do' ? doercolor : doergray}
+                src={this.props.highlightIcon && this.props.highlightIcon.toLowerCase() === 'do' ? doercolor : doergray}
                 alt='doer'
-                onClick={() => this.props.redirect('/do')}
+                onClick={() => this.props.history.push('/do')}
               />
               <img
                 style={{ paddingTop: 5, paddingBottom: 5, cursor: 'pointer', height: 52 }}
-                src={this.props.highlightIcon.toLowerCase() === 'validate' ? validatorcolor : validatorgray}
+                src={this.props.highlightIcon && this.props.highlightIcon.toLowerCase() === 'validate' ? validatorcolor : validatorgray}
                 alt='validator'
-                onClick={() => this.props.redirect('/validator')}
+                onClick={() => this.props.history.push('/validator')}
               />
               <img
                 style={{ paddingTop: 5, cursor: 'pointer', height: 52 }}
-                src={this.props.highlightIcon.toLowerCase() === 'resolve' ? resolvercolor : resolvergray}
+                src={this.props.highlightIcon && this.props.highlightIcon.toLowerCase() === 'resolve' ? resolvercolor : resolvergray}
                 alt='resolver'
-                onClick={() => this.props.redirect('/resolve')} />
+                onClick={() => this.props.history.push('/resolve')} />
             </div>
             : null
           }
         </div>
         { this.props.showIcons
           ? <div style={{display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between'}}>
-            <img style={{paddingBottom: 5, cursor: 'pointer'}} onClick={() => this.props.redirect('/activitymonitor')} src={network} alt='network' />
-            <img style={{paddingTop: 5, paddingBottom: 20, cursor: 'pointer'}} onClick={() => this.props.redirect('/dashboard')} src={dashboard} alt='dashboard' />
+            <img style={{paddingBottom: 5, cursor: 'pointer'}} onClick={() => this.props.history.push('/activitymonitor')} src={network} alt='network' />
+            <img style={{paddingTop: 5, paddingBottom: 20, cursor: 'pointer'}} onClick={() => this.props.history.push('/dashboard')} src={dashboard} alt='dashboard' />
           </div>
           : null
         }

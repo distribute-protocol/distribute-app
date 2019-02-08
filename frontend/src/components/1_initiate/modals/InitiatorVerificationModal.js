@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { Button } from 'antd'
+import { clearTransaction } from 'actions/transactionActions'
 import ButtonProposeProject from 'contractComponents/stage0/ProposeProject'
 import Map from '../../shared/ModalMap'
 import ModalTemplate from 'components/shared/modals/ModalTemplate.js'
@@ -27,6 +28,7 @@ class VerificationModal extends React.Component {
 
   close () {
     this.props.close()
+    this.prpos.clearTx()
   }
 
   render () {
@@ -190,4 +192,10 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(VerificationModal)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    clearTx: () => dispatch(clearTransaction())
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(VerificationModal)

@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { Button, Input, Modal } from 'antd'
+import { clearTransaction } from 'actions/transactionActions'
 import ButtonProposeProject from 'contractComponents/stage0/ProposeProject'
 import StakeProject from 'contractComponents/stage1/StakeProject'
 import UnstakeProject from 'contractComponents/stage1/UnstakeProject'
@@ -32,6 +33,7 @@ class VerificationModal extends React.Component {
 
   close () {
     this.props.close()
+    this.props.clearTx()
   }
 
   updateValue (val) {
@@ -138,7 +140,7 @@ class VerificationModal extends React.Component {
             fontSize: 24,
             fontFamily: fonts.font1,
             textAlign: 'center'
-          }} key='continuemoney' onClick={this.close}>
+          }} key='continuemoney' onClick={this.props.closeModal}>
             Close
           </Button>
         </div>
@@ -167,7 +169,7 @@ class VerificationModal extends React.Component {
             fontSize: 24,
             fontFamily: fonts.font1,
             textAlign: 'center'
-          }} key='continuemoney' onClick={this.close}>
+          }} key='continuemoney' onClick={this.props.closeModal}>
             Close
           </Button>
         </div>
@@ -216,7 +218,14 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(VerificationModal)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    clearTx: () => dispatch(clearTransaction())
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(VerificationModal)
 // <ButtonProposeProject
 //   collateralType={this.props.collateralType}
 //   data={this.props.data}

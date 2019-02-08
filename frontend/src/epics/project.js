@@ -119,16 +119,17 @@ const stakeProject = action$ => {
           mergeMap(receipt => {
             if (receipt.receipt.status === '0x1') {
               return concat(
-                from(dt.currentPrice()).pipe(
-                  map(currPrice => {
-                    return concat(
-                      of(transactionSuccess(receipt)),
-                      of(projectStaked(collateralType, receipt.logs[0].args, currPrice))
-                      // stakeResult.logs[0].args.staked === true ? of(push('/add')) : null
-                    )
-                  })
-                )
+                of(transactionSuccess(receipt)),
+                of(projectStaked(collateralType, receipt.logs[0].args, 0))
+                // stakeResult.logs[0].args.staked === true ? of(push('/add')) : null
               )
+              // return concat(
+              //   from(dt.currentPrice()).pipe(
+              //     map(currPrice => {
+              //
+              //     })
+              //   )
+              // )
             } else {
               return of(transactionFailure())
             }

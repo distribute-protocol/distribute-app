@@ -83,14 +83,14 @@ const resolvers = {
     verifiedPrelimTaskLists: (_, args) => PrelimTaskList.find({ address: args.address.toLowerCase(), verified: true }).then(prelimTaskLists => prelimTaskLists),
     userPrelimTaskLists: (_, args) => PrelimTaskList.findOne({ submitter: args.account.toLowerCase() }).then(prelimTaskLists => prelimTaskLists),
     taskValidations: (_, args) => Project.findOne({ address: args.address.toLowerCase() }).then(project => Task.find({ project: project.id }).then(task => Validation.find({ task: task.id })).then(validations => validations)),
-    userVotes: (_, args) => User.findOne({ account: args.account }).then(user => Vote.find({ voter: user.id }).then(votes => votes)),
+    userVotes: (_, args) => User.findOne({ account: args.account.toLowerCase() }).then(user => Vote.find({ voter: user.id }).then(votes => votes)),
     taskVotes: (address) => [{}],
     findFinalTaskHash: (_, args) => PrelimTaskList.findOne({ hash: args.topTaskHash, address: args.address.toLowerCase() }).then(prelimTaskList => prelimTaskList),
     findTaskByIndex: (_, args) => Project.findOne({ address: args.address.toLowerCase() }).then(project => Task.findOne({ project: project.id, index: args.index })).then(task => task),
     allTasksinProject: (_, args) => Project.findOne({ address: args.address.toLowerCase() }).then(project => Task.find({ project: project.id })).then(tasks => tasks),
     getValidations: (_, args) => Project.findOne({ address: args.address.toLowerCase() }).then(project => Task.findOne({ project: project.id, index: args.index })).then(task => Validation.find({ task: task.id })).then(validations => validations),
     getUserValidationsinProject: (_, args) => Validation.find({ projAddress: args.address.toLowerCase(), user: args.user.toLowerCase() }).then(validations => validations),
-    getPrevPollID: (obj, args) => User.findOne({ account: args.account }).then(user => {
+    getPrevPollID: (obj, args) => User.findOne({ account: args.account.toLowerCase() }).then(user => {
       Vote.find({ voter: user.id, revealed: false, rescued: false }).sort({ amount: 1 }).then(votes => {
         let insertIndex = _.sortedIndexBy(votes, { amount: args.amount }, (o) => o.amount)
         let prevPollID = insertIndex < 1 ? 0 : votes[insertIndex - 1].pollID

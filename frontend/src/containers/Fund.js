@@ -62,7 +62,7 @@ class Fund extends React.Component {
           let c = -(ethToSend * totalSupply) / (2 * currentPrice)
           let result1 = (-b + Math.sqrt(b * b - 4 * (a) * (c))) / 2 * a
           let result2 = (-b - Math.sqrt(b * b - 4 * (a) * (c))) / 2 * a
-          this.setState({ tokensToBuy: result1 > result2 ? Math.floor(result1) - 1 : Math.floor(result2) - 1, ethToSend, currentPrice, totalSupply, value })
+          this.setState({ tokensToBuy: Math.floor(result1 > result2 ? result1 - 10 : result2 - 10), ethToSend, currentPrice, totalSupply, value })
         }
 
         // let ethRequired, refund

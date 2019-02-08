@@ -18,7 +18,7 @@ module.exports = function () {
         let minter = event.returnValues.minter
         let amountMinted = event.returnValues.amountMinted
         let totalCost = event.returnValues.totalCost
-        const user = await User.findOneAndUpdate({ wallets: minter }, { $inc: { tokenBalance: amountMinted } }, { setDefaultsOnInsert: true, new: true })
+        const user = await User.findOneAndUpdate({ wallets: minter.toLowerCase() }, { $inc: { tokenBalance: amountMinted } }, { setDefaultsOnInsert: true, new: true })
         if (!user) { console.error('User not successfully updated') }
         await new Token({ userId: user.id, amount: amountMinted, ether: totalCost }).save()
         const network = await Network.findOneAndUpdate({},
@@ -48,7 +48,7 @@ module.exports = function () {
     try {
       const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
       if (!processedTx) {
-        const user = await User.findOneAndUpdate({wallets: seller}, {$inc: { tokenBalance: amountSold }}, {upsert: true, setDefaultsOnInsert: true, new: true})
+        const user = await User.findOneAndUpdate({wallets: seller.toLowerCase()}, {$inc: { tokenBalance: amountSold }}, {upsert: true, setDefaultsOnInsert: true, new: true})
         if (!user) { console.error('User not successfully updated') }
         await new Token({ userId: user.id, amount: amountSold, ether: totalCost }).save()
         const network = await Network.findOneAndUpdate({},

@@ -27,7 +27,7 @@ class FullSidebar extends React.Component {
   render () {
     let iconSize = 66
     let iconMargin = 25
-    return <div style={{ height: '100%', width: 100, position: 'fixed', backgroundColor: 'black', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }}>
+    return <div style={{ width: 100, height: '100%', position: 'fixed', backgroundColor: 'black', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }}>
       <div style={{ height: '15.625%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <h1 className='App-title' style={{ color: 'white', marginTop: 5, fontSize: 18, cursor: 'pointer' }} onClick={() => this.props.history.push('/')}>HYPHA</h1>
         <div style={{
@@ -50,30 +50,12 @@ class FullSidebar extends React.Component {
       <div style={{ height: '60%' }}>
         { this.props.showIcons
           ? <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between' }}>
-            { this.props.highlightIcon === 'initiate'
-              ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={initiatorcolor} alt='initiate' onClick={() => this.props.history.push('/initiate')} />
-              : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={initiatorgray} alt='initiate' onClick={() => this.props.history.push('/initiate')} />
-            }
-            { this.props.highlightIcon === 'find'
-              ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={findercolor} alt='find' onClick={() => this.props.history.push('/find')} />
-              : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={findergray} alt='find' onClick={() => this.props.history.push('/find')} />
-            }
-            { this.props.highlightIcon === 'plan'
-              ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={plannercolor} alt='plan' onClick={() => this.props.history.push('/plan')} />
-              : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={plannergray} alt='plan' onClick={() => this.props.history.push('/plan')} />
-            }
-            { this.props.highlightIcon === 'do'
-              ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={doercolor} alt='do' onClick={() => this.props.history.push('/do')} />
-              : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={doergray} alt='do' onClick={() => this.props.history.push('/do')} />
-            }
-            { this.props.highlightIcon === 'validate'
-              ? <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={validatorcolor} alt='validate' onClick={() => this.props.history.push('/validate')} />
-              : <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={validatorgray} alt='validate' onClick={() => this.props.history.push('/validate')} />
-            }
-            { this.props.highlightIcon === 'resolver'
-              ? <img style={{ width: iconSize, height: iconSize, cursor: 'pointer' }} src={resolvercolor} alt='resolve' onClick={() => this.props.history.push('/resolve')} />
-              : <img style={{ width: iconSize, height: iconSize, cursor: 'pointer' }} src={resolvergray} alt='resolve' onClick={() => this.props.history.push('resolve')} />
-            }
+            <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={this.props.highlightIcon === 'initiate' ? initiatorcolor : initiatorgray} alt='initiate' onClick={() => this.props.history.push('/initiate')} />
+            <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={this.props.highlightIcon === 'find' ? findercolor : findergray} alt='find' onClick={() => this.props.history.push('/find')} />
+            <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={this.props.highlightIcon === 'plan' ? plannercolor : plannergray} alt='plan' onClick={() => this.props.history.push('/plan')} />
+            <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={this.props.highlightIcon === 'do' ? doercolor : doergray} alt='do' onClick={() => this.props.history.push('/do')} />
+            <img style={{ width: iconSize, height: iconSize, marginBottom: iconMargin, cursor: 'pointer' }} src={this.props.highlightIcon === 'validate' ? validatorcolor : validatorgray} alt='validate' onClick={() => this.props.history.push('/validate')} />
+            <img style={{ width: iconSize, height: iconSize, cursor: 'pointer' }} src={this.props.highlightIcon === 'resolver' ? resolvercolor : resolvergray} alt='resolve' onClick={() => this.props.history.push('/resolve')} />
           </div>
           : null
         }

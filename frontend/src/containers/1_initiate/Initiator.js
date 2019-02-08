@@ -69,7 +69,6 @@ class Initiator extends React.Component {
     this.timer = null
   }
   componentDidMount () {
-    console.log(this.props.form)
     this.setState({ proposingProject: !!this.props.form, proposalLanding: !this.props.form })
   }
 
@@ -196,7 +195,7 @@ class Initiator extends React.Component {
           : null}
         {this.state.proposingProject
           ? <div>
-            <Sidebar showIcons highlightIcon={this.state.role} redirect={this.redirect} minimized />
+            <Sidebar showIcons highlightIcon={this.state.role} history={this.props.history} minimized />
             <ProposeForm
               tokensToStake={this.state.tokensToStake}
               repToStake={this.state.repToStake}

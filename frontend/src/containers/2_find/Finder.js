@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import price from 'crypto-price'
-import MiniSidebar from '../../components/shared/MiniSidebar'
+import Sidebar from 'components/shared/Sidebar'
 import TitleBar from '../../components/shared/TitleBar'
 import SearchProjectBar from '../../components/shared/SearchProjectBar'
 import ProjectCardGrid from '../../components/shared/ProjectCardGrid'
@@ -64,14 +64,16 @@ class Finder extends React.Component {
 
   render () {
     return (
-      <div style={{ backgroundColor: lightgradient2, height: '100vh' }}>
-        <MiniSidebar user={this.props.user} showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} redirect={this.redirect} />
-        <TitleBar title={this.state.role} role={this.state.role} />
-        <SearchProjectBar />
-        <ProjectCardGrid nullText={<p>No proposals have currently been initiated.<br /> Do you have an idea that could help the network?</p>}
-          nullAction={'Initiate'}
-          role='Find'
-          projectData={this.props.projects['1']} ethPrice={this.state.ethPrice} redirect={this.redirect} />
+      <div style={{ backgroundColor: lightgradient2, height: '100vh', display: 'flex' }}>
+        <Sidebar user={this.props.user} showIcons={this.state.showSidebarIcons} highlightIcon={this.state.role} history={this.props.history} />
+        <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 100 }}>
+          <TitleBar title={this.state.role} role={this.state.role} />
+          <SearchProjectBar />
+          <ProjectCardGrid nullText={<p>No proposals have currently been initiated.<br /> Do you have an idea that could help the network?</p>}
+            nullAction={'Initiate'}
+            role='Find'
+            projectData={this.props.projects['1']} ethPrice={this.state.ethPrice} redirect={this.redirect} />
+        </div>
       </div>
     )
   }

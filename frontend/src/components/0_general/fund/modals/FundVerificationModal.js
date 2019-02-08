@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Modal, Button } from 'antd'
+import { clearTransaction } from 'actions/transactionActions'
 import ButtonMintTokens from 'contractComponents/stage0/MintTokens'
 import cancel from 'images/tximages/cancel-1.svg'
 import txpending from 'images/tximages/txpending.svg'
@@ -57,7 +58,7 @@ class VerificationModal extends React.Component {
         break
       case 'pending':
         topText = <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', color: 'black', height: 75, width: '100%' }}>
-          <img style={{ height: 30, width: 30, marginLeft: 20 }} src={cancel} alt={cancel} onClick={this.props.close} />
+          <img style={{ height: 30, width: 30, marginLeft: 20 }} src={cancel} alt={cancel} onClick={() => { this.props.close(); this.props.clearTx() }} />
           <div style={{ fontFamily: 'Avenir Next', fontSize: 24, justifyContent: 'center' }}>
             Funding Transaction Pending
           </div>
@@ -84,7 +85,7 @@ class VerificationModal extends React.Component {
         break
       case 'success':
         topText = <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', color: 'black', height: 75, width: '100%' }}>
-          <img style={{ height: 30, width: 30, marginLeft: 20 }} src={cancel} alt={cancel} onClick={this.props.close} />
+          <img style={{ height: 30, width: 30, marginLeft: 20 }} src={cancel} alt={cancel} onClick={() => { this.props.close(); this.props.clearTx() }} />
           <div style={{ fontFamily: 'Avenir Next', fontSize: 24, justifyContent: 'center' }}>
             Funding Transaction Successul
           </div>
@@ -114,7 +115,7 @@ class VerificationModal extends React.Component {
         break
       case 'failure':
         topText = <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', color: 'black', height: 75, width: '100%' }}>
-          <img style={{ height: 30, width: 30, marginLeft: 20 }} src={cancel} alt={cancel} onClick={this.props.close} />
+          <img style={{ height: 30, width: 30, marginLeft: 20 }} src={cancel} alt={cancel} onClick={() => { this.props.close(); this.props.clearTx() }} />
           <div style={{ fontFamily: 'Avenir Next', fontSize: 24, justifyContent: 'center' }}>
             Funding Transaction Failed
           </div>
@@ -171,4 +172,10 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(VerificationModal)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    clearTx: () => dispatch(clearTransaction())
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(VerificationModal)

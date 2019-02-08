@@ -34,10 +34,10 @@ class InitiatorWelcome extends React.Component {
       >
         <div>
           <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
-            <p style={{paddingTop: 30, fontSize: 20, fontFamily: 'NowAltRegular'}}>It looks like you don't have any tokens. You can head to the dashboard<br />to contribute money to the network and receive tokens.</p>
+            <p style={{paddingTop: 30, fontSize: 20}}>It looks like you don't have any tokens. You can head to the dashboard<br />to contribute money to the network and receive tokens.</p>
           </div>
           <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', paddingTop: 39}}>
-            <Button style={{backgroundColor: '#A4D573', color: 'white', width: 270, height: 65, fontSize: 20, fontFamily: 'NowAltRegular', textAlign: 'center'}} key='submit' onClick={() => this.handleOk('money')}>
+            <Button style={{backgroundColor: '#A4D573', color: 'white', width: 270, height: 65, fontSize: 20, textAlign: 'center'}} key='submit' onClick={() => this.handleOk('money')}>
               Go To Dashboard
             </Button>
           </div>

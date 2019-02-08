@@ -47,14 +47,14 @@ class Onboarding extends React.Component {
           Continue
         </Button>
       ]
-      topText = <p style={{ fontSize: 14, fontFamily: 'NowAltRegular', textAlign: 'center' }}>
+      topText = <p style={{ fontSize: 14, textAlign: 'center' }}>
         It looks like you don't have any ether, the currency of the<br />ethereum blockchain. You can fund your account with th<br />following providers:
       </p>
       image = <div style={{ display: 'flex', justifyContent: 'space-evenly', marginTop: 21 }}>
         <img src={coinbaselogo} alt='coinbase logo' />
         <img src={krakenlogo} alt='kraken logo' />
       </div>
-      bottomText = <p style={{ fontSize: 14, fontFamily: 'NowAltRegular', textAlign: 'center', color: '#989898', marginTop: 33 }}>
+      bottomText = <p style={{ fontSize: 14, textAlign: 'center', color: '#989898', marginTop: 33 }}>
         If you would like to continue without ether, the accessible functionality will be limited.
       </p>
     } else {
@@ -64,13 +64,13 @@ class Onboarding extends React.Component {
         Login with uPort
         </Button>
       ]
-      topText = <p style={{ fontSize: 14, fontFamily: 'NowAltRegular', textAlign: 'center' }}>
+      topText = <p style={{ fontSize: 14, textAlign: 'center' }}>
         To continue, you will need to scan the QR code that is<br />displayed with your uPort app. You will receive a prompt on<br />your phone to verify your login.
       </p>
       image = <div style={{ display: 'flex', justifyContent: 'center', marginTop: 23 }}>
         <img src={uportlogo} alt='uport logo' />
       </div>
-      bottomText = <a style={{ fontSize: 14, fontFamily: 'NowAltRegular', display: 'flex', justifyContent: 'center', marginTop: 23 }} href='https://www.youtube.com/watch?v=talCRzqK9-c'>
+      bottomText = <a style={{ fontSize: 14, display: 'flex', justifyContent: 'center', marginTop: 23 }} href='https://www.youtube.com/watch?v=talCRzqK9-c'>
         Watch Tutorial
       </a>
     }

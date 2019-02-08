@@ -5,7 +5,7 @@ let processedTxsSchema = mongoose.Schema({
   logIndex: Number
 })
 
-processedTxsSchema.index({transactionHash: 1, logIndex: 1}, {unique: true})
+processedTxsSchema.index({transactionHash: 1, logIndex: 1})
 
 const ProcessedTxs = mongoose.model('ProcessedTxs', processedTxsSchema)
 
