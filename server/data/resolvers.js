@@ -103,23 +103,26 @@ const resolvers = {
       let credentialObj = Object.assign({ _id: new mongoose.Types.ObjectId() }, args.input)
       credentialObj = _.omit(credentialObj, ['avatar'])
       try {
-        let user = await new User({
-          _id: new mongoose.Types.ObjectId(),
-          account: args.input.did,
-          wallets: [args.wallet.toLowerCase()],
-          avatar: args.input.avatar.uri,
-          name: args.input.name,
-          tokenBalance: 0,
-          reputationBalance: 0,
-          tasks: [],
-          validations: [],
-          weiBalance: 0
-        }).save()
-        if (!user) console.error('user not saved')
-        let credential = await new Credential(Object.assign({ userId: user.id }, credentialObj)).save()
-        if (!credential) console.error('credential not saved')
-        let avatar = await new Avatar(Object.assign({ _id: new mongoose.Types.ObjectId(), credentialId: credential.id }, args.input.avatar)).save()
-        if (!avatar) console.error('avatar not saved')
+        let user = await User.findOne({ account: args.input.did })
+        if (!user) {
+          user = await new User({
+            _id: new mongoose.Types.ObjectId(),
+            account: args.input.did,
+            wallets: [args.wallet.toLowerCase()],
+            avatar: args.input.avatar.uri,
+            name: args.input.name,
+            tokenBalance: 0,
+            reputationBalance: 0,
+            tasks: [],
+            validations: [],
+            weiBalance: 0
+          }).save()
+          if (!user) console.error('user not saved')
+          let credential = await new Credential(Object.assign({ userId: user.id }, credentialObj)).save()
+          if (!credential) console.error('credential not saved')
+          let avatar = await new Avatar(Object.assign({ _id: new mongoose.Types.ObjectId(), credentialId: credential.id }, args.input.avatar)).save()
+          if (!avatar) console.error('avatar not saved')
+        }
         return user
       } catch (err) {
         console.error('error adding user')
