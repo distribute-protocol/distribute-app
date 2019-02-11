@@ -2,7 +2,7 @@ let obj = require('./build/contracts/ReputationRegistry.json')
 
 const ReputationRegistryAddress = obj.networks['5777'].address
 
-const ReputationRegistryABI = JSON.stringify(obj.abi)
+const ReputationRegistryABI = obj.abi
 
 const ReputationRegistryBytecode = obj.bytecode
 

@@ -4,7 +4,7 @@
   "private": true,
   "proxy": "http://localhost:3001/",
   "dependencies": {
-    "antd": "^3.10.0",
+    "antd": "^3.11.6",
     "apollo-boost": "^0.1.16",
     "bignumber.js": "^7.2.1",
     "crypto-price": "^0.0.6",
@@ -16,7 +16,7 @@
     "graphql-tag": "^2.10.0",
     "history": "^4.7.2",
     "immutability-helper": "^2.8.1",
-    "ipfs-api": "^25.0.0",
+    "ipfs-http-client": "^28.1.0",
     "lodash": "^4.17.11",
     "mapbox": "^1.0.0-beta10",
     "mapbox-gl": "^0.50.0-beta.1",

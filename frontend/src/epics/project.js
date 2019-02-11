@@ -30,7 +30,8 @@ import {
   // votingStatusChecked
   projectProposed
 } from '../actions/projectActions'
-import { map, mergeMap, concatMap } from 'rxjs/operators'
+import { transactionPending, transactionSuccess, transactionFailure } from '../actions/transactionActions'
+import { map, mergeMap, concatMap, catchError } from 'rxjs/operators'
 import { merge, EMPTY, of, from, concat } from 'rxjs'
 import { push } from 'react-router-redux'
 import { client } from '../index'
@@ -42,8 +43,7 @@ const getProjects = action$ => {
   return action$.ofType(GET_PROJECTS).pipe(
     mergeMap(action => {
       state = action.state
-      return client.query({query: action.query}
-      )
+      return client.query({ query: action.query })
     }),
     map(result => projectsReceived(state, result.data.allProjectsinState))
   )
@@ -72,8 +72,7 @@ const getProject = action$ => {
           }
         }
       `
-      return client.query({query, variables: {address: action.address}}
-      )
+      return client.query({ query, variables: { address: action.address } })
     }),
     map(result => projectReceived(result))
   )
@@ -82,33 +81,63 @@ const getProject = action$ => {
 const proposeProject = action$ =>
   action$.ofType(PROPOSE_PROJECT).pipe(
     mergeMap(action => {
-      return action.collateralType === 'tokens'
+      let contractCall = action.collateralType === 'tokens'
         ? from(tr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
         : from(rr.proposeProject(action.projObj.cost, action.projObj.stakingEndDate, action.projObj.multiHash, action.txObj))
-    }),
-    map(result => projectProposed(result.tx)
-    )
+      return concat(
+        of(transactionPending()),
+        contractCall.pipe(
+          mergeMap(receipt => {
+            if (receipt.receipt.status === '0x1') {
+              return concat(
+                of(projectProposed(receipt)),
+                of(transactionSuccess(receipt))
+              )
+            } else {
+              return transactionFailure(receipt)
+            }
+          }),
+          catchError(err => {
+            if (err) { console.log(err); return of(transactionFailure()) }
+          })
+        )
+      )
+    })
   )
 
 const stakeProject = action$ => {
-  let collateralType, stakeResult
+  let collateralType
   return action$.ofType(STAKE_PROJECT).pipe(
     mergeMap(action => {
       collateralType = action.collateralType
-      return action.collateralType === 'tokens'
+      let contractCall = action.collateralType === 'tokens'
         ? from(tr.stakeTokens(action.projectAddress, parseInt(action.value, 10), action.txObj))
         : from(rr.stakeReputation(action.projectAddress, parseInt(action.value, 10), action.txObj))
-    }),
-    mergeMap(result => {
-      stakeResult = result
-      return from(dt.currentPrice())
-    }),
-    mergeMap(result => {
-      if (stakeResult.logs[0].args.staked === true) {
-        return of(push('/add'))
-      } else {
-        return of(projectStaked(collateralType, stakeResult.logs[0].args, result))
-      }
+      return concat(
+        of(transactionPending()),
+        contractCall.pipe(
+          mergeMap(receipt => {
+            if (receipt.receipt.status === '0x1') {
+              return concat(
+                of(transactionSuccess(receipt)),
+                of(projectStaked(collateralType, receipt.logs[0].args, 0))
+                // stakeResult.logs[0].args.staked === true ? of(push('/add')) : null
+              )
+              // return concat(
+              //   from(dt.currentPrice()).pipe(
+              //     map(currPrice => {
+              //
+              //     })
+              //   )
+              // )
+            } else {
+              return of(transactionFailure())
+            }
+          }),
+          catchError(err => {
+            if (err) { console.log(err); return of(transactionFailure()) }
+          })
+        ))
     })
   )
 }

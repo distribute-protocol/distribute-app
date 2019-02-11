@@ -1,7 +1,9 @@
 import React from 'react'
 import { Dropdown, Menu, Button, Icon } from 'antd'
+import { font1 } from '../../styles/fonts'
+import { grey3 } from '../../styles/colors'
 
-export default () => {
+export default (props) => {
   const projectLimiter = (
     <Menu>
       <Menu.Item>
@@ -91,28 +93,27 @@ export default () => {
   )
 
   return (
-    <div style={{marginLeft: 75, color: 'black'}}>
-      <div style={{marginTop: 20, marginBottom: 10, display: 'flex', justifyContent: 'center', fontFamily: 'Lato', fontSize: 20}}>
-        <p style={{marginRight: 10}}> Show me</p>
+    <div style={Object.assign({}, { height: 90, color: 'black', borderBottom: `1px ${grey3} solid`, display: 'flex', alignItems: 'center', justifyContent: 'center', top: 60, flexWrap: 'wrap' }, { ...props.style })}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', fontFamily: font1, fontSize: 20 }}>
+        <p style={{ margin: 0, marginRight: 10 }}> Show me</p>
         <Dropdown overlay={projectLimiter} >
           <Button style={{ color: 'black', maxWidth: 350, border: '1px solid black', borderRadius: 4, textAlign: 'left' }}>
             <Icon type='down' />All
           </Button>
         </Dropdown>
-        <p style={{marginLeft: 10, marginRight: 10}}>projects within</p>
+        <p style={{ margin: 0, marginLeft: 10, marginRight: 10 }}>projects within</p>
         <Dropdown overlay={mileage} >
           <Button style={{ color: 'black', maxWidth: 350, border: '1px solid black', borderRadius: 4, textAlign: 'left' }}>
             <Icon type='down' />50 miles
           </Button>
         </Dropdown>
-        <p style={{marginLeft: 10, marginRight: 10}}>sorted by</p>
+        <p style={{ margin: 0, marginLeft: 10, marginRight: 10 }}>sorted by</p>
         <Dropdown overlay={sortedBy} >
           <Button style={{ color: 'black', maxWidth: 350, border: '1px solid black', borderRadius: 4, textAlign: 'left' }}>
             <Icon type='down' />Most Staked
           </Button>
         </Dropdown>
       </div>
-      <hr style={{marginLeft: -75}} />
     </div>
   )
 }

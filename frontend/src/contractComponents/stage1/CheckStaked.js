@@ -13,7 +13,7 @@ const ButtonCheckStaked = (props) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    checkStakedStatus: (type, address, val, txObj) => dispatch(checkStakedStatus(type, address, val, txObj))
+    checkStakedStatus: (address, txObj) => dispatch(checkStakedStatus(address, txObj))
   }
 }
 

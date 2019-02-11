@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Sidebar from '../components/shared/Sidebar'
-import RoleIntro from '../components/modals/RoleIntro'
-import TextContinue from '../components/modals/TextContinue'
-import RoleSelectionModal from '../components/modals/RoleSelectionModal'
-import { getUserStatus } from '../actions/userActions'
-import { eth } from '../utilities/blockchain'
+import Sidebar from 'components/shared/Sidebar'
+import RoleIntro from 'components/onboarding/modals/RoleIntro'
+import TextContinue from 'components/onboarding/modals/TextContinue'
+import RoleSelectionModal from 'components/shared/modals/RoleSelectionModal'
+import { getUserStatusWallet } from 'actions/userActions'
+import { eth } from 'utilities/blockchain'
 
 class RoleSelection extends React.Component {
   constructor () {
@@ -26,7 +26,7 @@ class RoleSelection extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
-          this.props.getUserStatus(accounts[0])
+          this.props.getUserStatusWallet(accounts[0])
         }
       }
     })
@@ -84,7 +84,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getUserStatus: (userAccount) => dispatch(getUserStatus(userAccount))
+    getUserStatusWallet: (userAccount) => dispatch(getUserStatusWallet(userAccount))
   }
 }
 

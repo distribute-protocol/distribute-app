@@ -1,6 +1,6 @@
 let obj = require('./build/contracts/Task.json')
 
-const TaskABI = JSON.stringify(obj.abi)
+const TaskABI = obj.abi
 
 const TaskBytecode = obj.bytecode
 

@@ -1,14 +1,14 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const path = require('path')
-const assert = require('assert')
 const compression = require('compression')
-const cors = require('cors')
-const { ApolloServer, gql } = require('apollo-server-express')
+const ngrok = require('ngrok')
+// const cors = require('cors')
+const { ApolloServer } = require('apollo-server-express')
 const { ApolloEngine } = require('apollo-engine')
-require('./connections/mongo');
+require('./connections/mongo')
 
-const dtLogs = require('./logs/distributeToken')
+const hypLogs = require('./logs/hyphaToken')
 const rrLogs = require('./logs/reputationRegistry')
 const prLogs = require('./logs/projectRegistry')
 const trLogs = require('./logs/tokenRegistry')
@@ -51,12 +51,14 @@ const server = new ApolloServer({
 server.applyMiddleware({ app })
 
 // fire logs --> network model initalized in dtLog ONLY
-// dtLogs()
-// rrLogs()
-// prLogs()
-// trLogs()
-// plLogs()
-const web3 = require('./connections/web3')
+hypLogs()
+rrLogs()
+prLogs()
+trLogs()
+plLogs()
+
+// let endpoint = ''
+
 engine.listen({
   port: app.get('port'),
   graphqlPaths: ['/api/graphql'],
@@ -67,6 +69,8 @@ engine.listen({
 }, () => {
   console.log('Listening!')
 })
-
-// console.log('this is web3', web3)
-// console.log(web3.eth.net.isListening)
+//
+// ngrok.connect(8088).then(ngrokUrl => {
+//   endpoint = ngrokUrl
+//   console.log(`Your dApp is being served!, open at ${endpoint} and scan the QR to login!`)
+// })

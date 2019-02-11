@@ -1,7 +1,7 @@
 import { TokenRegistryABI, TokenRegistryAddress } from '../abi/TokenRegistry'
 import { ReputationRegistryABI, ReputationRegistryAddress } from '../abi/ReputationRegistry'
 import { ProjectRegistryABI, ProjectRegistryAddress } from '../abi/ProjectRegistry'
-import { DistributeTokenABI, DistributeTokenAddress } from '../abi/DistributeToken'
+import { HyphaTokenABI, HyphaTokenAddress } from '../abi/HyphaToken'
 import { ProjectABI } from '../abi/Project'
 import { TaskABI } from '../abi/Task'
 import { ProjectLibraryABI, ProjectLibraryAddress } from '../abi/ProjectLibrary'
@@ -36,9 +36,9 @@ const PR = contract({abi: JSON.parse(ProjectRegistryABI)})
 PR.setProvider(window.web3.currentProvider)
 export const pr = PR.at(ProjectRegistryAddress)
 
-const DT = contract({abi: JSON.parse(DistributeTokenABI)})
+const DT = contract({abi: JSON.parse(HyphaTokenABI)})
 DT.setProvider(window.web3.currentProvider)
-export const dt = DT.at(DistributeTokenAddress)
+export const dt = DT.at(HyphaTokenAddress)
 
 const PL = contract({abi: JSON.parse(ProjectLibraryABI)})
 PL.setProvider(window.web3.currentProvider)

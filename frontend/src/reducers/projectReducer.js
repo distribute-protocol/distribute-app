@@ -2,11 +2,18 @@ import { PROJECT_PROPOSED, PROJECT_RECEIVED, PROJECTS_RECEIVED, TASK_LIST_SET, H
 import { FINAL_TASK_LIST_SUBMITTED, VALIDATIONS_RECEIVED, TASK_CLAIMED, TASK_COMPLETED, TASK_VALIDATED, VALIDATOR_REWARDED, TASK_REWARDED, USER_VALIDATIONS_RECEIVED } from '../constants/TaskActionTypes'
 
 const initialState = {
+  1: {},
+  2: {},
+  3: {},
+  4: {},
+  5: {},
+  6: {}
 }
 
 export default function projectReducer (state = initialState, action) {
   switch (action.type) {
     case PROJECT_PROPOSED:
+      // BROKEN : Doesn't add project correctly to the reducer
       return Object.assign({}, state, {projectProposed: true, txHash: action.receipt})
     case PROJECTS_RECEIVED:
       if (!action.projects.length) {
@@ -39,9 +46,9 @@ export default function projectReducer (state = initialState, action) {
       return Object.assign({}, state, {2: projects})
     case PROJECT_STAKED:
       if (action.collateralType === 'tokens') {
-        let weiBal = parseInt(state[1][action.result.projectAddress].weiBal, 10)
+        // BROKEN: Fails to get 'weiBal'
         let weiChange = parseInt(action.result.weiChange, 10)
-        project = Object.assign({}, state[1][action.result.projectAddress], {weiBal: weiBal + weiChange, currentPrice: action.currentPrice})
+        project = Object.assign({}, state[1][action.result.projectAddress], { weiBal: (parseInt(state[1][action.result.projectAddress] && state[1][action.result.projectAddress].weiBal, 10) || 0) + weiChange, currentPrice: action.currentPrice })
       } else if (action.collateralType === 'reputation') {
         let repBalance = parseInt(state[1][action.result.projectAddress].reputationBalance, 10)
         let repStaked = action.result.reputation.toNumber()

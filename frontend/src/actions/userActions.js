@@ -5,16 +5,19 @@ import {
   REGISTER_USER,
   REGISTERED_USER,
   GET_USER_STATUS,
+  GET_USER_STATUS_WALLET,
   USER_STATUS_RECEIVED,
   GET_USER_VOTES,
-  USER_VOTES_RECEIVED
+  USER_VOTES_RECEIVED,
+  SAVE_USER_PROFILE,
+  SAVED_USER_PROFILE
 } from '../constants/UserActionTypes'
 
-export function registerUser (credentials, account) {
+export function registerUser (credentials, wallet) {
   return {
     type: REGISTER_USER,
     credentials,
-    account
+    wallet
   }
 }
 
@@ -32,10 +35,11 @@ export function loginUser (credentials) {
   }
 }
 
-export function loggedInUser (userObj) {
+export function loggedInUser (userObj, avatar) {
   return {
     type: LOGGED_IN_USER,
-    userObj
+    userObj,
+    avatar
   }
 }
 
@@ -48,6 +52,13 @@ export function logoutUser () {
 export function getUserStatus (userDetails) {
   return {
     type: GET_USER_STATUS,
+    payload: userDetails
+  }
+}
+
+export function getUserStatusWallet (userDetails) {
+  return {
+    type: GET_USER_STATUS_WALLET,
     payload: userDetails
   }
 }
@@ -70,5 +81,19 @@ export function userVotesReceived (votes) {
   return {
     type: USER_VOTES_RECEIVED,
     votes
+  }
+}
+
+export function saveUserProfile (profile) {
+  return {
+    type: SAVE_USER_PROFILE,
+    profile
+  }
+}
+
+export function savedUserProfile (user) {
+  return {
+    type: SAVED_USER_PROFILE,
+    user
   }
 }

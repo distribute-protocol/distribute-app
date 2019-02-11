@@ -4,7 +4,7 @@ let obj = require('./build/contracts/ProjectRegistry.json')
 
 const ProjectRegistryAddress = obj.networks['5777'].address
 
-const ProjectRegistryABI = JSON.stringify(obj.abi)
+const ProjectRegistryABI = obj.abi
 
 const ProjectRegistryBytecode = obj.bytecode
 

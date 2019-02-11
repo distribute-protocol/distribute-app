@@ -131,9 +131,9 @@ const typeDefs = gql`
     tasks: [Task]
     tokenBalance: Int
     tokenChanges: [Token]
-    voteRecords: [VoteRecord]
     validations: [Validation]
     votes: [Vote]
+    wallets: [String]
     weiBalance: Int
   }
 
@@ -143,25 +143,14 @@ const typeDefs = gql`
     task: Task
     user: String
     state: Boolean
-    address: String
     rewarded: Boolean
+    project: Project
   }
 
   type Vote {
     id: ID
     amount: Int
-    revealed: Boolean
-    rescued: Boolean
-    pollID: Int
     hash: String
-    task: Task
-    type: String
-    user: User
-  }
-
-  type VoteRecord {
-    id: ID
-    amount: Int
     pollID: Int
     revealed: Boolean
     rescued: Boolean
@@ -175,6 +164,7 @@ const typeDefs = gql`
   type Query {
     network: Network
     user(account: String): User
+    userByWallet(wallet: String): User
     allUsers: [User]
     token(account: String): [Token]
     allTokens: [Token]
@@ -193,7 +183,6 @@ const typeDefs = gql`
     userValidations(account: String): [Validation]
     taskValidations(address: String): [Validation]
     userVotes(account: String): [Vote]
-    userVoteRecords(account: String): [VoteRecord]
     taskVotes(address: String): [Vote]
     verifiedPrelimTaskLists(address: String): [PrelimTaskList]
     userPrelimTaskLists(address: String): [PrelimTaskList]
@@ -214,17 +203,28 @@ const typeDefs = gql`
     boxPub: String
     country: String
     did: String
+    email: String
     id: ID
     name: String
     publicEncKey: String
     pushToken: String
   }
 
+  input ProfileInput {
+    expertise: [String],
+    interests: [String],
+    contactDetails: [String],
+    wantToLearn: [String],
+    wantToTeach: [String],
+    affiliations: [String]
+  }
+
   type Mutation {
-    addUser(input: CredentialInput, account: String): User
+    addUser(input: CredentialInput, wallet: String): User
+    saveUserProfile(profile: ProfileInput, wallet: String): User
     addTaskList(input: String, address: String): Project
     addPrelimTaskList(address: String, taskHash: String, submitter: String, weighting: String): Project
-    addVote(type: String, projectAddress: String, taskIndex: Int, amount: Int, vote: String, salt: String, pollID: Int, voter: String): VoteRecord
+    addVote(type: String, projectAddress: String, taskIndex: Int, amount: Int, vote: String, salt: String, pollID: Int, voter: String): Vote
   }
 `
 // Put together a schema
