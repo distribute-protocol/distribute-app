@@ -70,7 +70,7 @@ const resolvers = {
     allTokens: () => [{}],
     reputation: (_, args) => [{}],
     allReputations: () => [{}],
-    project: (_, args) => Project.findOne({ address: args.address.toLowerCase() }).then(project => project),
+    project: (_, args) => Project.findOne({ address: args.address }).then(project => project),
     allProjects: () => Project.find({ }).then(projects => projects),
     allProjectsinState: (_, args) => Project.find({ state: args.state }).then(projects => projects),
     allStakes: () => Stake.find({ }).then(stakes => stakes),

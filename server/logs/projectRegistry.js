@@ -64,7 +64,7 @@ module.exports = function () {
                 passThreshold,
                 photo: dataObj.photo,
                 prelimTaskLists: [],
-                proposer,
+                proposer: proposer.toLowerCase(),
                 proposerType,
                 proposerRewarded: false,
                 reputationBalance: 0,

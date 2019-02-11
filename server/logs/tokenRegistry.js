@@ -21,7 +21,7 @@ module.exports = function () {
       if (!processedTx) {
         let { projectAddress, tokens, weiChange, staker } = event.returnValues
         const user = await User.findOneAndUpdate(
-          {account: staker},
+          {account: staker.toLowerCase()},
           {$inc: { tokenBalance: tokens * (-1) }},
           {upsert: true, setDefaultsOnInsert: true, new: true}
         )
@@ -46,7 +46,7 @@ module.exports = function () {
       if (!processedTx) {
         let { projectAddress, tokens, weiChange, unstaker } = event.returnValues
         const user = await User.findOneAndUpdate(
-          {account: unstaker},
+          {account: unstaker.toLowerCase()},
           {$inc: { tokenBalance: tokens }},
           {upsert: true, setDefaultsOnInsert: true, new: true}
         )

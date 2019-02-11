@@ -46,7 +46,7 @@ module.exports = function () {
       if (!processedTx) {
         let { projectAddress, staker, reputation } = event.returnValues
         const user = await User.findOneAndUpdate(
-          {wallets: staker},
+          {wallets: staker.toLowerCase()},
           {$inc: { reputationBalance: reputation * (-1) }},
           {upsert: true, setDefaultsOnInsert: true, new: true}
         )
@@ -72,7 +72,7 @@ module.exports = function () {
     try {
       const processedTx = await ProcessedTxs.findOne({transactionHash, logIndex})
       if (!processedTx) {
-        const user = await User.findOneAndUpdate({wallets: staker}, {$inc: { reputationBalance: reputationStaked }}, {upsert: true, setDefaultsOnInsert: true, new: true})
+        const user = await User.findOneAndUpdate({wallets: staker.toLowerCase()}, {$inc: { reputationBalance: reputationStaked }}, {upsert: true, setDefaultsOnInsert: true, new: true})
         if (!user) { console.error('User not successfully created or updated') }
         const project = await Project.findOneAndUpdate({address: projectAddress}, {$inc: { reputationBalance: reputationStaked * (-1) }}, {new: true})
         if (!project) { console.error('Project not created or updated') }
