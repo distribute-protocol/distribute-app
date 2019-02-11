@@ -64,7 +64,6 @@ class Landing extends React.Component {
 
   async handleJoin () {
     if (!this.state.metamask || !this.state.hasEther) {
-      console.log('made it')
       try {
         let accounts = await eth.getAccounts()
         let balance

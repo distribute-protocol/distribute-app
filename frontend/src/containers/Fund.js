@@ -30,16 +30,16 @@ class Fund extends React.Component {
     eth.getAccounts(async (err, accounts) => {
       if (!err) {
         if (accounts.length) {
-          // this.props.getUserStatusWallet(accounts[0])
+          this.props.getUserStatusWallet(accounts[0])
           let ethPrice = await price.getCryptoPrice('USD', 'ETH')
-          // let totalTokens = await dt.totalSupply()
+          let totalSupply = (await dt.totalSupply()).toNumber()
           // let totalRep = await rr.totalSupply()
           // let weiBal = await dt.weiBal()
           let weiBal = (await dt.weiBal()).toNumber()
           let currentPrice = web3.fromWei((await dt.currentPrice()).toNumber(), 'ether')
 
           await eth.getBalance(accounts[0], async (err, bal) => {
-            if (!err) this.setState({ user: { wallet: accounts[0] }, weiBal, balance: web3.fromWei(bal.toNumber(), 'ether'), price: parseFloat(ethPrice.price), tokenPrice: currentPrice })
+            if (!err) this.setState({ user: { wallet: accounts[0] }, weiBal, balance: web3.fromWei(bal.toNumber(), 'ether'), price: parseFloat(ethPrice.price), currentPrice, totalSupply })
           })
         }
       }
@@ -102,6 +102,7 @@ class Fund extends React.Component {
 
   render () {
     const { getFieldDecorator } = this.props.form
+    console.log(this.state.weiBal, this.props.user.tokenBalance, this.state.totalSupply)
     return (
       <div>
         <FundVerificationModal
@@ -128,6 +129,8 @@ class Fund extends React.Component {
               </div>
               <div style={{ textAlign: 'center', marginTop: 80 }}>
                 <div style={{ fontFamily: font1, fontSize: 24 }}>How much money would you like to fund the network with?</div>
+
+                <div style={{ fontFamily: font1, fontSize: 20 }}>{`You have ${this.props.user.tokenBalance} tokens worth $${(web3.fromWei((this.state.weiBal * (this.props.user.tokenBalance / this.state.totalSupply)), 'ether') * this.state.price).toFixed(2)} already`}</div>
                 <Form layout='inline' style={{ marginTop: 20 }}>
                   <Form.Item>
                     {getFieldDecorator('cost')(<Input style={{ minWidth: 250, maxWidth: 350, borderRadius: 0, border: `1px solid ${grey1}` }} placeholder='Funding Amount' type='number' onChange={this.onChange} />)}
@@ -158,11 +161,16 @@ class Fund extends React.Component {
     )
   }
 }
-
+const mapStateToProps = (state) => {
+  return {
+    user: state.user
+  }
+}
 const mapDispatchToProps = (dispatch) => {
   return {
-    transactionClear: () => dispatch(clearTransaction())
+    transactionClear: () => dispatch(clearTransaction()),
+    getUserStatusWallet: (address) => dispatch(getUserStatusWallet(address))
   }
 }
 
-export default connect(null, mapDispatchToProps)(Form.create()(Fund))
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(Fund))

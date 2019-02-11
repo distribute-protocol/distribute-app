@@ -9,7 +9,7 @@ const styleSelector = function (style, minimized) {
       order: 0,
       minWidth: minimized ? 60 : 100,
       width: minimized ? 60 : 100,
-      transition: 'width .4s, min-width .4s;'
+      transition: 'width .4s, min-width .4s'
     }
   }
   return styles[style]

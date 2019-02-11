@@ -28,7 +28,6 @@ export default function userReducer (state = initialState, action) {
         return Object.assign({}, state, { name, tokenBalance, reputationBalance, account, wallets, avatar: credentials.avatar ? credentials.avatar.uri : '' })
       }
     case TOKENS_MINTED:
-      console.log(action)
       return Object.assign({}, state, {tokenBalance: state.tokenBalance + action.receipt.logs[0].args.amountMinted.toNumber()})
     case TOKENS_SOLD:
       return Object.assign({}, state, {tokenBalance: state.tokenBalance - action.receipt.logs[0].args.amountWithdrawn.toNumber()})
